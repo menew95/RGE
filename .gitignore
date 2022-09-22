@@ -51,9 +51,9 @@
 *.res
 *.db
 *.ipch
-GraphicsEngine/.vs/GraphicsEngine/v16/.suo
 *.db-wal
 *.db-shm
 *.idb
 *.idb
 *.ilk
+*.suo
