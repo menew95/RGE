@@ -1,1 +1,0 @@
-#define DX_VERSION_12           12
