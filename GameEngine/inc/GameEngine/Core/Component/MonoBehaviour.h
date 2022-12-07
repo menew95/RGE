@@ -10,7 +10,7 @@ namespace GameEngine
 			: public Component
 		{
 		public:
-			MonoBehaviour(class GameObject* gameObject, const tstring& componentName = TEXT("MonoBehaviour"));
+			MonoBehaviour(std::shared_ptr<GameObject>& gameObject, const tstring& componentName = TEXT("MonoBehaviour"));
 			virtual ~MonoBehaviour();
 
 			virtual void Awake() {}

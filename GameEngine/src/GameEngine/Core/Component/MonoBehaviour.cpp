@@ -6,7 +6,7 @@ namespace GameEngine
 {
 	namespace Core
 	{
-		MonoBehaviour::MonoBehaviour(class GameObject* gameObject, const tstring& componentName /*= TEXT("MonoBehaviour")*/)
+		MonoBehaviour::MonoBehaviour(std::shared_ptr<GameObject>& gameObject, const tstring& componentName /*= TEXT("MonoBehaviour")*/)
 			: Component(gameObject, componentName)
 		{
 

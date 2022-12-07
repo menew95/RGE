@@ -98,6 +98,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>GameEngine\GameEnginePCH.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -115,6 +116,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>GameEngine\GameEnginePCH.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -132,6 +134,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>GameEngine\GameEnginePCH.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -149,6 +152,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>GameEngine\GameEnginePCH.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -159,16 +163,27 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="inc\GameEngine\Core\Component\MeshFilter.h" />
+    <ClInclude Include="inc\GameEngine\Core\System\ComponentSystem.h" />
     <ClInclude Include="inc\GameEngine\Core\Component\Component.h" />
     <ClInclude Include="inc\GameEngine\Core\Component\MonoBehaviour.h" />
     <ClInclude Include="inc\GameEngine\Core\GameObject.h" />
+    <ClInclude Include="inc\GameEngine\Core\Resource\Mesh.h" />
     <ClInclude Include="inc\GameEngine\Input.h" />
     <ClInclude Include="inc\GameEngine\Core\Scene.h" />
     <ClInclude Include="inc\GameEngine\Time.h" />
     <ClInclude Include="inc\GameEngine\Core\Component\Renderer.h" />
+    <ClInclude Include="inc\GameEngine\Core\System\SceneSystem.h" />
+    <ClInclude Include="inc\GameEngine\Core\Resource\Resource.h" />
     <ClInclude Include="src\GameEngine\GameEnginePCH.h" />
+    <ClInclude Include="inc\GameEngine\Core\Component\Transform.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\GameEngine\Core\Component\MeshFilter.cpp" />
+    <ClCompile Include="src\GameEngine\Core\Resource\Mesh.cpp" />
+    <ClCompile Include="src\GameEngine\Core\Resource\Resource.cpp" />
+    <ClCompile Include="src\GameEngine\Core\System\SceneSystem.cpp" />
+    <ClCompile Include="src\GameEngine\Core\System\ComponentSystem.cpp" />
     <ClCompile Include="src\GameEngine\Core\Component\MonoBehaviour.cpp" />
     <ClCompile Include="src\GameEngine\Core\Component\Renderer.cpp" />
     <ClCompile Include="src\GameEngine\Input.cpp" />
@@ -183,6 +198,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\GameEngine\Core\Component\Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.vcxproj">

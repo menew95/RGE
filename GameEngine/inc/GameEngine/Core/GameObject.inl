@@ -1,30 +1,29 @@
 #include "GameEngine\Core\GameObject.h"
+#include "GameEngine\Core\Component\Component.h"
+
 
 namespace GameEngine
 {
 	namespace Core
 	{
 		template<typename T>
-		T* GameEngine::Core::GameObject::AddComponent()
+		std::shared_ptr<T>& GameEngine::Core::GameObject::AddComponent()
 		{
-			T* _newComponent = new T(this);
+			std::shared_ptr<T> _newComponent = std::make_shared<T>(this);
 
 			m_Components.emplace_back(_newComponent);
 
-			return _newComponent;
+			return m_Components.back();
 		}
 
 		template<typename T>
-		T* GameEngine::Core::GameObject::GetComponent()
+		std::shared_ptr<T>& GameEngine::Core::GameObject::GetComponent()
 		{
-			for (T* component : m_Components)
+			for (auto& component : m_Components)
 			{
-				const type_info& _info = typeid(*component);
-				const type_info& _infoT = typeid(T);
-
-				if (typeid(*component) == typeid(T))
+				if (typeid(*component).name() == typeid(T).name())
 				{
-					return static_cast<T*>(component);
+					return std::static_pointer_cast<T>(component);
 				}
 			}
 
@@ -32,32 +31,36 @@ namespace GameEngine
 		}
 
 		template<typename T>
-		T* GameEngine::Core::GameObject::GetComponentInChildren()
+		std::shared_ptr<T>& GameEngine::Core::GameObject::GetComponentInChildren()
 		{
 			// Todo : 추가 필요
+
 			return nullptr;
 		}
 
 		template<typename T>
-		T* GameEngine::Core::GameObject::GetComponentInParent()
+		std::shared_ptr<T>& GameEngine::Core::GameObject::GetComponentInParent()
 		{
 			// Todo : 추가 필요
+
 			return nullptr;
 		}
 
 		template<typename T>
-		std::vector<T*>
+		std::vector<std::shared_ptr<T>>&
 			GameEngine::Core::GameObject::GetComponentsInChildren()
 		{
 			// Todo : 추가 필요
+
 			return nullptr;
 		}
 
 		template<typename T>
-		std::vector<T*>
+		std::vector<std::shared_ptr<T>>&
 			GameEngine::Core::GameObject::GetComponentsInParent()
 		{
 			// Todo : 추가 필요
+
 			return nullptr;
 		}
 	}

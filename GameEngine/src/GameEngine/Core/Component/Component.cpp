@@ -6,7 +6,7 @@ namespace GameEngine
 {
 	namespace Core
 	{
-		Component::Component(class GameObject* gameObject, const tstring& componentName /*= TEXT("Component")*/)
+		Component::Component(std::shared_ptr<GameObject>& gameObject, const tstring& componentName /*= TEXT("Component")*/)
 			: Object(componentName)
 			, m_pGameObject(gameObject)
 			, m_bEnable(true)
@@ -29,12 +29,22 @@ namespace GameEngine
 			m_pGameObject->SetTag(value);
 		}
 
-		Transform& Component::GetTransform()
+		void Component::SetEnable(bool value)
+		{
+			if (/*m_pGameObject->GetActiveInHierarchy() &&*/ m_bEnable != value)
+			{
+				m_bEnable = value;
+
+				m_bEnable ? OnEnable() : OnDisable();
+			}
+		}
+
+		std::shared_ptr<Transform>& Component::GetTransform()
 		{
 			return m_pGameObject->GetTransform();
 		}
 
-		std::vector<Component*>& Component::GetComponents()
+		std::vector<std::shared_ptr<Component>>& Component::GetComponents()
 		{
 			return m_pGameObject->GetComponents();
 		}

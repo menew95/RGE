@@ -8,44 +8,56 @@ namespace GameEngine
 	namespace Core
 	{
 		class Component
-			: public Object
+			: public Object, public std::enable_shared_from_this<Component>
 		{
 		public:
-			Component(class GameObject* gameObject, const tstring& componentName = TEXT("Component"));
+			Component(std::shared_ptr<class GameObject>& gameObject, const tstring& componentName = TEXT("Component"));
 			virtual ~Component();
 			
+			virtual void Awake() {}
+			virtual void Start() {}
+			virtual void Update() {}
+			virtual void LateUpdate() {}
+			virtual void FixedUpdate() {}
+			virtual void OnEnable() {}
+			virtual void OnDisable() {}
+
 			tstring& GetTag();
 			void SetTag(const tstring& value);
 			
 			bool GetEnable() { return m_bEnable; }
-			void SetEnable(bool value) { m_bEnable = value; }
+			void SetEnable(bool value);// { m_bEnable = value; }
 
-			class Transform& GetTransform();
+			std::shared_ptr<GameObject>& GetGameObject() { return m_pGameObject; }
 
-			std::vector<Component*>& GetComponents();
+			std::shared_ptr<class Transform>& GetTransform();
 
-			template<typename T>
-			T* AddComponent();
-
-			template<typename T>
-			T* GetComponent();
+			std::vector<std::shared_ptr<Component>>& GetComponents();
 
 			template<typename T>
-			T* GetComponentInChildren();
+			std::shared_ptr<T>& AddComponent();
 
 			template<typename T>
-			T* GetComponentInParent();
+			std::shared_ptr<T> GetComponent();
 
 			template<typename T>
-			std::vector<T*> GetComponentsInChildren();
+			std::shared_ptr<T> GetComponentInChildren();
 
 			template<typename T>
-			std::vector<T*> GetComponentsInParent();
+			std::shared_ptr<T> GetComponentInParent();
+
+			template<typename T>
+			std::vector<std::shared_ptr<T>> GetComponentsInChildren();
+
+			template<typename T>
+			std::vector<std::shared_ptr<T>> GetComponentsInParent();
 
 		protected:
-			class GameObject* m_pGameObject;
+			std::shared_ptr<GameObject> m_pGameObject;
 
 			bool m_bEnable;
+
+			bool m_bIsActiveAndEnabled;
 		};
 	}
 }

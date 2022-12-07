@@ -11,7 +11,7 @@ namespace GameEngine
 			: public Component
 		{
 		public:
-			Renderer(class GameObject* gameObject, const tstring& componentName = TEXT("Renderer"));
+			Renderer(std::shared_ptr<GameObject>& gameObject, const tstring& componentName = TEXT("Renderer"));
 			virtual ~Renderer();
 		};
 	}

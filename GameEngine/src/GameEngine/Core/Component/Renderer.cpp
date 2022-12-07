@@ -5,7 +5,7 @@ namespace GameEngine
 {
 	namespace Core
 	{
-		Renderer::Renderer(class GameObject* gameObject, const tstring& componentName /*= TEXT("Renderer")*/)
+		Renderer::Renderer(std::shared_ptr<GameObject>& gameObject, const tstring& componentName /*= TEXT("Renderer")*/)
 			: Component(gameObject, componentName)
 		{
 

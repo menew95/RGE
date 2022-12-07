@@ -12,48 +12,47 @@ namespace GameEngine
 		class Transform;
 
 		class GameObject :
-			public Object
+			public Object, public std::enable_shared_from_this<GameObject>
 		{
 		public:
 			GameObject(const tstring& gameObjectName = TEXT("GameObject"));
 
 			bool CompareTag(const tstring& value) { return value == m_Tag; }
 
-			void SetActiveInHierarchy(bool value) { m_bActiveInHierarchy = value; }
-			void SetActiveSelf(bool value) { m_bActiveInHierarchy = value; }
+			void SetActiveInHierarchy(bool value);
+			void SetActiveSelf(bool value);
 			void SetIsStatic(bool value) { m_bIsStatic = value; }
 			void SetLayer(const Layer value) { m_Layer =  value; }
-			void SetScene(Scene* value) { m_pScene = value; }
 			void SetTag(const tstring& value) { m_Tag = value; }
-			void SetTransform(Transform* value) { m_pTransform = value; }
 
 			bool GetActiveInHierarchy() { return m_bActiveInHierarchy; }
 			bool GetActiveSelf() { return m_bActiveInHierarchy; }
 			bool GetIsStatic() { return m_bIsStatic; }
 			Layer GetLayer() { return m_Layer; }
-			Scene& GetScene() { return *m_pScene; }
 			tstring& GetTag() { return m_Tag; }
-			Transform& GetTransform() { return *m_pTransform; }
 
-			std::vector<Component*>& GetComponents() { return m_Components; }
+			std::weak_ptr<Scene>& GetScene() { return m_pScene; }
+			std::shared_ptr<Transform>& GetTransform() { return m_pTransform; }
 
-			template<typename T>
-			T* AddComponent();
-
-			template<typename T>
-			T* GetComponent();
+			std::vector<std::shared_ptr<Component>>& GetComponents() { return m_Components; }
 
 			template<typename T>
-			T* GetComponentInChildren();
+			std::shared_ptr<T>& AddComponent();
 
 			template<typename T>
-			T* GetComponentInParent();
+			std::shared_ptr<T>& GetComponent();
 
 			template<typename T>
-			std::vector<T*> GetComponentsInChildren();
+			std::shared_ptr<T>& GetComponentInChildren();
 
 			template<typename T>
-			std::vector<T*> GetComponentsInParent();
+			std::shared_ptr<T>& GetComponentInParent();
+
+			template<typename T>
+			std::vector<std::shared_ptr<T>>& GetComponentsInChildren();
+
+			template<typename T>
+			std::vector<std::shared_ptr<T>>& GetComponentsInParent();
 
 		protected:
 			bool m_bActiveInHierarchy;
@@ -64,13 +63,13 @@ namespace GameEngine
 
 			Layer m_Layer;
 
-			Scene* m_pScene;
+			std::weak_ptr<Scene> m_pScene;
 
 			tstring m_Tag;
 
-			Transform* m_pTransform;
+			std::shared_ptr<Transform> m_pTransform;
 
-			std::vector<Component*> m_Components;
+			std::vector<std::shared_ptr<Component>> m_Components;
 		};
 
 	}
