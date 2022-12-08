@@ -60,6 +60,9 @@
     <ClInclude Include="inc\GameEngine\Core\Component\MeshFilter.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="inc\GameEngine\Core\System\Components.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\GameEngine\dllmain.cpp">
@@ -105,6 +108,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\GameEngine\Core\Component\MeshFilter.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GameEngine\Core\System\Components.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

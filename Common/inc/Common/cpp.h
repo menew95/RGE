@@ -68,6 +68,8 @@
 #include <utility>
 #include <valarray>
 #include <vector>
+#include <queue>
+#include <map>
 
 #include <array>
 #include <atomic>

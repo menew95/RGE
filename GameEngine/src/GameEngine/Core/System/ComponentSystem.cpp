@@ -7,43 +7,78 @@ namespace GameEngine
 {
 	namespace Core
 	{
+
+		void ComponentSystem::RegistComponent(uint32 order, const tstring& componentName)
+		{
+			auto _iter = std::ranges::find_if(m_ComponentsList.begin()
+				, m_ComponentsList.end()
+				, [&componentName](Components& components)
+				{
+					return components == componentName;
+				}
+			);
+
+			if (_iter == m_ComponentsList.end())
+			{
+				m_ComponentsList.push_back(Components(order, componentName));
+			}
+			else
+			{
+				assert(false);
+			}
+		}
+
 		void ComponentSystem::ReserveAddComponent(std::shared_ptr<Component>& component)
 		{
-			m_WaitForAddComponents.emplace_back(component);
+			auto _iter = std::ranges::find_if(m_ComponentsList.begin()
+				, m_ComponentsList.end()
+				, [&component](Components& components)
+				{
+					return components == component->GetTypeName();
+				}
+			);
+
+			if (_iter != m_ComponentsList.end())
+			{
+				(*_iter).AddComponent(component);
+			}
+			else
+			{
+				assert(false);
+			}
 		}
 
 		void ComponentSystem::ReserveDeleteComponent(std::shared_ptr<Component>& component)
 		{
-			auto _find = std::ranges::find(m_WaitForDeleteComponents, component);
+			auto _iter = std::ranges::find_if(m_ComponentsList.begin()
+				, m_ComponentsList.end()
+				, [&component](Components& components)
+				{
+					return components == component->GetTypeName();
+				}
+			);
 
-			if (_find != m_WaitForDeleteComponents.end())
+			if (_iter != m_ComponentsList.end())
 			{
-				m_WaitForDeleteComponents.emplace_back(component);
+				(*_iter).AddComponent(component);
+			}
+			else
+			{
+				assert(false);
 			}
 		}
 
 		void ComponentSystem::UpdateComponent()
 		{
-			StartComponent();
-
-			for (auto& _componentIter : m_WaitForUpdateComponents)
+			for (auto _components : m_ComponentsList)
 			{
-				if(_componentIter->GetEnable() && _componentIter->GetGameObject()->GetActiveInHierarchy())
-				{
-					_componentIter->Update();
-				}
-			}
-
-			for (auto& _componentIter : m_WaitForUpdateComponents)
-			{
-				if (_componentIter->GetEnable() && _componentIter->GetGameObject()->GetActiveInHierarchy())
-				{
-					_componentIter->LateUpdate();
-				}
+				_components.StartComponents();
+				_components.UpdateComponents();
+				_components.DestroyComponents();
 			}
 		}
 
-		void ComponentSystem::AddComponents()
+		/*void ComponentSystem::AddComponents()
 		{
 			for (auto iter = m_WaitForAddComponents.begin(); iter != m_WaitForAddComponents.end(); iter++)
 			{
@@ -75,6 +110,6 @@ namespace GameEngine
 		void ComponentSystem::DeleteComponent()
 		{
 
-		}
+		}*/
 	}
 }

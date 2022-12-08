@@ -164,6 +164,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="inc\GameEngine\Core\Component\MeshFilter.h" />
+    <ClInclude Include="inc\GameEngine\Core\System\Components.h" />
     <ClInclude Include="inc\GameEngine\Core\System\ComponentSystem.h" />
     <ClInclude Include="inc\GameEngine\Core\Component\Component.h" />
     <ClInclude Include="inc\GameEngine\Core\Component\MonoBehaviour.h" />
@@ -182,6 +183,7 @@
     <ClCompile Include="src\GameEngine\Core\Component\MeshFilter.cpp" />
     <ClCompile Include="src\GameEngine\Core\Resource\Mesh.cpp" />
     <ClCompile Include="src\GameEngine\Core\Resource\Resource.cpp" />
+    <ClCompile Include="src\GameEngine\Core\System\Components.cpp" />
     <ClCompile Include="src\GameEngine\Core\System\SceneSystem.cpp" />
     <ClCompile Include="src\GameEngine\Core\System\ComponentSystem.cpp" />
     <ClCompile Include="src\GameEngine\Core\Component\MonoBehaviour.cpp" />
