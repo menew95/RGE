@@ -7,6 +7,7 @@ namespace GameEngine
 {
 	namespace Core
 	{
+		DEFINE_SINGLETON_CLASS(ComponentSystem, {}, {})
 
 		void ComponentSystem::RegistComponent(uint32 order, const tstring& componentName)
 		{
@@ -76,6 +77,11 @@ namespace GameEngine
 				_components.UpdateComponents();
 				_components.DestroyComponents();
 			}
+		}
+
+		void ComponentSystem::ClearComponentsList()
+		{
+			m_ComponentsList.clear();
 		}
 
 		/*void ComponentSystem::AddComponents()

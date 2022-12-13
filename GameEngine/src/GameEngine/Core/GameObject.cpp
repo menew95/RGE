@@ -9,6 +9,10 @@ namespace GameEngine
 
 		GameObject::GameObject(const tstring& gameObjectName /*= TEXT("GameObject")*/)
 			: Object(TEXT("GameObject"))
+			, m_Layer(0)
+			, m_bActiveInHierarchy(false)
+			, m_bIsActiveSelf(false)
+			, m_bIsStatic(false)
 		{
 
 		}
@@ -36,7 +40,12 @@ namespace GameEngine
 
 				for (auto& _transIter : m_pTransform->GetChilds())
 				{
-					_transIter->GetGameObject()->SetActiveInHierarchy(value);
+					auto& _obj = _transIter->GetGameObject();
+
+					if (_obj->GetActiveSelf() == true)
+					{
+						_obj->SetActiveInHierarchy(value);
+					}
 				}
 			}
 		}

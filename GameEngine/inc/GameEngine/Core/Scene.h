@@ -4,17 +4,23 @@
 
 namespace GameEngine
 {
-	namespace Metal
+	namespace Core
 	{
+		class GameObject;
+
 		class Scene 
 			: public Object
 		{
 		public:
 			Scene(const tstring& _typeName = TEXT("Scene"));
 
+			void Resize(size_t size);
+			void AddGameObject(std::shared_ptr<GameObject>& gameObject);
+
+			inline std::vector<std::shared_ptr<GameObject>>& GetAllGameObject() { return m_GameObjects; }
 
 		protected:
-			std::vector<class Component*> m_
+			std::vector<std::shared_ptr<GameObject>> m_GameObjects;
 		};
 	}
 }

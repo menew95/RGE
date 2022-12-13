@@ -22,6 +22,8 @@ namespace GameEngine
 
 			void UpdateComponent();
 
+			void ClearComponentsList();
+
 		private:
 			//void AwakeComponent();
 			/*void AddComponents();

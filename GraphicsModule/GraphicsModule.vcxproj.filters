@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\GraphicsModule\GraphicsPCH.h">
+    <ClInclude Include="src\GraphicsPCH.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="inc\GraphicsModule\RenderCommon\IDevice.h">
@@ -24,19 +24,19 @@
     <ClInclude Include="inc\GraphicsModule\RenderCommon\ISwapChain.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="inc\GraphicsModule\RenderCore\DX11\Buffer.h">
+    <ClInclude Include="inc\GraphicsModule\Metal\Buffer.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="inc\GraphicsModule\RenderCore\DX11\ConstBuffer.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="inc\GraphicsModule\RenderCore\DX11\DepthStencilView.h">
+    <ClInclude Include="inc\GraphicsModule\Metal\DepthStencilView.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="inc\GraphicsModule\RenderCore\DX11\Device.h">
+    <ClInclude Include="inc\GraphicsModule\Metal\Device.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="inc\GraphicsModule\RenderCore\DX11\DeviceContext.h">
+    <ClInclude Include="inc\GraphicsModule\Metal\DeviceContext.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="inc\GraphicsModule\RenderCore\DX11\ID3D11.h">
@@ -48,7 +48,7 @@
     <ClInclude Include="inc\GraphicsModule\RenderCore\DX11\IndexBuffer.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="inc\GraphicsModule\RenderCore\DX11\InputLayout.h">
+    <ClInclude Include="inc\GraphicsModule\Metal\InputLayout.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="inc\GraphicsModule\RenderCore\DX11\IResource.h">
@@ -63,19 +63,19 @@
     <ClInclude Include="inc\GraphicsModule\RenderCore\DX11\ObjectFactory.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="inc\GraphicsModule\RenderCore\DX11\RenderTargetView.h">
+    <ClInclude Include="inc\GraphicsModule\Metal\RenderTargetView.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="inc\GraphicsModule\RenderCore\DX11\Shader.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="inc\GraphicsModule\RenderCore\DX11\ShaderResourceView.h">
+    <ClInclude Include="inc\GraphicsModule\Metal\ShaderResourceView.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="inc\GraphicsModule\RenderCore\DX11\State.h">
+    <ClInclude Include="inc\GraphicsModule\Metal\State.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="inc\GraphicsModule\RenderCore\DX11\SwapChain.h">
+    <ClInclude Include="inc\GraphicsModule\Metal\SwapChain.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="inc\GraphicsModule\RenderCore\DX11\Texture.h">
@@ -102,12 +102,15 @@
     <ClInclude Include="inc\GraphicsModule\Texture.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="inc\GraphicsModule\Core\RenderPipeLine.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\GraphicsModule\dllmain.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="src\GraphicsModule\GraphicsPCH.cpp">
+    <ClCompile Include="src\GraphicsPCH.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\GraphicsModule\Core\IDevice.cpp">
@@ -171,6 +174,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="inc\GraphicsModule\Texture.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GraphicsModule\Core\RenderPipeLine.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

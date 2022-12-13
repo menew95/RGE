@@ -331,9 +331,9 @@ namespace GameEngine
 
 			if (m_Parent != nullptr)
 			{
-				Math::Matrix parentTM = m_Parent->GetTM();
+				Math::Matrix _parentInv = m_Parent->GetTM().Invert();
 
-				m_LocalTM = m_WorldTM * parentTM;
+				m_LocalTM = m_WorldTM * _parentInv;
 
 				m_LocalTM.Decompose(m_LocalScale, m_LocalQuaternionRotation, m_LocalPosition);
 
