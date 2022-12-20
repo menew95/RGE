@@ -8,7 +8,7 @@ namespace GameEngine
 	{
 		class Scene;
 
-		class SceneSystem
+		class GAME_ENGINE_API SceneSystem
 		{
 			DECLARE_SINGLETON_CLASS(SceneSystem)
 		public:

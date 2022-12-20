@@ -74,21 +74,33 @@
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(ProjectDir)inc;$(ProjectDir)src;$(SolutionDir)Common\inc;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <SourcePath>#(ProjectDir)src;$(VC_SourcePath);</SourcePath>
+    <IntDir>$(SolutionDir)_build\_int\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)_build\$(Configuration)\$(Platform)\$(ProjectName)\</OutDir>
+    <TargetName>$(ProjectName)_$(Configuration)_$(Platform)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(ProjectDir)inc;$(ProjectDir)src;$(SolutionDir)Common\inc;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <SourcePath>#(ProjectDir)src;$(VC_SourcePath);</SourcePath>
+    <IntDir>$(SolutionDir)_build\_int\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)_build\$(Configuration)\$(Platform)\$(ProjectName)\</OutDir>
+    <TargetName>$(ProjectName)_$(Configuration)_$(Platform)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(ProjectDir)inc;$(ProjectDir)src;$(SolutionDir)Common\inc;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <SourcePath>#(ProjectDir)src;$(VC_SourcePath);</SourcePath>
+    <IntDir>$(SolutionDir)_build\_int\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)_build\$(Configuration)\$(Platform)\$(ProjectName)\</OutDir>
+    <TargetName>$(ProjectName)_$(Configuration)_$(Platform)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(ProjectDir)inc;$(ProjectDir)src;$(SolutionDir)Common\inc;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <SourcePath>#(ProjectDir)src;$(VC_SourcePath);</SourcePath>
+    <IntDir>$(SolutionDir)_build\_int\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)_build\$(Configuration)\$(Platform)\$(ProjectName)\</OutDir>
+    <TargetName>$(ProjectName)_$(Configuration)_$(Platform)</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -97,7 +109,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;DX11MODULE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>DX11Module\DX11PCH.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>DX11PCH.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -114,7 +126,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;DX11MODULE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>DX11Module\DX11PCH.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>DX11PCH.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -131,7 +143,7 @@
       <PreprocessorDefinitions>_DEBUG;DX11MODULE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>DX11Module\DX11PCH.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>DX11PCH.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -148,7 +160,7 @@
       <PreprocessorDefinitions>NDEBUG;DX11MODULE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>DX11Module\DX11PCH.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>DX11PCH.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -159,16 +171,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\DX11Module\framework.h" />
-    <ClInclude Include="src\DX11Module\DX11PCH.h" />
+    <ClInclude Include="src\DX11PCH.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\DX11Module\dllmain.cpp" />
-    <ClCompile Include="src\DX11Module\DX11PCH.cpp">
+    <ClCompile Include="src\DX11_dllmain.cpp" />
+    <ClCompile Include="src\DX11PCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">DX11PCH.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">DX11PCH.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">DX11PCH.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">DX11PCH.h</PrecompiledHeaderFile>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

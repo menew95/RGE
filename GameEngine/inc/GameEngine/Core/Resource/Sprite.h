@@ -13,7 +13,7 @@ namespace GameEngine
 {
 	namespace Core
 	{
-		class Sprite
+		class GAME_ENGINE_API Sprite
 			: public Resource, public std::enable_shared_from_this<Sprite>
 		{
 		public:

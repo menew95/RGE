@@ -7,7 +7,7 @@ namespace GameEngine
 {
 	namespace Core
 	{
-		class Component
+		class GAME_ENGINE_API Component
 			: public Object, public std::enable_shared_from_this<Component>
 		{
 		public:

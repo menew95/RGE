@@ -15,18 +15,15 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\DX12Module\framework.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="src\DX12Module\DX12PCH.h">
+    <ClInclude Include="src\DX12PCH.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\DX12Module\dllmain.cpp">
+    <ClCompile Include="src\DX12_dllmain.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="src\DX12Module\DX12PCH.cpp">
+    <ClCompile Include="src\DX12PCH.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

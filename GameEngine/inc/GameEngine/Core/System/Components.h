@@ -8,7 +8,7 @@ namespace GameEngine
 	{
 		class Component;
 
-		class Components
+		class GAME_ENGINE_API Components
 		{
 		public:
 			Components(uint32 order, const tstring& componentName);
@@ -34,7 +34,7 @@ namespace GameEngine
 			void DestroyComponents();
 
 			uint32 GetOrder() { return m_Order; }
-			uint32 SetOrder(uint32 order) { m_Order = order; }
+			void SetOrder(uint32 order) { m_Order = order; }
 
 		private:
 			uint32 m_Order;

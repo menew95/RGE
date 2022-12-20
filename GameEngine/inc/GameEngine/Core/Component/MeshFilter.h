@@ -7,7 +7,7 @@ namespace GameEngine
 {
 	namespace Core
 	{
-		class MeshFilter
+		class GAME_ENGINE_API MeshFilter
 			: public Component, public std::enable_shared_from_this<MeshFilter>
 		{
 		public:

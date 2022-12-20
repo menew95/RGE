@@ -12,7 +12,7 @@ namespace GameEngine
 			World = 0,
 			Self = 1
 		};
-		class Transform :
+		class GAME_ENGINE_API Transform :
 			public Component, public std::enable_shared_from_this<Transform>
 		{
 		public:

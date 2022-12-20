@@ -6,7 +6,7 @@
 
 namespace GameEngine
 {
-	class Time
+	class GAME_ENGINE_API Time
 	{
 		DECLARE_SINGLETON_CLASS(Time)
     public:

@@ -317,7 +317,7 @@ namespace GameEngine
         return static_cast<int>(_state) & static_cast<int>(_bit);
     }
 
-	class Input
+	class GAME_ENGINE_API Input
 	{
 		DECLARE_SINGLETON_CLASS(Input)
 

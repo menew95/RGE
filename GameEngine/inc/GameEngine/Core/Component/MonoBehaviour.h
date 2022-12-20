@@ -6,7 +6,7 @@ namespace GameEngine
 {
 	namespace Core
 	{
-		class MonoBehaviour
+		class GAME_ENGINE_API MonoBehaviour
 			: public Component
 		{
 		public:

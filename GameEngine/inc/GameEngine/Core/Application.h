@@ -8,26 +8,35 @@ namespace GameEngine
 	{
 		class ComponentSystem;
 
-		class Application
+		class GAME_ENGINE_API Application
 		{
 		public:
 			Application();
 			~Application();
 
-			static Application& Instance();
+			static Application* Instance();
 			static void Release();
 
-			static bool OnLoad(const tstring& dataPath);
-			static bool Update();
-			static bool Quit();
+			bool OnLoad(const tstring& dataPath);
+			bool Update();
+			bool Quit();
 
-			void Initallize();
+			bool Initallize(bool showCmd,
+				HINSTANCE hInstance,
+				const tstring& windowClassName,
+				const tstring& windowName,
+				UINT width,
+				UINT height);
 		protected:
 			static Application* m_pApplication;
 
+			class Window* m_Window;
 			class ComponentSystem* m_ComponentSystem;
 			class SceneSystem* m_SceneSystem;
 			class Resources* m_Resources;
+
+			class Time* m_GameTime;
+			class Input* m_Input;
 		};
 	}
 }

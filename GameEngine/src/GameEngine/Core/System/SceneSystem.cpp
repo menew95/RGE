@@ -37,7 +37,7 @@ namespace GameEngine
 			{
 				// Todo : errorIndex 로그 연결
 
-				return false;
+				return errorIndex;
 			}
 		}
 

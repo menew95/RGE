@@ -13,7 +13,7 @@ namespace GameEngine
 {
 	namespace Core
 	{
-		class Material
+		class GAME_ENGINE_API Material
 			: public Resource, public std::enable_shared_from_this<Material>
 		{
 		public:

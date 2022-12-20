@@ -6,5 +6,15 @@ namespace GameEngine
 	namespace Core
 	{
 
+		Texture::Texture(const tstring& _typeName /*= TEXT("Texture")*/)
+		{
+
+		}
+
+		Texture::~Texture()
+		{
+
+		}
+
 	}
 }

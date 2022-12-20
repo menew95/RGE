@@ -13,7 +13,7 @@ namespace GameEngine
 {
 	namespace Core
 	{
-		class Texture
+		class GAME_ENGINE_API Texture
 			: public Resource, public std::enable_shared_from_this<Texture>
 		{
 		public:

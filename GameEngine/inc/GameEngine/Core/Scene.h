@@ -8,7 +8,7 @@ namespace GameEngine
 	{
 		class GameObject;
 
-		class Scene 
+		class GAME_ENGINE_API Scene
 			: public Object
 		{
 		public:

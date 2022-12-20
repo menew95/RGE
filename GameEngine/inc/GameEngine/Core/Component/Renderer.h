@@ -7,7 +7,7 @@ namespace GameEngine
 {
 	namespace Core
 	{
-		class Renderer
+		class GAME_ENGINE_API Renderer
 			: public Component
 		{
 		public:

@@ -9,7 +9,7 @@ namespace GameEngine
 	{
 		class Component;
 
-		class ComponentSystem
+		class GAME_ENGINE_API ComponentSystem
 		{
 			DECLARE_SINGLETON_CLASS(ComponentSystem)
 

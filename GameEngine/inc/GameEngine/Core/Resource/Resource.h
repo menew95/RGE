@@ -7,7 +7,7 @@ namespace GameEngine
 {
 	namespace Core
 	{
-		class Resource
+		class GAME_ENGINE_API Resource
 			: public Object
 		{
 		public:

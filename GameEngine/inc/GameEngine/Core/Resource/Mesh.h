@@ -12,7 +12,7 @@ namespace GameEngine
 {
 	namespace Core
 	{
-		class Mesh
+		class GAME_ENGINE_API Mesh
 			: public Resource, public std::enable_shared_from_this<Mesh>
 		{
 		public:

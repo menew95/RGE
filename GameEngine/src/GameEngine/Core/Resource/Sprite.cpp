@@ -6,5 +6,15 @@ namespace GameEngine
 	namespace Core
 	{
 
+		Sprite::Sprite(const tstring& _typeName /*= TEXT("Sprite")*/)
+		{
+
+		}
+
+		Sprite::~Sprite()
+		{
+
+		}
+
 	}
 }

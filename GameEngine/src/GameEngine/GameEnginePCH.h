@@ -9,6 +9,16 @@
 
 #include "Common.h"
 
+#ifdef GAME_ENGINE_EXPORT
+#ifndef GAME_ENGINE_API
+#define GAME_ENGINE_API dll_export
+#endif
+#else
+#ifndef GAME_ENGINE_API
+#define GAME_ENGINE_API dll_import
+#endif
+#endif
+
 #include "GameEngine\Time.h"
 #include "GameEngine\Input.h"
 #endif //PCH_H

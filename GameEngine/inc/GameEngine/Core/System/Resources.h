@@ -8,7 +8,7 @@ namespace GameEngine
 	{
 		class Resource;
 
-		class Resources
+		class GAME_ENGINE_API Resources
 		{
 			DECLARE_SINGLETON_CLASS(Resources)
 

@@ -10,7 +10,7 @@ namespace GameEngine
 	}
 	namespace Core
 	{
-		class RenderPipeLineSystem
+		class GAME_ENGINE_API RenderPipeLineSystem
 		{
 			DECLARE_SINGLETON_CLASS(RenderPipeLineSystem)
 		public:
