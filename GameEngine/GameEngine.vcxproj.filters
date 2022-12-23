@@ -95,7 +95,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\GameEngine\dllmain.cpp">
+    <ClCompile Include="src\GameEngine\Game_dllmain.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\GameEngine\GameEnginePCH.cpp">

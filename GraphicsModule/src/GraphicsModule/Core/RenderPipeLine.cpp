@@ -4,7 +4,7 @@
 namespace Graphics
 {
 
-	RenderPipeLine::RenderPipeLine()
+	RenderPipeLine::RenderPipeLine(std::shared_ptr<Metal::DeviceContext>& deviceContext)
 	{
 
 	}

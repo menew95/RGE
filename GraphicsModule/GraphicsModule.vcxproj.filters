@@ -105,12 +105,72 @@
     <ClInclude Include="inc\GraphicsModule\RenderCore\DX11\SwapChain.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="inc\GraphicsModule\Metal\Device.h">
+    <ClInclude Include="inc\GraphicsModule\Core\Device.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\GraphicsModule\Window.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\GraphicsModule\Core\DXGI\Adapter.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\GraphicsModule\Core\DeviceContext.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\GraphicsModule\Core\Buffer.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\GraphicsModule\Core\SwapChain.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\GraphicsModule\Core\ResourceView.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\GraphicsModule\Core\RenderSystem.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\GraphicsModule\Core\DX11\DX11RenderSystem.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\GraphicsModule\Core\DX11\Direct3D11.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\GraphicsModule\Core\DX11\DX11Device.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\GraphicsModule\Core\DX11\DX11DeviceContext.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\GraphicsModule\Core\DX11\DX11SwapChain.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\GraphicsModule\Core\DeviceFlag.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\GraphicsModule\Core\BufferFlag.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\GraphicsModule\Core\DXGI\Factory.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\GraphicsModule\Core\Common\ComPtr.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\GraphicsModule\Core\DeviceContextFlag.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\GraphicsModule\Core\DX11\DX11Texture.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\GraphicsModule\Core\Texture.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\GraphicsModule\Core\TextureFlag.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\GraphicsModule\dllmain.cpp">
+    <ClCompile Include="src\GraphicsModule\Graphics_dllmain.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\GraphicsPCH.cpp">
@@ -180,6 +240,24 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\GraphicsModule\DX11\VertexBuffer.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GraphicsModule\Window.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GraphicsModule\Core\DX11\DX11Device.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GraphicsModule\Core\DX11\DX11DeviceContext.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GraphicsModule\Core\DX11\DX11RenderSystem.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GraphicsModule\Core\DX11\DX11SwapChain.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GraphicsModule\Core\DX11\DX11Texture.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

@@ -11,7 +11,7 @@ namespace Graphics
 		class RenderTargetTexture;
 	}
 
-	class RenderPipeLine
+	class GRAPHICS_DLL_DECLSPEC RenderPipeLine
 	{
 	public:
 		RenderPipeLine(std::shared_ptr<Metal::DeviceContext>&);

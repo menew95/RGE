@@ -239,7 +239,7 @@ xcopy /E /S /Y /R "$(OutputPath)*.pdb" "$(OutputPath)..\Client\*"</Command>
     <ClCompile Include="src\GameEngine\Core\Component\Component.cpp" />
     <ClCompile Include="src\GameEngine\Core\GameObject.cpp" />
     <ClCompile Include="src\GameEngine\Time.cpp" />
-    <ClCompile Include="src\GameEngine\dllmain.cpp" />
+    <ClCompile Include="src\GameEngine\Game_dllmain.cpp" />
     <ClCompile Include="src\GameEngine\GameEnginePCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
