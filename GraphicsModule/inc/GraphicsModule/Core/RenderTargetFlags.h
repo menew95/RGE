@@ -2,7 +2,7 @@
 
 namespace Graphics
 {
-	struct BUFFER_DESC
+	struct RenderTargetDesc
 	{
 
 	};

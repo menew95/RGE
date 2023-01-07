@@ -998,7 +998,25 @@ namespace Math
 		static RECT __cdecl ComputeTitleSafeArea(UINT backBufferWidth, UINT backBufferHeight) noexcept;
 	};
 
+	struct Scissor
+	{
+		Scissor() = default;
+		Scissor(const Scissor&) = default;
 
+		//! Scissor constructor with parameters for all attributes.
+		inline Scissor(int x, int y, int width, int height) :
+			x{ x },
+			y{ y },
+			width{ width },
+			height{ height }
+		{
+		}
+
+		int x = 0; //!< Left-top X coordinate.
+		int y = 0; //!< Left-top Y coordinate.
+		int width = 0; //!< Right-bottom width.
+		int height = 0; //!< Right-bottom height.
+	};
 
 } // namespace TL_Math
 
@@ -1141,6 +1159,8 @@ namespace std
 	};
 
 } // namespace std
+
+using namespace Math;
 
 #ifdef __clang__
 #pragma clang diagnostic pop

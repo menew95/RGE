@@ -7,8 +7,8 @@ namespace Graphics
 	class Device
 	{
 	public:
-		Device();
-		virtual ~Device();
+		Device() = default;
+		virtual ~Device() = default;
 
 
 

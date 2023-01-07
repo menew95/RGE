@@ -27,7 +27,7 @@ namespace Graphics
 		class DX11SwapChain : public SwapChain
 		{
 		public:
-			DX11SwapChain(IDXGIFactory* factory, ID3D11Device* device, SWAP_CHAIN_DESC& desc);
+			DX11SwapChain(IDXGIFactory* factory, ID3D11Device* device, SwapChainDesc& desc);
 			~DX11SwapChain() override;
 
 			void Present() override;
@@ -40,8 +40,11 @@ namespace Graphics
 		private:
 			void ResizeBuffer(DX11Device*, uint32, uint32);
 
-			void CreateSwapChain(IDXGIFactory* factory, ID3D11Device* device, SWAP_CHAIN_DESC& desc);
-			void CreateBackBuffer(ID3D11Device* device);
+			// Create SwapChain
+			void CreateSwapChain(IDXGIFactory* factory, ID3D11Device* device, SwapChainDesc& desc);
+			void CreateBackBuffer();
+
+			ID3D11Device* m_Device;
 
 			ComPtr<IDXGISwapChain> m_Underlying;
 			DXGI_SAMPLE_DESC m_SampleDesc;

@@ -1,17 +1,21 @@
 #pragma once
 
-#include "GraphicsModule\Core\TextureFlag.h"
+#include "GraphicsModule\Core\Resource.h"
+#include "GraphicsModule\Core\TextureFlags.h"
 
 namespace Graphics
 {
-	class Texture
+	class Texture : public Resource
 	{
 	public:
-		Texture();
 		virtual ~Texture();
 
+		ResourceType GetResourceType() const override;
 
 	protected:
+		Texture(const TextureType& type, uint32 bindFlags);
 
+		TextureType	m_TextureType;
+		uint32		m_BindFlags = 0;
 	};
 }

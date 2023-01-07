@@ -2,6 +2,9 @@
 #define MT_SWAPCHAIN_H
 
 #include "Common.h"
+#include "GraphicsModule/Core/SwapChainFlags.h"
+
+struct IDXGIFactory;
 
 namespace Graphics
 {
@@ -12,10 +15,9 @@ namespace Graphics
 	class SwapChain
 	{
 	public:
-		SwapChain();
-		SwapChain(IDXGIFactory* factory, ID3D11Device* device, SWAP_CHAIN_DESC& desc);
-		SwapChain(Device* device, SWAP_CHAIN_DESC& desc);
-		virtual ~SwapChain();
+		SwapChain() = default;
+		SwapChain(IDXGIFactory* factory, SwapChainDesc& desc) {}
+		virtual ~SwapChain() {}
 
 		virtual void Present();
 
