@@ -7,8 +7,8 @@ namespace Graphics
 	class StateManager
 	{
 	public:
-		StateManager();
-		virtual ~StateManager();
+		StateManager() = default;
+		virtual ~StateManager() = default;
 
 	protected:
 

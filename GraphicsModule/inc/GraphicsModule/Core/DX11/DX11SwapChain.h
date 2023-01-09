@@ -10,6 +10,7 @@ struct SWAP_CHAIN_DESC
 
 };
 
+struct ID3D11Device;
 struct IDXGISwapChain;
 struct ID3D11Texture2D;
 struct ID3D11RenderTargetView;
@@ -27,7 +28,7 @@ namespace Graphics
 		class DX11SwapChain : public SwapChain
 		{
 		public:
-			DX11SwapChain(IDXGIFactory* factory, ID3D11Device* device, SwapChainDesc& desc);
+			DX11SwapChain(IDXGIFactory* factory, ID3D11Device* device, const SwapChainDesc& desc);
 			~DX11SwapChain() override;
 
 			void Present() override;
@@ -41,7 +42,7 @@ namespace Graphics
 			void ResizeBuffer(DX11Device*, uint32, uint32);
 
 			// Create SwapChain
-			void CreateSwapChain(IDXGIFactory* factory, ID3D11Device* device, SwapChainDesc& desc);
+			void CreateSwapChain(IDXGIFactory* factory, ID3D11Device* device, const SwapChainDesc& desc);
 			void CreateBackBuffer();
 
 			ID3D11Device* m_Device;

@@ -3,6 +3,7 @@
 
 namespace Graphics
 {
+	WindowInfo Window::s_WindowInfo;
 
 	Window::Window()
 	{
@@ -16,8 +17,6 @@ namespace Graphics
 
 	void Window::OnResize(uint32 width, uint32 height)
 	{
-		m_Width = width;
-		m_Height = height;
+		assert(false);
 	}
-
 }

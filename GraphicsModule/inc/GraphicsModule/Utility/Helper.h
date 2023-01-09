@@ -1,13 +1,6 @@
-/*
- * Helper.h
- *
- * This file is part of the "LLGL" project (Copyright (c) 2015-2019 by Lukas Hermanns)
- * See "LICENSE.txt" for license information.
- */
 
-#ifndef LLGL_HELPER_H
-#define LLGL_HELPER_H
 
+#include "Common.h"
 #include "GraphicsModule/Utility/Export.h"
 #include <algorithm>
 #include <type_traits>
@@ -17,20 +10,15 @@
 #include <algorithm>
 #include <set>
 #include <string>
+#include <unordered_map>
 #include <cstring>
 #include <sstream>
 #include <iomanip>
 #include <functional>
 #include <cstdint>
 
-
- //TODO: separate this header into multiple "*Utils.h" files, such as "ContainerUtils.h"
-
 namespace Graphics
 {
-
-
-    /* ----- Templates ----- */
 
     // Alternative to std::make_unique<T> for strict C++11 support.
     template <typename T, typename... Args>
@@ -137,6 +125,22 @@ namespace Graphics
         }
     }
 
+	template <typename T, typename TBase>
+	void RemoveFromUniqueUnorderedMap(std::unordered_map<uuid, std::unique_ptr<T>>& cont, const TBase* entry)
+	{
+		if (entry)
+		{
+			RemoveFromListIf(
+				cont,
+				[entry](std::pair<const uuid, std::unique_ptr<T>>& e)
+				{
+					return (e.second.get() == entry);
+				}
+			);
+		}
+	}
+
+
     template <typename BaseType, typename SubType>
     SubType* TakeOwnership(std::set<std::unique_ptr<BaseType>>& objectSet, std::unique_ptr<SubType>&& object)
     {
@@ -160,6 +164,14 @@ namespace Graphics
         objectSet.emplace_back(std::forward<std::unique_ptr<SubType>>(object));
         return ref;
     }
+
+	template <typename BaseType, typename SubType>
+	SubType* TakeOwnership(std::unordered_map<uuid, std::unique_ptr<BaseType>>& objectSet, uuid uuid, std::unique_ptr<SubType>&& object)
+	{
+		auto ref = object.get();
+		objectSet.insert(std::make_pair(uuid, std::forward<std::unique_ptr<SubType>>(object)));
+		return ref;
+	}
 
     template <typename ForwardIt, typename BinaryPredicate>
     static ForwardIt UniqueMerge(ForwardIt begin, ForwardIt end, BinaryPredicate pred)
@@ -270,6 +282,3 @@ namespace Graphics
     GRAPHICS_DLL_DECLSPEC std::wstring ToUTF16String(const std::string& utf8);
     GRAPHICS_DLL_DECLSPEC std::wstring ToUTF16String(const char* utf8);
 }
-
-
-#endif

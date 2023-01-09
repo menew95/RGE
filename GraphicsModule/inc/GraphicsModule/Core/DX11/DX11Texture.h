@@ -41,29 +41,32 @@ namespace Graphics
 		class DX11Texture : public Texture
 		{
 		public:
-			DX11Texture(ID3D11Device* device, const TextureDesc& desc);
+			DX11Texture(const TextureDesc& desc);
+			//DX11Texture(ID3D11Device* device, const TextureDesc& desc);
 			~DX11Texture() override;
 
+			inline const DX11NativeTexture& GetNativeTexture() const { return m_NativeTexture; }
+			inline const ID3D11Resource* GetResource() const { return m_NativeTexture._resource.Get(); }
+			inline ID3D11ShaderResourceView* GetSRV() const { return m_ShaderResourceView.Get(); }
+			inline ID3D11UnorderedAccessView* GetUAV() const { return m_UnorderedAccessView.Get(); }
 
-			using UnderlyingType = ID3D11Resource*;
-
-			UnderlyingType GetUnderlying() { return m_NativeTexture._resource.Get(); }
-			UnderlyingType* GetUnderlyingAddress() { return m_NativeTexture._resource.GetAddressOf(); }
-
-			ID3D11ShaderResourceView* GetSRV() { return m_ShaderResourceView.Get(); }
-			ID3D11UnorderedAccessView* GetUAV() { return m_UnorderedAccessView.Get(); }
-		private:
-			uint32 GetTextureMiscFlags(const TextureDesc& desc);
+			TextureType GetType() { return m_TextureDesc._textureType; }
 
 			void CreateTexture1D(ID3D11Device* device, const TextureDesc& desc, const D3D11_SUBRESOURCE_DATA* initialData = nullptr);
 			void CreateTexture2D(ID3D11Device* device, const TextureDesc& desc, const D3D11_SUBRESOURCE_DATA* initialData = nullptr);
 			void CreateTexture3D(ID3D11Device* device, const TextureDesc& desc, const D3D11_SUBRESOURCE_DATA* initialData = nullptr);
+		
+			void CreateShaderResourceView(ID3D11Device* device, uint32 baseMipLevel, uint32 numMipLevels, uint32 baseArrayLayer, uint32 numArrayLayers);
+			void CreateTextureFromFile(ID3D11Device* device, const ImageDesc& srcDesc);
+		private:
+			uint32 GetTextureMiscFlags(const TextureDesc& desc);
+
 
 			static ComPtr<ID3D11Texture1D> DXCreateTexture1D(ID3D11Device* device, const D3D11_TEXTURE1D_DESC& desc, const D3D11_SUBRESOURCE_DATA* initialData = nullptr);
 			static ComPtr<ID3D11Texture2D> DXCreateTexture2D(ID3D11Device* device, const D3D11_TEXTURE2D_DESC& desc, const D3D11_SUBRESOURCE_DATA* initialData = nullptr);
 			static ComPtr<ID3D11Texture3D> DXCreateTexture3D(ID3D11Device* device, const D3D11_TEXTURE3D_DESC& desc, const D3D11_SUBRESOURCE_DATA* initialData = nullptr);
 			
-			void LoadTexture(ID3D11Device* device, ImageDesc& srcDesc);
+
 			FileFormat CheckFileFormat(const tstring& path);
 
 			DX11NativeTexture m_NativeTexture;

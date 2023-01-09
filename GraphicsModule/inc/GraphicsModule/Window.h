@@ -4,25 +4,33 @@
 
 namespace Graphics
 {
+	struct WindowInfo
+	{
+		uint32 _height = 1280;
+		uint32 _width = 720;
+
+		uint32 _refrashRate = 60;
+		HWND _hwnd = 0;
+	};
+
 	class Window
 	{
 	public:
 		Window();
 		~Window();
 
-		static Window* Windo
 
 		void OnResize(uint32 width, uint32 height);
 
-		uint32 GetHeight() { return m_Height; }
-		uint32 GetWidth() { return m_Width; }
 
-		HWND GetHwnd() { return m_Hwnd; }
+		inline static uint32 GetHeight() { return s_WindowInfo._height; }
+		inline static uint32 GetWidth() { return s_WindowInfo._width; }
+		inline static uint32 GetRefrashRate() { return s_WindowInfo._refrashRate; }
+		inline static HWND GetHwnd() { return s_WindowInfo._hwnd; }
+
+		inline static WindowInfo& GetWindowInfo() { return s_WindowInfo; }
+
 	private:
-		uint32 m_Height;
-		uint32 m_Width;
-
-		uint32 m_RefrashRate;
-		HWND m_Hwnd;
+		static WindowInfo s_WindowInfo;
 	};
 }

@@ -9,7 +9,7 @@ namespace Graphics
 		return
 			(
 				desc._stride > 0 &&
-				(desc._bindFlags & (BindFlags::Sampled | BindFlags::Storage)) != 0
+				(desc._bindFlags & (BindFlags::ShaderResource | BindFlags::UnorderedAccess)) != 0
 				);
 	}
 
@@ -19,7 +19,7 @@ namespace Graphics
 			(
 				desc._stride == 0 &&
 				desc._format == Format::UNKNOWN &&
-				(desc._bindFlags & (BindFlags::Sampled | BindFlags::Storage)) != 0
+				(desc._bindFlags & (BindFlags::ShaderResource | BindFlags::UnorderedAccess)) != 0
 				);
 	}
 

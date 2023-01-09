@@ -7,8 +7,8 @@ namespace Graphics
 	class RenderTarget
 	{
 	public:
-		RenderTarget();
-		virtual ~RenderTarget();
+		RenderTarget() = default;
+		virtual ~RenderTarget() = default;
 
 	protected:
 	};

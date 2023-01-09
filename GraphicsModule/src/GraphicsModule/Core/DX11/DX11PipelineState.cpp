@@ -10,7 +10,7 @@ namespace Graphics
 
 		DX11PipelineState::DX11PipelineState(ID3D11Device* device, const GraphicsPipelineDesc& desc)
 		{
-			m_PrimitiveTopology = MapFormat(desc._primitiveTopology);
+			m_PrimitiveTopology = MapPrimitive(desc._primitiveTopology);
 			//m_StencilRefDynamic = desc._stencilDesc.
 		}
 

@@ -25,10 +25,9 @@ namespace Graphics
 			void* Map(ID3D11DeviceContext* context, const CPUAccess access, UINT offset, UINT size);
 			void Unmap(ID3D11DeviceContext* context);
 
-			using UnderlyingType = ID3D11Buffer*;
-
-			inline UnderlyingType GetUnderlying() const { return m_Underlying.Get(); }
-			inline UnderlyingType* GetUnderlyingAddress() const { return m_Underlying.GetAddressOf(); }
+			
+			inline ID3D11Buffer* GetBuffer() const { return m_Buffer.Get(); }
+			inline ID3D11Buffer* const* GetBufferRef() const { return m_Buffer.GetAddressOf(); }
 
 			inline UINT GetSize() const
 			{
@@ -55,7 +54,7 @@ namespace Graphics
 			
 			D3D11_MAP GetCPUAccessTypeForUsage(const CPUAccess access) const;
 
-			ComPtr<ID3D11Buffer>	m_Underlying;
+			ComPtr<ID3D11Buffer>	m_Buffer;
 
 			BufferDesc				m_BufferDesc;
 

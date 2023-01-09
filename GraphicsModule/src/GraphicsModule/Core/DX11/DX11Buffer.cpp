@@ -31,11 +31,11 @@ namespace Graphics
 			{
 				D3D11_MAPPED_SUBRESOURCE _mappedSubresource;
 
-				context->Map(GetUnderlying(), 0, D3D11_MAP_WRITE, 0, &_mappedSubresource);
+				context->Map(GetBuffer(), 0, D3D11_MAP_WRITE, 0, &_mappedSubresource);
 
 				memcpy(reinterpret_cast<char*>(_mappedSubresource.pData) + offset, data, dataSize);
 
-				context->Unmap(GetUnderlying(), 0);
+				context->Unmap(GetBuffer(), 0);
 			}
 			else
 			{
@@ -43,7 +43,7 @@ namespace Graphics
 				{
 					if (dataSize == GetSize())
 					{
-						context->UpdateSubresource(GetUnderlying(), 0, nullptr, data, 0, 0);
+						context->UpdateSubresource(GetBuffer(), 0, nullptr, data, 0, 0);
 					}
 					else
 					{
@@ -53,7 +53,7 @@ namespace Graphics
 				else
 				{
 					const D3D11_BOX _dstBox{ offset, 0, 0, offset + dataSize, 1, 1 };
-					context->UpdateSubresource(GetUnderlying(), 0, &_dstBox, data, 0, 0);
+					context->UpdateSubresource(GetBuffer(), 0, &_dstBox, data, 0, 0);
 				}
 			}
 		}
@@ -80,14 +80,14 @@ namespace Graphics
 			HRESULT hr = 0;
 			D3D11_MAPPED_SUBRESOURCE _mappedSubresource;
 
-			hr = context->Map(GetUnderlying(), 0, GetCPUAccessTypeForUsage(access), 0, &_mappedSubresource);
+			hr = context->Map(GetBuffer(), 0, GetCPUAccessTypeForUsage(access), 0, &_mappedSubresource);
 
 			return (SUCCEEDED(hr) ? _mappedSubresource.pData : nullptr);
 		}
 
 		void DX11Buffer::Unmap(ID3D11DeviceContext* context)
 		{
-			context->Unmap(GetUnderlying(), 0);
+			context->Unmap(GetBuffer(), 0);
 		}
 
 		static uint32 GetD3DBufferSize(const BufferDesc& desc)
@@ -120,11 +120,11 @@ namespace Graphics
 					subresourceData.SysMemSlicePitch = 0;
 				}
 
-				device->CreateBuffer(&_desc, &subresourceData, m_Underlying.ReleaseAndGetAddressOf());
+				device->CreateBuffer(&_desc, &subresourceData, m_Buffer.ReleaseAndGetAddressOf());
 			}
 			else
 			{
-				device->CreateBuffer(&_desc, nullptr, m_Underlying.ReleaseAndGetAddressOf());
+				device->CreateBuffer(&_desc, nullptr, m_Buffer.ReleaseAndGetAddressOf());
 			}
 		}
 	}

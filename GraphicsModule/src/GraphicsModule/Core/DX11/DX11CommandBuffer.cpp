@@ -88,7 +88,7 @@ namespace Graphics
 		{
 			auto& _buffer = reinterpret_cast<DX11Buffer&>(buffer);
 
-			ID3D11Buffer* _buffers[] = { _buffer.GetUnderlying() };
+			ID3D11Buffer* _buffers[] = { _buffer.GetBuffer() };
 			uint32 _strides[] = { _buffer.GetStride() };
 			uint32 _offsets[] = { 0 };
 
@@ -99,7 +99,7 @@ namespace Graphics
 		{
 			auto& _buffer = reinterpret_cast<DX11Buffer&>(buffer);
 
-			m_Context->IASetIndexBuffer(_buffer.GetUnderlying(), _buffer.GetDXFormat(), 0);
+			m_Context->IASetIndexBuffer(_buffer.GetBuffer(), _buffer.GetDXFormat(), 0);
 		}
 
 		void DX11CommandBuffer::UpdateBuffer(Buffer& dstBuffer, uint32 dstOffset, const void* data, uint32 dataSize)
@@ -137,7 +137,7 @@ namespace Graphics
 
 				if ((bindFlags & BindFlags::ConstantBuffer) != 0)
 				{
-					m_StateManager->SetConstantBuffers(slot, 1, _buffer->GetUnderlyingAddress(), stageFlags);
+					m_StateManager->SetConstantBuffers(slot, 1, _buffer->GetBufferRef(), stageFlags);
 				}
 
 				if ((bindFlags & BindFlags::ShaderResource) != 0)
@@ -161,7 +161,7 @@ namespace Graphics
 
 				if ((bindFlags & BindFlags::ConstantBuffer) != 0)
 				{
-					m_StateManager->SetConstantBuffers(slot, 1, _buffer->GetUnderlyingAddress(), stageFlags);
+					m_StateManager->SetConstantBuffers(slot, 1, _buffer->GetBufferRef(), stageFlags);
 				}
 			}
 		}
@@ -172,7 +172,8 @@ namespace Graphics
 
 			if ((bindFlags & BindFlags::ShaderResource) != 0)
 			{
-				m_StateManager->SetShaderResources(slot, 1, _texture->GetUnderlyingAddress(), stageFlags);
+				ID3D11ShaderResourceView* _srvs[] = { _texture->GetSRV() };
+				m_StateManager->SetShaderResources(slot, 1, _srvs, stageFlags);
 			}
 		}
 

@@ -22,6 +22,7 @@ namespace Graphics
 			}
 
 			assert(false);
+			return DXGI_FORMAT_UNKNOWN;
 		}
 
 		DXGI_FORMAT MapFormat(const Format format)
@@ -115,6 +116,7 @@ namespace Graphics
 				case Format::BC5_SNORM:          return DXGI_FORMAT_BC5_SNORM;
 			}
 			assert(false);
+			return DXGI_FORMAT_UNKNOWN;
 		}
 
 		D3D_PRIMITIVE_TOPOLOGY MapPrimitive(const PrimitiveTopology topology)
@@ -165,29 +167,32 @@ namespace Graphics
 			}
 
 			assert(false);
+			return D3D_PRIMITIVE_TOPOLOGY_UNDEFINED;
 		}
 
 		D3D11_FILL_MODE MapFillMode(const FillMode polygonMode)
 		{
 			switch (polygonMode)
 			{
-				case FillMode::Solid:         return D3D11_FILL_SOLID;
-				case FillMode::WireFrame:    return D3D11_FILL_WIREFRAME;
+				case FillMode::Solid:		return D3D11_FILL_SOLID;
+				case FillMode::WireFrame:	return D3D11_FILL_WIREFRAME;
 			}
 
 			assert(false);
+			return D3D11_FILL_SOLID;
 		}
 
 		D3D11_CULL_MODE MapCullMode(const CullMode cullMode)
 		{
 			switch (cullMode)
 			{
-				case CullMode::None:    return D3D11_CULL_NONE;
-				case CullMode::Front:       return D3D11_CULL_FRONT;
-				case CullMode::Back:        return D3D11_CULL_BACK;
+				case CullMode::None:	return D3D11_CULL_NONE;
+				case CullMode::Front:	return D3D11_CULL_FRONT;
+				case CullMode::Back:	return D3D11_CULL_BACK;
 			}
 
 			assert(false);
+			return D3D11_CULL_NONE;
 		}
 
 		D3D11_BLEND MapBlend(const Blend blend)
@@ -214,6 +219,7 @@ namespace Graphics
 			}
 
 			assert(false);
+			return D3D11_BLEND_ZERO;
 		}
 
 		D3D11_BLEND_OP MapBlendOp(const BlendOp blendOp)
@@ -228,6 +234,7 @@ namespace Graphics
 			}
 
 			assert(false);
+			return D3D11_BLEND_OP_ADD;
 		}
 
 		D3D11_COMPARISON_FUNC MapCompareOp(const CompareOp compareOp)
@@ -245,6 +252,7 @@ namespace Graphics
 			}
 
 			assert(false);
+			return D3D11_COMPARISON_NEVER;
 		}
 
 		D3D11_STENCIL_OP MapStencilOp(const StencilOp stencilOp)
@@ -262,6 +270,7 @@ namespace Graphics
 			}
 
 			assert(false);
+			return D3D11_STENCIL_OP_KEEP;
 		}
 
 		D3D11_FILTER MapFilter(const Filter filter)
@@ -378,6 +387,7 @@ namespace Graphics
 			}
 
 			assert(false);
+			return D3D11_FILTER_MIN_MAG_MIP_POINT;
 		}
 
 		D3D11_TEXTURE_ADDRESS_MODE MapSamplerMode(const SamplerAddressMode addressMode)
@@ -392,6 +402,7 @@ namespace Graphics
 			}
 
 			assert(false);
+			return D3D11_TEXTURE_ADDRESS_WRAP;
 		}
 
 		D3D11_MAP MapCpuFlag(const CPUAccess cpuAccess)
@@ -405,6 +416,7 @@ namespace Graphics
 			}
 
 			assert(false);
+			return D3D11_MAP_READ;
 		}
 
 		uint32 MapBufferBindFlag(const uint32 bindFlags)
@@ -428,7 +440,7 @@ namespace Graphics
 
 			if ((bindFlags & BindFlags::StreamOutput) != 0)
 			{
-				_ret != D3D11_BIND_STREAM_OUTPUT;
+				_ret |= D3D11_BIND_STREAM_OUTPUT;
 			}
 
 			return _ret;
@@ -556,6 +568,8 @@ namespace Graphics
 				case DXGI_FORMAT_BC5_UNORM:				return Format::BC5_UNORM;
 				case DXGI_FORMAT_BC5_SNORM:				return Format::BC5_SNORM;
 			}
+
+			return Format::UNKNOWN;
 		}
 
 	}

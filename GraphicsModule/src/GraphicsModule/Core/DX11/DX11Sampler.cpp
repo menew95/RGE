@@ -13,13 +13,13 @@ namespace Graphics
 		{
 			D3D11_SAMPLER_DESC _desc;
 			{
-				_desc.Filter	= MapFormat(desc._filter);
-				_desc.AddressU	= MapFormat(desc._addressU);
-				_desc.AddressV	= MapFormat(desc._addressV);
-				_desc.AddressW	= MapFormat(desc._addressW);
+				_desc.Filter	= MapFilter(desc._filter);
+				_desc.AddressU	= MapSamplerMode(desc._addressU);
+				_desc.AddressV	= MapSamplerMode(desc._addressV);
+				_desc.AddressW	= MapSamplerMode(desc._addressW);
 				_desc.MipLODBias = desc._mipLODBias;
 				_desc.MaxAnisotropy = desc._maxAnisotropy;
-				_desc.ComparisonFunc = MapFormat(desc._comparisonOp);
+				_desc.ComparisonFunc = MapCompareOp(desc._comparisonOp);
 				_desc.BorderColor[0] = desc._borderColor.x;
 				_desc.BorderColor[1] = desc._borderColor.y;
 				_desc.BorderColor[2] = desc._borderColor.z;
@@ -37,7 +37,7 @@ namespace Graphics
 				}
 			}
 
-			HR(device->CreateSamplerState(&_desc, m_SamplerState.ReleaseAndGetAddressOf()));
+			HR(device->CreateSamplerState(&_desc, m_SamplerState.ReleaseAndGetAddressOf()), "DX11Sampler instance Failed");
 		}
 
 		void DX11Sampler::SetName(const char* name)

@@ -1,14 +1,17 @@
 #pragma once
 
+#include "GraphicsModule/Core/Format.h"
+#include "Math/Math.h"
+
 namespace Graphics
 {
-	struct ModeDesc
+	/*struct ModeDesc
 	{
 		HWND hwnd;
 		UINT Width;
 		UINT Height;
 		DXGI_RATIONAL RefreshRate;
-		DXGI_FORMAT Format;
+		Format Format;
 		DXGI_MODE_SCANLINE_ORDER ScanlineOrdering;
 		DXGI_MODE_SCALING Scaling;
 	};
@@ -17,9 +20,9 @@ namespace Graphics
 	{
 		uint32 Count;
 		uint32 Quality;
-	};
+	};*/
 
-	struct SwapChainDesc
+	/*struct SwapChainDesc
 	{
 		ModeDesc _modeDesc;
 		SampleDesc _sampleDesc;
@@ -32,5 +35,20 @@ namespace Graphics
 
 		uint32 _samples = 1;
 		uint32 _swapBuffers = 2;
+	};*/
+
+	struct SwapChainDesc
+	{
+		bool _fullScreen = false;
+
+		Math::Vector2 _resolution;
+
+		uint32 _samples = 1;
+
+		uint32 _swapBuffers = 2;
+
+		uint32 _colorBit = 32;
+		uint32 _depthBit = 24;
+		uint32 _stencilBit = 8;
 	};
 }

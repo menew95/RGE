@@ -14,8 +14,5 @@ namespace Graphics
 		virtual void SetName(const char* name) abstract;
 
 		ResourceType GetResourceType() const override final;
-
-	private:
-
 	};
 }

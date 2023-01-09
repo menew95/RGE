@@ -1,5 +1,7 @@
 #pragma once
 
+#include "GraphicsModule/Utility/Helper.h"
+
 #include "GraphicsModule/Core/Device.h"
 #include "GraphicsModule/Core/DeviceContext.h"
 
@@ -21,47 +23,47 @@ namespace Graphics
 	class RenderSystem
 	{
 	public:
-		RenderSystem();
-		virtual ~RenderSystem();
+		RenderSystem() = default;
+		virtual ~RenderSystem() = default;
 
 		/* ----- SwapChain ----- */
-		virtual SwapChain* CreateSwapChain(const SwapChainDesc& desc) abstract;
+		virtual SwapChain* CreateSwapChain(uuid uuid, const SwapChainDesc& desc) abstract;
 		virtual void Release(SwapChain& swapChain) abstract;
 
 		/* ----- Command Buffer ----- */
-		virtual CommandBuffer* CreateCommandBuffer(const CommandBufferDesc& desc) abstract;
+		virtual CommandBuffer* CreateCommandBuffer(uuid uuid, const CommandBufferDesc& desc) abstract;
 		virtual void Release(CommandBuffer& commandBuffer) abstract;
 
 		/* ----- Buffer ----- */
-		virtual Buffer* CreateBuffer(const BufferDesc& desc, const void* initData = nullptr) abstract;
+		virtual Buffer* CreateBuffer(uuid uuid, const BufferDesc& desc, const void* initData = nullptr) abstract;
 		virtual void Release(Buffer& buffer) abstract;
 
 		/* ----- Textures ----- */
-		virtual Texture* CreateTexture(const TextureDesc& desc, const class SrcImageDesc* imageDesc = nullptr) abstract;
+		virtual Texture* CreateTexture(uuid uuid, const TextureDesc& desc, const struct ImageDesc* imageDesc = nullptr) abstract;
 		virtual void Release(Texture& texture) abstract;
 
 		/* ----- Samplers ---- */
-		virtual Sampler* CreateSampler(const SamplerDesc& desc) abstract;
+		virtual Sampler* CreateSampler(uuid uuid, const SamplerDesc& desc) abstract;
 		virtual void Release(Sampler& sampler) abstract;
 
 		/* ----- Render Passes ----- */
-		virtual RenderPass* CreateRenderPass(const RenderPassDesc& desc) abstract;
+		virtual RenderPass* CreateRenderPass(uuid uuid, const RenderPassDesc& desc) abstract;
 		virtual void Release(RenderPass& renderPass) abstract;
 
 		/* ----- Render Targets ----- */
-		virtual RenderTarget* CreateRenderTarget(const RenderTargetDesc& desc) abstract;
+		virtual RenderTarget* CreateRenderTarget(uuid uuid, const RenderTargetDesc& desc) abstract;
 		virtual void Release(RenderTarget& renderTarget) abstract;
 
 		/* ----- Shader ----- */
-		virtual Shader* CreateShader(const ShaderDesc& desc) abstract;
+		virtual Shader* CreateShader(uuid uuid, const ShaderDesc& desc) abstract;
 		virtual void Release(Shader& shader) abstract;
 
 		/* ----- Pipeline Layouts ----- */
-		virtual PipelineLayout* CreatePipelineLayout(const PipelineLayoutDesc& desc) abstract;
+		virtual PipelineLayout* CreatePipelineLayout(uuid uuid, const PipelineLayoutDesc& desc) abstract;
 		virtual void Release(PipelineLayout& pipelineLayout) abstract;
 
 		/* ----- Pipeline States ----- */
-		virtual PipelineState* CreatePipelineState(const GraphicsPipelineDesc& desc) abstract;
+		virtual PipelineState* CreatePipelineState(uuid uuid, const GraphicsPipelineDesc& desc) abstract;
 		virtual void Release(PipelineState& pipelineState) abstract;
 
 	};

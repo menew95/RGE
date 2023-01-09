@@ -7,8 +7,8 @@ namespace Graphics
 	class RenderPass
 	{
 	public:
-		RenderPass();
-		virtual ~RenderPass();
+		RenderPass() = default;
+		virtual ~RenderPass() = default;
 
 	private:
 	};

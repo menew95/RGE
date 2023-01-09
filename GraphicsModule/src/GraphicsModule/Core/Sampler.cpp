@@ -3,7 +3,7 @@
 
 namespace Graphics
 {
-	ResourceType GetResourceType()
+	ResourceType Sampler::GetResourceType() const
 	{
 		return ResourceType::Sampler;
 	}

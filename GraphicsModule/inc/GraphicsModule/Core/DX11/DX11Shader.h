@@ -8,6 +8,8 @@ namespace Graphics
 	{
 		class DX11Shader : public Shader
 		{
+		public:
+			DX11Shader(const ShaderDesc& desc);
 
 		};
 	}

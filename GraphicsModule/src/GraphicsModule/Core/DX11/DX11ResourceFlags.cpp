@@ -13,11 +13,11 @@ namespace Graphics
             flagsD3D |= D3D11_BIND_INDEX_BUFFER;
         if ((bindFlags & BindFlags::ConstantBuffer) != 0)
             flagsD3D |= D3D11_BIND_CONSTANT_BUFFER;
-        if ((bindFlags & BindFlags::StreamOutputBuffer) != 0)
+        if ((bindFlags & BindFlags::StreamOutput) != 0)
             flagsD3D |= D3D11_BIND_STREAM_OUTPUT;
-        if ((bindFlags & (BindFlags::Sampled | BindFlags::CopySrc)) != 0)
+        if ((bindFlags & BindFlags::ShaderResource) != 0)
             flagsD3D |= D3D11_BIND_SHADER_RESOURCE;
-        if ((bindFlags & (BindFlags::Storage | BindFlags::CopyDst)) != 0)
+        if ((bindFlags & BindFlags::UnorderedAccess) != 0)
             flagsD3D |= D3D11_BIND_UNORDERED_ACCESS;
 
         return flagsD3D;
@@ -27,14 +27,14 @@ namespace Graphics
     {
         uint32 flagsD3D = 0;
 
-        if ((desc._bindFlags & BindFlags::DepthStencilAttachment) != 0)
+        if ((desc._bindFlags & BindFlags::DepthStencil) != 0)
             flagsD3D |= D3D11_BIND_DEPTH_STENCIL;
-        else if ((desc._bindFlags & BindFlags::ColorAttachment) != 0)
+        else if ((desc._bindFlags & BindFlags::RenderTarget) != 0)
             flagsD3D |= D3D11_BIND_RENDER_TARGET;
 
-        if ((desc._bindFlags & (BindFlags::Sampled | BindFlags::CopySrc)) != 0)
+        if ((desc._bindFlags & BindFlags::ShaderResource) != 0)
             flagsD3D |= D3D11_BIND_SHADER_RESOURCE;
-        if ((desc._bindFlags & (BindFlags::Storage | BindFlags::CopyDst)) != 0)
+        if ((desc._bindFlags & BindFlags::UnorderedAccess) != 0)
             flagsD3D |= D3D11_BIND_UNORDERED_ACCESS;
 
         return flagsD3D;
@@ -42,7 +42,7 @@ namespace Graphics
 
     bool DXBindFlagsNeedBufferWithRV(long bindFlags)
     {
-        return ((bindFlags & (BindFlags::Sampled | BindFlags::Storage)) != 0);
+        return ((bindFlags & (BindFlags::ShaderResource | BindFlags::UnorderedAccess)) != 0);
     }
 
     uint32 DXGetCPUAccessFlagsForMiscFlags(long miscFlags)
@@ -67,20 +67,20 @@ namespace Graphics
         return flagsD3D;
     }
 
-    uint32 DXGetBufferMiscFlags(const BufferDesc& desc)
-    {
-        uint32 flagsD3D = 0;
+	uint32 DXGetBufferMiscFlags(const BufferDesc& desc)
+	{
+		uint32 flagsD3D = 0;
 
-        if ((desc._bindFlags & BindFlags::IndirectBuffer) != 0)
-            flagsD3D |= D3D11_RESOURCE_MISC_DRAWINDIRECT_ARGS;
+		/*if ((desc._bindFlags & BindFlags::IndirectBuffer) != 0)
+			flagsD3D |= D3D11_RESOURCE_MISC_DRAWINDIRECT_ARGS;*/
 
-        if (IsStructuredBuffer(desc))
-            flagsD3D |= D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
-        else if (IsByteAddressBuffer(desc))
-            flagsD3D |= D3D11_RESOURCE_MISC_BUFFER_ALLOW_RAW_VIEWS;
+		if (IsStructuredBuffer(desc))
+			flagsD3D |= D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+		else if (IsByteAddressBuffer(desc))
+			flagsD3D |= D3D11_RESOURCE_MISC_BUFFER_ALLOW_RAW_VIEWS;
 
-        return flagsD3D;
-    }
+		return flagsD3D;
+	}
 
     uint32 DXGetTextureMiscFlags(const TextureDesc& desc)
     {
@@ -88,8 +88,8 @@ namespace Graphics
 
         if (IsMipMappedTexture(desc))
         {
-            const long requiredFlags = BindFlags::ColorAttachment | BindFlags::Sampled;
-            const long disallowedFlags = BindFlags::DepthStencilAttachment;
+            const long requiredFlags = BindFlags::RenderTarget | BindFlags::ShaderResource;
+            const long disallowedFlags = BindFlags::DepthStencil;
             if ((desc._bindFlags & (requiredFlags | disallowedFlags)) == requiredFlags)
                 flagsD3D |= D3D11_RESOURCE_MISC_GENERATE_MIPS;
         }
@@ -102,7 +102,7 @@ namespace Graphics
 
     D3D11_USAGE DXGetBufferUsage(const BufferDesc& desc)
     {
-        if ((desc._bindFlags & BindFlags::Storage) == 0)
+        if ((desc._bindFlags & BindFlags::UnorderedAccess) == 0)
         {
             if ((desc._miscFlags & MiscFlags::DynamicUsage) != 0)
                 return D3D11_USAGE_DYNAMIC;

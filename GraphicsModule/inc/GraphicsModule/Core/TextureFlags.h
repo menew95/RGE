@@ -39,10 +39,17 @@ namespace Graphics
 		uint32 _numMipLevels = 0;
 	};
 
+	enum class FileFormat
+	{
+		DDS = 0,
+		TGA = 1,
+		HDR = 2,
+		WIC = 3,
+	};
+
 	struct ImageDesc
 	{
 		tstring _filePath;
-		FileFormat
 		void* _data;
 	};
 

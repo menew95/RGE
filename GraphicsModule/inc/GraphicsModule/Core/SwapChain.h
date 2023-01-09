@@ -19,9 +19,9 @@ namespace Graphics
 		SwapChain(IDXGIFactory* factory, SwapChainDesc& desc) {}
 		virtual ~SwapChain() {}
 
-		virtual void Present();
+		virtual void Present() abstract;
 
-		virtual void OnResize(Device*, uint32, uint32);
+		//virtual void OnResize(uint32, uint32) abstract;
 	};
 }
 #endif

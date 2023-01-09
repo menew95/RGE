@@ -8,7 +8,7 @@ namespace Graphics
 	class Texture : public Resource
 	{
 	public:
-		virtual ~Texture();
+		virtual ~Texture() = default;
 
 		ResourceType GetResourceType() const override;
 

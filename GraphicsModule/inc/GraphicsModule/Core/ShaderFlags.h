@@ -15,8 +15,30 @@ namespace Graphics
 		};
 	};
 
+	enum class ShaderType
+	{
+		Pixel		= 0,
+		Vertex		= 1,
+		Geometry	= 2,
+		Hull		= 3,
+		Domain		= 4,
+		Compute		= 5,
+	};
+
+	enum class ShaderSourceType
+	{
+		HLSL	= 0,
+		CSO		= 1,
+	};
+
 	struct ShaderDesc
 	{
+		ShaderType _shaderType;
+	};
 
+
+	struct ShaderProgramDesc
+	{
+		StageFlags _flags;
 	};
 }
