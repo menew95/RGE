@@ -19,8 +19,8 @@ namespace Graphics
 
 	struct DepthDesc
 	{
-		bool        testEnabled = false;
-		bool        writeEnabled = false;
+		bool        _depthEnabled = false;
+		bool        _writeEnabled = false;
 		CompareOp   compareOp = CompareOp::Less;
 	};
 
@@ -137,6 +137,10 @@ namespace Graphics
 		bool _alphaToCoverageEnable = false;
 		bool _independentBlendEnable = false;
 		BlendTargetDesc _renderTarget[8];
+
+		Math::Color _blendFactor;
+		uint32 _sampleMask = ~0u;
+		bool _blendFactorDynamic = false;
 	};
 
     enum class PrimitiveTopology
@@ -185,11 +189,23 @@ namespace Graphics
 		Patches32,
     };
 
+	class Shader;
+
+	struct ShaderProgram
+	{
+		Shader* _vertexShader	= nullptr;
+		Shader* _pixelShader	= nullptr;
+		Shader* _geometryShader	= nullptr;
+		Shader* _hullShader		= nullptr;
+		Shader* _domainShader	= nullptr;
+		Shader* _computeShader	= nullptr;
+	};
+
     struct GraphicsPipelineDesc
     {
         const class PipelineLayout* _pipelineLayout = nullptr;
 
-        const class ShaderProgram* _shaderProgram = nullptr;
+        ShaderProgram _shaderProgram;
 
         const class RenderPass* _renderPass = nullptr;
 

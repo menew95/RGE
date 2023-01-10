@@ -20,8 +20,54 @@ namespace Graphics
 			virtual void Bind(DX11StateManager& stateMngr);
 
 			void SetStaticViewportsAndScissors(DX11StateManager& stateManager);
+			
+		protected:
+
+			// Returns the primitive toplogy for the 'IASetPrimitiveTopology' function.
+			inline D3D11_PRIMITIVE_TOPOLOGY GetPrimitiveTopology() const
+			{
+				return m_PrimitiveTopology;
+			}
+			inline UINT GetStencilRef() const
+			{
+				return m_StencilRef;
+			}
+			inline bool IsStencilRefDynamic() const
+			{
+				return m_StencilRefDynamic;
+			}
+			inline const FLOAT* GetBlendFactor() const
+			{
+				return m_BlendFactor;
+			}
+			inline bool IsBlendFactorDynamic() const
+			{
+				return m_BlendFactorDynamic;
+			}
+
+			inline UINT GetSampleMask() const
+			{
+				return m_SampleMask;
+			}
+
 
 		private:
+			void GetDXDepthStencil(D3D11_DEPTH_STENCIL_DESC& desc, const DepthDesc& depthDesc, const StencilDesc stencilDesc);
+			void GetDXRasterizer(D3D11_RASTERIZER_DESC& desc, const RasterizerDesc& rasterizerDesc);
+			void GetDXBlend(D3D11_BLEND_DESC& desc, const BlendDesc& blendDesc);
+
+			void CreateDepthStencilState(ID3D11Device* device, const GraphicsPipelineDesc& pipelineDesc);
+
+			void CreateRasterizerState(ID3D11Device* device, const GraphicsPipelineDesc& pipelineDesc);
+
+			void CreateBlendState(ID3D11Device* device, const GraphicsPipelineDesc& pipelineDesc);
+
+			void GetShaderObjects(const ShaderProgram& shaderProgram);
+
+
+			ComPtr<ID3D11DepthStencilState> m_DepthStencilState;
+			ComPtr<ID3D11RasterizerState>   m_RasterizerState;
+			ComPtr<ID3D11BlendState>        m_BlendState;
 
 			ComPtr<ID3D11InputLayout>       m_InputLayout;
 
@@ -39,9 +85,8 @@ namespace Graphics
 			float                           m_BlendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 			uint32                          m_SampleMask = UINT_MAX;
 
-			std::unique_ptr<char[]>			m_StaticStateBuffer;
-			uint32							m_NumStaticViewports = 0;
-			uint32							m_NumStaticScissors = 0;
+			std::vector<Math::Viewport>		m_Viewports;
+			std::vector<Math::Scissor>		m_Scissors;
 
 		};
 	}
