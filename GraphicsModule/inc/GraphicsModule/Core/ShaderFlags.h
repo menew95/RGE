@@ -12,6 +12,12 @@ namespace Graphics
 			GS = (1 << 3),
 			PS = (1 << 4),
 			CS = (1 << 5),
+
+			AllTessStages = (HS | DS),
+
+			AllGraphicsStages = (VS | AllTessStages | GS | PS),
+
+			AllStages = (AllGraphicsStages | CS),
 		};
 	};
 

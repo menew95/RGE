@@ -22,8 +22,7 @@ namespace Graphics
 			void SetStaticViewportsAndScissors(DX11StateManager& stateManager);
 			
 		protected:
-
-			// Returns the primitive toplogy for the 'IASetPrimitiveTopology' function.
+			
 			inline D3D11_PRIMITIVE_TOPOLOGY GetPrimitiveTopology() const
 			{
 				return m_PrimitiveTopology;

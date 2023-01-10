@@ -11,6 +11,7 @@ namespace Graphics
         WriteDiscard,
         ReadWrite,
     };
+
 	inline bool HasReadAccess(const CPUAccess access)
 	{
 		return (access == CPUAccess::ReadOnly || access == CPUAccess::ReadWrite);

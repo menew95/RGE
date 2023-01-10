@@ -11,9 +11,6 @@ struct ID3D11DepthStencilView;
 
 namespace Graphics
 {
-	class Buffer;
-	class Texture;
-	class Sampler;
 
 	namespace DX11
 	{
@@ -31,23 +28,14 @@ namespace Graphics
 
 			void Begin() override;
 			void End() override;
-
 			void Execute(CommandBuffer& deferredCommandBuffer) override;
 
-			void UpdateBuffer(
-				Buffer& dstBuffer,
-				uint32   dstOffset,
-				const void* data,
-				uint32   dataSize
-			) override;
+			/* ----- Buffer ----- */
+			void UpdateBuffer(Buffer& destBuffer, uint32 destBufferOffset, const void* data, uint32 dataSize) override;
 
+			void CopyBuffer(Buffer& dstBuffer, uint32 dstOffset, Buffer& srcBuffer, uint32 srcOffset, uint32 size) override;
 
-			void Draw(uint32 numVertices, uint32 firstVertex) override;
-			void DrawIndexed(uint32 numIndices, uint32 firstIndex, uint32 offset = 0) override;
-			void DrawInstanced(uint32 numVertices, uint32 firstVertex, uint32 numInstances, uint32 firstInstance) override;
-			void DrawIndexedInstanced(uint32 numVertices, uint32 firstVertex, uint32 numInstances, uint32 vertexOffset, uint32 firstInstance) override;
-
-			void SetBuffer() override;
+			/* ----- Viewport and Scissor ----- */
 
 			void SetViewport(const Math::Viewport& viewport) override;
 			void SetViewports(uint32 numViewports, const Math::Viewport* viewport) override;
@@ -55,16 +43,50 @@ namespace Graphics
 			void SetScissor(const Math::Scissor& scissor) override;
 			void SetScissors(uint32 numScissors, const Math::Scissor* scissors) override;
 
-			void SetPipelineState(PipelineState&) override;
+			/* ----- Input Assembly ------ */
 
 			void SetVertexBuffer(Buffer& buffer) override;
 
 			void SetIndexBuffer(Buffer& buffer) override;
 
+			/* ----- Resources ----- */
+
+			void SetResource(Resource& resource, uint32 slot, long bindFlags, long stageFlags = StageFlags::AllStages) override;
+
+			void ResetResourceSlots(const ResourceType  resourceType, uint32 firstSlot, uint32 numSlots, long bindFlags, long stageFlags = StageFlags::AllStages) override;
+
+			/* ----- Render Passes ----- */
+
+			void BeginRenderPass(
+				const RenderPass* renderPass,
+				uint32       numClearValues,
+				const ClearValue* clearValues
+			) override;
+
+			void EndRenderPass() override;
+
+			void Clear(long flags, const ClearValue& clearValue = {}) override;
+			void ClearAttachments(uint32 numAttachments, const AttachmentClear* attachments) override;
+
+			/* ----- Pipeline States ----- */
+
+			void SetPipelineState(PipelineState& pipelineState) override;
+
+			/* ----- Drawing ----- */
+
+			void Draw(uint32 numVertices, uint32 firstVertex) override;
+			void DrawIndexed(uint32 numIndices, uint32 firstIndex, uint32 offset = 0) override;
+			void DrawInstanced(uint32 numVertices, uint32 firstVertex, uint32 numInstances, uint32 firstInstance = 0) override;
+			void DrawIndexedInstanced(uint32 numVertices, uint32 firstVertex, uint32 numInstances, uint32 vertexOffset, uint32 firstInstance = 0) override;
+
+			/* ----- Compute ----- */
+
+			void Dispatch(uint32 numWorkGroupsX, uint32 numWorkGroupsY, uint32 numWorkGroupsZ) override;
+
 		private:
-			void SetBuffer(Buffer* buffer, uint32 slot, uint32 bindFlags, uint32 stageFlags);
-			void SetTexture(Texture* texture, uint32 slot, uint32 bindFlags, uint32 stageFlags);
-			void SetSampler(Sampler* sampler, uint32 slot, uint32 stageFlags);
+			void SetBuffer(Buffer& buffer, uint32 slot, uint32 bindFlags, uint32 stageFlags);
+			void SetTexture(Texture& texture, uint32 slot, uint32 bindFlags, uint32 stageFlags);
+			void SetSampler(Sampler& sampler, uint32 slot, uint32 stageFlags);
 
 			ID3D11Device* m_Device = nullptr;
 			ComPtr<ID3D11DeviceContext>         m_Context;

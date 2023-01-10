@@ -27,10 +27,67 @@ namespace Graphics
 			, _stencil { stencil }
 		{}
 
-		Math::Color _color = { 0.f, 0.f, 0.f };
+		Math::Color _color = { 0.f, 0.f, 0.f, 0.f };
 		float _depth = 1.0f;
 		uint32 _stencil = 0;
 	};
+
+	struct ClearFlags
+	{
+		enum
+		{
+			Color = (1 << 0),
+			Depth = (1 << 1),
+			Stencil = (1 << 2),
+
+			ColorDepth = (Color | Depth),
+			DepthStencil = (Depth | Stencil),
+			All = (Color | Depth | Stencil),
+		};
+	};
+
+    struct AttachmentClear
+    {
+        AttachmentClear() = default;
+        AttachmentClear(const AttachmentClear&) = default;
+        AttachmentClear& operator = (const AttachmentClear&) = default;
+
+        //! Constructor for a color attachment clear command.
+        inline AttachmentClear(const Math::Color& color, uint32 colorAttachment) :
+            _flags{ ClearFlags::Color },
+            _colorAttachment{ colorAttachment }
+        {
+            _clearValue._color = color;
+        }
+
+        //! Constructor for a depth attachment clear command.
+        inline AttachmentClear(float depth) :
+            _flags{ ClearFlags::Depth }
+        {
+            _clearValue._depth = depth;
+        }
+
+        //! Constructor for a stencil attachment clear command.
+        inline AttachmentClear(uint32 stencil) :
+            _flags{ ClearFlags::Stencil }
+        {
+            _clearValue._stencil = stencil;
+        }
+
+        //! Constructor for a depth-stencil attachment clear command.
+        inline AttachmentClear(float depth, uint32 stencil) :
+            _flags{ ClearFlags::DepthStencil }
+        {
+			_clearValue._depth = depth;
+			_clearValue._stencil = stencil;
+        }
+
+        long _flags = 0;
+
+        uint32 _colorAttachment = 0;
+
+        ClearValue _clearValue;
+    };
 
 	struct CommandBufferFlags
 	{
@@ -51,19 +108,19 @@ namespace Graphics
 
         //! Constructs the command buffer descriptor with the specified flags.
         inline CommandBufferDesc(long flags) :
-            flags{ flags }
+            _flags{ flags }
         {
         }
 
         //! Constructs the command buffer descriptor with the specified flags and number of native buffers.
-        inline CommandBufferDesc(long flags, std::uint32_t numNativeBuffers) :
-            flags{ flags },
-            numNativeBuffers{ numNativeBuffers }
+        inline CommandBufferDesc(long flags, uint32 numNativeBuffers) :
+            _flags{ flags },
+            _numNativeBuffers{ numNativeBuffers }
         {
         }
 
-        long            flags = 0;
-        std::uint32_t   numNativeBuffers = 2;
+        long _flags = 0;
+        uint32 _numNativeBuffers = 2;
     };
 
 }

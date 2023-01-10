@@ -45,8 +45,8 @@ namespace Graphics
 			DX11Shader(ID3D11Device* device, const ShaderDesc& desc);
 
 			inline const DX11NativeShader& GetNativeShader() const { return m_NativeShader; }
-
-			inline const ID3D11InputLayout* GetInputLayout() const { return m_InputLayout.Get(); }
+			inline const ID3DBlob* GetBlob() const { return m_Blob.Get(); }
+			inline const ComPtr<ID3D11InputLayout>& GetInputLayout() const { return m_InputLayout; }
 
 			void SetName(const char* name) override {};
 		private:
