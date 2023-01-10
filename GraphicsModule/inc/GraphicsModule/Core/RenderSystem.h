@@ -2,14 +2,12 @@
 
 #include "GraphicsModule/Utility/Helper.h"
 
-#include "GraphicsModule/Core/Device.h"
-#include "GraphicsModule/Core/DeviceContext.h"
-
 #include "GraphicsModule/Core/Buffer.h"
 #include "GraphicsModule/Core/Texture.h"
 #include "GraphicsModule/Core/Sampler.h"
 #include "GraphicsModule/Core/CommandBuffer.h"
 #include "GraphicsModule/Core/ResourceFlags.h"
+#include "GraphicsModule/Core/RenderSystemFlags.h"
 
 #include "GraphicsModule/Core/Shader.h"
 #include "GraphicsModule/Core/SwapChain.h"
@@ -40,9 +38,19 @@ namespace Graphics
 		virtual Buffer* CreateBuffer(uuid uuid, const BufferDesc& desc, const void* initData = nullptr) abstract;
 		virtual void Release(Buffer& buffer) abstract;
 
+		virtual void WriteBuffer(Buffer& buffer, const void* data, uint32 dataSize, uint32 offset) abstract;
+		virtual void ReadBuffer(Buffer& buffer, void* data, uint32 dataSize, uint32 offset) abstract;
+
+		virtual void* MapBuffer(Buffer& buffer, const CPUAccess access) abstract;
+		virtual void* MapBuffer(Buffer& buffer, const CPUAccess access, uint32 offset, uint32 length) abstract;
+		virtual void UnmapBuffer(Buffer& buffer) abstract;
+
 		/* ----- Textures ----- */
 		virtual Texture* CreateTexture(uuid uuid, const TextureDesc& desc, const struct ImageDesc* imageDesc = nullptr) abstract;
 		virtual void Release(Texture& texture) abstract;
+
+		virtual void WriteTexture(Texture& texture) abstract;
+		virtual void ReadTexture(Texture& texture) abstract;
 
 		/* ----- Samplers ---- */
 		virtual Sampler* CreateSampler(uuid uuid, const SamplerDesc& desc) abstract;

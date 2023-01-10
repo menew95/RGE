@@ -44,6 +44,51 @@ namespace Graphics
 			RemoveFromUniqueUnorderedMap(m_SwapChainContainer, &swapChain);
 		}
 
+		void DX11RenderSystem::WriteBuffer(Buffer& buffer, const void* data, uint32 dataSize, uint32 offset)
+		{
+			DX11Buffer& _castBuffer = reinterpret_cast<DX11Buffer&>(buffer);
+
+			_castBuffer.UpdateSubresource(m_Context.Get(), data, dataSize, offset);
+		}
+
+		void DX11RenderSystem::ReadBuffer(Buffer& buffer, void* data, uint32 dataSize, uint32 offset)
+		{
+			DX11Buffer& _castBuffer = reinterpret_cast<DX11Buffer&>(buffer);
+
+			_castBuffer.ReadSubresource(m_Context.Get(), data, dataSize, offset);
+		}
+
+		void* DX11RenderSystem::MapBuffer(Buffer& buffer, const CPUAccess access)
+		{
+			DX11Buffer& _castBuffer = reinterpret_cast<DX11Buffer&>(buffer);
+
+			return _castBuffer.Map(m_Context.Get(), access, 0, 0);
+		}
+
+		void* DX11RenderSystem::MapBuffer(Buffer& buffer, const CPUAccess access, uint32 offset, uint32 length)
+		{
+			DX11Buffer& _castBuffer = reinterpret_cast<DX11Buffer&>(buffer);
+
+			return _castBuffer.Map(m_Context.Get(), access, offset, length);
+		}
+
+		void DX11RenderSystem::UnmapBuffer(Buffer& buffer)
+		{
+			DX11Buffer& _castBuffer = reinterpret_cast<DX11Buffer&>(buffer);
+
+			_castBuffer.Unmap(m_Context.Get());
+		}
+
+		void DX11RenderSystem::WriteTexture(Texture& texture)
+		{
+			assert(false);
+		}
+
+		void DX11RenderSystem::ReadTexture(Texture& texture)
+		{
+			assert(false);
+		}
+
 		CommandBuffer* DX11RenderSystem::CreateCommandBuffer(uuid uuid, const CommandBufferDesc& desc)
 		{
 			return TakeOwnership(m_CommandBufferContainer, uuid, MakeUnique<DX11CommandBuffer>(m_Device.Get(), m_Context, m_StateManager, desc));;

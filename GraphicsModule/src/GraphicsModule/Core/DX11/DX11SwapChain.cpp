@@ -2,7 +2,6 @@
 #include "GraphicsModule/Window.h"
 #include "GraphicsModule/Core/DX11/DX11SwapChain.h"
 #include "GraphicsModule/Core/DX11/Direct3D11.h"
-#include "GraphicsModule/Core/DX11/DX11Device.h"
 #include "GraphicsModule/Core/DX11/DX11RenderSystem.h"
 
 namespace Graphics
@@ -28,7 +27,7 @@ namespace Graphics
 			HR(m_Underlying->Present(0, 0), "SwapChain present failed");
 		}
 
-		void DX11SwapChain::ResizeBuffer(DX11Device* device, uint32 width, uint32 height)
+		void DX11SwapChain::ResizeBuffer(ID3D11Device* device, uint32 width, uint32 height)
 		{
 			assert(m_Underlying);
 
@@ -38,7 +37,7 @@ namespace Graphics
 
 			if (m_BackBuffer != nullptr)
 			{
-				device->GetUnderlying()->CreateRenderTargetView(m_BackBuffer.Get(), 0, m_RenderTargetView.ReleaseAndGetAddressOf());
+				device->CreateRenderTargetView(m_BackBuffer.Get(), 0, m_RenderTargetView.ReleaseAndGetAddressOf());
 			}
 		}
 

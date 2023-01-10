@@ -19,22 +19,22 @@ namespace Graphics
 			DX11Buffer(ID3D11Device* device, const BufferDesc& desc, const void* initData);
 			~DX11Buffer() override;
 
-			void UpdateSubresource(ID3D11DeviceContext* context, const void* data, UINT dataSize, UINT offset);
-			void ReadSubresource(ID3D11DeviceContext* context, void* data, UINT dataSize, UINT offset);
+			void UpdateSubresource(ID3D11DeviceContext* context, const void* data, uint32 dataSize, uint32 offset);
+			void ReadSubresource(ID3D11DeviceContext* context, void* data, uint32 dataSize, uint32 offset);
 
-			void* Map(ID3D11DeviceContext* context, const CPUAccess access, UINT offset, UINT size);
+			void* Map(ID3D11DeviceContext* context, const CPUAccess access, uint32 offset, uint32 size);
 			void Unmap(ID3D11DeviceContext* context);
 
 			
 			inline ID3D11Buffer* GetBuffer() const { return m_Buffer.Get(); }
 			inline ID3D11Buffer* const* GetBufferRef() const { return m_Buffer.GetAddressOf(); }
 
-			inline UINT GetSize() const
+			inline uint32 GetSize() const
 			{
 				return m_Size;
 			}
 
-			inline UINT GetStride() const
+			inline uint32 GetStride() const
 			{
 				return m_Stride;
 			}

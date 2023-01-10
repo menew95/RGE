@@ -25,7 +25,7 @@ namespace Graphics
 
 		}
 
-		void DX11Buffer::UpdateSubresource(ID3D11DeviceContext* context, const void* data, UINT dataSize, UINT offset)
+		void DX11Buffer::UpdateSubresource(ID3D11DeviceContext* context, const void* data, uint32 dataSize, uint32 offset)
 		{
 			if (GetDXUsage() == D3D11_USAGE_DYNAMIC)
 			{
@@ -59,7 +59,7 @@ namespace Graphics
 		}
 
 
-		void DX11Buffer::ReadSubresource(ID3D11DeviceContext* context, void* data, UINT dataSize, UINT offset)
+		void DX11Buffer::ReadSubresource(ID3D11DeviceContext* context, void* data, uint32 dataSize, uint32 offset)
 		{
 			// Todo :: 리소스를 읽어 오는 부분 필요
 			D3D11_MAPPED_SUBRESOURCE _subResouce;
@@ -75,7 +75,7 @@ namespace Graphics
 				return D3D11_MAP_READ;
 		}
 
-		void* DX11Buffer::Map(ID3D11DeviceContext* context, const CPUAccess access, UINT offset, UINT size)
+		void* DX11Buffer::Map(ID3D11DeviceContext* context, const CPUAccess access, uint32 offset, uint32 size)
 		{
 			HRESULT hr = 0;
 			D3D11_MAPPED_SUBRESOURCE _mappedSubresource;

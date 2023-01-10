@@ -39,7 +39,7 @@ namespace Graphics
 			UnderlyingType* GetUnderlyingAddress() { return m_Underlying.GetAddressOf(); }
 
 		private:
-			void ResizeBuffer(DX11Device*, uint32, uint32);
+			void ResizeBuffer(ID3D11Device*, uint32, uint32);
 
 			// Create SwapChain
 			void CreateSwapChain(IDXGIFactory* factory, ID3D11Device* device, const SwapChainDesc& desc);

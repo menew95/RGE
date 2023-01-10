@@ -32,9 +32,19 @@ namespace Graphics
 			Buffer* CreateBuffer(uuid uuid, const BufferDesc& desc, const void* initData = nullptr) override;
 			void Release(Buffer& buffer) override;
 
+			void WriteBuffer(Buffer& buffer, const void* data, uint32 dataSize, uint32 offset) override;
+			void ReadBuffer(Buffer& buffer, void* data, uint32 dataSize, uint32 offset) override;
+
+			void* MapBuffer(Buffer& buffer, const CPUAccess access) override;
+			void* MapBuffer(Buffer& buffer, const CPUAccess access, uint32 offset, uint32 length) override;
+			void UnmapBuffer(Buffer& buffer) override;
+
 			/* ----- Textures ----- */
 			Texture* CreateTexture(uuid uuid, const TextureDesc& desc, const struct ImageDesc* imageDesc = nullptr) override;
 			void Release(Texture& texture) override;
+
+			void WriteTexture(Texture& texture) override;
+			void ReadTexture(Texture& texture) override;
 
 			/* ----- Samplers ---- */
 			Sampler* CreateSampler(uuid uuid, const SamplerDesc& desc) override;

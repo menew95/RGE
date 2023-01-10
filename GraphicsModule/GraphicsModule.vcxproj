@@ -199,7 +199,6 @@ xcopy /E /S /Y /R "$(OutputPath)*.pdb" "$(OutputPath)..\Client\*"</Command>
     <ClInclude Include="inc\GraphicsModule\Core\CommandBufferFlags.h" />
     <ClInclude Include="inc\GraphicsModule\Core\Common\ComPtr.h" />
     <ClInclude Include="inc\GraphicsModule\Core\Common\DXHelper.h" />
-    <ClInclude Include="inc\GraphicsModule\Core\DeviceContextFlag.h" />
     <ClInclude Include="inc\GraphicsModule\Core\DirectXTex\DirectXTex.h" />
     <ClInclude Include="inc\GraphicsModule\Core\DX11\DX11Buffer.h" />
     <ClInclude Include="inc\GraphicsModule\Core\DX11\DX11CommandBuffer.h" />
@@ -215,15 +214,10 @@ xcopy /E /S /Y /R "$(OutputPath)*.pdb" "$(OutputPath)..\Client\*"</Command>
     <ClInclude Include="inc\GraphicsModule\Core\DX11\DX11Texture.h" />
     <ClInclude Include="inc\GraphicsModule\Core\DX11\DX11Type.h" />
     <ClInclude Include="inc\GraphicsModule\Core\DX11\DX11Utilitys.h" />
-    <ClInclude Include="inc\GraphicsModule\Core\DXGI\Adapter.h" />
     <ClInclude Include="inc\GraphicsModule\Core\BufferFlags.h" />
-    <ClInclude Include="inc\GraphicsModule\Core\DeviceFlag.h" />
     <ClInclude Include="inc\GraphicsModule\Core\DX11\Direct3D11.h" />
-    <ClInclude Include="inc\GraphicsModule\Core\DX11\DX11Device.h" />
-    <ClInclude Include="inc\GraphicsModule\Core\DX11\DX11DeviceContext.h" />
     <ClInclude Include="inc\GraphicsModule\Core\DX11\DX11RenderSystem.h" />
     <ClInclude Include="inc\GraphicsModule\Core\DX11\DX11SwapChain.h" />
-    <ClInclude Include="inc\GraphicsModule\Core\DXGI\Factory.h" />
     <ClInclude Include="inc\GraphicsModule\Core\Format.h" />
     <ClInclude Include="inc\GraphicsModule\Core\ImageFlags.h" />
     <ClInclude Include="inc\GraphicsModule\Core\PipelineLayout.h" />
@@ -247,8 +241,6 @@ xcopy /E /S /Y /R "$(OutputPath)*.pdb" "$(OutputPath)..\Client\*"</Command>
     <ClInclude Include="inc\GraphicsModule\Core\Texture.h" />
     <ClInclude Include="inc\GraphicsModule\Core\TextureFlags.h" />
     <ClInclude Include="inc\GraphicsModule\Core\Buffer.h" />
-    <ClInclude Include="inc\GraphicsModule\Core\Device.h" />
-    <ClInclude Include="inc\GraphicsModule\Core\DeviceContext.h" />
     <ClInclude Include="inc\GraphicsModule\Core\RenderSystem.h" />
     <ClInclude Include="inc\GraphicsModule\Core\ResourceView.h" />
     <ClInclude Include="inc\GraphicsModule\Core\SwapChain.h" />
@@ -265,8 +257,6 @@ xcopy /E /S /Y /R "$(OutputPath)*.pdb" "$(OutputPath)..\Client\*"</Command>
     <ClCompile Include="src\GraphicsModule\Core\Common\DXHelper.cpp" />
     <ClCompile Include="src\GraphicsModule\Core\DX11\DX11Buffer.cpp" />
     <ClCompile Include="src\GraphicsModule\Core\DX11\DX11CommandBuffer.cpp" />
-    <ClCompile Include="src\GraphicsModule\Core\DX11\DX11Device.cpp" />
-    <ClCompile Include="src\GraphicsModule\Core\DX11\DX11DeviceContext.cpp" />
     <ClCompile Include="src\GraphicsModule\Core\DX11\DX11PipelineLayout.cpp" />
     <ClCompile Include="src\GraphicsModule\Core\DX11\DX11PipelineState.cpp" />
     <ClCompile Include="src\GraphicsModule\Core\DX11\DX11RenderSystem.cpp" />
