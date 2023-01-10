@@ -74,21 +74,33 @@
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(ProjectDir)src;$(ProjectDir)inc;$(SolutionDir)Common\inc;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <SourcePath>$(ProjectDir)src;$(VC_SourcePath);</SourcePath>
+    <OutDir>$(SolutionDir)_build\$(Configuration)\$(Platform)\$(ProjectName)\</OutDir>
+    <IntDir>$(SolutionDir)_build\_int\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
+    <TargetName>$(ProjectName)_$(Configuration)_$(Platform)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(ProjectDir)src;$(ProjectDir)inc;$(SolutionDir)Common\inc;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <SourcePath>$(ProjectDir)src;$(VC_SourcePath);</SourcePath>
+    <OutDir>$(SolutionDir)_build\$(Configuration)\$(Platform)\$(ProjectName)\</OutDir>
+    <IntDir>$(SolutionDir)_build\_int\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
+    <TargetName>$(ProjectName)_$(Configuration)_$(Platform)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(ProjectDir)src;$(ProjectDir)inc;$(SolutionDir)Common\inc;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <SourcePath>$(ProjectDir)src;$(VC_SourcePath);</SourcePath>
+    <OutDir>$(SolutionDir)_build\$(Configuration)\$(Platform)\$(ProjectName)\</OutDir>
+    <IntDir>$(SolutionDir)_build\_int\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
+    <TargetName>$(ProjectName)_$(Configuration)_$(Platform)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(ProjectDir)src;$(ProjectDir)inc;$(SolutionDir)Common\inc;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <SourcePath>$(ProjectDir)src;$(VC_SourcePath);</SourcePath>
+    <OutDir>$(SolutionDir)_build\$(Configuration)\$(Platform)\$(ProjectName)\</OutDir>
+    <IntDir>$(SolutionDir)_build\_int\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
+    <TargetName>$(ProjectName)_$(Configuration)_$(Platform)</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -105,6 +117,11 @@
       <EnableUAC>false</EnableUAC>
       <AdditionalLibraryDirectories>$(ProjectDir)lib\$(Configuration)</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /E /S /Y /R "$(OutDir)*.dll" "$(OutputPath)..\Client\*"
+xcopy /E /S /Y /R "$(OuDir)*.pdb" "$(OutputPath)..\Client\*"
+xcopy /E /S /Y /R "$(ProjectDir)\lib\$(Configuration)\*.dll" "$(OutputPath)..\Client\*"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -125,6 +142,11 @@
       <EnableUAC>false</EnableUAC>
       <AdditionalLibraryDirectories>$(ProjectDir)lib\$(Configuration)</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /E /S /Y /R "$(OutDir)*.dll" "$(OutputPath)..\Client\*"
+xcopy /E /S /Y /R "$(OuDir)*.pdb" "$(OutputPath)..\Client\*"
+xcopy /E /S /Y /R "$(ProjectDir)\lib\$(Configuration)\*.dll" "$(OutputPath)..\Client\*"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -141,6 +163,11 @@
       <EnableUAC>false</EnableUAC>
       <AdditionalLibraryDirectories>$(ProjectDir)lib\$(Configuration)</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /E /S /Y /R "$(OutDir)*.dll" "$(OutputPath)..\Client\*"
+xcopy /E /S /Y /R "$(OuDir)*.pdb" "$(OutputPath)..\Client\*"
+xcopy /E /S /Y /R "$(ProjectDir)\lib\$(Configuration)\*.dll" "$(OutputPath)..\Client\*"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -161,6 +188,11 @@
       <EnableUAC>false</EnableUAC>
       <AdditionalLibraryDirectories>$(ProjectDir)lib\$(Configuration)</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /E /S /Y /R "$(OutDir)*.dll" "$(OutputPath)..\Client\*"
+xcopy /E /S /Y /R "$(OuDir)*.pdb" "$(OutputPath)..\Client\*"
+xcopy /E /S /Y /R "$(ProjectDir)\lib\$(Configuration)\*.dll" "$(OutputPath)..\Client\*"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="inc\PhysicsModule\IPhysicsImpl.h" />

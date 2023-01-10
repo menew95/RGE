@@ -9,4 +9,41 @@
 
 #include "Common.h"
 
+#ifdef GRAPHICS_EXPORT
+#ifndef GRAPHICS_DLL_DECLSPEC
+#define GRAPHICS_DLL_DECLSPEC dll_export
+#endif
+#else
+#ifndef GRAPHICS_DLL_DECLSPEC
+#define GRAPHICS_DLL_DECLSPEC dll_import
+#endif
+#endif
+
+#if defined(DEBUG) | defined(_DEBUG)
+#ifndef HR
+#define HR(x, msg)									\
+	{									\
+		HRESULT hr = (x);						\
+		if(FAILED(hr))							\
+		{								\
+			LPWSTR output;                                    	\
+			FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM |		\
+				FORMAT_MESSAGE_IGNORE_INSERTS 	 |		\
+				FORMAT_MESSAGE_ALLOCATE_BUFFER,			\
+				NULL,						\
+				hr,						\
+				MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),	\
+				(LPTSTR) &output,				\
+				0,						\
+				NULL);					        \
+			MessageBox(NULL, output, TEXT(msg), MB_OK);		\
+		}								\
+	}
+#endif
+#else
+#ifndef HR
+#define HR(x, msg) (x)
+#endif
+#endif 
+
 #endif //PCH_H
