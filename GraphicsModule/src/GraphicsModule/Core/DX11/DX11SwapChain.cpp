@@ -44,8 +44,7 @@ namespace Graphics
 
 		void DX11SwapChain::CreateSwapChain(IDXGIFactory* factory, ID3D11Device* device, const SwapChainDesc& desc)
 		{
-			/* Pick and store color format */
-			m_BackBufferFormat = DXGI_FORMAT_R8G8B8A8_UNORM;//DXGI_FORMAT_B8G8R8A8_UNORM
+			m_BackBufferFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
 
 			DXGI_SAMPLE_DESC swapChainSampleDesc_ = DX11RenderSystem::FindSuitableSampleDesc(device, DXGI_FORMAT_R8G8B8A8_UNORM, desc._samples);
 
@@ -79,7 +78,6 @@ namespace Graphics
 
 			if (m_DepthBufferFormat != DXGI_FORMAT_UNKNOWN)
 			{
-				/* Create depth stencil texture */
 				D3D11_TEXTURE2D_DESC _texDesc;
 				{
 					_texDesc.Width = _backBufferDesc.Width;

@@ -47,6 +47,8 @@ namespace Graphics
 			void DrawInstanced(uint32 numVertices, uint32 firstVertex, uint32 numInstances, uint32 firstInstance) override;
 			void DrawIndexedInstanced(uint32 numVertices, uint32 firstVertex, uint32 numInstances, uint32 vertexOffset, uint32 firstInstance) override;
 
+			void SetBuffer() override;
+
 			void SetViewport(const Math::Viewport& viewport) override;
 			void SetViewports(uint32 numViewports, const Math::Viewport* viewport) override;
 

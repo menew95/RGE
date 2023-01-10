@@ -23,6 +23,7 @@ namespace Graphics
 		Hull		= 3,
 		Domain		= 4,
 		Compute		= 5,
+		Reserved0	= 0xFFF0,
 	};
 
 	enum class ShaderSourceType
@@ -31,9 +32,37 @@ namespace Graphics
 		CSO		= 1,
 	};
 
+	struct ShaderMacro
+	{
+		ShaderMacro() = default;
+		ShaderMacro(const ShaderMacro&) = default;
+		ShaderMacro& operator = (const ShaderMacro&) = default;
+
+		inline ShaderMacro(const char* name, const char* definition = nullptr) :
+			name{ name },
+			definition{ definition }
+		{
+		}
+
+		const char* name = nullptr;
+
+		const char* definition = nullptr;
+	};
+
 	struct ShaderDesc
 	{
 		ShaderType _shaderType;
+		ShaderSourceType _sourceType;
+
+		tstring _filePath;
+		uint32 _sourceSize;
+
+		const char* _entryPoint = nullptr;
+		const char* _profile = nullptr;
+
+		const ShaderMacro* defines = nullptr;
+
+		uint32 _flags = 0;
 	};
 
 

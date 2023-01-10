@@ -36,3 +36,42 @@ using uuid = tstring;
 using Layer = uint32;
 
 #endif
+
+struct Extend2D
+{
+	Extend2D()
+		: _width(0)
+		, _height(0)
+	{}
+
+	Extend2D(const Extend2D&) = default;
+
+	inline Extend2D(uint32 width, uint32 height)
+		: _width(width)
+		, _height(height)
+	{}
+
+	uint32 _width;
+	uint32 _height;
+};
+
+struct Extend3D
+{
+	Extend3D()
+		: _width(0)
+		, _height(0)
+		, _depth(0)
+	{}
+
+	Extend3D(const Extend3D&) = default;
+
+	inline Extend3D(uint32 width, uint32 height, uint32 depth)
+		: _width(width)
+		, _height(height)
+		, _depth(depth)
+	{}
+
+	uint32 _width;
+	uint32 _height;
+	uint32 _depth;
+};

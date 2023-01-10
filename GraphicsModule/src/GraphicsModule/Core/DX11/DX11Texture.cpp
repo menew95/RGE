@@ -43,7 +43,7 @@ namespace Graphics
 		{
 			D3D11_TEXTURE1D_DESC _desc = { 0 };
 
-			_desc.Width = (UINT)desc._extend.x;
+			_desc.Width = desc._extend._width;
 			_desc.MipLevels = desc._mipLevels;
 			_desc.ArraySize = desc._arrayLayers;
 			_desc.Format = MapFormat(desc._format);
@@ -59,8 +59,8 @@ namespace Graphics
 		{
 			D3D11_TEXTURE2D_DESC _desc = { 0 };
 
-			_desc.Width = (UINT)desc._extend.x;
-			_desc.Height = (UINT)desc._extend.y;
+			_desc.Width = desc._extend._width;
+			_desc.Height = desc._extend._height;
 			_desc.MipLevels = desc._mipLevels;
 			_desc.ArraySize = desc._arrayLayers;
 			_desc.Format = MapFormat(desc._format);
@@ -78,9 +78,9 @@ namespace Graphics
 		{
 			D3D11_TEXTURE3D_DESC _desc = { 0 };
 
-			_desc.Width = (UINT)desc._extend.x;
-			_desc.Height = (UINT)desc._extend.y;
-			_desc.Depth = (UINT)desc._extend.z;
+			_desc.Width = desc._extend._width;
+			_desc.Height = desc._extend._height;
+			_desc.Depth = desc._extend._depth;
 			_desc.MipLevels = desc._mipLevels;
 			_desc.Format = MapFormat(desc._format);
 			_desc.Usage = D3D11_USAGE_DEFAULT;
@@ -299,7 +299,7 @@ namespace Graphics
 			, "failed to load shader-resource-view");
 
 			m_TextureDesc._format = UnmapFormat(textureDesc.Format);
-			m_TextureDesc._extend = { (float)textureDesc.Width, (float)textureDesc.Height, 0.f };
+			m_TextureDesc._extend = { textureDesc.Width, textureDesc.Height, 0 };
 			m_TextureDesc._mipLevels = textureDesc.MipLevels;
 			m_TextureDesc._bindFlags = textureDesc.BindFlags;
 

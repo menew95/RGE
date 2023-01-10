@@ -2,6 +2,7 @@
 
 #include "GraphicsModule/Core/DX11/DX11RenderSystem.h"
 
+#include "GraphicsModule/Core/DX11/DX11StateManager.h"
 #include "GraphicsModule/Core/DX11/DX11SwapChain.h"
 #include "GraphicsModule/Core/DX11/DX11CommandBuffer.h"
 #include "GraphicsModule/Core/DX11/DX11Buffer.h"
@@ -20,7 +21,10 @@ namespace Graphics
 
 		DX11RenderSystem::DX11RenderSystem()
 		{
-
+			CreateFactory();
+			QueryVideoAdapters();
+			CreateDevice(nullptr);
+			CreateStateManager();
 		}
 
 		DX11RenderSystem::~DX11RenderSystem()
@@ -42,14 +46,12 @@ namespace Graphics
 
 		CommandBuffer* DX11RenderSystem::CreateCommandBuffer(uuid uuid, const CommandBufferDesc& desc)
 		{
-			DX11CommandBuffer* _commandBuffer = nullptr;
-
-			return _commandBuffer;
+			return TakeOwnership(m_CommandBufferContainer, uuid, MakeUnique<DX11CommandBuffer>(m_Device.Get(), m_Context, m_StateManager, desc));;
 		}
 
 		void DX11RenderSystem::Release(CommandBuffer& commandBuffer)
 		{
-			//RemoveFromUniqueUnorderedMap(m_CommandBufferContainer, &commandBuffer);
+			RemoveFromUniqueUnorderedMap(m_CommandBufferContainer, &commandBuffer);
 		}
 
 		Buffer* DX11RenderSystem::CreateBuffer(uuid uuid, const BufferDesc& desc, const void* initData /*= nullptr*/)
@@ -59,7 +61,7 @@ namespace Graphics
 
 		void DX11RenderSystem::Release(Buffer& buffer)
 		{
-			//RemoveFromUniqueUnorderedMap(m_BufferContainer, &buffer);
+			RemoveFromUniqueUnorderedMap(m_BufferContainer, &buffer);
 		}
 
 		Texture* DX11RenderSystem::CreateTexture(uuid uuid, const TextureDesc& desc, const ImageDesc* imageDesc /*= nullptr*/)
@@ -110,7 +112,7 @@ namespace Graphics
 
 		void DX11RenderSystem::Release(Texture& texture)
 		{
-			//RemoveFromUniqueUnorderedMap(m_TextureContainer, &texture);
+			RemoveFromUniqueUnorderedMap(m_TextureContainer, &texture);
 		}
 
 		Graphics::Sampler* DX11RenderSystem::CreateSampler(uuid uuid, const SamplerDesc& desc)
@@ -120,7 +122,7 @@ namespace Graphics
 
 		void DX11RenderSystem::Release(Sampler& sampler)
 		{
-			//RemoveFromUniqueUnorderedMap(m_SamplerContainer, &sampler);
+			RemoveFromUniqueUnorderedMap(m_SamplerContainer, &sampler);
 		}
 
 		Graphics::RenderPass* DX11RenderSystem::CreateRenderPass(uuid uuid, const RenderPassDesc& desc)
@@ -132,43 +134,37 @@ namespace Graphics
 
 		void DX11RenderSystem::Release(RenderPass& renderPass)
 		{
-			//RemoveFromUniqueUnorderedMap(m_RenderPassContainer, &renderPass);
+			RemoveFromUniqueUnorderedMap(m_RenderPassContainer, &renderPass);
 		}
 
 		Graphics::RenderTarget* DX11RenderSystem::CreateRenderTarget(uuid uuid, const RenderTargetDesc& desc)
 		{
-			DX11RenderTarget* _rt = TakeOwnership(m_RenderTargetContainer, uuid, MakeUnique<DX11RenderTarget>(m_Device.Get(), desc));
-
-			return _rt;
+			return TakeOwnership(m_RenderTargetContainer, uuid, MakeUnique<DX11RenderTarget>(m_Device.Get(), desc));
 		}
 
 		void DX11RenderSystem::Release(RenderTarget& renderTarget)
 		{
-			//RemoveFromUniqueUnorderedMap(m_RenderTargetContainer, &renderTarget);
+			RemoveFromUniqueUnorderedMap(m_RenderTargetContainer, &renderTarget);
 		}
 
 		Graphics::Shader* DX11RenderSystem::CreateShader(uuid uuid, const ShaderDesc& desc)
 		{
-			DX11Shader* _shader = TakeOwnership(m_ShaderContainer, uuid, MakeUnique<DX11Shader>());
-
-			return _shader;
+			return TakeOwnership(m_ShaderContainer, uuid, MakeUnique<DX11Shader>(m_Device.Get(), desc));
 		}
 
 		void DX11RenderSystem::Release(Shader& shader)
 		{
-			//RemoveFromUniqueUnorderedMap(m_ShaderContainer, &shader);
+			RemoveFromUniqueUnorderedMap(m_ShaderContainer, &shader);
 		}
 
 		Graphics::PipelineLayout* DX11RenderSystem::CreatePipelineLayout(uuid uuid, const PipelineLayoutDesc& desc)
 		{
-			DX11PipelineLayout* _layout = TakeOwnership(m_PipelineLayoutContainer, uuid, MakeUnique<DX11PipelineLayout>(desc));
-
-			return _layout;
+			return TakeOwnership(m_PipelineLayoutContainer, uuid, MakeUnique<DX11PipelineLayout>(desc));
 		}
 
 		void DX11RenderSystem::Release(PipelineLayout& pipelineLayout)
 		{
-			//RemoveFromUniqueUnorderedMap(m_PipelineLayoutContainer, &pipelineLayout);
+			RemoveFromUniqueUnorderedMap(m_PipelineLayoutContainer, &pipelineLayout);
 		}
 
 		Graphics::PipelineState* DX11RenderSystem::CreatePipelineState(uuid uuid, const GraphicsPipelineDesc& desc)
@@ -194,12 +190,121 @@ namespace Graphics
 
 		void DX11RenderSystem::CreateFactory()
 		{
+			HR(CreateDXGIFactory(IID_PPV_ARGS(&m_Factory)), "faild to create IDXGIFactory");
+		}
 
+		void DX11RenderSystem::QueryVideoAdapters()
+		{
+			ComPtr<IDXGIAdapter> _adapter;
+			uint32 _index = 0;
+			
+			while (m_Factory->EnumAdapters(_index, _adapter.ReleaseAndGetAddressOf()) != DXGI_ERROR_NOT_FOUND)
+			{
+				ComPtr<IDXGIOutput> _output;
+
+				uint32 _outIndex = 0;
+
+				DXGI_ADAPTER_DESC desc;
+				_adapter->GetDesc(&desc);
+
+				VideoAdapterDesc _adapterDesc;
+
+				_adapterDesc._name = tstring(desc.Description);
+				_adapterDesc._vendorID = desc.VendorId;
+				_adapterDesc._videoMemory = static_cast<uint64_t>(desc.DedicatedVideoMemory);
+
+				while (_adapter->EnumOutputs(_outIndex, _output.ReleaseAndGetAddressOf()) != DXGI_ERROR_NOT_FOUND)
+				{
+					UINT _numModes = 0;
+					std::vector<DXGI_MODE_DESC> _displayModes;
+					DXGI_FORMAT _format = DXGI_FORMAT_R8G8B8A8_UNORM;
+
+					HRESULT hr = _output->GetDisplayModeList(_format, DXGI_ENUM_MODES_INTERLACED, &_numModes, NULL);
+
+					_displayModes.resize(_numModes);
+
+					hr = _output->GetDisplayModeList(_format, 0, &_numModes, _displayModes.data());
+
+					VideoOutputDesc _videoOutputDesc;
+
+					for (size_t i = 0; i < _numModes; i++)
+					{
+						DisplayModeDesc _modeDesc;
+
+						_modeDesc._resolution._width	= _displayModes[i].Width;
+						_modeDesc._resolution._height	= _displayModes[i].Height;
+						_modeDesc._refreshRate = (_displayModes[i].RefreshRate.Denominator > 0 ? _displayModes[i].RefreshRate.Numerator / _displayModes[i].RefreshRate.Denominator : 0);
+
+						_videoOutputDesc._displayModes.push_back(_modeDesc);
+					}
+
+					m_VideoAdapters.push_back(_adapterDesc);
+					_outIndex++;
+				}
+
+				_index++;
+			}
+		}
+
+		void DX11RenderSystem::CreateDevice(IDXGIAdapter* adapter)
+		{
+			std::vector<D3D_FEATURE_LEVEL> featureLevels =
+			{
+				D3D_FEATURE_LEVEL_11_1,
+				D3D_FEATURE_LEVEL_11_0,
+				D3D_FEATURE_LEVEL_10_1,
+				D3D_FEATURE_LEVEL_10_0,
+				D3D_FEATURE_LEVEL_9_3,
+				D3D_FEATURE_LEVEL_9_2,
+				D3D_FEATURE_LEVEL_9_1,
+			};
+
+
+			HRESULT hr = 0;
+#if defined(_DEBUG) || defined(DEBUG)
+			if (!CreateDeviceWithFlags(adapter, featureLevels, D3D11_CREATE_DEVICE_DEBUG, hr))
+				CreateDeviceWithFlags(adapter, featureLevels, 0, hr);
+#else
+			CreateDeviceWithFlags(adapter, featureLevels, 0, hr);
+#endif
+			uint32 _4xMsaaQuality = 0;
+
+			m_Device->CheckMultisampleQualityLevels(DXGI_FORMAT_R8G8B8A8_UNORM, 4, &_4xMsaaQuality);
+			assert(_4xMsaaQuality > 0);
+
+
+		}
+
+		bool DX11RenderSystem::CreateDeviceWithFlags(IDXGIAdapter* adapter, const std::vector<D3D_FEATURE_LEVEL>& featureLevels, UINT flags, HRESULT& hr)
+		{
+			for (D3D_DRIVER_TYPE driver : { D3D_DRIVER_TYPE_HARDWARE, D3D_DRIVER_TYPE_WARP, D3D_DRIVER_TYPE_SOFTWARE })
+			{
+				hr = D3D11CreateDevice(
+					adapter,                                    // Video adapter
+					driver,                                     // Driver type
+					0,                                          // Software rasterizer module (none)
+					flags,                                      // Flags
+					featureLevels.data(),                       // Feature level
+					static_cast<UINT>(featureLevels.size()),    // Num feature levels
+					D3D11_SDK_VERSION,                          // SDK version
+					m_Device.ReleaseAndGetAddressOf(),           // Output device
+					&m_FetureLevel,                             // Output feature level
+					m_Context.ReleaseAndGetAddressOf()           // Output device context
+				);
+				if (SUCCEEDED(hr))
+					return true;
+			}
+			return false;
+		}
+
+		void DX11RenderSystem::CreateStateManager()
+		{
+			m_StateManager = std::make_shared<DX11StateManager>(m_Device.Get(), m_Context);
 		}
 
 		void DX11RenderSystem::Release(PipelineState& pipelineState)
 		{
-			//RemoveFromUniqueUnorderedMap(m_PipelineStateContainer, &pipelineState);
+			RemoveFromUniqueUnorderedMap(m_PipelineStateContainer, &pipelineState);
 		}
 	}
 }

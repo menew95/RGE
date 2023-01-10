@@ -142,8 +142,8 @@ namespace Graphics
 		/* Create depth-stencil resource */
 		D3D11_TEXTURE2D_DESC texDesc;
 		{
-			texDesc.Width = static_cast<uint32>(m_RenderTargetDesc._extend.x);
-			texDesc.Height = static_cast<uint32>(m_RenderTargetDesc._extend.y);
+			texDesc.Width = m_RenderTargetDesc._extend._width;
+			texDesc.Height = m_RenderTargetDesc._extend._height;
 			texDesc.MipLevels = 1;
 			texDesc.ArraySize = 1;
 			texDesc.Format = format;

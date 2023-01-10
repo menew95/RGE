@@ -7,8 +7,8 @@ namespace Graphics
 	class DeviceContext
 	{
 	public:
-		DeviceContext();
-		virtual ~DeviceContext();
+		DeviceContext() = default;
+		virtual ~DeviceContext() = default;
 
 	protected:
 

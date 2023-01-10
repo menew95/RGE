@@ -18,6 +18,8 @@
 #include "GraphicsModule/Core/PipelineLayout.h"
 #include "GraphicsModule/Core/PipelineState.h"
 
+#include "GraphicsModule/Core/VideoAdapter.h"
+
 namespace Graphics
 {
 	class RenderSystem

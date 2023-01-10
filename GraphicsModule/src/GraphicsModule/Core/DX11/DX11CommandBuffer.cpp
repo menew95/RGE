@@ -166,6 +166,11 @@ namespace Graphics
 			}
 		}
 
+		void DX11CommandBuffer::SetBuffer()
+		{
+
+		}
+
 		void DX11CommandBuffer::SetTexture(Texture* texture, uint32 slot, uint32 bindFlags, uint32 stageFlags)
 		{
 			auto* _texture = reinterpret_cast<DX11Texture*>(texture);

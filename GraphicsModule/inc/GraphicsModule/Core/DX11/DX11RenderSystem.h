@@ -9,11 +9,16 @@ namespace Graphics
 {
 	namespace DX11
 	{
+		/// @brief 그래픽스 오브젝트들을 생성 및 관리 하는 클래스
 		class DX11RenderSystem : public RenderSystem
 		{
 		public: 
 			DX11RenderSystem();
 			~DX11RenderSystem() override;
+
+			///* ----- DeviceContext ---- */
+			//DeviceContext* CreateDeviceContext(uuid uuid, const DeviceContextDesc& desc) override;
+			//void Release(DeviceContext& context) override
 
 			/* ----- SwapChain ----- */
 			SwapChain* CreateSwapChain(uuid uuid, const SwapChainDesc& desc) override;
@@ -59,13 +64,22 @@ namespace Graphics
 		
 		private:
 			void CreateFactory();
-
+			void QueryVideoAdapters();
+			void CreateDevice(IDXGIAdapter* adapter);
+			bool CreateDeviceWithFlags(IDXGIAdapter* adapter, const std::vector<D3D_FEATURE_LEVEL>& featureLevels, UINT flags, HRESULT& hr);
+			void CreateStateManager();
 
 			ComPtr<IDXGIFactory> m_Factory;
 			ComPtr<IDXGIAdapter> m_Adapter;
 
 			ComPtr<ID3D11Device> m_Device;
-			ComPtr<ID3D11DeviceContext> m_DeviceContext;
+			ComPtr<ID3D11DeviceContext> m_Context;
+
+			std::shared_ptr<class DX11StateManager> m_StateManager;
+
+			D3D_FEATURE_LEVEL m_FetureLevel = D3D_FEATURE_LEVEL_11_0;
+
+			std::vector<VideoAdapterDesc> m_VideoAdapters;
 
 			template<typename T>
 			using Container = std::unordered_map<uuid, std::unique_ptr<T>>;
