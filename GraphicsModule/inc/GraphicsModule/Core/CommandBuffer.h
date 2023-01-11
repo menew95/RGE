@@ -13,6 +13,7 @@ namespace Graphics
 	class PipelineState;
 	class Resource;
 	class RenderPass;
+	class RenderTarget;
 
 	class CommandBuffer
 	{
@@ -52,7 +53,7 @@ namespace Graphics
 		/* ----- Render Passes ----- */
 
 		virtual void BeginRenderPass(
-			const RenderPass* renderPass,
+			RenderPass& renderPass,
 			std::uint32_t       numClearValues,
 			const ClearValue* clearValues
 		) abstract;
@@ -61,6 +62,9 @@ namespace Graphics
 
 		virtual void Clear(long flags, const ClearValue& clearValue = {}) abstract;
 		virtual void ClearAttachments(uint32 numAttachments, const AttachmentClear* attachments) abstract;
+
+		/* ----- Render Target ----- */
+		virtual void SetRenderTarget(RenderTarget& renderTarget, uint32 numAttachments, const AttachmentClear* attachments) abstract;
 
 		/* ----- Pipeline States ----- */
 

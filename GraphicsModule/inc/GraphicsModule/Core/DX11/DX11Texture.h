@@ -50,6 +50,7 @@ namespace Graphics
 			inline ID3D11ShaderResourceView* GetSRV() const { return m_ShaderResourceView.Get(); }
 			inline ID3D11UnorderedAccessView* GetUAV() const { return m_UnorderedAccessView.Get(); }
 
+			inline auto& GetDesc() { return m_TextureDesc; }
 			TextureType GetType() { return m_TextureDesc._textureType; }
 
 			void CreateTexture1D(ID3D11Device* device, const TextureDesc& desc, const D3D11_SUBRESOURCE_DATA* initialData = nullptr);
@@ -66,7 +67,6 @@ namespace Graphics
 			static ComPtr<ID3D11Texture2D> DXCreateTexture2D(ID3D11Device* device, const D3D11_TEXTURE2D_DESC& desc, const D3D11_SUBRESOURCE_DATA* initialData = nullptr);
 			static ComPtr<ID3D11Texture3D> DXCreateTexture3D(ID3D11Device* device, const D3D11_TEXTURE3D_DESC& desc, const D3D11_SUBRESOURCE_DATA* initialData = nullptr);
 			
-
 			FileFormat CheckFileFormat(const tstring& path);
 
 			DX11NativeTexture m_NativeTexture;

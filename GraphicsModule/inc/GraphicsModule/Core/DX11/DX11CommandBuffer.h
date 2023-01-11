@@ -58,7 +58,7 @@ namespace Graphics
 			/* ----- Render Passes ----- */
 
 			void BeginRenderPass(
-				const RenderPass* renderPass,
+				RenderPass& renderPass,
 				uint32       numClearValues,
 				const ClearValue* clearValues
 			) override;
@@ -67,6 +67,9 @@ namespace Graphics
 
 			void Clear(long flags, const ClearValue& clearValue = {}) override;
 			void ClearAttachments(uint32 numAttachments, const AttachmentClear* attachments) override;
+
+			/* ----- Render Target ----- */
+			void SetRenderTarget(RenderTarget& renderTarget, uint32 numAttachments, const AttachmentClear* attachments) override;
 
 			/* ----- Pipeline States ----- */
 
@@ -88,6 +91,13 @@ namespace Graphics
 			void SetTexture(Texture& texture, uint32 slot, uint32 bindFlags, uint32 stageFlags);
 			void SetSampler(Sampler& sampler, uint32 slot, uint32 stageFlags);
 
+			void ResetBufferSlots(uint32 firstSlot, uint32 numSlots, long bindFlags, long stageFlags = StageFlags::AllStages);
+			void ResetTextureSlots(uint32 firstSlot, uint32 numSlots, long bindFlags, long stageFlags = StageFlags::AllStages);
+			void ResetSamplerSlots(uint32 firstSlot, uint32 numSlots, long bindFlags, long stageFlags = StageFlags::AllStages);
+
+			void ResetResourceSlotsSRV(uint32 firstSlot, uint32 numSlots, long stageFlags);
+			void ResetResourceSlotsUAV(uint32 firstSlot, uint32 numSlots, long stageFlags);
+
 			ID3D11Device* m_Device = nullptr;
 			ComPtr<ID3D11DeviceContext>         m_Context;
 			ComPtr<ID3D11CommandList>           m_CommandList;
@@ -96,10 +106,16 @@ namespace Graphics
 			bool m_IsSecondaryCmdBuffer = false;
 			std::shared_ptr<DX11StateManager>  m_StateManager;
 
-			std::vector<ID3D11RenderTargetView*> m_RenderTargetViews;
-			ID3D11DepthStencilView* m_DepthStencilView;
+			struct D3D11FramebufferView
+			{
+				UINT                            _numRenderTargetViews = 0;
+				ID3D11RenderTargetView* const*	_renderTargetViews = nullptr;
+				ID3D11DepthStencilView*			_depthStencilView = nullptr;
+			};
 
-			class DX11RenderTarget* boundRenderTarget = nullptr;
+			D3D11FramebufferView                m_FramebufferView;
+
+			class DX11RenderTarget* m_BoundRenderTarget = nullptr;
 		};
 	}
 }

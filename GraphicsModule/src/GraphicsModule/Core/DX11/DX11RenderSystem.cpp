@@ -172,7 +172,7 @@ namespace Graphics
 
 		Graphics::RenderPass* DX11RenderSystem::CreateRenderPass(uuid uuid, const RenderPassDesc& desc)
 		{
-			DX11RenderPass* _pass = TakeOwnership(m_RenderPassContainer, uuid, MakeUnique<DX11RenderPass>());
+			DX11RenderPass* _pass = TakeOwnership(m_RenderPassContainer, uuid, MakeUnique<DX11RenderPass>(desc));
 
 			return _pass;
 		}

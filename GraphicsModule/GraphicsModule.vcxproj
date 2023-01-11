@@ -259,6 +259,7 @@ xcopy /E /S /Y /R "$(OutputPath)*.pdb" "$(OutputPath)..\Client\*"</Command>
     <ClCompile Include="src\GraphicsModule\Core\DX11\DX11CommandBuffer.cpp" />
     <ClCompile Include="src\GraphicsModule\Core\DX11\DX11PipelineLayout.cpp" />
     <ClCompile Include="src\GraphicsModule\Core\DX11\DX11PipelineState.cpp" />
+    <ClCompile Include="src\GraphicsModule\Core\DX11\DX11RenderPass.cpp" />
     <ClCompile Include="src\GraphicsModule\Core\DX11\DX11RenderSystem.cpp" />
     <ClCompile Include="src\GraphicsModule\Core\DX11\DX11RenderTarget.cpp" />
     <ClCompile Include="src\GraphicsModule\Core\DX11\DX11ResourceFlags.cpp" />

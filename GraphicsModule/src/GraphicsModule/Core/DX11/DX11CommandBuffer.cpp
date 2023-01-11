@@ -1,22 +1,28 @@
 #include "GraphicsPCH.h"
+
 #include "GraphicsModule/Core/DX11/DX11CommandBuffer.h"
-#include "GraphicsModule/Core/DX11/Direct3D11.h"
-#include "GraphicsModule/Core/DX11/DX11Buffer.h"
-#include "GraphicsModule/Core/DX11/DX11Texture.h"
 #include "GraphicsModule/Core/DX11/DX11PipelineState.h"
 #include "GraphicsModule/Core/DX11/DX11StateManager.h"
+#include "GraphicsModule/Core/DX11/DX11RenderTarget.h"
+#include "GraphicsModule/Core/DX11/DX11RenderPass.h"
+#include "GraphicsModule/Core/DX11/DX11Texture.h"
 #include "GraphicsModule/Core/DX11/DX11Sampler.h"
+#include "GraphicsModule/Core/DX11/DX11Buffer.h"
+#include "GraphicsModule/Core/DX11/Direct3D11.h"
 
 namespace Graphics
 {
 	namespace DX11
 	{
+		// Global array of null pointers to unbind resource slots
+		static void* const	g_nullResources[D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT] = {};
+		static const uint32	g_zeroCounters[D3D11_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT] = {};
 
 		DX11CommandBuffer::DX11CommandBuffer(ID3D11Device* device, const ComPtr<ID3D11DeviceContext>& context, const std::shared_ptr<class DX11StateManager>& stateManager, const CommandBufferDesc& desc)
 			: m_Device(device)
 			, m_Context(context)
 			, m_StateManager(stateManager)
-			, m_DepthStencilView(nullptr)
+			//, m_DepthStencilView(nullptr)
 		{
 			if ((desc._flags & CommandBufferFlags::ImmediateSubmit) == 0)
 			{
@@ -116,27 +122,50 @@ namespace Graphics
 				case ResourceType::Undefined:
 					break;
 				case ResourceType::Buffer:
+				{
 					auto& _buffer = reinterpret_cast<Buffer&>(resource);
 					SetBuffer(_buffer, slot, bindFlags, stageFlags);
 					break;
+				}
 				case ResourceType::Texture:
+				{
 					auto& _texture = reinterpret_cast<Texture&>(resource);
 					SetTexture(_texture, slot, bindFlags, stageFlags);
 					break;
+				}
 				case ResourceType::Sampler:
+				{
 					auto& _sampler = reinterpret_cast<Sampler&>(resource);
 					SetSampler(_sampler, slot, stageFlags);
 					break;
+				}
 			}
 		}
 
 		void DX11CommandBuffer::ResetResourceSlots(const ResourceType resourceType, uint32 firstSlot, uint32 numSlots, long bindFlags, long stageFlags /*= StageFlags::AllStages*/)
 		{
-
+			if (numSlots > 0)
+			{
+				switch (resourceType)
+				{
+					case ResourceType::Undefined:
+						break;
+					case ResourceType::Buffer:
+						ResetBufferSlots(firstSlot, numSlots, bindFlags, stageFlags);
+						break;
+					case ResourceType::Texture:
+						ResetTextureSlots(firstSlot, numSlots, bindFlags, stageFlags);
+						break;
+					case ResourceType::Sampler:
+						ResetSamplerSlots(firstSlot, numSlots, stageFlags);
+						break;
+				}
+			}
 		}
 
-		void DX11CommandBuffer::BeginRenderPass(const RenderPass* renderPass, uint32 numClearValues, const ClearValue* clearValues)
+		void DX11CommandBuffer::BeginRenderPass(RenderPass& renderPass, uint32 numClearValues, const ClearValue* clearValues)
 		{
+			auto& _castPass = reinterpret_cast<DX11RenderPass&>(renderPass);
 
 		}
 
@@ -147,12 +176,78 @@ namespace Graphics
 
 		void DX11CommandBuffer::Clear(long flags, const ClearValue& clearValue /*= {}*/)
 		{
+			/* Clear color buffers */
+			if ((flags & ClearFlags::Color) != 0)
+			{
+				for (UINT i = 0; i < m_FramebufferView._numRenderTargetViews; ++i)
+					m_Context->ClearRenderTargetView(m_FramebufferView._renderTargetViews[i], &clearValue._color.x);
+			}
 
+			/* Clear depth-stencil buffer */
+			if (m_FramebufferView._depthStencilView != nullptr)
+			{
+				uint32 _flags = 0;
+
+				if ((flags & ClearFlags::Depth) != 0)
+					_flags |= D3D11_CLEAR_DEPTH;
+				if ((flags & ClearFlags::Stencil) != 0)
+					_flags |= D3D11_CLEAR_STENCIL;
+				
+				m_Context->ClearDepthStencilView(
+					m_FramebufferView._depthStencilView,
+					_flags,
+					clearValue._depth,
+					static_cast<UINT8>(clearValue._stencil & 0xff)
+				);
+			}
 		}
 
 		void DX11CommandBuffer::ClearAttachments(uint32 numAttachments, const AttachmentClear* attachments)
 		{
+			for (uint32 i = 0; i < numAttachments; i++)
+			{
+				if ((attachments[i]._flags & ClearFlags::Color) != 0)
+				{
 
+					m_Context->ClearRenderTargetView(
+						m_FramebufferView._renderTargetViews[attachments[i]._colorAttachment],
+						attachments[i]._clearValue._color
+					);
+				}
+				else if (m_FramebufferView._depthStencilView != nullptr)
+				{
+					uint32 _flags = 0;
+
+					if ((attachments[i]._flags & ClearFlags::Depth) != 0)
+						_flags |= D3D11_CLEAR_DEPTH;
+					if ((attachments[i]._flags & ClearFlags::Stencil) != 0)
+						_flags |= D3D11_CLEAR_STENCIL;
+
+					m_Context->ClearDepthStencilView(
+						m_FramebufferView._depthStencilView,
+						_flags, attachments->_clearValue._depth,
+						static_cast<UINT8>(attachments->_clearValue._stencil & 0xff));
+				}
+			}
+		}
+
+		void DX11CommandBuffer::SetRenderTarget(RenderTarget& renderTarget, uint32 numAttachments, const AttachmentClear* attachments)
+		{
+			auto& _renderTarget = reinterpret_cast<DX11RenderTarget&>(renderTarget);
+
+			_renderTarget.ClearRenderTarget(m_Context.Get(), numAttachments, attachments);
+
+			auto _numRTV = static_cast<uint32>(_renderTarget.GetRenderTargetViews().size());
+
+			m_Context->OMSetRenderTargets(
+				_numRTV,
+				_renderTarget.GetRenderTargetViews().data(),
+				_renderTarget.GetDepthStencilView()
+			);
+
+			m_FramebufferView._numRenderTargetViews	= _numRTV;
+			m_FramebufferView._renderTargetViews	= _renderTarget.GetRenderTargetViews().data();
+			m_FramebufferView._depthStencilView		= _renderTarget.GetDepthStencilView();
 		}
 
 		void DX11CommandBuffer::SetPipelineState(PipelineState& pipelineState)
@@ -251,6 +346,111 @@ namespace Graphics
 			assert(false);
 		}
 
+		void DX11CommandBuffer::ResetBufferSlots(uint32 firstSlot, uint32 numSlots, long bindFlags, long stageFlags /*= StageFlags::AllStages*/)
+		{
+			if ((bindFlags & BindFlags::VertexBuffer) != 0)
+			{
+				if ((stageFlags & StageFlags::VS) != 0)
+				{
+					/* Clamp slot indices */
+					firstSlot = min(firstSlot, std::uint32_t(D3D11_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT) - 1);
+					numSlots = min(numSlots, std::uint32_t(D3D11_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT) - firstSlot);
+
+					/* Unbind vertex buffers */
+					m_Context->IASetVertexBuffers(
+						firstSlot,
+						numSlots,
+						reinterpret_cast<ID3D11Buffer* const*>(g_nullResources),
+						g_zeroCounters,
+						g_zeroCounters
+					);
+				}
+			}
+
+			if ((bindFlags & BindFlags::IndexBuffer) != 0)
+			{
+				if (firstSlot == 0 && (stageFlags & StageFlags::VS) != 0)
+					m_Context->IASetIndexBuffer(nullptr, DXGI_FORMAT_R16_UINT, 0);
+			}
+
+			if ((bindFlags & BindFlags::ConstantBuffer) != 0)
+			{
+				/* Clamp slot indices */
+				firstSlot = min(firstSlot, std::uint32_t(D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT) - 1);
+				numSlots = min(numSlots, std::uint32_t(D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT) - firstSlot);
+
+				m_StateManager->SetConstantBuffers(
+					firstSlot,
+					numSlots,
+					reinterpret_cast<ID3D11Buffer* const*>(g_nullResources),
+					stageFlags);
+			}
+
+			if ((bindFlags & BindFlags::StreamOutput) != 0)
+			{
+				if (firstSlot == 0 && (stageFlags & (StageFlags::VS | StageFlags::GS)) != 0)
+				{
+					/* Clamp slot indices */
+					firstSlot = min(firstSlot, std::uint32_t(D3D11_SO_BUFFER_SLOT_COUNT) - 1);
+					numSlots = min(numSlots, std::uint32_t(D3D11_SO_BUFFER_SLOT_COUNT) - firstSlot);
+
+					/* Unbind stream-output buffers */
+					m_Context->SOSetTargets(
+						numSlots,
+						reinterpret_cast<ID3D11Buffer* const*>(g_nullResources),
+						g_zeroCounters
+					);
+				}
+			}
+		}
+
+		void DX11CommandBuffer::ResetTextureSlots(uint32 firstSlot, uint32 numSlots, long bindFlags, long stageFlags /*= StageFlags::AllStages*/)
+		{
+			if ((bindFlags & BindFlags::ShaderResource) != 0)
+			{
+				ResetResourceSlotsSRV(firstSlot, numSlots, stageFlags);
+			}
+
+			if ((bindFlags & BindFlags::UnorderedAccess) != 0)
+			{
+				ResetResourceSlotsUAV(firstSlot, numSlots, stageFlags);
+			}
+		}
+
+		void DX11CommandBuffer::ResetSamplerSlots(uint32 firstSlot, uint32 numSlots, long bindFlags, long stageFlags /*= StageFlags::AllStages*/)
+		{
+			firstSlot = min(firstSlot, std::uint32_t(D3D11_COMMONSHADER_SAMPLER_SLOT_COUNT) - 1);
+			numSlots = min(numSlots, std::uint32_t(D3D11_COMMONSHADER_SAMPLER_SLOT_COUNT) - firstSlot);
+
+			m_StateManager->SetSamplers(firstSlot, numSlots, reinterpret_cast<ID3D11SamplerState* const*>(g_nullResources), stageFlags);
+		}
+
+		void DX11CommandBuffer::ResetResourceSlotsSRV(uint32 firstSlot, uint32 numSlots, long stageFlags)
+		{
+			firstSlot = min(firstSlot, std::uint32_t(D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT) - 1);
+			numSlots = min(numSlots, std::uint32_t(D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT) - firstSlot);
+
+			m_StateManager->SetShaderResources(
+				firstSlot,
+				numSlots,
+				reinterpret_cast<ID3D11ShaderResourceView* const*>(g_nullResources),
+				stageFlags
+			);
+		}
+
+		void DX11CommandBuffer::ResetResourceSlotsUAV(uint32 firstSlot, uint32 numSlots, long stageFlags)
+		{
+			firstSlot = min(firstSlot, std::uint32_t(D3D11_1_UAV_SLOT_COUNT) - 1);
+			numSlots = min(numSlots, std::uint32_t(D3D11_1_UAV_SLOT_COUNT) - firstSlot);
+
+			m_StateManager->SetUnorderedAccessViews(
+				firstSlot,
+				numSlots,
+				reinterpret_cast<ID3D11UnorderedAccessView* const*>(g_nullResources),
+				nullptr,
+				stageFlags
+			);
+		}
 
 	}
 }

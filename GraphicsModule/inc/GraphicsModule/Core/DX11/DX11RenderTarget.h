@@ -13,10 +13,10 @@ struct D3D11_DEPTH_STENCIL_VIEW_DESC;
 
 namespace Graphics
 {
-	class DX11Texture;
 
 	namespace DX11
 	{
+		class DX11Texture;
 
 		class DX11RenderTarget : public RenderTarget 
 		{
@@ -24,22 +24,27 @@ namespace Graphics
 			DX11RenderTarget(ID3D11Device* device, const RenderTargetDesc& desc);
 			~DX11RenderTarget() override;
 
-
 			using UnderlyingType = ID3D11RenderTargetView*;
 
 			inline const std::vector<ID3D11RenderTargetView*>& GetRenderTargetViews() const { return m_RenderTargetViewRefs; }
+
+			inline const std::vector<DX11Texture*>& GetRYVBuffers() const { return m_RTBuffers; }
+
 			inline ID3D11DepthStencilView* GetDepthStencilView() const { return m_DepthStencilView.Get(); }
+
+			inline const DX11Texture* GetDSVTexture() const { return m_DSVBuffer; }
+			
 			RenderTargetDesc GetDesc() { return m_RenderTargetDesc; }
 
-			void CreateRenderTargetViews(ID3D11Device* device, RenderTargetDesc& desc);
-			void CreateDepthStencil(ID3D11Device* device, RenderTargetDesc& desc);
 
-			void ClearRenderTarget(ID3D11DeviceContext* context, struct ClearValue& value);
+			void ClearRenderTarget(ID3D11DeviceContext* context, uint32 numAttachments, const AttachmentClear* attachments);
 
 		private:
-			void Attach(const AttachmentDesc& desc);
+			void CreateRenderTarget(ID3D11Device* device, const RenderTargetDesc& desc);
+			void CreateRenderTargetView(ID3D11Device* device, const AttachmentDesc& desc);
+			void CreateDepthStencilView(ID3D11Device* device, const AttachmentDesc& desc);
 
-			ID3D11Device* m_Device;
+			ID3D11Device* m_Device = nullptr;
 
 			RenderTargetDesc m_RenderTargetDesc;
 
@@ -48,14 +53,8 @@ namespace Graphics
 			std::vector<DX11Texture*> m_RTBuffers;
 
 			ComPtr<ID3D11DepthStencilView> m_DepthStencilView;
-			DX11Texture* m_DSVBuffer;
-			DXGI_FORMAT m_DSVFormat;
-			
-			void CreateRenderTargetView(ID3D11Resource* resource, const D3D11_RENDER_TARGET_VIEW_DESC& desc);
-			void CreateDepthStencilView(DXGI_FORMAT format);
-
-			static ComPtr<ID3D11RenderTargetView> CreateRenderTargetView(ID3D11Device* device, const D3D11_RENDER_TARGET_VIEW_DESC& desc, ID3D11Resource* resource);
-			static ComPtr<ID3D11DepthStencilView> CreateDepthStencilView(ID3D11Device* device, const D3D11_DEPTH_STENCIL_VIEW_DESC& desc, ID3D11Resource* resource);
+			DX11Texture* m_DSVBuffer = nullptr;
+			DXGI_FORMAT m_DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 		};
 	}
 }
