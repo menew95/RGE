@@ -5,7 +5,7 @@
 
 namespace Graphics
 {
-	class Sampler : public Resource
+	class GRAPHICS_DLL_DECLSPEC Sampler : public Resource
 	{
 	public:
 		Sampler() = default;

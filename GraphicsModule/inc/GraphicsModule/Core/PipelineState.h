@@ -1,11 +1,14 @@
 #pragma once
 
 #include "Common.h"
+
+#include "GraphicsModule/Utility/Export.h"
+
 #include "GraphicsModule/Core/PipelineStateFlags.h"
 
 namespace Graphics
 {
-	class PipelineState
+	class GRAPHICS_DLL_DECLSPEC PipelineState
 	{
 	public:
 		PipelineState() = default;

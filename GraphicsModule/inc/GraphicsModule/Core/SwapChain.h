@@ -1,17 +1,13 @@
-#ifndef MT_SWAPCHAIN_H
-#define MT_SWAPCHAIN_H
+#pragma once
 
-#include "Common.h"
+#include "GraphicsModule/Utility/Export.h"
+
 #include "GraphicsModule/Core/SwapChainFlags.h"
 
 struct IDXGIFactory;
 
 namespace Graphics
 {
-	struct SWAP_CHAIN_DESC;
-	
-	class Device;
-
 	class SwapChain
 	{
 	public:
@@ -20,8 +16,5 @@ namespace Graphics
 		virtual ~SwapChain() {}
 
 		virtual void Present() abstract;
-
-		//virtual void OnResize(uint32, uint32) abstract;
 	};
 }
-#endif

@@ -76,7 +76,7 @@
     <SourcePath>$(ProjectDir)src;$(VC_SourcePath);</SourcePath>
     <IntDir>$(SolutionDir)_build\_int\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
     <OutDir>$(SolutionDir)_build\$(Configuration)\$(Platform)\$(ProjectName)\</OutDir>
-    <TargetName>$(ProjectName)_$(Configuration)_$(Platform)</TargetName>
+    <TargetName>$(ProjectName)_$(Configuration)_$(PlatformTarget)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -84,7 +84,7 @@
     <SourcePath>$(ProjectDir)src;$(VC_SourcePath);</SourcePath>
     <IntDir>$(SolutionDir)_build\_int\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
     <OutDir>$(SolutionDir)_build\$(Configuration)\$(Platform)\$(ProjectName)\</OutDir>
-    <TargetName>$(ProjectName)_$(Configuration)_$(Platform)</TargetName>
+    <TargetName>$(ProjectName)_$(Configuration)_$(PlatformTarget)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -92,7 +92,7 @@
     <SourcePath>$(ProjectDir)src;$(VC_SourcePath);</SourcePath>
     <IntDir>$(SolutionDir)_build\_int\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
     <OutDir>$(SolutionDir)_build\$(Configuration)\$(Platform)\$(ProjectName)\</OutDir>
-    <TargetName>$(ProjectName)_$(Configuration)_$(Platform)</TargetName>
+    <TargetName>$(ProjectName)_$(Configuration)_$(PlatformTarget)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -100,7 +100,7 @@
     <SourcePath>$(ProjectDir)src;$(VC_SourcePath);</SourcePath>
     <IntDir>$(SolutionDir)_build\_int\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
     <OutDir>$(SolutionDir)_build\$(Configuration)\$(Platform)\$(ProjectName)\</OutDir>
-    <TargetName>$(ProjectName)_$(Configuration)_$(Platform)</TargetName>
+    <TargetName>$(ProjectName)_$(Configuration)_$(PlatformTarget)</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -246,6 +246,8 @@ xcopy /E /S /Y /R "$(OutputPath)*.pdb" "$(OutputPath)..\Client\*"</Command>
     <ClInclude Include="inc\GraphicsModule\Core\SwapChain.h" />
     <ClInclude Include="inc\GraphicsModule\Core\Type.h" />
     <ClInclude Include="inc\GraphicsModule\Core\VideoAdapter.h" />
+    <ClInclude Include="inc\GraphicsModule\GraphicsAPI.h" />
+    <ClInclude Include="inc\GraphicsModule\Module.h" />
     <ClInclude Include="inc\GraphicsModule\Utility\Export.h" />
     <ClInclude Include="inc\GraphicsModule\Utility\Helper.h" />
     <ClInclude Include="inc\GraphicsModule\Window.h" />
@@ -270,12 +272,14 @@ xcopy /E /S /Y /R "$(OutputPath)*.pdb" "$(OutputPath)..\Client\*"</Command>
     <ClCompile Include="src\GraphicsModule\Core\DX11\DX11Texture.cpp" />
     <ClCompile Include="src\GraphicsModule\Core\DX11\DX11Type.cpp" />
     <ClCompile Include="src\GraphicsModule\Core\DX11\DX11Utilitys.cpp" />
+    <ClCompile Include="src\GraphicsModule\Core\RenderSystem.cpp" />
     <ClCompile Include="src\GraphicsModule\Core\RenderTarget.cpp" />
     <ClCompile Include="src\GraphicsModule\Core\Sampler.cpp" />
     <ClCompile Include="src\GraphicsModule\Core\Shader.cpp" />
     <ClCompile Include="src\GraphicsModule\Core\Texture.cpp" />
     <ClCompile Include="src\GraphicsModule\Core\TextureFlags.cpp" />
     <ClCompile Include="src\GraphicsModule\Graphics_dllmain.cpp" />
+    <ClCompile Include="src\GraphicsModule\Module.cpp" />
     <ClCompile Include="src\GraphicsModule\Utility\Helper.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>

@@ -1,11 +1,12 @@
 #pragma once
 
-#include "GraphicsModule/Core/Resource.h"
+#include "GraphicsModule/Utility/Export.h"
+
 #include "GraphicsModule/Core/ShaderFlags.h"
 
 namespace Graphics
 {
-	class Shader
+	class GRAPHICS_DLL_DECLSPEC Shader
 	{
 	public:
 		Shader() = default;

@@ -1,11 +1,12 @@
 #pragma once
 
-#include "ResourceFlags.h"
+#include "GraphicsModule/Utility/Export.h"
 
+#include "GraphicsModule/Core/ResourceFlags.h"
 
 namespace Graphics
 {
-    class Resource
+    class GRAPHICS_DLL_DECLSPEC Resource
     {
     public:
         Resource() = default;

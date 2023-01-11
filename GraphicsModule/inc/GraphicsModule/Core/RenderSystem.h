@@ -20,11 +20,15 @@
 
 namespace Graphics
 {
-	class RenderSystem
+	class GRAPHICS_DLL_DECLSPEC RenderSystem
 	{
 	public:
 		RenderSystem() = default;
 		virtual ~RenderSystem() = default;
+
+		/*static std::vector<std::string> FindModules();
+		static std::unique_ptr<RenderSystem> Load(RenderSystemDesc& desc);
+		static void Unload(std::unique_ptr<RenderSystem>&& renderSystem);*/
 
 		/* ----- SwapChain ----- */
 		virtual SwapChain* CreateSwapChain(uuid uuid, const SwapChainDesc& desc) abstract;

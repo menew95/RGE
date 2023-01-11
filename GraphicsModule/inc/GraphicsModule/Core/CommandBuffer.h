@@ -1,6 +1,9 @@
 #pragma once
 
 #include "Common.h"
+
+#include "GraphicsModule/Utility/Export.h"
+
 #include "GraphicsModule/Core/CommandBufferFlags.h"
 #include "GraphicsModule/Core/ShaderFlags.h"
 #include "GraphicsModule/Core/ResourceFlags.h"
@@ -15,7 +18,7 @@ namespace Graphics
 	class RenderPass;
 	class RenderTarget;
 
-	class CommandBuffer
+	class GRAPHICS_DLL_DECLSPEC CommandBuffer
 	{
 	public:
 		CommandBuffer() = default;

@@ -5,7 +5,7 @@
 
 namespace Graphics
 {
-	class Texture : public Resource
+	class GRAPHICS_DLL_DECLSPEC Texture : public Resource
 	{
 	public:
 		virtual ~Texture() = default;
