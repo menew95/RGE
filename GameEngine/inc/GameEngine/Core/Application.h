@@ -32,6 +32,7 @@ namespace GameEngine
 
 			class Window* m_Window;
 			class ComponentSystem* m_ComponentSystem;
+			class GraphicsSystem* m_GraphicsSystem;
 			class SceneSystem* m_SceneSystem;
 			class Resources* m_Resources;
 

@@ -20,8 +20,8 @@ namespace Graphics
 
 		virtual void Present() abstract;
 
-		bool ResizeBuffers(const Extent2D& resolution, long flags = 0);
+		virtual bool ResizeBuffer(const Extent2D& resolution) abstract;
 
-		bool SwitchFullscreen(bool enable);
+		virtual bool SwitchFullscreen(bool enable) abstract;
 	};
 }

@@ -81,7 +81,7 @@
     <ClInclude Include="inc\GameEngine\Core\Application.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="inc\GameEngine\Core\System\RenderPipeLineSystem.h">
+    <ClInclude Include="inc\GameEngine\Core\System\GraphicsSystem.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="inc\GameEngine\Window.h">
@@ -161,7 +161,7 @@
     <ClCompile Include="src\GameEngine\Core\System\Resources.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="src\GameEngine\Core\System\RenderPipeLineSystem.cpp">
+    <ClCompile Include="src\GameEngine\Core\System\GraphicsSystem.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\GameEngine\Window.cpp">

@@ -72,7 +72,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir)inc;$(ProjectDir)src;$(SolutionDir)Common\inc;$(SolutionDir)GraphicsModule\inc;$(SolutionDir)PhysicsModule\inc;$(SolutionDir)SoundModule\inc;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)inc;$(ProjectDir)src;$(SolutionDir)Common\inc;$(SolutionDir)GraphicsEngine\inc;$(SolutionDir)GraphicsModule\inc;$(SolutionDir)PhysicsModule\inc;$(SolutionDir)SoundModule\inc;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <SourcePath>$(ProjectDir)inc;$(VC_SourcePath);</SourcePath>
     <IntDir>$(SolutionDir)_build\_int\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
     <OutDir>$(SolutionDir)_build\$(Configuration)\$(Platform)\$(ProjectName)\</OutDir>
@@ -80,7 +80,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(ProjectDir)inc;$(ProjectDir)src;$(SolutionDir)Common\inc;$(SolutionDir)GraphicsModule\inc;$(SolutionDir)PhysicsModule\inc;$(SolutionDir)SoundModule\inc;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)inc;$(ProjectDir)src;$(SolutionDir)Common\inc;$(SolutionDir)GraphicsEngine\inc;$(SolutionDir)GraphicsModule\inc;$(SolutionDir)PhysicsModule\inc;$(SolutionDir)SoundModule\inc;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <SourcePath>$(ProjectDir)inc;$(VC_SourcePath);</SourcePath>
     <IntDir>$(SolutionDir)_build\_int\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
     <OutDir>$(SolutionDir)_build\$(Configuration)\$(Platform)\$(ProjectName)\</OutDir>
@@ -88,7 +88,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir)inc;$(ProjectDir)src;$(SolutionDir)Common\inc;$(SolutionDir)GraphicsModule\inc;$(SolutionDir)PhysicsModule\inc;$(SolutionDir)SoundModule\inc;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)inc;$(ProjectDir)src;$(SolutionDir)Common\inc;$(SolutionDir)GraphicsEngine\inc;$(SolutionDir)GraphicsModule\inc;$(SolutionDir)PhysicsModule\inc;$(SolutionDir)SoundModule\inc;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <SourcePath>$(ProjectDir)inc;$(VC_SourcePath);</SourcePath>
     <IntDir>$(SolutionDir)_build\_int\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
     <OutDir>$(SolutionDir)_build\$(Configuration)\$(Platform)\$(ProjectName)\</OutDir>
@@ -96,7 +96,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(ProjectDir)inc;$(ProjectDir)src;$(SolutionDir)Common\inc;$(SolutionDir)GraphicsModule\inc;$(SolutionDir)PhysicsModule\inc;$(SolutionDir)SoundModule\inc;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)inc;$(ProjectDir)src;$(SolutionDir)Common\inc;$(SolutionDir)GraphicsEngine\inc;$(SolutionDir)GraphicsModule\inc;$(SolutionDir)PhysicsModule\inc;$(SolutionDir)SoundModule\inc;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <SourcePath>$(ProjectDir)inc;$(VC_SourcePath);</SourcePath>
     <IntDir>$(SolutionDir)_build\_int\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
     <OutDir>$(SolutionDir)_build\$(Configuration)\$(Platform)\$(ProjectName)\</OutDir>
@@ -150,7 +150,7 @@ xcopy /E /S /Y /R "$(OutputPath)*.pdb" "$(OutputPath)..\Client\*"</Command>
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>GAME_ENGINE_EXPORT;COMMON_EXPORT;_DEBUG;GAMEENGINE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>x64;GAME_ENGINE_EXPORT;COMMON_EXPORT;_DEBUG;GAMEENGINE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>GameEngine\GameEnginePCH.h</PrecompiledHeaderFile>
@@ -172,7 +172,7 @@ xcopy /E /S /Y /R "$(OutputPath)*.pdb" "$(OutputPath)..\Client\*"</Command>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>GAME_ENGINE_EXPORT;COMMON_EXPORT;NDEBUG;GAMEENGINE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>x64;GAME_ENGINE_EXPORT;COMMON_EXPORT;NDEBUG;GAMEENGINE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>GameEngine\GameEnginePCH.h</PrecompiledHeaderFile>
@@ -203,7 +203,7 @@ xcopy /E /S /Y /R "$(OutputPath)*.pdb" "$(OutputPath)..\Client\*"</Command>
     <ClInclude Include="inc\GameEngine\Core\Component\MonoBehaviour.h" />
     <ClInclude Include="inc\GameEngine\Core\GameObject.h" />
     <ClInclude Include="inc\GameEngine\Core\Resource\Mesh.h" />
-    <ClInclude Include="inc\GameEngine\Core\System\RenderPipeLineSystem.h" />
+    <ClInclude Include="inc\GameEngine\Core\System\GraphicsSystem.h" />
     <ClInclude Include="inc\GameEngine\Core\System\Resources.h" />
     <ClInclude Include="inc\GameEngine\GameEngineAPI.h" />
     <ClInclude Include="inc\GameEngine\Input.h" />
@@ -227,7 +227,7 @@ xcopy /E /S /Y /R "$(OutputPath)*.pdb" "$(OutputPath)..\Client\*"</Command>
     <ClCompile Include="src\GameEngine\Core\Resource\Sprite.cpp" />
     <ClCompile Include="src\GameEngine\Core\Resource\Texture.cpp" />
     <ClCompile Include="src\GameEngine\Core\System\Components.cpp" />
-    <ClCompile Include="src\GameEngine\Core\System\RenderPipeLineSystem.cpp" />
+    <ClCompile Include="src\GameEngine\Core\System\GraphicsSystem.cpp" />
     <ClCompile Include="src\GameEngine\Core\System\Resources.cpp" />
     <ClCompile Include="src\GameEngine\Core\System\SceneSystem.cpp" />
     <ClCompile Include="src\GameEngine\Core\System\ComponentSystem.cpp" />
@@ -253,8 +253,8 @@ xcopy /E /S /Y /R "$(OutputPath)*.pdb" "$(OutputPath)..\Client\*"</Command>
     <ProjectReference Include="..\Common\Common.vcxproj">
       <Project>{c6542150-c84d-4e5f-910b-dfedc663bae2}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\GraphicsModule\GraphicsModule.vcxproj">
-      <Project>{207ef073-c5c8-4566-8bd0-928e60be3167}</Project>
+    <ProjectReference Include="..\GraphicsEngine\GraphicsEngine.vcxproj">
+      <Project>{d5f5e173-2f07-49f1-a99e-a176f70bf4fd}</Project>
     </ProjectReference>
     <ProjectReference Include="..\PhysicsModule\PhysicsModule.vcxproj">
       <Project>{4e9d2970-efab-4189-ad50-0b3e11d84daf}</Project>

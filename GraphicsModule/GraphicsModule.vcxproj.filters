@@ -275,6 +275,9 @@
     <ClCompile Include="src\GraphicsModule\Core\RenderSystem.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="src\GraphicsModule\Core\SwapChain.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="inc\GraphicsModule\Core\DirectXTex\DirectXTex.inl">

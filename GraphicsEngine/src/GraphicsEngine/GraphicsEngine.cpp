@@ -33,6 +33,16 @@ namespace Graphics
 		return m_ResourceManager->CreateMaterialBuffer(uuid, pipelineLayout);
 	}
 
+	void GraphicsEngine::OnResize(uint32 _width, uint32 _height)
+	{
+		m_SwapChain->ResizeBuffer({ _width, _height });
+	}
+
+	void GraphicsEngine::RegistRenderObject(RenderObject& renderObject)
+	{
+
+	}
+
 	void GraphicsEngine::LoadDllAndCreateRenderSystem()
 	{
 		std::string _moduleName = "GraphicsModule";
@@ -78,6 +88,16 @@ namespace Graphics
 	{
 		auto procAddr = GetProcAddress(m_GraphicsModule, procedureName);
 		return reinterpret_cast<void*>(procAddr);
+	}
+
+	GRAPHICSENGINE_DLL_DECLSPEC GraphicsEngine* CreateGraphicsEngine(GraphicsEngineDesc& desc)
+	{
+		return new GraphicsEngine(desc);
+	}
+
+	GRAPHICSENGINE_DLL_DECLSPEC void ReleaseGraphicsEngine(GraphicsEngine* graphicsEngine)
+	{
+		delete graphicsEngine;
 	}
 
 }

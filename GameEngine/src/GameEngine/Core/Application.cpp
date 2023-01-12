@@ -6,6 +6,7 @@
 
 #include "GameEngine\Core\Application.h"
 #include "GameEngine\Core\System\ComponentSystem.h"
+#include "GameEngine\Core\System\GraphicsSystem.h"
 #include "GameEngine\Core\System\SceneSystem.h"
 #include "GameEngine\Core\System\Resources.h"
 
@@ -63,6 +64,9 @@ namespace GameEngine
 			
 			m_Input->Initialize(m_pApplication->m_Window->GetWindowInfo()._hWnd);
 			m_GameTime->Initialize();
+
+			m_GraphicsSystem = GraphicsSystem::GetInstance();
+			m_GraphicsSystem->Initialize();
 
 			return true;
 		}

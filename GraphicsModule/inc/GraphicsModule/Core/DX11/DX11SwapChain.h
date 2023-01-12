@@ -38,9 +38,12 @@ namespace Graphics
 			UnderlyingType GetUnderlying() { return m_Underlying.Get(); }
 			UnderlyingType* GetUnderlyingAddress() { return m_Underlying.GetAddressOf(); }
 
-		private:
-			void ResizeBuffer(ID3D11Device*, uint32, uint32);
+			bool ResizeBuffer(const Extent2D& resolution) override;
 
+			bool SwitchFullscreen(bool enable) override;
+
+		private:
+			void ResizeBackBuffer(const Extent2D& resolution);
 			// Create SwapChain
 			void CreateSwapChain(IDXGIFactory* factory, ID3D11Device* device, const SwapChainDesc& desc);
 			void CreateBackBuffer();

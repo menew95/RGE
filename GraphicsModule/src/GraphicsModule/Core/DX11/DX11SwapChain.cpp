@@ -27,18 +27,29 @@ namespace Graphics
 			HR(m_Underlying->Present(0, 0), "SwapChain present failed");
 		}
 
-		void DX11SwapChain::ResizeBuffer(ID3D11Device* device, uint32 width, uint32 height)
+		bool DX11SwapChain::SwitchFullscreen(bool enable)
 		{
-			assert(m_Underlying);
+			assert(false);
+			return false;
+		}
 
-			m_Underlying->ResizeBuffers(1, width, height, DXGI_FORMAT_R8G8B8A8_UNORM, 0);
+		bool DX11SwapChain::ResizeBuffer(const Extent2D& resolution)
+		{
+			ResizeBackBuffer(resolution);
+			return true;
+		}
 
-			m_Underlying->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(m_BackBuffer.GetAddressOf()));
+		void DX11SwapChain::ResizeBackBuffer(const Extent2D& resolution)
+		{
+			m_RenderTargetView.Reset();
+			m_BackBuffer.Reset();
+			m_DepthStencilView.Reset();
+			m_DepthBuffer.Reset();
 
-			if (m_BackBuffer != nullptr)
-			{
-				device->CreateRenderTargetView(m_BackBuffer.Get(), 0, m_RenderTargetView.ReleaseAndGetAddressOf());
-			}
+			auto _hr = m_Underlying->ResizeBuffers(1, resolution._width, resolution._height, DXGI_FORMAT_R8G8B8A8_UNORM, 0);
+			HR(_hr, "failed to resize DXGI swap-chain buffers");
+
+			CreateBackBuffer();
 		}
 
 		void DX11SwapChain::CreateSwapChain(IDXGIFactory* factory, ID3D11Device* device, const SwapChainDesc& desc)

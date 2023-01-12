@@ -152,7 +152,7 @@ xcopy /E /S /Y /R "$(OutputPath)*.pdb" "$(OutputPath)..\Client\*"</Command>
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>GRAPHICS_EXPORT;COMMON_EXPORT;GRAPHICS_EXPORT_DEBUG;GRAPHICSMODULE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>x64;GRAPHICS_EXPORT;COMMON_EXPORT;GRAPHICS_EXPORT_DEBUG;GRAPHICSMODULE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>GraphicsPCH.h</PrecompiledHeaderFile>
@@ -175,7 +175,7 @@ xcopy /E /S /Y /R "$(OutputPath)*.pdb" "$(OutputPath)..\Client\*"</Command>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>GRAPHICS_EXPORT;COMMON_EXPORT;GRAPHICS_EXPORTNDEBUG;GRAPHICSMODULE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>x64;GRAPHICS_EXPORT;COMMON_EXPORT;GRAPHICS_EXPORTNDEBUG;GRAPHICSMODULE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>GraphicsPCH.h</PrecompiledHeaderFile>
@@ -296,6 +296,7 @@ xcopy /E /S /Y /R "$(OutputPath)*.pdb" "$(OutputPath)..\Client\*"</Command>
     <ClCompile Include="src\GraphicsModule\Core\RenderTarget.cpp" />
     <ClCompile Include="src\GraphicsModule\Core\Sampler.cpp" />
     <ClCompile Include="src\GraphicsModule\Core\Shader.cpp" />
+    <ClCompile Include="src\GraphicsModule\Core\SwapChain.cpp" />
     <ClCompile Include="src\GraphicsModule\Core\Texture.cpp" />
     <ClCompile Include="src\GraphicsModule\Core\TextureFlags.cpp" />
     <ClCompile Include="src\GraphicsModule\Graphics_dllmain.cpp" />
