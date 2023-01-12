@@ -6,16 +6,6 @@
 #include "GraphicsModule/Core/ResourceFlags.h"
 namespace Graphics
 {
-	struct BUFFER_DESC
-	{
-		uint32 _byteWidth;
-		uint32 _usage;
-		uint32 _bindFlags;
-		uint32 _cpuAccessFlags;
-		uint32 _miscFlags;
-		uint32 _structureByteStride;
-	};
-
 	struct BufferDesc
 	{
 		uint32 _size = 0;

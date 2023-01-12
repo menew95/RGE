@@ -11,7 +11,7 @@
 
 #include "GraphicsModule/Core/Shader.h"
 #include "GraphicsModule/Core/SwapChain.h"
-#include "GraphicsModule/Core/RenderPass.h"
+//#include "GraphicsModule/Core/RenderPass.h"
 #include "GraphicsModule/Core/RenderTarget.h"
 #include "GraphicsModule/Core/PipelineLayout.h"
 #include "GraphicsModule/Core/PipelineState.h"
@@ -60,9 +60,9 @@ namespace Graphics
 		virtual Sampler* CreateSampler(uuid uuid, const SamplerDesc& desc) abstract;
 		virtual void Release(Sampler& sampler) abstract;
 
-		/* ----- Render Passes ----- */
-		virtual RenderPass* CreateRenderPass(uuid uuid, const RenderPassDesc& desc) abstract;
-		virtual void Release(RenderPass& renderPass) abstract;
+		///* ----- Render Passes ----- */
+		//virtual RenderPass* CreateRenderPass(uuid uuid, const RenderPassDesc& desc) abstract;
+		//virtual void Release(RenderPass& renderPass) abstract;
 
 		/* ----- Render Targets ----- */
 		virtual RenderTarget* CreateRenderTarget(uuid uuid, const RenderTargetDesc& desc) abstract;

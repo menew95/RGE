@@ -59,7 +59,7 @@ namespace Graphics
 		uint32 _bindFlags = (BindFlags::ShaderResource | BindFlags::RenderTarget);
 		uint32 _miscFlags = (MiscFlags::FixedSamples | MiscFlags::GenerateMips);
 		Format _format = Format::R8G8B8A8_UNORM;
-		Extend3D _extend = { 1, 1, 1 };
+		Extent3D _extend = { 1, 1, 1 };
 		uint32 _arrayLayers = 1;
 		uint32 _mipLevels = 0;
 		uint32 _samples = 1;

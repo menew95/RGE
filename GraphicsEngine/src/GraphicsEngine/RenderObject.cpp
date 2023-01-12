@@ -1,5 +1,5 @@
 #include "GraphicsEnginePCH.h"
-#include "GraphicsEngine/RenderPass.h"
+#include "GraphicsEngine/RenderObject.h"
 
 namespace Graphics
 {

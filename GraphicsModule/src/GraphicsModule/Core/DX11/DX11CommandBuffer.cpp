@@ -2,6 +2,7 @@
 
 #include "GraphicsModule/Core/DX11/DX11CommandBuffer.h"
 #include "GraphicsModule/Core/DX11/DX11PipelineState.h"
+#include "GraphicsModule/Core/DX11/DX11PipelineLayout.h"
 #include "GraphicsModule/Core/DX11/DX11StateManager.h"
 #include "GraphicsModule/Core/DX11/DX11RenderTarget.h"
 #include "GraphicsModule/Core/DX11/DX11RenderPass.h"
@@ -452,5 +453,17 @@ namespace Graphics
 			);
 		}
 
+		void DX11CommandBuffer::SetResources(PipelineLayout& pipelineLayout)
+		{
+			DX11PipelineLayout& _castLayout = reinterpret_cast<DX11PipelineLayout&>(pipelineLayout);
+
+			auto& _binds = _castLayout.GetBindings();
+			auto& _resources = _castLayout.GetResources();
+
+			for (uint32 i = 0; i < pipelineLayout.GetNumBindings(); i++)
+			{
+				SetResource(*_resources[i], _binds[i]._slot, _binds[i]._bindFlags, _binds[i]._stageFlags);
+			}
+		}
 	}
 }

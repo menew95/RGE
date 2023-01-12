@@ -7,5 +7,6 @@
 #ifndef PCH_H
 #define PCH_H
 
+#include "GraphicsModule/Core/RenderSystem.h"
 
 #endif //PCH_H

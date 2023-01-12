@@ -52,6 +52,8 @@ namespace Graphics
 			/* ----- Resources ----- */
 
 			void SetResource(Resource& resource, uint32 slot, long bindFlags, long stageFlags = StageFlags::AllStages) override;
+			
+			void SetResources(PipelineLayout& pipelineLayout) override;
 
 			void ResetResourceSlots(const ResourceType  resourceType, uint32 firstSlot, uint32 numSlots, long bindFlags, long stageFlags = StageFlags::AllStages) override;
 

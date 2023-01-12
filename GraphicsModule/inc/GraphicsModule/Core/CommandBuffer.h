@@ -14,6 +14,7 @@ namespace Graphics
 	class Texture;
 	class Sampler;
 	class PipelineState;
+	class PipelineLayout;
 	class Resource;
 	class RenderPass;
 	class RenderTarget;
@@ -50,7 +51,9 @@ namespace Graphics
 		/* ----- Resources ----- */
 
 		virtual void SetResource(Resource& resource, uint32 slot, long bindFlags, long stageFlags = StageFlags::AllStages) abstract;
-
+		
+		virtual void SetResources(PipelineLayout& pipelineLayout) abstract;
+		
 		virtual void ResetResourceSlots(const ResourceType resourceType, uint32 firstSlot, uint32 numSlots, long bindFlags, long stageFlags = StageFlags::AllStages) abstract;
 	
 		/* ----- Render Passes ----- */

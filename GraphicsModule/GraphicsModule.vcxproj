@@ -205,7 +205,12 @@ xcopy /E /S /Y /R "$(OutputPath)*.pdb" "$(OutputPath)..\Client\*"</Command>
     <ClInclude Include="inc\GraphicsModule\Core\DX11\DX11PipeLine.h" />
     <ClInclude Include="inc\GraphicsModule\Core\DX11\DX11PipelineLayout.h" />
     <ClInclude Include="inc\GraphicsModule\Core\DX11\DX11PipelineState.h" />
-    <ClInclude Include="inc\GraphicsModule\Core\DX11\DX11RenderPass.h" />
+    <ClInclude Include="inc\GraphicsModule\Core\DX11\DX11RenderPass.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="inc\GraphicsModule\Core\DX11\DX11RenderTarget.h" />
     <ClInclude Include="inc\GraphicsModule\Core\DX11\DX11ResourceFlags.h" />
     <ClInclude Include="inc\GraphicsModule\Core\DX11\DX11Sampler.h" />
@@ -224,8 +229,18 @@ xcopy /E /S /Y /R "$(OutputPath)*.pdb" "$(OutputPath)..\Client\*"</Command>
     <ClInclude Include="inc\GraphicsModule\Core\PipelineLayoutFlags.h" />
     <ClInclude Include="inc\GraphicsModule\Core\PipelineStateFlags.h" />
     <ClInclude Include="inc\GraphicsModule\Core\PipelineState.h" />
-    <ClInclude Include="inc\GraphicsModule\Core\RenderPass.h" />
-    <ClInclude Include="inc\GraphicsModule\Core\RenderPassFlags.h" />
+    <ClInclude Include="inc\GraphicsModule\Core\RenderPass.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="inc\GraphicsModule\Core\RenderPassFlags.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="inc\GraphicsModule\Core\RenderSystemFlags.h" />
     <ClInclude Include="inc\GraphicsModule\Core\RenderTarget.h" />
     <ClInclude Include="inc\GraphicsModule\Core\RenderTargetFlags.h" />
@@ -261,7 +276,12 @@ xcopy /E /S /Y /R "$(OutputPath)*.pdb" "$(OutputPath)..\Client\*"</Command>
     <ClCompile Include="src\GraphicsModule\Core\DX11\DX11CommandBuffer.cpp" />
     <ClCompile Include="src\GraphicsModule\Core\DX11\DX11PipelineLayout.cpp" />
     <ClCompile Include="src\GraphicsModule\Core\DX11\DX11PipelineState.cpp" />
-    <ClCompile Include="src\GraphicsModule\Core\DX11\DX11RenderPass.cpp" />
+    <ClCompile Include="src\GraphicsModule\Core\DX11\DX11RenderPass.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="src\GraphicsModule\Core\DX11\DX11RenderSystem.cpp" />
     <ClCompile Include="src\GraphicsModule\Core\DX11\DX11RenderTarget.cpp" />
     <ClCompile Include="src\GraphicsModule\Core\DX11\DX11ResourceFlags.cpp" />

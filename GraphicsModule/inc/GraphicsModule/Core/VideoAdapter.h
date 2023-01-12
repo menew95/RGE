@@ -7,7 +7,7 @@ namespace Graphics
 	// Format DXGI_FORMAT_R8G8B8A8_UNORM에서의 비디오 어뎁터가 제공하는 해상도와 갱신 빈도
 	struct DisplayModeDesc
 	{
-		Extend2D _resolution;
+		Extent2D _resolution;
 
 		uint32 _refreshRate = 0;
 	};

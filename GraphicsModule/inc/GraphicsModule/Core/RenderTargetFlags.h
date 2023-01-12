@@ -25,7 +25,7 @@ namespace Graphics
 
 	struct RenderTargetDesc
 	{
-		Extend2D _extend;
+		Extent2D _extend;
 
 		uint32 _sample = 1;
 

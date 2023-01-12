@@ -50,9 +50,9 @@ namespace Graphics
 			Sampler* CreateSampler(uuid uuid, const SamplerDesc& desc) override;
 			void Release(Sampler& sampler) override;
 
-			/* ----- Render Passes ----- */
-			RenderPass* CreateRenderPass(uuid uuid, const RenderPassDesc& desc) override;
-			void Release(RenderPass& renderPass) override;
+			///* ----- Render Passes ----- */
+			//RenderPass* CreateRenderPass(uuid uuid, const RenderPassDesc& desc) override;
+			//void Release(RenderPass& renderPass) override;
 
 			/* ----- Render Targets ----- */
 			RenderTarget* CreateRenderTarget(uuid uuid, const RenderTargetDesc& desc) override;
@@ -99,7 +99,7 @@ namespace Graphics
 			Container <class DX11Buffer>			m_BufferContainer;
 			Container <class DX11Texture>			m_TextureContainer;
 			Container <class DX11Sampler>			m_SamplerContainer;
-			Container <class DX11RenderPass>		m_RenderPassContainer;
+			//Container <class DX11RenderPass>		m_RenderPassContainer;
 			Container <class DX11RenderTarget>		m_RenderTargetContainer;
 			Container <class DX11Shader>			m_ShaderContainer;
 			Container <class DX11PipelineLayout>	m_PipelineLayoutContainer;

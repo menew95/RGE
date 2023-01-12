@@ -1,22 +1,36 @@
 #include "GraphicsEnginePCH.h"
-#include "GraphicsEngine/GraphicsEngine.h"
 
 #include "GraphicsModule/Module.h"
+
+#include "GraphicsEngine/GraphicsEngine.h"
+
+#include "GraphicsEngine/Resource/ResourceManager.h"
+
 
 HINSTANCE m_GraphicsModule;
 
 namespace Graphics
 {
-
-
-	GraphicsEngine::GraphicsEngine()
+	GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& desc)
 	{
 		LoadDllAndCreateRenderSystem();
+
+		m_ResourceManager = std::make_shared<ResourceManager>(m_RenderSystem);
 	}
 
 	GraphicsEngine::~GraphicsEngine()
 	{
 		FreeDllAndReleaseRenderSystem();
+	}
+
+	Graphics::MeshBuffer* GraphicsEngine::CreateMeshBuffer(uuid uuid, std::vector<Common::VertexAttribute>& vertices, std::vector<std::vector<uint32>> subMeshs)
+	{
+		return m_ResourceManager->CreateMeshBuffer(uuid, vertices, subMeshs);
+	}
+
+	Graphics::MaterialBuffer* GraphicsEngine::CreateMaterialBuffer(uuid uuid, PipelineLayout* pipelineLayout)
+	{
+		return m_ResourceManager->CreateMaterialBuffer(uuid, pipelineLayout);
 	}
 
 	void GraphicsEngine::LoadDllAndCreateRenderSystem()

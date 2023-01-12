@@ -37,16 +37,16 @@ using Layer = uint32;
 
 #endif
 
-struct Extend2D
+struct Extent2D
 {
-	Extend2D()
+	Extent2D()
 		: _width(0)
 		, _height(0)
 	{}
 
-	Extend2D(const Extend2D&) = default;
+	Extent2D(const Extent2D&) = default;
 
-	inline Extend2D(uint32 width, uint32 height)
+	inline Extent2D(uint32 width, uint32 height)
 		: _width(width)
 		, _height(height)
 	{}
@@ -55,17 +55,17 @@ struct Extend2D
 	uint32 _height;
 };
 
-struct Extend3D
+struct Extent3D
 {
-	Extend3D()
+	Extent3D()
 		: _width(0)
 		, _height(0)
 		, _depth(0)
 	{}
 
-	Extend3D(const Extend3D&) = default;
+	Extent3D(const Extent3D&) = default;
 
-	inline Extend3D(uint32 width, uint32 height, uint32 depth)
+	inline Extent3D(uint32 width, uint32 height, uint32 depth)
 		: _width(width)
 		, _height(height)
 		, _depth(depth)

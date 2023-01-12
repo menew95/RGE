@@ -19,11 +19,11 @@ namespace Graphics
             uint32   slot,
             uint32   arraySize = 1)
             :
-            type{ type },
-            bindFlags{ bindFlags },
-            stageFlags{ stageFlags },
-            slot{ slot },
-            arraySize{ arraySize }
+			_type{ type },
+			_bindFlags{ bindFlags },
+			_stageFlags{ stageFlags },
+			_slot{ slot },
+			_arraySize{ arraySize }
         {
         }
 
@@ -35,26 +35,27 @@ namespace Graphics
 			uint32       slot,
 			uint32       arraySize = 1)
             :
-            name{ name },
-            type{ type },
-            bindFlags{ bindFlags },
-            stageFlags{ stageFlags },
-            slot{ slot },
-            arraySize{ arraySize }
+			_name{ name },
+			_type{ type },
+			_bindFlags{ bindFlags },
+			_stageFlags{ stageFlags },
+			_slot{ slot },
+			_arraySize{ arraySize }
         {
         }
 
-        std::string     name;
+        std::string     _name;
 
-        ResourceType    type = ResourceType::Undefined;
-        long            bindFlags = 0;
-        long            stageFlags = 0;
-        uint32   slot = 0;
-        uint32   arraySize = 1;
+        ResourceType    _type = ResourceType::Undefined;
+        long            _bindFlags = 0;
+        long            _stageFlags = 0;
+        uint32   _slot = 0;
+        uint32   _arraySize = 1;
     };
 
     struct PipelineLayoutDesc
     {
-        std::vector<BindingDescriptor> bindings;
+        std::vector<BindingDescriptor> _bindings;
+        std::vector<class Resource*> _resources;
     };
 }

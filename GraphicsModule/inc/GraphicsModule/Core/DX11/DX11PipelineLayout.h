@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GraphicsModule/Core/PipelineLayout.h"
+#include "GraphicsModule/Core/Resource.h"
 
 namespace Graphics
 {
@@ -17,12 +18,19 @@ namespace Graphics
 				return m_Bindings;
 			}
 
+			inline const std::vector<Resource*>& GetResources() const
+			{
+				return m_Resources;
+			}
+
+			void SetResources(std::vector<Resource*>& resources) override;
+			void SetResource(uint32 index, Resource* resource) override;
 			uint32 GetNumBindings() const override;
 
 		private:
 
+			std::vector<Resource*> m_Resources;
 			std::vector<BindingDescriptor> m_Bindings;
-
 		};
 	}
 }

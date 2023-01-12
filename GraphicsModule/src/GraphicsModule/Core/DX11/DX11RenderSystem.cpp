@@ -170,7 +170,7 @@ namespace Graphics
 			RemoveFromUniqueUnorderedMap(m_SamplerContainer, &sampler);
 		}
 
-		Graphics::RenderPass* DX11RenderSystem::CreateRenderPass(uuid uuid, const RenderPassDesc& desc)
+		/*Graphics::RenderPass* DX11RenderSystem::CreateRenderPass(uuid uuid, const RenderPassDesc& desc)
 		{
 			DX11RenderPass* _pass = TakeOwnership(m_RenderPassContainer, uuid, MakeUnique<DX11RenderPass>(desc));
 
@@ -180,7 +180,7 @@ namespace Graphics
 		void DX11RenderSystem::Release(RenderPass& renderPass)
 		{
 			RemoveFromUniqueUnorderedMap(m_RenderPassContainer, &renderPass);
-		}
+		}*/
 
 		Graphics::RenderTarget* DX11RenderSystem::CreateRenderTarget(uuid uuid, const RenderTargetDesc& desc)
 		{

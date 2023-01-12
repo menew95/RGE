@@ -176,12 +176,24 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="inc\GraphicsEngine\GraphicsEngine.h" />
-    <ClInclude Include="inc\GraphicsEngine\RenderPass.h" />
+    <ClInclude Include="inc\GraphicsEngine\GraphicsEngineFlags.h" />
+    <ClInclude Include="inc\GraphicsEngine\RenderPass\RenderPass.h" />
+    <ClInclude Include="inc\GraphicsEngine\RenderObject.h" />
+    <ClInclude Include="inc\GraphicsEngine\RenderPassFlags.h" />
+    <ClInclude Include="inc\GraphicsEngine\Resource\MaterialBuffer.h" />
+    <ClInclude Include="inc\GraphicsEngine\Resource\MeshBuffer.h" />
+    <ClInclude Include="inc\GraphicsEngine\Resource\ResourceBuffer.h" />
+    <ClInclude Include="inc\GraphicsEngine\Resource\ResourceManager.h" />
     <ClInclude Include="src\GraphicsEnginePCH.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\GraphicsEngine\Resource\MaterialBuffer.cpp" />
+    <ClCompile Include="src\GraphicsEngine\Resource\MeshBuffer.cpp" />
+    <ClCompile Include="src\GraphicsEngine\Resource\ResourceBuffer.cpp" />
+    <ClCompile Include="src\GraphicsEngine\RenderObject.cpp" />
+    <ClCompile Include="src\GraphicsEngine\Resource\ResourceManager.cpp" />
     <ClCompile Include="src\GraphicsEngine_dllmain.cpp" />
-    <ClCompile Include="src\GraphicsEngine\RenderPass.cpp" />
+    <ClCompile Include="src\GraphicsEngine\RenderPass\RenderPass.cpp" />
     <ClCompile Include="src\GraphicsEngine\GraphicsEngine.cpp" />
     <ClCompile Include="src\GraphicsEnginePCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
