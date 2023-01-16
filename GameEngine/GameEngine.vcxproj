@@ -213,6 +213,7 @@ xcopy /E /S /Y /R "$(OutputPath)*.pdb" "$(OutputPath)..\Client\*"</Command>
     <ClInclude Include="inc\GameEngine\Core\Component\Renderer.h" />
     <ClInclude Include="inc\GameEngine\Core\System\SceneSystem.h" />
     <ClInclude Include="inc\GameEngine\Core\Resource\Resource.h" />
+    <ClInclude Include="inc\GameEngine\Utility\Serialization.h" />
     <ClInclude Include="inc\GameEngine\Window.h" />
     <ClInclude Include="src\GameEngine\GameEnginePCH.h" />
     <ClInclude Include="inc\GameEngine\Core\Component\Transform.h" />

@@ -32,7 +32,7 @@ namespace Graphics
 
 		void DX11StateManager::SetViewports(uint32 numViewports, const Math::Viewport* viewportArray)
 		{
-			numViewports = min(numViewports, std::uint32_t(D3D11_VIEWPORT_AND_SCISSORRECT_OBJECT_COUNT_PER_PIPELINE));
+			numViewports = std::min(numViewports, std::uint32_t(D3D11_VIEWPORT_AND_SCISSORRECT_OBJECT_COUNT_PER_PIPELINE));
 
 			if (IsCompatibleToD3DViewport())
 			{
@@ -61,7 +61,7 @@ namespace Graphics
 
 		void DX11StateManager::SetScissors(uint32 numScissors, const Math::Scissor* scissorArray)
 		{
-			numScissors = min(numScissors, std::uint32_t(D3D11_VIEWPORT_AND_SCISSORRECT_OBJECT_COUNT_PER_PIPELINE));
+			numScissors = std::min(numScissors, std::uint32_t(D3D11_VIEWPORT_AND_SCISSORRECT_OBJECT_COUNT_PER_PIPELINE));
 
 			D3D11_RECT scissorsD3D[D3D11_VIEWPORT_AND_SCISSORRECT_OBJECT_COUNT_PER_PIPELINE];
 

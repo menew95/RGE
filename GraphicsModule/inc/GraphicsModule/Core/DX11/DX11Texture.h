@@ -56,7 +56,23 @@ namespace Graphics
 			void CreateTexture1D(ID3D11Device* device, const TextureDesc& desc, const D3D11_SUBRESOURCE_DATA* initialData = nullptr);
 			void CreateTexture2D(ID3D11Device* device, const TextureDesc& desc, const D3D11_SUBRESOURCE_DATA* initialData = nullptr);
 			void CreateTexture3D(ID3D11Device* device, const TextureDesc& desc, const D3D11_SUBRESOURCE_DATA* initialData = nullptr);
-		
+
+			void UpdateSubresource(
+				ID3D11DeviceContext* context,
+				UINT                        mipLevel,
+				UINT                        arrayLayer,
+				const D3D11_BOX& region,
+				const ImageDesc& imageDesc
+			);
+
+			void CreateSubresourceCopyWithCPUAccess(
+				ID3D11Device* device,
+				ID3D11DeviceContext* context,
+				DX11NativeTexture& textureOutput,
+				UINT                    cpuAccessFlags,
+				const TextureRegion& region
+			);
+
 			void CreateShaderResourceView(ID3D11Device* device, uint32 baseMipLevel, uint32 numMipLevels, uint32 baseArrayLayer, uint32 numArrayLayers);
 			void CreateTextureFromFile(ID3D11Device* device, const ImageDesc& srcDesc);
 		private:

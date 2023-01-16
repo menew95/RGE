@@ -72,7 +72,7 @@ namespace Graphics
 		for (size_t i = 0; i < desc._attachments.size(); i++)
 		{
 			// todo : 렌더 타겟 타입에 따른 생성
-			switch (desc._attachments[i]._renderTargetTyep)
+			switch (desc._attachments[i]._renderTargetType)
 			{
 				case RenderTargetType::RenderTarget:
 				{
@@ -128,7 +128,9 @@ namespace Graphics
 		}
 
 		ComPtr<ID3D11RenderTargetView> _rtv;
-		device->CreateRenderTargetView(_castTex->GetNativeTexture()._resource.Get(), &_rtvDesc, _rtv.ReleaseAndGetAddressOf());
+		auto _hr = device->CreateRenderTargetView(_castTex->GetNativeTexture()._resource.Get(), &_rtvDesc, _rtv.ReleaseAndGetAddressOf());
+
+		HR(_hr, "failed to create render-target-view");
 
 		m_RenderTargetViews.push_back(_rtv);
 		m_RenderTargetViewRefs.push_back(_rtv.Get());
@@ -186,8 +188,10 @@ namespace Graphics
 				break;
 		}
 
-		auto hr = device->CreateDepthStencilView(_castTex->GetNativeTexture()._resource.Get(), &_dsvDesc, m_DepthStencilView.ReleaseAndGetAddressOf());
+		auto _hr = device->CreateDepthStencilView(_castTex->GetNativeTexture()._resource.Get(), &_dsvDesc, m_DepthStencilView.ReleaseAndGetAddressOf());
 
+		HR(_hr, "failed to create depth-stencil-view");
+		
 		m_DSVBuffer = _castTex;
 	}
 

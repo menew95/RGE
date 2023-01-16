@@ -8,7 +8,18 @@ public:
 	static tstring Generate();
 };
 
-class Object
+
+#ifdef COMMON_EXPORT
+#ifndef COMMON
+#define COMMON dll_export
+#endif
+#else
+#ifndef COMMON
+#define COMMON dll_import
+#endif
+#endif
+
+class COMMON Object
 {
 public:
 	Object(const tstring& _typeName);

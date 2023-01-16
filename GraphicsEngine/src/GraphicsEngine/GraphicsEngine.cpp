@@ -6,6 +6,7 @@
 
 #include "GraphicsEngine/Resource/ResourceManager.h"
 
+#include "GraphicsEngine/Json/JsonTable.h"
 
 HINSTANCE m_GraphicsModule;
 
@@ -16,11 +17,36 @@ namespace Graphics
 		LoadDllAndCreateRenderSystem();
 
 		m_ResourceManager = std::make_shared<ResourceManager>(m_RenderSystem);
+
+
+		// Test Code
+		Initialize();
 	}
 
 	GraphicsEngine::~GraphicsEngine()
 	{
 		FreeDllAndReleaseRenderSystem();
+	}
+
+	void GraphicsEngine::Initialize()
+	{
+		TableLoader::LoadShaderTable(m_ResourceManager.get());
+		TableLoader::LoadTextureTable(m_ResourceManager.get());
+		TableLoader::LoadRenderTargetTable(m_ResourceManager.get(), { 1280.f, 720.f });
+
+
+		SwapChainDesc _swapChainDesc;
+		m_SwapChain = m_RenderSystem->CreateSwapChain(TEXT("MainSwapChain"), _swapChainDesc);
+
+
+		GraphicsPipelineDesc _pipelineDesc;
+		_TestPipelineState = m_RenderSystem->CreatePipelineState(TEXT("TestSwapChain"), _pipelineDesc);
+
+
+		RenderTargetDesc _renderTargetDesc;
+		_TestRenderTarget = m_RenderSystem->CreateRenderTarget(TEXT("TestSwapChain"), _renderTargetDesc);
+
+		_TestRenderPass = new RenderPass(_TestPipelineState, _TestRenderTarget);
 	}
 
 	Graphics::MeshBuffer* GraphicsEngine::CreateMeshBuffer(uuid uuid, std::vector<Common::VertexAttribute>& vertices, std::vector<std::vector<uint32>> subMeshs)
@@ -40,7 +66,16 @@ namespace Graphics
 
 	void GraphicsEngine::RegistRenderObject(RenderObject& renderObject)
 	{
+		_TestRenderPass->RegistRenderObject(renderObject);
+	}
 
+	void GraphicsEngine::Excute()
+	{
+		_TestRenderPass->BeginExcute(m_CommandBuffer);
+
+		_TestRenderPass->Excute(m_CommandBuffer);
+
+		_TestRenderPass->EndExcute(m_CommandBuffer);
 	}
 
 	void GraphicsEngine::LoadDllAndCreateRenderSystem()

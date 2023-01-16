@@ -10,6 +10,7 @@
 #ifndef __PLATFORM_INDEPENDENT_TYPE_DEFINED__
 #define __PLATFORM_INDEPENDENT_TYPE_DEFINED__
 
+
 using tchar = TCHAR;
 
 using int8 = signed char;
@@ -74,4 +75,36 @@ struct Extent3D
 	uint32 _width;
 	uint32 _height;
 	uint32 _depth;
+};
+
+struct Offset2D
+{
+	Offset2D() = default;
+	Offset2D(const Offset2D&) = default;
+
+	inline Offset2D(int32 x, int32 y) :
+		x{ x },
+		y{ y }
+	{
+	}
+
+	int32 x = 0; //!< Offset X axis.
+	int32 y = 0; //!< Offset Y axis.
+};
+
+struct Offset3D
+{
+	Offset3D() = default;
+	Offset3D(const Offset3D&) = default;
+
+	inline Offset3D(int32 x, int32 y, int32 z) :
+		x{ x },
+		y{ y },
+		z{ z }
+	{
+	}
+
+	int32 x = 0; //!< Offset X axis.
+	int32 y = 0; //!< Offset Y axis.
+	int32 z = 0; //!< Offset Z axis.
 };

@@ -354,8 +354,8 @@ namespace Graphics
 				if ((stageFlags & StageFlags::VS) != 0)
 				{
 					/* Clamp slot indices */
-					firstSlot = min(firstSlot, std::uint32_t(D3D11_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT) - 1);
-					numSlots = min(numSlots, std::uint32_t(D3D11_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT) - firstSlot);
+					firstSlot = std::min(firstSlot, std::uint32_t(D3D11_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT) - 1);
+					numSlots = std::min(numSlots, std::uint32_t(D3D11_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT) - firstSlot);
 
 					/* Unbind vertex buffers */
 					m_Context->IASetVertexBuffers(
@@ -377,8 +377,8 @@ namespace Graphics
 			if ((bindFlags & BindFlags::ConstantBuffer) != 0)
 			{
 				/* Clamp slot indices */
-				firstSlot = min(firstSlot, std::uint32_t(D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT) - 1);
-				numSlots = min(numSlots, std::uint32_t(D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT) - firstSlot);
+				firstSlot = std::min(firstSlot, std::uint32_t(D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT) - 1);
+				numSlots = std::min(numSlots, std::uint32_t(D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT) - firstSlot);
 
 				m_StateManager->SetConstantBuffers(
 					firstSlot,
@@ -392,8 +392,8 @@ namespace Graphics
 				if (firstSlot == 0 && (stageFlags & (StageFlags::VS | StageFlags::GS)) != 0)
 				{
 					/* Clamp slot indices */
-					firstSlot = min(firstSlot, std::uint32_t(D3D11_SO_BUFFER_SLOT_COUNT) - 1);
-					numSlots = min(numSlots, std::uint32_t(D3D11_SO_BUFFER_SLOT_COUNT) - firstSlot);
+					firstSlot = std::min(firstSlot, std::uint32_t(D3D11_SO_BUFFER_SLOT_COUNT) - 1);
+					numSlots = std::min(numSlots, std::uint32_t(D3D11_SO_BUFFER_SLOT_COUNT) - firstSlot);
 
 					/* Unbind stream-output buffers */
 					m_Context->SOSetTargets(
@@ -420,16 +420,16 @@ namespace Graphics
 
 		void DX11CommandBuffer::ResetSamplerSlots(uint32 firstSlot, uint32 numSlots, long bindFlags, long stageFlags /*= StageFlags::AllStages*/)
 		{
-			firstSlot = min(firstSlot, std::uint32_t(D3D11_COMMONSHADER_SAMPLER_SLOT_COUNT) - 1);
-			numSlots = min(numSlots, std::uint32_t(D3D11_COMMONSHADER_SAMPLER_SLOT_COUNT) - firstSlot);
+			firstSlot = std::min(firstSlot, std::uint32_t(D3D11_COMMONSHADER_SAMPLER_SLOT_COUNT) - 1);
+			numSlots = std::min(numSlots, std::uint32_t(D3D11_COMMONSHADER_SAMPLER_SLOT_COUNT) - firstSlot);
 
 			m_StateManager->SetSamplers(firstSlot, numSlots, reinterpret_cast<ID3D11SamplerState* const*>(g_nullResources), stageFlags);
 		}
 
 		void DX11CommandBuffer::ResetResourceSlotsSRV(uint32 firstSlot, uint32 numSlots, long stageFlags)
 		{
-			firstSlot = min(firstSlot, std::uint32_t(D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT) - 1);
-			numSlots = min(numSlots, std::uint32_t(D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT) - firstSlot);
+			firstSlot = std::min(firstSlot, std::uint32_t(D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT) - 1);
+			numSlots = std::min(numSlots, std::uint32_t(D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT) - firstSlot);
 
 			m_StateManager->SetShaderResources(
 				firstSlot,
@@ -441,8 +441,8 @@ namespace Graphics
 
 		void DX11CommandBuffer::ResetResourceSlotsUAV(uint32 firstSlot, uint32 numSlots, long stageFlags)
 		{
-			firstSlot = min(firstSlot, std::uint32_t(D3D11_1_UAV_SLOT_COUNT) - 1);
-			numSlots = min(numSlots, std::uint32_t(D3D11_1_UAV_SLOT_COUNT) - firstSlot);
+			firstSlot = std::min(firstSlot, std::uint32_t(D3D11_1_UAV_SLOT_COUNT) - 1);
+			numSlots = std::min(numSlots, std::uint32_t(D3D11_1_UAV_SLOT_COUNT) - firstSlot);
 
 			m_StateManager->SetUnorderedAccessViews(
 				firstSlot,

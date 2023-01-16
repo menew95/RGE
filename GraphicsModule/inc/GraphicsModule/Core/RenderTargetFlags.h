@@ -14,7 +14,7 @@ namespace Graphics
 
 	struct AttachmentDesc
 	{
-		RenderTargetType _renderTargetTyep = RenderTargetType::RenderTarget;
+		RenderTargetType _renderTargetType = RenderTargetType::RenderTarget;
 
 		class Texture* _resource = nullptr;
 

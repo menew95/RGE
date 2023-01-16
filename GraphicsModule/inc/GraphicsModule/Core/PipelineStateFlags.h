@@ -81,13 +81,11 @@ namespace Graphics
 		DepthBiasDesc _depthBias;
 
 		bool _frontCCW = false;
-		bool _discardEnabled = false;
 		bool _depthClampEnabled = false;
 		bool _scissorTestEnabled = false;
 		bool _multiSampleEnabled = false;
 		bool _antiAliasedLineEnabled = false;
 		bool _conservativeRasterization = false;
-		float _lineWidth = 1.0f;
 	};
 
 	enum class Blend
@@ -122,7 +120,7 @@ namespace Graphics
 
 	struct BlendTargetDesc
 	{
-		bool _blendEnable;
+		bool _blendEnable = false;
 		Blend _srcBlend;
 		Blend _destBlend;
 		BlendOp _blendOp;

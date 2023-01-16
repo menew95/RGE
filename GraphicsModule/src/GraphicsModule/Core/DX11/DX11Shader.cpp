@@ -36,11 +36,19 @@ namespace Graphics
 			auto        defines = reinterpret_cast<const D3D_SHADER_MACRO*>(desc.defines);
 			auto        flags = desc._flags;
 
+			flags = D3DCOMPILE_ENABLE_STRICTNESS | D3DCOMPILE_PACK_MATRIX_ROW_MAJOR;
+
+#if defined(_DEBUG) || defined(DEBUG)
+			flags |= D3DCOMPILE_DEBUG; // ½¦ÀÌ´õ µð¹ö±ëÇÒ ¶§ ÇÊ¿ä
+
+			flags |= D3DCOMPILE_SKIP_OPTIMIZATION;
+#endif
+
 			/* Compile shader code */
 			auto _hr = D3DCompileFromFile(
 				desc._filePath.c_str(),
 				defines,
-				nullptr,
+				D3D_COMPILE_STANDARD_FILE_INCLUDE,
 				entry,
 				target,
 				flags,
@@ -84,6 +92,9 @@ namespace Graphics
 						m_Blob->GetBufferSize(),
 						nullptr,
 						m_NativeShader._pixelShader.ReleaseAndGetAddressOf());
+
+					HR(_hr, "faild to create pixel shader");
+
 					break;
 				}
 				case ShaderType::Vertex:
@@ -94,6 +105,7 @@ namespace Graphics
 						nullptr,
 						m_NativeShader._vertexShader.ReleaseAndGetAddressOf());
 
+					HR(_hr, "faild to create vertex shader");
 					break;
 				}
 				case ShaderType::Geometry:
@@ -104,6 +116,7 @@ namespace Graphics
 						nullptr,
 						m_NativeShader._geometryShader.ReleaseAndGetAddressOf());
 
+					HR(_hr, "faild to create geometry shader");
 					break;
 				}
 				case ShaderType::Hull:
@@ -114,6 +127,7 @@ namespace Graphics
 						nullptr,
 						m_NativeShader._hullShader.ReleaseAndGetAddressOf());
 
+					HR(_hr, "faild to create hull shader");
 					break;
 				}
 				case ShaderType::Domain:
@@ -124,6 +138,7 @@ namespace Graphics
 						nullptr,
 						m_NativeShader._domainShader.ReleaseAndGetAddressOf());
 
+					HR(_hr, "faild to create domain shader");
 					break;
 				}
 				case ShaderType::Compute:
@@ -134,6 +149,7 @@ namespace Graphics
 						nullptr,
 						m_NativeShader._computeShader.ReleaseAndGetAddressOf());
 
+					HR(_hr, "faild to create compute shader");
 					break;
 				}
 				default:

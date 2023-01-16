@@ -12,7 +12,7 @@ namespace Graphics
 
 	struct BindFlags
 	{
-		enum
+		enum eBindFlags
 		{
 			VertexBuffer    = (1 << 0),
 			IndexBuffer     = (1 << 1),
@@ -29,7 +29,7 @@ namespace Graphics
 
     struct CPUAccessFlags
     {
-        enum
+        enum eCPUAccessFlags
         {
             Read = (1 << 0),
             Write = (1 << 1),
@@ -38,15 +38,15 @@ namespace Graphics
     };
 
     struct MiscFlags
-    {
-        enum
-        {
-            DynamicUsage = (1 << 0),
-            FixedSamples = (1 << 1),
-            GenerateMips = (1 << 2),
-            NoInitialData = (1 << 3),
-            Append = (1 << 4),
-            Counter = (1 << 5),
-        };
-    };
+	{
+		enum eMiscFlags
+		{
+			DynamicUsage = (1 << 0),
+			FixedSamples = (1 << 1),
+			GenerateMips = (1 << 2),
+			NoInitialData = (1 << 3),
+			Append = (1 << 4),
+			Counter = (1 << 5),
+		};
+	};
 }

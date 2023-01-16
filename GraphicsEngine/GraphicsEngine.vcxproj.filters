@@ -48,6 +48,12 @@
     <ClInclude Include="inc\GraphicsEngine\Export.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="src\GraphicsEngine\Json\JsonTable.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GraphicsEngine\Json\JsonMacros.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\GraphicsEngine_dllmain.cpp">
@@ -77,5 +83,17 @@
     <ClCompile Include="src\GraphicsEngine\Resource\ResourceManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="src\GraphicsEngine\Json\JsonTable.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shader\Header\H_ConstBuffer.hlsli" />
+    <None Include="Shader\Header\H_Struct.hlsli" />
+    <None Include="Shader\Header\H_Input.hlsli" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Shader\VS_Mesh.hlsl" />
+    <FxCompile Include="Shader\PS_Deferred.hlsl" />
   </ItemGroup>
 </Project>

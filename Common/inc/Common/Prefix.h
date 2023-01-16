@@ -43,6 +43,7 @@ typedef void* RHandle;
         /**/
 #endif
 
+#define NOMINMAX
 #include <windows.h>
 #define TO_STRING(x) #x
 

@@ -91,6 +91,16 @@ namespace Graphics
 			m_NativeTexture._tex3D = DXCreateTexture3D(device, _desc, initialData);
 		}
 
+		void DX11Texture::UpdateSubresource(ID3D11DeviceContext* context, UINT mipLevel, UINT arrayLayer, const D3D11_BOX& region, const ImageDesc& imageDesc)
+		{
+
+		}
+
+		void DX11Texture::CreateSubresourceCopyWithCPUAccess(ID3D11Device* device, ID3D11DeviceContext* context, DX11NativeTexture& textureOutput, UINT cpuAccessFlags, const TextureRegion& region)
+		{
+
+		}
+
 		Graphics::ComPtr<ID3D11Texture1D> DX11Texture::DXCreateTexture1D(ID3D11Device* device, const D3D11_TEXTURE1D_DESC& desc, const D3D11_SUBRESOURCE_DATA* initialData /*= nullptr*/)
 		{
 			ComPtr<ID3D11Texture1D> _tex1D;
@@ -125,34 +135,6 @@ namespace Graphics
 		{
 			D3D11_SHADER_RESOURCE_VIEW_DESC _desc;
 			ZeroMemory(&_desc, sizeof(_desc));
-
-			switch (m_TextureDesc._format)
-			{
-				case DXGI_FORMAT_R16_TYPELESS:
-				{
-					_desc.Format = DXGI_FORMAT_R16_UNORM;
-					break;
-				}
-				case DXGI_FORMAT_R32_TYPELESS:
-				{
-					_desc.Format = DXGI_FORMAT_R32_FLOAT;
-					break;
-				}
-				case DXGI_FORMAT_R24G8_TYPELESS:
-				{
-					_desc.Format = DXGI_FORMAT_UNKNOWN;
-					break;
-				}
-				case DXGI_FORMAT_R32G8X24_TYPELESS:
-				{
-					_desc.Format = DXGI_FORMAT_UNKNOWN;
-					break;
-				}
-				default:
-				{
-					_desc.Format = MapFormat(m_TextureDesc._format);
-				}
-			}
 
 			switch (m_TextureDesc._textureType)
 			{
@@ -215,6 +197,38 @@ namespace Graphics
 					break;
 			}
 
+			switch (m_TextureDesc._format)
+			{
+				case DXGI_FORMAT_R16_TYPELESS:
+				{
+					_desc.Format = DXGI_FORMAT_R16_UNORM;
+					break;
+				}
+				case DXGI_FORMAT_R32_TYPELESS:
+				{
+					_desc.Format = DXGI_FORMAT_R32_FLOAT;
+					break;
+				}
+				case DXGI_FORMAT_R24G8_TYPELESS:
+				{
+					_desc.Format = DXGI_FORMAT_R24G8_TYPELESS;
+					break;
+				}
+				case DXGI_FORMAT_R32G8X24_TYPELESS:
+				{
+					_desc.Format = DXGI_FORMAT_R32G8X24_TYPELESS;
+					break;
+				}
+				default:
+				{
+					_desc.Format = MapFormat(m_TextureDesc._format);
+				}
+			}
+
+			/*_desc.Format = bUseStencil ? DXGI_FORMAT_R24_UNORM_X8_TYPELESS : DXGI_FORMAT_R32_FLOAT;
+			_desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+			_desc.Texture2D.MipLevels = 1;*/
+			_desc.Format = ToDXGIFormatSRV(_desc.Format);
 			HR(device->CreateShaderResourceView(m_NativeTexture._resource.Get(), &_desc, m_ShaderResourceView.ReleaseAndGetAddressOf())
 			, "failed to create D3D11 shader-resource-view");
 		}

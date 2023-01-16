@@ -1,5 +1,8 @@
-#include "GameEngine\GameEnginePCH.h"
-#include "GameEngine\Core\Resource\Mesh.h"
+#include "GameEngine/GameEnginePCH.h"
+
+#include "GameEngine/Core/Resource/Mesh.h"
+
+#include "GameEngine/Core/System/GraphicsSystem.h"
 
 namespace GameEngine
 {
@@ -13,13 +16,15 @@ namespace GameEngine
 
 		Mesh::~Mesh()
 		{
-
+			
 		}
 
 		bool Mesh::Release()
 		{
 			// Todo :
 			bool _ret = false;
+
+
 			return _ret;
 		}
 	}

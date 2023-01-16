@@ -590,7 +590,7 @@ namespace Graphics
 			{
 				case DXGI_FORMAT_R16_TYPELESS:      return DXGI_FORMAT_R16_UNORM;
 				case DXGI_FORMAT_R32_TYPELESS:      return DXGI_FORMAT_R32_FLOAT;
-				case DXGI_FORMAT_R24G8_TYPELESS:    return DXGI_FORMAT_UNKNOWN;
+				case DXGI_FORMAT_R24G8_TYPELESS:    return DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
 				case DXGI_FORMAT_R32G8X24_TYPELESS: return DXGI_FORMAT_UNKNOWN;
 				default:                            return format;
 			}

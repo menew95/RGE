@@ -19,7 +19,6 @@ namespace GameEngine
 			Mesh(const tstring& typeName = TEXT("Mesh"));
 			virtual ~Mesh();
 
-
 			std::vector<VertexAttribute>& GetVertexAttributes() { return m_VertexAttributes; }
 			std::vector<uint32>& GetIndexAttributes() { return m_IndexAttributers; }
 
