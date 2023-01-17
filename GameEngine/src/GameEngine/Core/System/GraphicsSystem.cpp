@@ -25,6 +25,8 @@ namespace GameEngine
 		
 		void GraphicsSystem::Render()
 		{
+			m_GraphicsEngine->Excute();
+
 			for (auto& _renderPass : m_RenderPassList)
 			{
 
@@ -64,9 +66,10 @@ namespace GameEngine
 
 			Graphics::GraphicsEngineDesc _desc;
 
+
 			WindowInfo& _windowInfo = Window::GetInstance()->GetWindowInfo();
 
-			_desc._handle = reinterpret_cast<long>(_windowInfo._hWnd);
+			_desc._handle = reinterpret_cast<void*>(_windowInfo._hWnd);
 
 			_desc._isFullScreen = false;
 			_desc._height = _windowInfo._height;
@@ -74,9 +77,9 @@ namespace GameEngine
 
 			_desc._renderSystemDesc._systemType = Graphics::SystemType::DirectX11;
 
-			auto ss = createGraphicsEngine(_desc);
+			auto _ptr = createGraphicsEngine(_desc);
 
-			m_GraphicsEngine = std::make_unique<Graphics::GraphicsEngine>(*ss);
+			m_GraphicsEngine = std::make_unique<Graphics::GraphicsEngine>(*_ptr);
 		}
 
 		void GraphicsSystem::FreeGraphicsEngineDll()

@@ -22,20 +22,71 @@ namespace Graphics
 
 	
 
+	MeshBuffer* ResourceManager::CreateMeshBuffer(uuid uuid)
+	{
+		auto _find = std::find_if(std::begin(m_MeshBufferMap),
+			std::end(m_MeshBufferMap),
+			[&uuid](auto& pair) { return (uuid == pair.first); }
+		);
+
+		if (_find != m_MeshBufferMap.end())
+		{
+			AssertMessageBox(false, (StringHelper::WStringToString(uuid) + " is a mesh-buffer that already exists.").c_str());
+			return nullptr;
+		}
+
+		auto* _newMeshBuffer = new MeshBuffer(m_RenderSystem);
+
+		m_MeshBufferMap.insert(std::make_pair(uuid, _newMeshBuffer));
+
+		return _newMeshBuffer;
+	}
+
 	Graphics::MeshBuffer* ResourceManager::CreateMeshBuffer(uuid uuid, std::vector<Common::VertexAttribute>& vertices, std::vector<std::vector<uint32>> subMeshs)
 	{
-		//auto iter = std::find_if(std::begin(m_MeshBuffers), std::end(m_MeshBuffers),
-		//		[&uuid](auto& _pair) = > {
-		//		return (_pair.first == uuid)
-		//	}
-		//);
+		auto _find = std::find_if(std::begin(m_MeshBufferMap),
+			std::end(m_MeshBufferMap),
+			[&uuid](auto& pair) { return (uuid == pair.first); }
+		);
 
-		return nullptr;
+		if (_find != m_MeshBufferMap.end())
+		{
+			AssertMessageBox(false, (StringHelper::WStringToString(uuid) + " is a mesh-buffer that already exists.").c_str());
+			return nullptr;
+		}
+
+		auto* _newMeshBuffer = new MeshBuffer(m_RenderSystem);
+
+		m_MeshBufferMap.insert(std::make_pair(uuid, _newMeshBuffer));
+
+		_newMeshBuffer->CreateVertexBuffer(uuid, vertices);
+
+		for (auto& _subMesh : subMeshs)
+		{
+			_newMeshBuffer->CreateSubMesh(uuid, _subMesh);
+		}
+
+		return _newMeshBuffer;
 	}
 
 	Graphics::MaterialBuffer* ResourceManager::CreateMaterialBuffer(uuid uuid, Graphics::PipelineLayout* pipelineLayout)
 	{
-		return nullptr;
+		auto _find = std::find_if(std::begin(m_MaterialBufferMap),
+			std::end(m_MaterialBufferMap),
+			[&uuid](auto& pair) { return (uuid == pair.first); }
+		);
+
+		if (_find != m_MaterialBufferMap.end())
+		{
+			AssertMessageBox(false, (StringHelper::WStringToString(uuid) + " is a material-buffer that already exists.").c_str());
+			return nullptr;
+		}
+
+		auto* _newMaterialBuffer = new MaterialBuffer(m_RenderSystem, pipelineLayout);
+
+		m_MaterialBufferMap.insert(std::make_pair(uuid, _newMaterialBuffer));
+
+		return _newMaterialBuffer;
 	}
 
 	Shader* ResourceManager::CreateShader(uuid uuid, ShaderDesc& desc)

@@ -28,7 +28,7 @@ namespace Graphics
 			uint32 GetNumBindings() const override;
 
 		private:
-
+			// Buffer, Texture, Sampler
 			std::vector<Resource*> m_Resources;
 			std::vector<BindingDescriptor> m_Bindings;
 		};

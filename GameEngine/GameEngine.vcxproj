@@ -257,6 +257,9 @@ xcopy /E /S /Y /R "$(OutputPath)*.pdb" "$(OutputPath)..\Client\*"</Command>
     <ProjectReference Include="..\GraphicsEngine\GraphicsEngine.vcxproj">
       <Project>{d5f5e173-2f07-49f1-a99e-a176f70bf4fd}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\Importer\Importer.vcxproj">
+      <Project>{98542ad8-e9ee-42bc-b5bf-31dc5d70bcc7}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\PhysicsModule\PhysicsModule.vcxproj">
       <Project>{4e9d2970-efab-4189-ad50-0b3e11d84daf}</Project>
     </ProjectReference>

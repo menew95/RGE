@@ -95,5 +95,6 @@
   <ItemGroup>
     <FxCompile Include="Shader\VS_Mesh.hlsl" />
     <FxCompile Include="Shader\PS_Deferred.hlsl" />
+    <FxCompile Include="Shader\PS_Light.hlsl" />
   </ItemGroup>
 </Project>

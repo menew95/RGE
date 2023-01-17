@@ -48,8 +48,6 @@ namespace Graphics
 			void CreateSwapChain(IDXGIFactory* factory, ID3D11Device* device, const SwapChainDesc& desc);
 			void CreateBackBuffer();
 
-			Window m_Window;
-
 			ID3D11Device* m_Device;
 
 			ComPtr<IDXGISwapChain> m_Underlying;

@@ -23,7 +23,6 @@ namespace Graphics
 		virtual void SetResource(uint32 i, Graphics::Resource* resource);
 
 	private:
-		BufferType m_BufferType;
 
 		Graphics::PipelineLayout* m_PipelineLayout;
 

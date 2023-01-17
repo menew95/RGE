@@ -6,6 +6,13 @@ VSOutput main(VSInput input)
 {
     VSOutput _output;
 
+#if defined(_SCREEN)
+    _output.posH = float4(input.posL, 1.0f);
+    _output.posV = float4(input.posL, 1.0f);
+    _output.posH = float4(input.posL, 1.0f);
+    _output.normal = float4(1.0f, 1.0f, 1.0f, 1.0f);
+#else
+
 #if !defined(_SKIN) && !defined(BONECNT)
     _output.posW = mul(float4(input.posL, 1.0f), world);
     _output.posV = mul(_output.posW, camera._view);
@@ -49,7 +56,7 @@ VSOutput main(VSInput input)
 #endif //_NORMAL_MESH
 
 #endif // !defined(_SKIN) && !defined(BONECNT)
-
+#endif // defined(_SCREEN)
     _output.color = input.color;
 
     _output.uv = input.uv;

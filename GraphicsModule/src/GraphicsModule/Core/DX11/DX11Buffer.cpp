@@ -15,7 +15,6 @@ namespace Graphics
 			, m_BufferDesc(desc)
 			, m_Size(desc._size)
 			, m_Stride(desc._stride)
-			, m_Format(MapFormat(desc._format))
 		{
 			CreateBuffer(device, desc, initData);
 		}

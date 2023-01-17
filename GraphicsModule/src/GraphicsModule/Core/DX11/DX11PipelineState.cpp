@@ -24,9 +24,18 @@ namespace Graphics
 			m_BlendFactor[3] = desc._blendDesc._blendFactor.A();
 			m_SampleMask = desc._blendDesc._sampleMask;
 
-			CreateDepthStencilState(device, desc);
-			CreateRasterizerState(device, desc);
-			CreateBlendState(device, desc);
+			if (desc._hasDSS == true)
+			{
+				CreateDepthStencilState(device, desc);
+			}
+			if (desc._hasRRS == true)
+			{
+				CreateRasterizerState(device, desc);
+			}
+			if (desc._hasBS == true)
+			{
+				CreateBlendState(device, desc);
+			}
 
 			GetShaderObjects(desc._shaderProgram);
 		}

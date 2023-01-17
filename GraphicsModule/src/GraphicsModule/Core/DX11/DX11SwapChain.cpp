@@ -12,6 +12,8 @@ namespace Graphics
 			: SwapChain()
 			, m_Device(device)
 		{
+			GetWindow().GetWindowInfo()._hwnd = reinterpret_cast<HWND>(desc._windowDesc._hwnd);
+
 			CreateSwapChain(factory, m_Device, desc);
 
 			CreateBackBuffer();
@@ -58,19 +60,24 @@ namespace Graphics
 
 			DXGI_SAMPLE_DESC swapChainSampleDesc_ = DX11RenderSystem::FindSuitableSampleDesc(device, DXGI_FORMAT_R8G8B8A8_UNORM, desc._samples);
 
+			auto _window = GetWindow();
+
 			DXGI_SWAP_CHAIN_DESC _desc;
 			{
-				_desc.BufferDesc.Width = static_cast<uint32>(desc._resolution.x);
-				_desc.BufferDesc.Height = static_cast<uint32>(desc._resolution.y);
+				_desc.BufferDesc.Width = static_cast<uint32>(desc._resolution._width);
+				_desc.BufferDesc.Height = static_cast<uint32>(desc._resolution._height);
 				_desc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+				_desc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+				_desc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED; // 디스플레이 비례 모드
 				_desc.BufferDesc.RefreshRate.Numerator = 60;
 				_desc.BufferDesc.RefreshRate.Denominator = 1;
 				_desc.SampleDesc = swapChainSampleDesc_;
 				_desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 				_desc.BufferCount = (desc._swapBuffers >= 3 ? 2 : 1);
-				_desc.OutputWindow = Window::GetHwnd();
-				_desc.Windowed = desc._fullScreen;//(fullscreen ? FALSE : TRUE);
+				_desc.OutputWindow = _window.GetHwnd();
+				_desc.Windowed = true;//(fullscreen ? FALSE : TRUE);
 				_desc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+				_desc.Flags = 0;
 			}
 
 			HR(factory->CreateSwapChain(device, &_desc, m_Underlying.ReleaseAndGetAddressOf()), "failed to create DXGI swap chain");

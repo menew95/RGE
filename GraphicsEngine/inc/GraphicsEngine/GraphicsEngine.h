@@ -21,7 +21,9 @@ namespace Graphics
 		GraphicsEngine(const GraphicsEngineDesc& desc);
 		~GraphicsEngine();
 
-		void Initialize();
+		void Initialize(const GraphicsEngineDesc& desc);
+
+		void IntiLightPass();
 
 		MeshBuffer* CreateMeshBuffer(uuid uuid, std::vector<Common::VertexAttribute>& vertices, std::vector<std::vector<uint32>> subMeshs);
 		MaterialBuffer* CreateMaterialBuffer(uuid uuid, PipelineLayout* pipelineLayout);
@@ -33,6 +35,8 @@ namespace Graphics
 		void Excute();
 
 	private:
+		void LoadGraphicsTable();
+
 		void LoadDllAndCreateRenderSystem();
 		void FreeDllAndReleaseRenderSystem();
 		void* LoadProcedure(const char* procedureName);
@@ -43,9 +47,11 @@ namespace Graphics
 
 		std::shared_ptr<ResourceManager> m_ResourceManager;
 
-		Graphics::RenderPass* _TestRenderPass;
-		Graphics::PipelineState* _TestPipelineState;
-		Graphics::RenderTarget* _TestRenderTarget;
+		Graphics::RenderPass* m_Deferred_Mesh_Pass;
+		Graphics::RenderPass* m_Deferred_Light_Pass;
+
+		MaterialBuffer* m_Deferred_Light_Material;
+		MeshBuffer* m_Screen_Mesh;
 	};
 
 	extern "C"

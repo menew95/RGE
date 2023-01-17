@@ -121,13 +121,13 @@ namespace Graphics
 	struct BlendTargetDesc
 	{
 		bool _blendEnable = false;
-		Blend _srcBlend;
-		Blend _destBlend;
-		BlendOp _blendOp;
-		Blend _srcBlendAlpha;
-		Blend _destBlendAlpha;
-		BlendOp _blendOpAlpha;
-		UINT8 _renderTargetWriteMask;
+		Blend _srcBlend = Blend::One;
+		Blend _destBlend = Blend::Zero;
+		BlendOp _blendOp = BlendOp::Add;
+		Blend _srcBlendAlpha = Blend::One;
+		Blend _destBlendAlpha = Blend::Zero;
+		BlendOp _blendOpAlpha = BlendOp::Add;
+		UINT8 _renderTargetWriteMask = 0xff;
 	};
 
 	struct BlendDesc
@@ -213,11 +213,17 @@ namespace Graphics
 
         std::vector<Scissor> _scissors;
 
+		bool _hasDSS = true;
+
         DepthDesc _depthDesc;
 
         StencilDesc _stencilDesc;
 
+		bool _hasRRS = true;
+
         RasterizerDesc _rasterizerDesc;
+
+		bool _hasBS = true;
 
 		BlendDesc _blendDesc;
     };

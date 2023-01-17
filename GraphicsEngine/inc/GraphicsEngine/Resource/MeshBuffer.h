@@ -24,6 +24,9 @@ namespace Graphics
 		MeshBuffer(RenderSystem* renderSystem);
 		virtual ~MeshBuffer();
 
+
+		void CreateVertexBuffer(uuid uuid, const void* data, uint32 size);
+
 		void CreateVertexBuffer(uuid uuid, std::vector<Common::VertexAttribute>& vertices);
 		void CreateSubMesh(uuid uuid, std::vector<uint32>& indices);
 

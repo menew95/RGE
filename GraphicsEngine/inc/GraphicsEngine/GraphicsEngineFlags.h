@@ -10,7 +10,7 @@ namespace Graphics
 		
 		bool _isFullScreen;
 
-		long _handle;
+		void* _handle;
 
 		uint32 _width;
 		uint32 _height;

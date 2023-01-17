@@ -64,18 +64,18 @@ namespace Graphics
 			void GetShaderObjects(const ShaderProgram& shaderProgram);
 
 
-			ComPtr<ID3D11DepthStencilState> m_DepthStencilState;
-			ComPtr<ID3D11RasterizerState>   m_RasterizerState;
-			ComPtr<ID3D11BlendState>        m_BlendState;
+			ComPtr<ID3D11DepthStencilState> m_DepthStencilState = nullptr;
+			ComPtr<ID3D11RasterizerState>   m_RasterizerState = nullptr;
+			ComPtr<ID3D11BlendState>        m_BlendState = nullptr;
 
-			ComPtr<ID3D11InputLayout>       m_InputLayout;
+			ComPtr<ID3D11InputLayout>       m_InputLayout = nullptr;
 
-			ComPtr<ID3D11VertexShader>		m_VS;
-			ComPtr<ID3D11HullShader>		m_HS;
-			ComPtr<ID3D11DomainShader>		m_DS;
-			ComPtr<ID3D11GeometryShader>	m_GS;
-			ComPtr<ID3D11PixelShader>		m_PS;
-			ComPtr<ID3D11ComputeShader>		m_CS;
+			ComPtr<ID3D11VertexShader>		m_VS = nullptr;
+			ComPtr<ID3D11HullShader>		m_HS = nullptr;
+			ComPtr<ID3D11DomainShader>		m_DS = nullptr;
+			ComPtr<ID3D11GeometryShader>	m_GS = nullptr;
+			ComPtr<ID3D11PixelShader>		m_PS = nullptr;
+			ComPtr<ID3D11ComputeShader>		m_CS = nullptr;
 
 			D3D11_PRIMITIVE_TOPOLOGY        m_PrimitiveTopology = D3D_PRIMITIVE_TOPOLOGY_UNDEFINED;
 			bool                            m_StencilRefDynamic = false;

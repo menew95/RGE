@@ -37,11 +37,16 @@ namespace Graphics
 		uint32 _swapBuffers = 2;
 	};*/
 
+	struct WindowDesc
+	{
+		void* _hwnd;
+	};
+
 	struct SwapChainDesc
 	{
 		bool _fullScreen = false;
 
-		Math::Vector2 _resolution;
+		Extent2D _resolution;
 
 		uint32 _samples = 1;
 
@@ -50,5 +55,7 @@ namespace Graphics
 		uint32 _colorBit = 32;
 		uint32 _depthBit = 24;
 		uint32 _stencilBit = 8;
+
+		WindowDesc _windowDesc;
 	};
 }

@@ -59,6 +59,19 @@ JSON_SERIALIZE_ENUM(Graphics::BindFlags::eBindFlags,
 	{Graphics::BindFlags::VideoEncoder, _T("VideoEncoder")}
 	});
 
+JSON_SERIALIZE_ENUM(Graphics::StageFlags::eStageFlags,
+	{
+	{Graphics::StageFlags::VS, _T("VS")},
+	{Graphics::StageFlags::HS, _T("HS")},
+	{Graphics::StageFlags::DS, _T("DS")},
+	{Graphics::StageFlags::GS, _T("GS")},
+	{Graphics::StageFlags::PS, _T("PS")},
+	{Graphics::StageFlags::CS, _T("CS")},
+	{Graphics::StageFlags::AllTessStages, _T("AllTessStages")},
+	{Graphics::StageFlags::AllGraphicsStages, _T("AllGraphicsStages")},
+	{Graphics::StageFlags::AllStages, _T("AllStages")}
+	});
+
 JSON_SERIALIZE_ENUM(Graphics::ResourceType,
 	{
 	{Graphics::ResourceType::Undefined, _T("Undefined")},

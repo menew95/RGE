@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Common.h"
+
 #include "GraphicsModule/Window.h"
 
 #include "GraphicsModule/Utility/Export.h"
@@ -14,14 +16,20 @@ namespace Graphics
 	class SwapChain
 	{
 	public:
-		SwapChain() = default;
-		SwapChain(IDXGIFactory* factory, SwapChainDesc& desc) {}
-		virtual ~SwapChain() {}
+		SwapChain();
+		SwapChain(SwapChainDesc& desc);
+		virtual ~SwapChain();
 
 		virtual void Present() abstract;
 
 		virtual bool ResizeBuffer(const Extent2D& resolution) abstract;
 
 		virtual bool SwitchFullscreen(bool enable) abstract;
+
+		Window& GetWindow() const;
+
+	private:
+		struct Pimpl;
+		Pimpl* m_Pimpl;
 	};
 }

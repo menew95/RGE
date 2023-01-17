@@ -4,7 +4,7 @@ namespace Graphics
 {
 	struct StageFlags
 	{
-		enum
+		enum eStageFlags
 		{
 			VS = (1 << 0),
 			HS = (1 << 1),

@@ -25,12 +25,82 @@ namespace Graphics
 		const TCHAR* arrayLayer = _T("ArrayLayer");
 		const TCHAR* mipLevels = _T("MipLevel");
 		const TCHAR* extent = _T("Extent");
+		const TCHAR* attachmentsCount = _T("AttachmentsCount");
 
 		const TCHAR* renderTargetType = _T("RenderTargetType");
 		const TCHAR* attachments = _T("Attachments");
 		const TCHAR* resourceID = _T("ResourceID");
 
-		for (auto& renderTarget : _renderTargetTable->GetArray())
+		auto _rtArray = _renderTargetTable->GetArray();
+		uint32 _attachCount;
+
+		for (uint32 _tableIdx = 0; _tableIdx < _rtArray.Size(); _tableIdx += _attachCount)
+		{
+			RenderTargetDesc _renderTargetDesc;
+			uuid _uuid;
+
+			if (_rtArray[_tableIdx].HasMember(UUID))
+			{
+				_uuid = _rtArray[_tableIdx][UUID].GetString();
+			}
+
+			if (_rtArray[_tableIdx].HasMember(extent))
+			{
+				uint32 _width = _rtArray[_tableIdx][extent][0].GetInt();
+				uint32 _height = _rtArray[_tableIdx][extent][1].GetInt();
+				_renderTargetDesc._extend = { _width, _height };
+			}
+
+			if (_rtArray[_tableIdx].HasMember(sample))
+			{
+				_renderTargetDesc._sample = _rtArray[_tableIdx][sample].GetInt();
+			}
+
+			if (!_rtArray[_tableIdx].HasMember(attachmentsCount)) assert(false);
+
+			_attachCount = _rtArray[_tableIdx][attachmentsCount].GetInt();
+
+			for (uint32 _attachIdx = 0; _attachIdx < _attachCount; _attachIdx++)
+			{
+				uint32 _idx = _tableIdx + _attachIdx;
+
+				AttachmentDesc _attachmentDesc;
+
+				if (_rtArray[_attachIdx].HasMember(renderTargetType))
+				{
+					auto string = _rtArray[_attachIdx][renderTargetType].GetString();
+
+					if (!StringToEnum(_rtArray[_attachIdx][renderTargetType].GetString(), _attachmentDesc._renderTargetType))
+					{
+						assert("Error");
+					}
+				}
+
+				if (_rtArray[_attachIdx].HasMember(resourceID))
+				{
+					auto _findID = _rtArray[_attachIdx][resourceID].GetString();
+
+					_attachmentDesc._resource = resourceManager->GetTexture(_findID);
+					assert(_attachmentDesc._resource != nullptr);
+				}
+
+				if (_rtArray[_attachIdx].HasMember(mipLevels))
+				{
+					_attachmentDesc._mipLevel = _rtArray[_attachIdx][mipLevels].GetInt();
+				}
+
+				if (_rtArray[_attachIdx].HasMember(arrayLayer))
+				{
+					_attachmentDesc._arrayLayer = _rtArray[_attachIdx][arrayLayer].GetInt();
+				}
+
+				_renderTargetDesc._attachments.push_back(_attachmentDesc);
+			}
+
+			resourceManager->CreateRenderTarget(_uuid, _renderTargetDesc);
+		}
+
+		/*for (auto& renderTarget : _renderTargetTable->GetArray())
 		{
 			RenderTargetDesc _renderTargetDesc;
 			uuid _uuid;
@@ -103,7 +173,7 @@ namespace Graphics
 			}
 
 			resourceManager->CreateRenderTarget(_uuid, _renderTargetDesc);
-		}
+		}*/
 
 		_jsonReader->UnloadJson(TEXT("Asset/GraphicsTable/RenderTargetTable.json"));
 
@@ -704,7 +774,7 @@ namespace Graphics
 				}
 				else
 				{
-
+					_pipelineStateDesc._hasDSS = false;
 				}
 
 				if (_pipelineStateTable.HasMember(rasterizerDesc))
@@ -723,7 +793,7 @@ namespace Graphics
 				}
 				else
 				{
-
+					_pipelineStateDesc._hasRRS = false;
 				}
 
 				if (_pipelineStateTable.HasMember(blendDesc))
@@ -742,7 +812,7 @@ namespace Graphics
 				}
 				else
 				{
-
+					_pipelineStateDesc._hasBS = false;
 				}
 
 				resourceManager->CreatePipelineState(_uuid, _pipelineStateDesc);
@@ -757,6 +827,121 @@ namespace Graphics
 
 	bool TableLoader::LoadRenderingPipelineTable(ResourceManager* resourceManager)
 	{
+		auto* _jsonReader = Utility::JsonReader::GetInstance();
+
+		auto _pipelineLayoutTables = _jsonReader->LoadJson(TEXT("Asset/GraphicsTable/PipelineLayoutTable.json"));
+
+		const TCHAR* UUID = TEXT("UUID");
+		const TCHAR* count = TEXT("Count");
+
+		const TCHAR* description = TEXT("Description");
+		const TCHAR* resourceType = TEXT("ResourceType");
+		const TCHAR* bindFlags = TEXT("BindFlags");
+		const TCHAR* stageFlags = TEXT("StageFlags");
+		const TCHAR* slot = TEXT("Slot");
+		const TCHAR* arraySize = TEXT("ArraySize");
+
+
+		auto _layoutArray = _pipelineLayoutTables->GetArray();
+		uint32 _resourceCount;
+
+		for (uint32 _tableIdx = 0; _tableIdx < _layoutArray.Size(); _tableIdx += _resourceCount)
+		{
+			PipelineLayoutDesc _pipelineLayoutDesc;
+
+			uuid _uuid;
+
+			if (_layoutArray[_tableIdx].HasMember(UUID))
+			{
+				_uuid = _layoutArray[_tableIdx][UUID].GetString();
+			}
+
+			if (!_layoutArray[_tableIdx].HasMember(count)) assert(false);
+
+			_resourceCount = _layoutArray[_tableIdx][count].GetInt();
+
+			_pipelineLayoutDesc._bindings.reserve(_resourceCount);
+
+			for (uint32 _resourceIdx = 0; _resourceIdx < _resourceCount; _resourceIdx++)
+			{
+				uint32 _idx = _tableIdx + _resourceIdx;
+
+				BindingDescriptor _bindingDesc;
+
+				if (_layoutArray[_idx].HasMember(description))
+				{
+					_bindingDesc._name = StringHelper::WStringToString(_layoutArray[_idx][description].GetString());
+				}
+
+				if (_layoutArray[_idx].HasMember(resourceType))
+				{
+					if (!StringToEnum(_layoutArray[_idx][resourceType].GetString(), _bindingDesc._type))
+					{
+						assert(false);
+					}
+				}
+
+				if (_layoutArray[_idx].HasMember(bindFlags))
+				{
+					uint32 _flags = 0;
+
+					for (auto& _bind : _layoutArray[_idx][bindFlags].GetArray())
+					{
+						BindFlags::eBindFlags _bindFlag;
+
+						if (StringToEnum(_bind.GetString(), _bindFlag))
+						{
+							_flags |= _bindFlag;
+						}
+						else
+						{
+							assert(false);
+						}
+					}
+
+					_bindingDesc._bindFlags = _flags;
+				}
+
+				if (_layoutArray[_idx].HasMember(stageFlags))
+				{
+					uint32 _flags = 0;
+
+					for (auto& _stage : _layoutArray[_idx][stageFlags].GetArray())
+					{
+						StageFlags::eStageFlags _stageFlag;
+
+						if (StringToEnum(_stage.GetString(), _stageFlag))
+						{
+							_flags |= _stageFlag;
+						}
+						else
+						{
+							assert(false);
+						}
+					}
+
+					_bindingDesc._stageFlags = _flags;
+				}
+
+				if (_layoutArray[_idx].HasMember(slot))
+				{
+					_bindingDesc._slot = _layoutArray[_idx][slot].GetInt();
+				}
+
+				if (_layoutArray[_idx].HasMember(arraySize))
+				{
+					_bindingDesc._arraySize = _layoutArray[_idx][arraySize].GetInt();
+				}
+
+
+				_pipelineLayoutDesc._bindings.push_back(_bindingDesc);
+			}
+
+			resourceManager->CreatePipelineLayout(_uuid, _pipelineLayoutDesc);
+		}
+
+		_jsonReader->UnloadJson(TEXT("Asset/GraphicsTable/PipelineLayoutTable.json"));
+
 		return true;
 	}
 
@@ -793,6 +978,7 @@ namespace Graphics
 					assert(false);
 				}
 			}
+
 			if (_textureTable.HasMember(bindFlags))
 			{
 				_textureDesc._bindFlags = 0;
@@ -809,6 +995,7 @@ namespace Graphics
 					}
 				}
 			}
+
 			if (_textureTable.HasMember(miscFlags))
 			{
 				_textureDesc._miscFlags = 0;
@@ -821,6 +1008,7 @@ namespace Graphics
 					}
 				}
 			}
+
 			if (_textureTable.HasMember(format))
 			{
 				if (!StringToEnum(_textureTable[format].GetString(), _textureDesc._format))
@@ -828,6 +1016,7 @@ namespace Graphics
 					assert(false);
 				}
 			}
+
 			if (_textureTable.HasMember(extend))
 			{
 				for (uint32 i = 0; i < _textureTable[extend].Size(); i++)
@@ -837,14 +1026,17 @@ namespace Graphics
 					if (i == 2) _textureDesc._extend._depth = _textureTable[extend][i].GetInt();
 				}
 			}
+
 			if (_textureTable.HasMember(arrayLayers))
 			{
 				_textureDesc._arrayLayers = _textureTable[arrayLayers].GetInt();
 			}
+
 			if (_textureTable.HasMember(mipLevels))
 			{
 				_textureDesc._mipLevels = _textureTable[mipLevels].GetInt();
 			}
+
 			if (_textureTable.HasMember(samples))
 			{
 				_textureDesc._samples = _textureTable[samples].GetInt();

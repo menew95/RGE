@@ -4,7 +4,7 @@
 Texture2D gAlbedoMap	: register(t0);
 
 #if !defined(_NORMAL_MAP)
-Texture2D gBumpMax		: register(t1);
+Texture2D gBumpMap		: register(t1);
 #endif
 
 SamplerState samWrapLinear	: register(s0);
@@ -41,7 +41,7 @@ PSOut main(VSOutput input)
 #if !defined(_NORMAL_MAP)
 	_normal = input.normal;
 #else
-	float3 normalMapSample = gBumpMax.Sample(samWrapLinear, input.uv).rgb;
+	float3 normalMapSample = gBumpMap.Sample(samWrapLinear, input.uv).rgb;
 	
 	float3 bumpedNormalW = { 0.0f, 0.0f, 0.0f };
 

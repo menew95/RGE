@@ -14,7 +14,7 @@ namespace Graphics
 		uint32 _cpuAccessFlags = 0;
 		uint32 _slot = 0;
 		uint32 _miscFlags = 0;
-		Format _format;
+		Format _format = Format::UNKNOWN;
 
 		std::vector<VertexAttribute>  _vertexAttribs;
 	};

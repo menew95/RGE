@@ -93,6 +93,12 @@ namespace GameEngine
 				m_ComponentSystem->UpdateComponent();
 			}
 
+			_sysTimer.Lap();
+			{
+				m_GraphicsSystem->Render();
+			}
+
+
 			return _ret;
 		}
 

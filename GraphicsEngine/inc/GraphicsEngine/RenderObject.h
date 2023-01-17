@@ -46,7 +46,7 @@ namespace Graphics
 			return m_UpdateResources;
 		}
 
-	private:
+	//private:
 		MeshBuffer* m_MeshBuffer;
 		MaterialBuffer* m_MaterialBuffer;
 

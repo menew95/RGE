@@ -5,6 +5,8 @@
 #include "GraphicsEngine/GraphicsEngine.h"
 
 #include "GraphicsEngine/Resource/ResourceManager.h"
+#include "GraphicsEngine/Resource/MeshBuffer.h"
+#include "GraphicsEngine/Resource/MaterialBuffer.h"
 
 #include "GraphicsEngine/Json/JsonTable.h"
 
@@ -18,9 +20,9 @@ namespace Graphics
 
 		m_ResourceManager = std::make_shared<ResourceManager>(m_RenderSystem);
 
+		LoadGraphicsTable();
 
-		// Test Code
-		Initialize();
+		Initialize(desc);
 	}
 
 	GraphicsEngine::~GraphicsEngine()
@@ -28,25 +30,70 @@ namespace Graphics
 		FreeDllAndReleaseRenderSystem();
 	}
 
-	void GraphicsEngine::Initialize()
+	void GraphicsEngine::Initialize(const GraphicsEngineDesc& desc)
 	{
-		TableLoader::LoadShaderTable(m_ResourceManager.get());
-		TableLoader::LoadTextureTable(m_ResourceManager.get());
-		TableLoader::LoadRenderTargetTable(m_ResourceManager.get(), { 1280.f, 720.f });
-
-
 		SwapChainDesc _swapChainDesc;
+
+		_swapChainDesc._fullScreen = false;
+		_swapChainDesc._resolution = { 1200, 720 };
+		_swapChainDesc._windowDesc._hwnd = desc._handle;
+
 		m_SwapChain = m_RenderSystem->CreateSwapChain(TEXT("MainSwapChain"), _swapChainDesc);
 
+		CommandBufferDesc _commandBufferDesc;
 
-		GraphicsPipelineDesc _pipelineDesc;
-		_TestPipelineState = m_RenderSystem->CreatePipelineState(TEXT("TestSwapChain"), _pipelineDesc);
+		m_CommandBuffer = m_RenderSystem->CreateCommandBuffer(TEXT("MainCommandBuffer"), _commandBufferDesc);
 
 
-		RenderTargetDesc _renderTargetDesc;
-		_TestRenderTarget = m_RenderSystem->CreateRenderTarget(TEXT("TestSwapChain"), _renderTargetDesc);
+		auto* _state = m_ResourceManager->GetPipelineState(TEXT("Deferred_BumpMap"));
+		auto* _rt = m_ResourceManager->GetRenderTarget(TEXT("Deferred_Mesh"));
 
-		_TestRenderPass = new RenderPass(_TestPipelineState, _TestRenderTarget);
+		m_Deferred_Mesh_Pass = new RenderPass(_state, _rt);
+
+		_state = m_ResourceManager->GetPipelineState(TEXT("Deferred_Merge"));
+		_rt = m_ResourceManager->GetRenderTarget(TEXT("Deferred_Light"));
+		m_Deferred_Light_Pass = new RenderPass(_state, _rt);
+	}
+
+	void GraphicsEngine::IntiLightPass()
+	{
+		m_Deferred_Light_Material = m_ResourceManager->CreateMaterialBuffer(TEXT("Light"), m_ResourceManager->GetPipelineLayout(TEXT("Deferred_Light_Layout")));
+
+		m_Screen_Mesh = m_ResourceManager->CreateMeshBuffer(TEXT("Screen_Mesh"));
+
+		struct ScreenVertex
+		{
+			Math::Vector3 pos;
+			Math::Vector2 uv;
+		};
+
+		std::vector<ScreenVertex> _data =
+		{
+			{ { -1.f, -1.f, 0.0f }, { 0, 1 } },
+			{ { -1.f, +1.f, 0.0f }, { 0, 0 } },
+			{ { +1.f, -1.f, 0.0f }, { 1, 1 } },
+			{ { +1.f, +1.f, 0.0f }, { 1, 0 } }
+		};
+
+		std::vector<uint32> triangles =
+		{
+			0,
+			3,
+			2,
+			0,
+			1,
+			3
+		};
+
+		uint32 _size = static_cast<uint32>(sizeof(ScreenVertex) * _data.size());
+
+		m_Screen_Mesh->CreateVertexBuffer(TEXT("Screen_Mesh"), _data.data(), _size);
+		m_Screen_Mesh->CreateSubMesh(TEXT("Screen_Mesh"), triangles);
+
+		/*RenderObject _renderObject;
+		_renderObject.m_MeshBuffer = m_Screen_Mesh;
+		_renderObject.m_MaterialBuffer = m_Deferred_Light_Material;*/
+
 	}
 
 	Graphics::MeshBuffer* GraphicsEngine::CreateMeshBuffer(uuid uuid, std::vector<Common::VertexAttribute>& vertices, std::vector<std::vector<uint32>> subMeshs)
@@ -66,16 +113,27 @@ namespace Graphics
 
 	void GraphicsEngine::RegistRenderObject(RenderObject& renderObject)
 	{
-		_TestRenderPass->RegistRenderObject(renderObject);
+		m_Deferred_Mesh_Pass->RegistRenderObject(renderObject);
 	}
 
 	void GraphicsEngine::Excute()
 	{
-		_TestRenderPass->BeginExcute(m_CommandBuffer);
+		m_Deferred_Mesh_Pass->BeginExcute(m_CommandBuffer);
 
-		_TestRenderPass->Excute(m_CommandBuffer);
+		m_Deferred_Mesh_Pass->Excute(m_CommandBuffer);
 
-		_TestRenderPass->EndExcute(m_CommandBuffer);
+		m_Deferred_Mesh_Pass->EndExcute(m_CommandBuffer);
+
+		m_SwapChain->Present();
+	}
+
+	void GraphicsEngine::LoadGraphicsTable()
+	{
+		TableLoader::LoadShaderTable(m_ResourceManager.get());
+		TableLoader::LoadTextureTable(m_ResourceManager.get());
+		TableLoader::LoadRenderTargetTable(m_ResourceManager.get(), { 1280.f, 720.f });
+		TableLoader::LoadRenderingPipelineTable(m_ResourceManager.get());
+		TableLoader::LoadPipelineStateTable(m_ResourceManager.get());
 	}
 
 	void GraphicsEngine::LoadDllAndCreateRenderSystem()

@@ -106,6 +106,9 @@ namespace Graphics
 						m_NativeShader._vertexShader.ReleaseAndGetAddressOf());
 
 					HR(_hr, "faild to create vertex shader");
+					
+					Reflect(device);
+
 					break;
 				}
 				case ShaderType::Geometry:

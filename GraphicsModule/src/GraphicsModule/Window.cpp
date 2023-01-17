@@ -3,8 +3,6 @@
 
 namespace Graphics
 {
-	WindowInfo Window::s_WindowInfo;
-
 	Window::Window()
 	{
 
@@ -18,5 +16,10 @@ namespace Graphics
 	void Window::OnResize(uint32 width, uint32 height)
 	{
 		assert(false);
+	}
+
+	std::shared_ptr<Window> Window::Create()
+	{
+		return std::make_shared<Window>();
 	}
 }

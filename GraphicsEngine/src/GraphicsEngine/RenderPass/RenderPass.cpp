@@ -23,10 +23,18 @@ namespace Graphics
 
 	void RenderPass::BeginExcute(CommandBuffer* commandBuffer)
 	{
-		AttachmentClear _attachmentClear[8];
+		AttachmentClear _attachmentClear[] =
+		{
+			{ {1,0,0,0}, 0 },
+			{ {0,0,0,0}, 1},
+			{ {0,0,0,0}, 2},
+			{ {0,0,0,0}, 3},
+			{ {0,0,0,0}, 4},
+			{ 1, 0 }
+		};
 
 		commandBuffer->SetPipelineState(*m_PipelineState);
-		commandBuffer->SetRenderTarget(*m_RenderTarget, 8, _attachmentClear);
+		commandBuffer->SetRenderTarget(*m_RenderTarget, 6, _attachmentClear);
 	}
 
 	void RenderPass::Excute(CommandBuffer* commandBuffer)
@@ -42,6 +50,8 @@ namespace Graphics
 				auto _subMeshBuffer = m_RenderObjects[_index].GetMeshBuffer()->GetSubMesh(_subMeshCnt);
 
 				auto _pipelineLayout = m_RenderObjects[_index].GetMaterialBuffer()->GetPipelineLayout();
+
+				UpdateConstBuffer(commandBuffer, m_RenderObjects[_index]);
 
 				commandBuffer->SetIndexBuffer(*_subMeshBuffer.m_IndexBuffer);
 

@@ -17,6 +17,7 @@ namespace Graphics
 		ResourceManager(Graphics::RenderSystem* renderSystem);
 		~ResourceManager();
 
+		MeshBuffer* CreateMeshBuffer(uuid uuid);
 		MeshBuffer* CreateMeshBuffer(uuid uuid, std::vector<Common::VertexAttribute>& vertices, std::vector<std::vector<uint32>> subMeshs);
 		MaterialBuffer* CreateMaterialBuffer(uuid uuid, Graphics::PipelineLayout* pipelineLayout);
 		
@@ -39,8 +40,8 @@ namespace Graphics
 	private:
 		Graphics::RenderSystem* m_RenderSystem;
 
-		std::map<uuid, MeshBuffer*> m_MeshBuffers;
-		std::map<uuid, MaterialBuffer*> m_MaterialBuffers;
+		std::map<uuid, MeshBuffer*> m_MeshBufferMap;
+		std::map<uuid, MaterialBuffer*> m_MaterialBufferMap;
 
 		std::unordered_map<uuid, Shader*> m_ShaderMap;
 		std::unordered_map<uuid, Texture*> m_TextureMap;
