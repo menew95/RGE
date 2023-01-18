@@ -54,6 +54,9 @@
     <ClInclude Include="src\GraphicsEngine\Json\JsonMacros.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="inc\GraphicsEngine\Resource\MaterialFlags.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\GraphicsEngine_dllmain.cpp">

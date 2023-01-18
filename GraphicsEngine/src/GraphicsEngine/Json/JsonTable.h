@@ -25,5 +25,9 @@ namespace Graphics
 
 		static bool LoadTextureTable(ResourceManager* resourceManager);
 
+		static bool LoadSamplerTable(ResourceManager* resourceManager);
+
+		static bool LoadBufferTable(ResourceManager* resourceManager);
+
 	};
 }

@@ -55,18 +55,24 @@ namespace GameEngine
 			m_pApplication->m_Window = Window::GetInstance();
 			m_pApplication->m_Window->Initialize(showCmd, hInstance, windowClassName, windowName, width, height);
 
+			m_GraphicsSystem = GraphicsSystem::GetInstance();
+			m_GraphicsSystem->Initialize();
+
 			m_pApplication->m_ComponentSystem = ComponentSystem::GetInstance();
+
 			m_pApplication->m_SceneSystem = SceneSystem::GetInstance();
+
 			m_pApplication->m_Resources = Resources::GetInstance();
+			m_pApplication->m_Resources->Init();
+
 			m_pApplication->m_GameTime = Time::GetInstance();
+
 			m_pApplication->m_Input = Input::GetInstance();
 
 			
 			m_Input->Initialize(m_pApplication->m_Window->GetWindowInfo()._hWnd);
 			m_GameTime->Initialize();
 
-			m_GraphicsSystem = GraphicsSystem::GetInstance();
-			m_GraphicsSystem->Initialize();
 
 			return true;
 		}

@@ -3,6 +3,8 @@
 #include "GraphicsModule/Core/CommandBuffer.h"
 #include "GraphicsModule/Core/Common/ComPtr.h"
 
+#include <d3d11_1.h>
+
 struct ID3D11Device;
 struct ID3D11DeviceContext;
 struct ID3D11CommandList;
@@ -27,7 +29,13 @@ namespace Graphics
 
 
 			void Begin() override;
+
+			void BeginEvent(const wchar_t* event) override;
+
 			void End() override;
+
+			void EndEvent() override;
+
 			void Execute(CommandBuffer& deferredCommandBuffer) override;
 
 			/* ----- Buffer ----- */
@@ -103,6 +111,8 @@ namespace Graphics
 			ID3D11Device* m_Device = nullptr;
 			ComPtr<ID3D11DeviceContext>         m_Context;
 			ComPtr<ID3D11CommandList>           m_CommandList;
+
+			ComPtr<ID3DUserDefinedAnnotation>	m_User;
 
 			bool m_IsDeferredContext = false;
 			bool m_IsSecondaryCmdBuffer = false;

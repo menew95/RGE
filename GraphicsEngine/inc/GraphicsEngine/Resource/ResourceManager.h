@@ -21,30 +21,45 @@ namespace Graphics
 		MeshBuffer* CreateMeshBuffer(uuid uuid, std::vector<Common::VertexAttribute>& vertices, std::vector<std::vector<uint32>> subMeshs);
 		MaterialBuffer* CreateMaterialBuffer(uuid uuid, Graphics::PipelineLayout* pipelineLayout);
 		
-		Shader*				CreateShader(uuid uuid, ShaderDesc& desc);
+		MeshBuffer* GetMeshBuffer(uuid uuid);
+		MaterialBuffer* GetMaterialBuffer(uuid uuid);
+
+		Buffer*				CreateBuffer(uuid uuid, BufferDesc& desc);
+		Sampler*			CreateSampler(uuid uuid, SamplerDesc& desc);
 		Texture*			CreateTexture(uuid uuid, TextureDesc& desc);
+
+		Shader*				CreateShader(uuid uuid, ShaderDesc& desc);
 		RenderTarget*		CreateRenderTarget(uuid uuid, RenderTargetDesc& desc);
 		PipelineState*		CreatePipelineState(uuid uuid, GraphicsPipelineDesc& desc);
 		PipelineLayout*		CreatePipelineLayout(uuid uuid, PipelineLayoutDesc& desc);
 
 		RenderPass*			CreateRenderPass(uuid uuid, RenderTargetDesc& desc);
 
-		Shader*				GetShader(uuid uuid);
+		Buffer*				GetBuffer(uuid uuid);
+		Sampler*			GetSampler(uuid uuid);
 		Texture*			GetTexture(uuid uuid);
+
+		Shader*				GetShader(uuid uuid);
 		RenderTarget*		GetRenderTarget(uuid uuid);
 		PipelineState*		GetPipelineState(uuid uuid);
 		PipelineLayout*		GetPipelineLayout(uuid uuid);
 
 		RenderPass*			GetRenderPass(uuid uuid);
 
+
+		Texture* LoadTexture(uuid uuid, ImageDesc* imageDesc);
 	private:
 		Graphics::RenderSystem* m_RenderSystem;
 
 		std::map<uuid, MeshBuffer*> m_MeshBufferMap;
 		std::map<uuid, MaterialBuffer*> m_MaterialBufferMap;
 
-		std::unordered_map<uuid, Shader*> m_ShaderMap;
+		// Resource
+		std::unordered_map<uuid, Buffer*> m_BufferMap;
+		std::unordered_map<uuid, Sampler*> m_SamplerMap;
 		std::unordered_map<uuid, Texture*> m_TextureMap;
+
+		std::unordered_map<uuid, Shader*> m_ShaderMap;
 		std::unordered_map<uuid, RenderTarget*> m_RenderTargetMap;
 		std::unordered_map<uuid, PipelineState*> m_PipelineStateMap;
 		std::unordered_map<uuid, PipelineLayout*> m_PipelineLayoutMap;

@@ -28,7 +28,7 @@ namespace Graphics
         }
 
         inline BindingDescriptor(
-            const std::string& name,
+            const tstring& name,
             ResourceType        type,
             long                bindFlags,
             long                stageFlags,
@@ -44,7 +44,7 @@ namespace Graphics
         {
         }
 
-        std::string     _name;
+        tstring     _name;
 
         ResourceType    _type = ResourceType::Undefined;
         long            _bindFlags = 0;

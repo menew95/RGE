@@ -1,6 +1,8 @@
 #include "GameEngine\GameEnginePCH.h"
 #include "GameEngine\Core\Resource\Material.h"
 
+#include "GameEngine/Core/System/GraphicsSystem.h"
+
 namespace GameEngine
 {
 	namespace Core
@@ -13,14 +15,12 @@ namespace GameEngine
 
 		Material::~Material()
 		{
-
+			Release();
 		}
 
-		bool Material::Release()
+		void Material::Release()
 		{
-			bool _ret = false;
-
-			return _ret;
+			GraphicsSystem::GetInstance()->DeleteMaterialBuffer(m_MaterialBuffer);
 		}
 	}
 }

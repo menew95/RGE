@@ -16,17 +16,19 @@ namespace GameEngine
 		class GAME_ENGINE_API Material
 			: public Resource, public std::enable_shared_from_this<Material>
 		{
+			friend class GraphicsSystem;
+
 		public:
 			Material(const tstring& _typeName = TEXT("Material"));
 			virtual ~Material();
 
-			inline std::shared_ptr<Graphics::MaterialBuffer>& GetResource() { return m_MaterialBuffer; }
+			inline Graphics::MaterialBuffer* GetMaterialBuffer() { return m_MaterialBuffer; }
 
 		protected:
-			virtual bool Release() override;
+			virtual void Release() override;
 
 		private:
-			std::shared_ptr<Graphics::MaterialBuffer> m_MaterialBuffer;
+			Graphics::MaterialBuffer* m_MaterialBuffer;
 		};
 	}
 }

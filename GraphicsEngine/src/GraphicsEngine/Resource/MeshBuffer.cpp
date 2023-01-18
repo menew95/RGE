@@ -60,6 +60,8 @@ namespace Graphics
 
 		_subMeshBuffer.m_IndexBuffer = m_RenderSystem->CreateBuffer(_uuid, _bufferDesc, indices.data());
 		_subMeshBuffer.m_IndexCount = static_cast<uint32>(indices.size());
+
+		m_SubMeshBuffers.push_back(_subMeshBuffer);
 	}
 
 	void SubMeshBuffer::Release(RenderSystem* renderSystem)

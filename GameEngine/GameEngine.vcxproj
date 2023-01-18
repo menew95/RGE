@@ -72,7 +72,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir)inc;$(ProjectDir)src;$(SolutionDir)Common\inc;$(SolutionDir)GraphicsEngine\inc;$(SolutionDir)GraphicsModule\inc;$(SolutionDir)PhysicsModule\inc;$(SolutionDir)SoundModule\inc;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)inc;$(ProjectDir)src;$(SolutionDir)Common\inc;$(SolutionDir)GraphicsEngine\inc;$(SolutionDir)GraphicsModule\inc;$(SolutionDir)PhysicsModule\inc;$(SolutionDir)SoundModule\inc;$(SolutionDir)Importer\inc;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <SourcePath>$(ProjectDir)inc;$(VC_SourcePath);</SourcePath>
     <IntDir>$(SolutionDir)_build\_int\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
     <OutDir>$(SolutionDir)_build\$(Configuration)\$(Platform)\$(ProjectName)\</OutDir>
@@ -80,7 +80,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(ProjectDir)inc;$(ProjectDir)src;$(SolutionDir)Common\inc;$(SolutionDir)GraphicsEngine\inc;$(SolutionDir)GraphicsModule\inc;$(SolutionDir)PhysicsModule\inc;$(SolutionDir)SoundModule\inc;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)inc;$(ProjectDir)src;$(SolutionDir)Common\inc;$(SolutionDir)GraphicsEngine\inc;$(SolutionDir)GraphicsModule\inc;$(SolutionDir)PhysicsModule\inc;$(SolutionDir)SoundModule\inc;$(SolutionDir)Importer\inc;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <SourcePath>$(ProjectDir)inc;$(VC_SourcePath);</SourcePath>
     <IntDir>$(SolutionDir)_build\_int\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
     <OutDir>$(SolutionDir)_build\$(Configuration)\$(Platform)\$(ProjectName)\</OutDir>
@@ -88,7 +88,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir)inc;$(ProjectDir)src;$(SolutionDir)Common\inc;$(SolutionDir)GraphicsEngine\inc;$(SolutionDir)GraphicsModule\inc;$(SolutionDir)PhysicsModule\inc;$(SolutionDir)SoundModule\inc;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)inc;$(ProjectDir)src;$(SolutionDir)Common\inc;$(SolutionDir)GraphicsEngine\inc;$(SolutionDir)GraphicsModule\inc;$(SolutionDir)PhysicsModule\inc;$(SolutionDir)SoundModule\inc;$(SolutionDir)Importer\inc;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <SourcePath>$(ProjectDir)inc;$(VC_SourcePath);</SourcePath>
     <IntDir>$(SolutionDir)_build\_int\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
     <OutDir>$(SolutionDir)_build\$(Configuration)\$(Platform)\$(ProjectName)\</OutDir>
@@ -96,7 +96,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(ProjectDir)inc;$(ProjectDir)src;$(SolutionDir)Common\inc;$(SolutionDir)GraphicsEngine\inc;$(SolutionDir)GraphicsModule\inc;$(SolutionDir)PhysicsModule\inc;$(SolutionDir)SoundModule\inc;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)inc;$(ProjectDir)src;$(SolutionDir)Common\inc;$(SolutionDir)GraphicsEngine\inc;$(SolutionDir)GraphicsModule\inc;$(SolutionDir)PhysicsModule\inc;$(SolutionDir)SoundModule\inc;$(SolutionDir)Importer\inc;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <SourcePath>$(ProjectDir)inc;$(VC_SourcePath);</SourcePath>
     <IntDir>$(SolutionDir)_build\_int\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
     <OutDir>$(SolutionDir)_build\$(Configuration)\$(Platform)\$(ProjectName)\</OutDir>

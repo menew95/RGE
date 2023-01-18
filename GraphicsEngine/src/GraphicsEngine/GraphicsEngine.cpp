@@ -89,11 +89,6 @@ namespace Graphics
 
 		m_Screen_Mesh->CreateVertexBuffer(TEXT("Screen_Mesh"), _data.data(), _size);
 		m_Screen_Mesh->CreateSubMesh(TEXT("Screen_Mesh"), triangles);
-
-		/*RenderObject _renderObject;
-		_renderObject.m_MeshBuffer = m_Screen_Mesh;
-		_renderObject.m_MaterialBuffer = m_Deferred_Light_Material;*/
-
 	}
 
 	Graphics::MeshBuffer* GraphicsEngine::CreateMeshBuffer(uuid uuid, std::vector<Common::VertexAttribute>& vertices, std::vector<std::vector<uint32>> subMeshs)
@@ -104,6 +99,11 @@ namespace Graphics
 	Graphics::MaterialBuffer* GraphicsEngine::CreateMaterialBuffer(uuid uuid, PipelineLayout* pipelineLayout)
 	{
 		return m_ResourceManager->CreateMaterialBuffer(uuid, pipelineLayout);
+	}
+
+	Graphics::Texture* GraphicsEngine::LoadTexture(uuid uuid, ImageDesc* imageDesc)
+	{
+		return m_ResourceManager->LoadTexture(uuid, imageDesc);
 	}
 
 	void GraphicsEngine::OnResize(uint32 _width, uint32 _height)
@@ -130,6 +130,7 @@ namespace Graphics
 	void GraphicsEngine::LoadGraphicsTable()
 	{
 		TableLoader::LoadShaderTable(m_ResourceManager.get());
+		TableLoader::LoadSamplerTable(m_ResourceManager.get());
 		TableLoader::LoadTextureTable(m_ResourceManager.get());
 		TableLoader::LoadRenderTargetTable(m_ResourceManager.get(), { 1280.f, 720.f });
 		TableLoader::LoadRenderingPipelineTable(m_ResourceManager.get());

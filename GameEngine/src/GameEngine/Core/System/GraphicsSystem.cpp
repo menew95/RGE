@@ -1,6 +1,11 @@
 #include "GameEngine/GameEnginePCH.h"
 #include "GameEngine/Core/System/GraphicsSystem.h"
 
+#include "Struct/VertexAttribute.h"
+
+#include "GameEngine/Core/Resource/Mesh.h"
+#include "GameEngine/Core/Resource/Material.h"
+
 #include "GraphicsEngine/GraphicsEngine.h"
 
 #include "GameEngine/Window.h"
@@ -36,6 +41,30 @@ namespace GameEngine
 		void GraphicsSystem::Initialize()
 		{
 			LoadGraphicsEngineDll();
+		}
+
+		void GraphicsSystem::CreateMeshBuffer(std::shared_ptr<Mesh>& mesh)
+		{
+			uuid _uuid = mesh->GetName();
+
+			mesh->m_MeshBuffer = m_GraphicsEngine->CreateMeshBuffer(_uuid, mesh->GetVertexAttributes(), mesh->GetIndexAttributes());
+		}
+
+		void GraphicsSystem::CreateMaterialBuffer(std::shared_ptr<Material>& material)
+		{
+			uuid _uuid = material->GetName();
+
+			material->m_MaterialBuffer = m_GraphicsEngine->CreateMaterialBuffer(_uuid, nullptr);
+		}
+
+		void GraphicsSystem::DeleteMeshBuffer(Graphics::MeshBuffer* meshBuffer)
+		{
+			// Todo :
+		}
+
+		void GraphicsSystem::DeleteMaterialBuffer(Graphics::MaterialBuffer* materialBuffer)
+		{
+			// Todo :
 		}
 
 		void GraphicsSystem::LoadGraphicsEngineDll()

@@ -26,7 +26,9 @@ namespace Graphics
 		virtual ~CommandBuffer() = default;
 
 		virtual void Begin() abstract;
+		virtual void BeginEvent(const wchar_t* event) abstract;
 		virtual void End() abstract;
+		virtual void EndEvent() abstract;
 		virtual void Execute(CommandBuffer& deferredCommandBuffer) abstract;
 
 		/* ----- Buffer ----- */

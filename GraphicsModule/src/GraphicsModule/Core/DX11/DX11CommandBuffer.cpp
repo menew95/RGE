@@ -34,6 +34,10 @@ namespace Graphics
 					m_IsSecondaryCmdBuffer = true;
 				}
 			}
+
+			HRESULT _hr = m_Context->QueryInterface(__uuidof(m_User), &m_User);
+
+			HR(_hr, "failed to get d3d11-user-defined-annotation");
 		}
 
 		DX11CommandBuffer::~DX11CommandBuffer()
@@ -465,5 +469,16 @@ namespace Graphics
 				SetResource(*_resources[i], _binds[i]._slot, _binds[i]._bindFlags, _binds[i]._stageFlags);
 			}
 		}
+
+		void DX11CommandBuffer::BeginEvent(const wchar_t* event)
+		{
+			m_User->BeginEvent(event);
+		}
+
+		void DX11CommandBuffer::EndEvent()
+		{
+			m_User->EndEvent();
+		}
+
 	}
 }

@@ -16,6 +16,9 @@ namespace GameEngine
 
 	namespace Core
 	{
+		class Mesh;
+		class Material;
+
 		class GAME_ENGINE_API GraphicsSystem
 		{
 			DECLARE_SINGLETON_CLASS(GraphicsSystem)
@@ -25,8 +28,10 @@ namespace GameEngine
 
 			void Initialize();
 
-			void CreateMeshBuffer();
-			void CreateMaterialBuffer();
+			void CreateMeshBuffer(std::shared_ptr<Mesh>& mesh);
+			void CreateMaterialBuffer(std::shared_ptr<Material>& material);
+
+			void LoadTexture();
 
 			void DeleteMeshBuffer(Graphics::MeshBuffer*);
 			void DeleteMaterialBuffer(Graphics::MaterialBuffer*);

@@ -14,10 +14,18 @@ namespace Utility
 		Math::Vector3 _scale;
 	};
 
+	struct AnimationSnapData
+	{
+		tstring _nodeName;
+		tstring _parentNodeName;
+
+		std::vector<KeyFrame> _keyFrameList;
+	};
+
 	struct AnimationClipData
 	{
 		tstring _clipName;
-		std::vector<KeyFrame> _keyFrames;
+		std::vector<AnimationSnapData> _snapList;
 
 
 		float _frameRate; // 엔진에서 60프레임으로 돌린다고 했을때, 한 프레임을 얼만큼 보여줄건지에 대한 비율
@@ -31,13 +39,15 @@ namespace Utility
 	{
 		tstring _meshName;
 
-		std::vector<Common::VertexAttribute> _vertexAttribute;
+		std::vector<Common::VertexAttribute> _vertexAttributes;
 
 		std::vector<std::vector<uint32>> _indexAttributes;
 
 		std::vector<tstring> _materials;
 
 		bool _isSkin = false;
+
+		std::vector<tstring> _boneList;
 	};
 
 	struct MaterialData
@@ -64,13 +74,24 @@ namespace Utility
 		tstring _specularMapTexture;
 	};
 
+	struct BoneData
+	{
+		tstring _boneName;
+		tstring _parentBoneName;
+		int _parentBoneIndex;
+
+		Math::Matrix _localTM = Math::Matrix::Identity;
+		Math::Matrix _worldTM = Math::Matrix::Identity;
+
+		Math::Matrix _offsetTM;
+	};
+
 	struct GameObjectData
 	{
 		tstring _gameObjectName;
 
 		Math::Matrix _localTM =  Math::Matrix::Identity;
 		Math::Matrix _worldTM =  Math::Matrix::Identity;
-
 
 		bool _hasParent = false;
 
@@ -80,7 +101,7 @@ namespace Utility
 
 		tstring _mesh;
 
-		bool _hasAnimation = false;
+		bool _isBone = false;
 	};
 
 	struct PrefabData
@@ -88,6 +109,8 @@ namespace Utility
 		tstring _name;
 
 		std::vector<GameObjectData> _gameObjectDatas;
+
+		std::vector<BoneData> _boneDatas;
 
 		std::map<tstring, MeshData> _meshDataMap;
 

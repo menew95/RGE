@@ -14,7 +14,8 @@ namespace GameEngine
 			MeshFilter(std::shared_ptr<class GameObject>& gameObject, const tstring& componentName = TEXT("MeshFilter"));
 			virtual ~MeshFilter();
 
-			std::shared_ptr<class Mesh>& GetSharedMesh() { return m_pSharedMesh; }
+			inline void SetSharedMesh(std::shared_ptr<class Mesh>& _sharedMesh) { m_pSharedMesh = _sharedMesh; }
+			inline std::shared_ptr<class Mesh>& GetSharedMesh() { return m_pSharedMesh; }
 
 		private:
 			std::shared_ptr<class Mesh> m_pSharedMesh;

@@ -28,6 +28,8 @@ namespace Graphics
 		MeshBuffer* CreateMeshBuffer(uuid uuid, std::vector<Common::VertexAttribute>& vertices, std::vector<std::vector<uint32>> subMeshs);
 		MaterialBuffer* CreateMaterialBuffer(uuid uuid, PipelineLayout* pipelineLayout);
 
+		Texture* LoadTexture(uuid uuid, ImageDesc* imageDesc);
+
 		void OnResize(uint32 _width, uint32 _height);
 
 		void RegistRenderObject(RenderObject& renderObject);

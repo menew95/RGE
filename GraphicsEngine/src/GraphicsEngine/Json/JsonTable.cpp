@@ -870,7 +870,7 @@ namespace Graphics
 
 				if (_layoutArray[_idx].HasMember(description))
 				{
-					_bindingDesc._name = StringHelper::WStringToString(_layoutArray[_idx][description].GetString());
+					_bindingDesc._name = _layoutArray[_idx][description].GetString();
 				}
 
 				if (_layoutArray[_idx].HasMember(resourceType))
@@ -878,6 +878,31 @@ namespace Graphics
 					if (!StringToEnum(_layoutArray[_idx][resourceType].GetString(), _bindingDesc._type))
 					{
 						assert(false);
+					}
+					else
+					{
+						Resource* _resource;
+
+						switch (_bindingDesc._type)
+						{
+							case ResourceType::Buffer:
+							{
+								_resource = resourceManager->GetBuffer(_bindingDesc._name);
+								break;
+							}
+							case ResourceType::Texture:
+							{
+								_resource = resourceManager->GetTexture(_bindingDesc._name);
+								break;
+							}
+							case ResourceType::Sampler:
+							{
+								_resource = resourceManager->GetSampler(_bindingDesc._name);
+								break;
+							}
+						}
+
+						_pipelineLayoutDesc._resources.push_back(_resource);
 					}
 				}
 
@@ -1049,4 +1074,148 @@ namespace Graphics
 
 		return true;
 	}
+
+	bool TableLoader::LoadSamplerTable(ResourceManager* resourceManager)
+	{
+		auto* _jsonReader = Utility::JsonReader::GetInstance();
+
+		auto _samplerTables = _jsonReader->LoadJson(TEXT("Asset/GraphicsTable/SamplerTable.json"));
+
+		const TCHAR* UUID = TEXT("UUID");
+		const TCHAR* filter = TEXT("Filter");
+		const TCHAR* addressModeU = TEXT("AddressModeU");
+		const TCHAR* addressModeV = TEXT("AddressModeV");
+		const TCHAR* addressModeW = TEXT("AddressModeW");
+		const TCHAR* mipLODBias = TEXT("MipLODBias");
+		const TCHAR* maxAnisotropy = TEXT("MaxAnisotropy");
+		const TCHAR* comparisonOp = TEXT("ComparisonOp");
+		const TCHAR* borderColor = TEXT("BorderColor");
+		const TCHAR* mipMapping = TEXT("MipMapping");
+		const TCHAR* minLOD = TEXT("MinLOD");
+		const TCHAR* maxLOD = TEXT("MaxLOD");
+
+		for (auto& _samplerTable : _samplerTables->GetArray())
+		{
+			SamplerDesc _samplerDesc;
+			uuid _uuid;
+
+			if (_samplerTable.HasMember(UUID))
+			{
+				_uuid = _samplerTable[UUID].GetString();
+			}
+
+			if (_samplerTable.HasMember(filter))
+			{
+				if (!StringToEnum(_samplerTable[filter].GetString(), _samplerDesc._filter))
+				{
+					assert(false);
+				}
+			}
+
+			if (_samplerTable.HasMember(addressModeU))
+			{
+				if (!StringToEnum(_samplerTable[addressModeU].GetString(), _samplerDesc._addressU))
+				{
+					assert(false);
+				}
+			}
+
+			if (_samplerTable.HasMember(addressModeV))
+			{
+				if (!StringToEnum(_samplerTable[addressModeV].GetString(), _samplerDesc._addressV))
+				{
+					assert(false);
+				}
+			}
+
+			if (_samplerTable.HasMember(addressModeW))
+			{
+				if (!StringToEnum(_samplerTable[addressModeW].GetString(), _samplerDesc._addressW))
+				{
+					assert(false);
+				}
+			}
+
+			if (_samplerTable.HasMember(mipLODBias))
+			{
+				_samplerDesc._mipLODBias = _samplerTable[mipLODBias].GetFloat();
+			}
+
+			if (_samplerTable.HasMember(maxAnisotropy))
+			{
+				_samplerDesc._maxAnisotropy = _samplerTable[maxAnisotropy].GetFloat();
+			}
+
+			if (_samplerTable.HasMember(comparisonOp))
+			{
+				if (!StringToEnum(_samplerTable[comparisonOp].GetString(), _samplerDesc._comparisonOp))
+				{
+					assert(false);
+				}
+			}
+
+			if (_samplerTable.HasMember(borderColor))
+			{
+				for (uint32 i = 0; i < _samplerTable[borderColor].Size(); i++)
+				{
+					if (i == 0) _samplerDesc._borderColor.x = _samplerTable[borderColor][i].GetFloat();
+					if (i == 1) _samplerDesc._borderColor.y = _samplerTable[borderColor][i].GetFloat();
+					if (i == 2) _samplerDesc._borderColor.z = _samplerTable[borderColor][i].GetFloat();
+					if (i == 3) _samplerDesc._borderColor.w = _samplerTable[borderColor][i].GetFloat();
+				}
+			}
+
+			if (_samplerTable.HasMember(mipMapping))
+			{
+				_samplerDesc._mipMapping = _samplerTable[mipMapping].GetBool();
+			}
+
+			if (_samplerTable.HasMember(minLOD))
+			{
+				_samplerDesc._minLOD = _samplerTable[minLOD].GetFloat();
+			}
+
+			if (_samplerTable.HasMember(maxLOD))
+			{
+				_samplerDesc._maxLOD = _samplerTable[maxLOD].GetFloat();
+			}
+
+			resourceManager->CreateSampler(_uuid, _samplerDesc);
+		}
+
+		_jsonReader->UnloadJson(TEXT("Asset/GraphicsTable/TextureTable.json"));
+
+		return true;
+	}
+
+	bool TableLoader::LoadBufferTable(ResourceManager* resourceManager)
+	{
+		auto* _jsonReader = Utility::JsonReader::GetInstance();
+
+		auto _bufferTables = _jsonReader->LoadJson(TEXT("Asset/GraphicsTable/BufferTable.json"));
+
+		const TCHAR* UUID = TEXT("UUID");
+		const TCHAR* size = TEXT("Size");
+		const TCHAR* stride = TEXT("Stride");
+		const TCHAR* bindFlags = TEXT("BindFlags");
+		const TCHAR* cpuAccessFlags = TEXT("CPUAccessFlags");
+		const TCHAR* slot = TEXT("Slot");
+		const TCHAR* miscFlags = TEXT("MiscFlags");
+		const TCHAR* format = TEXT("Format");
+
+		for (auto& _bufferTable : _bufferTables->GetArray())
+		{
+			BufferDesc _bufferDesc;
+			uuid _uuid;
+
+
+
+			resourceManager->CreateBuffer(_uuid, _bufferDesc);
+		}
+
+		_jsonReader->UnloadJson(TEXT("Asset/GraphicsTable/TextureTable.json"));
+
+		return true;
+	}
+
 }

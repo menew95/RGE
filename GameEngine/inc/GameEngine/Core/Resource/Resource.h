@@ -14,8 +14,13 @@ namespace GameEngine
 			Resource(const tstring& typeName = TEXT("Resource"));
 			virtual ~Resource();
 
+			inline void SetName(const tstring& resourceName) { m_ResourceName = resourceName; }
+			inline const tstring& GetName() { return m_ResourceName; }
+
 		protected:
-			virtual bool Release() abstract;
+			tstring m_ResourceName;
+
+			virtual void Release() abstract;
 		};
 
 	}

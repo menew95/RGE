@@ -89,6 +89,76 @@ namespace Graphics
 		return _newMaterialBuffer;
 	}
 
+	Graphics::MeshBuffer* ResourceManager::GetMeshBuffer(uuid uuid)
+	{
+		auto _find = std::find_if(std::begin(m_MeshBufferMap),
+			std::end(m_MeshBufferMap),
+			[&uuid](auto& pair) { return (uuid == pair.first); }
+		);
+
+		if (_find != m_MeshBufferMap.end())
+		{
+			return _find->second;
+		}
+
+		return nullptr;
+	}
+
+	Graphics::MaterialBuffer* ResourceManager::GetMaterialBuffer(uuid uuid)
+	{
+		auto _find = std::find_if(std::begin(m_MaterialBufferMap),
+			std::end(m_MaterialBufferMap),
+			[&uuid](auto& pair) { return (uuid == pair.first); }
+		);
+
+		if (_find != m_MaterialBufferMap.end())
+		{
+			return _find->second;
+		}
+
+		return nullptr;
+	}
+
+	Graphics::Buffer* ResourceManager::CreateBuffer(uuid uuid, BufferDesc& desc)
+	{
+		auto _find = std::find_if(std::begin(m_BufferMap),
+			std::end(m_BufferMap),
+			[&uuid](auto& pair) { return (uuid == pair.first); }
+		);
+
+		if (_find != m_BufferMap.end())
+		{
+			AssertMessageBox(false, (StringHelper::WStringToString(uuid) + " is a shader that already exists.").c_str());
+			return nullptr;
+		}
+
+		auto* _newBuffer= m_RenderSystem->CreateBuffer(uuid, desc);
+
+		m_BufferMap.insert(std::make_pair(uuid, _newBuffer));
+
+		return _newBuffer;
+	}
+
+	Graphics::Sampler* ResourceManager::CreateSampler(uuid uuid, SamplerDesc& desc)
+	{
+		auto _find = std::find_if(std::begin(m_SamplerMap),
+			std::end(m_SamplerMap),
+			[&uuid](auto& pair) { return (uuid == pair.first); }
+		);
+
+		if (_find != m_SamplerMap.end())
+		{
+			AssertMessageBox(false, (StringHelper::WStringToString(uuid) + " is a shader that already exists.").c_str());
+			return nullptr;
+		}
+
+		auto* _newSampler = m_RenderSystem->CreateSampler(uuid, desc);
+
+		m_SamplerMap.insert(std::make_pair(uuid, _newSampler));
+
+		return _newSampler;
+	}
+
 	Shader* ResourceManager::CreateShader(uuid uuid, ShaderDesc& desc)
 	{
 		auto _find = std::find_if(std::begin(m_ShaderMap),
@@ -211,6 +281,36 @@ namespace Graphics
 		return nullptr;
 	}
 
+	Graphics::Buffer* ResourceManager::GetBuffer(uuid uuid)
+	{
+		auto _find = std::find_if(std::begin(m_BufferMap),
+			std::end(m_BufferMap),
+			[&uuid](auto& pair) { return (uuid == pair.first); }
+		);
+
+		if (_find != m_BufferMap.end())
+		{
+			return _find->second;
+		}
+
+		return nullptr;
+	}
+
+	Graphics::Sampler* ResourceManager::GetSampler(uuid uuid)
+	{
+		auto _find = std::find_if(std::begin(m_SamplerMap),
+			std::end(m_SamplerMap),
+			[&uuid](auto& pair) { return (uuid == pair.first); }
+		);
+
+		if (_find != m_SamplerMap.end())
+		{
+			return _find->second;
+		}
+
+		return nullptr;
+	}
+
 	Shader* ResourceManager::GetShader(uuid uuid)
 	{
 		auto _find = std::find_if(std::begin(m_ShaderMap),
@@ -289,4 +389,26 @@ namespace Graphics
 	{
 		return nullptr;
 	}
+
+	Graphics::Texture* ResourceManager::LoadTexture(uuid uuid, ImageDesc* imageDesc)
+	{
+		auto _find = std::find_if(std::begin(m_TextureMap),
+			std::end(m_TextureMap),
+			[&uuid](auto& pair) { return (uuid == pair.first); }
+		);
+
+		if (_find != m_TextureMap.end())
+		{
+			return _find->second;
+		}
+
+		TextureDesc desc;
+
+		auto* _loadTex = m_RenderSystem->CreateTexture(uuid, desc, imageDesc);
+
+		m_TextureMap.insert(std::make_pair(uuid, _loadTex));
+
+		return _loadTex;
+	}
+
 }

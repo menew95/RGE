@@ -14,18 +14,20 @@ namespace GameEngine
 
 		}
 
-		Mesh::~Mesh()
+		Mesh::Mesh(std::vector<VertexAttribute>& vertices, std::vector<std::vector<uint32>>& indices, const tstring& typeName /*= TEXT("Mesh")*/)
 		{
-			
+			m_VertexAttributes = vertices;
+			m_IndexAttributers = indices;
 		}
 
-		bool Mesh::Release()
+		Mesh::~Mesh()
 		{
-			// Todo :
-			bool _ret = false;
+			Release();
+		}
 
-
-			return _ret;
+		void Mesh::Release()
+		{
+			GraphicsSystem::GetInstance()->DeleteMeshBuffer(m_MeshBuffer);
 		}
 	}
 }
