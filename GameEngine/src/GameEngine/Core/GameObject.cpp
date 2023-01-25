@@ -10,11 +10,24 @@ namespace GameEngine
 		GameObject::GameObject(const tstring& gameObjectName /*= TEXT("GameObject")*/)
 			: Object(TEXT("GameObject"))
 			, m_Layer(0)
-			, m_bActiveInHierarchy(false)
-			, m_bIsActiveSelf(false)
+			, m_bActiveInHierarchy(true)
+			, m_bIsActiveSelf(true)
 			, m_bIsStatic(false)
 		{
+		}
 
+		void GameObject::AddTransform()
+		{
+			m_pTransform = AddComponent<Transform>();
+		}
+
+		std::shared_ptr<GameObject> GameObject::Instantiate()
+		{
+			std::shared_ptr<GameObject> _newGamObject = std::make_shared<GameObject>();
+
+			_newGamObject->m_pTransform = _newGamObject->AddComponent<Transform>();
+
+			return _newGamObject;
 		}
 
 		void GameObject::SetActiveInHierarchy(bool value)

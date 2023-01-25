@@ -4,10 +4,13 @@
 
 #include "GraphicsModule/Core/Resource.h"
 
+#include "GraphicsEngine/Export.h"
+
 namespace Graphics
 {
 	class MeshBuffer;
 	class MaterialBuffer;
+	class Buffer;
 
 	struct UpdateResourceData
 	{
@@ -16,7 +19,7 @@ namespace Graphics
 	};
 
 	// 랜더 패스에 하나의 랜더 오브젝트를 정의
-	class RenderObject
+	class GRAPHICSENGINE_DLL_DECLSPEC RenderObject
 	{
 	public:
 		RenderObject();

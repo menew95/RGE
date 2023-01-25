@@ -6,10 +6,12 @@
 #include "GraphicsModule/Core/DX11/DX11StateManager.h"
 #include "GraphicsModule/Core/DX11/DX11RenderTarget.h"
 #include "GraphicsModule/Core/DX11/DX11RenderPass.h"
+#include "GraphicsModule/Core/DX11/DX11SwapChain.h"
 #include "GraphicsModule/Core/DX11/DX11Texture.h"
 #include "GraphicsModule/Core/DX11/DX11Sampler.h"
 #include "GraphicsModule/Core/DX11/DX11Buffer.h"
 #include "GraphicsModule/Core/DX11/Direct3D11.h"
+
 
 namespace Graphics
 {
@@ -17,6 +19,7 @@ namespace Graphics
 	{
 		// Global array of null pointers to unbind resource slots
 		static void* const	g_nullResources[D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT] = {};
+		static void* const	g_nullRTVs[D3D11_SIMULTANEOUS_RENDER_TARGET_COUNT] = {};
 		static const uint32	g_zeroCounters[D3D11_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT] = {};
 
 		DX11CommandBuffer::DX11CommandBuffer(ID3D11Device* device, const ComPtr<ID3D11DeviceContext>& context, const std::shared_ptr<class DX11StateManager>& stateManager, const CommandBufferDesc& desc)
@@ -55,6 +58,8 @@ namespace Graphics
 			if (m_IsDeferredContext == true)
 			{
 				//m_Context->FinishCommandList( , deferredCommandBuffer);
+
+
 			}
 		}
 
@@ -176,7 +181,10 @@ namespace Graphics
 
 		void DX11CommandBuffer::EndRenderPass()
 		{
+			m_Context->OMSetRenderTargets(m_FramebufferView._numRenderTargetViews, 
+				reinterpret_cast<ID3D11RenderTargetView* const*>(g_nullRTVs), nullptr);
 
+			::memset(&m_FramebufferView, 0, sizeof(D3D11FramebufferView));
 		}
 
 		void DX11CommandBuffer::Clear(long flags, const ClearValue& clearValue /*= {}*/)
@@ -238,21 +246,31 @@ namespace Graphics
 
 		void DX11CommandBuffer::SetRenderTarget(RenderTarget& renderTarget, uint32 numAttachments, const AttachmentClear* attachments)
 		{
-			auto& _renderTarget = reinterpret_cast<DX11RenderTarget&>(renderTarget);
+			if (renderTarget.GetType() == RenderTarget::Type::SwapChain)
+			{
+				SwapChain* _swapChain = reinterpret_cast<SwapChain*>(&renderTarget);
+				BindSwapChain(_swapChain);
 
-			_renderTarget.ClearRenderTarget(m_Context.Get(), numAttachments, attachments);
+				ClearAttachments(numAttachments, attachments);
+			}
+			else
+			{
+				auto& _renderTarget = reinterpret_cast<DX11RenderTarget&>(renderTarget);
 
-			auto _numRTV = static_cast<uint32>(_renderTarget.GetRenderTargetViews().size());
+				_renderTarget.ClearRenderTarget(m_Context.Get(), numAttachments, attachments);
 
-			m_Context->OMSetRenderTargets(
-				_numRTV,
-				_renderTarget.GetRenderTargetViews().data(),
-				_renderTarget.GetDepthStencilView()
-			);
+				auto _numRTV = static_cast<uint32>(_renderTarget.GetRenderTargetViews().size());
 
-			m_FramebufferView._numRenderTargetViews	= _numRTV;
-			m_FramebufferView._renderTargetViews	= _renderTarget.GetRenderTargetViews().data();
-			m_FramebufferView._depthStencilView		= _renderTarget.GetDepthStencilView();
+				m_Context->OMSetRenderTargets(
+					_numRTV,
+					_renderTarget.GetRenderTargetViews().data(),
+					_renderTarget.GetDepthStencilView()
+				);
+
+				m_FramebufferView._numRenderTargetViews = _numRTV;
+				m_FramebufferView._renderTargetViews = _renderTarget.GetRenderTargetViews().data();
+				m_FramebufferView._depthStencilView = _renderTarget.GetDepthStencilView();
+			}
 		}
 
 		void DX11CommandBuffer::SetPipelineState(PipelineState& pipelineState)
@@ -478,6 +496,22 @@ namespace Graphics
 		void DX11CommandBuffer::EndEvent()
 		{
 			m_User->EndEvent();
+		}
+
+		void DX11CommandBuffer::BindFramebufferView(uint32 numRTVs, ID3D11RenderTargetView* const* renderTargetViews, ID3D11DepthStencilView* depthStencilView)
+		{
+			m_Context->OMSetRenderTargets(numRTVs, renderTargetViews, depthStencilView);
+
+			m_FramebufferView._numRenderTargetViews = numRTVs;
+			m_FramebufferView._renderTargetViews = renderTargetViews;
+			m_FramebufferView._depthStencilView = depthStencilView;
+		}
+
+		void DX11CommandBuffer::BindSwapChain(SwapChain* swapChain)
+		{
+			DX11SwapChain* _castSwapChain = reinterpret_cast<DX11SwapChain*>(swapChain);
+
+			_castSwapChain->BindFramebufferView(this);
 		}
 
 	}

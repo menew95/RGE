@@ -2,6 +2,8 @@
 
 #include "Common.h"
 
+#include "GraphicsEngine/Export.h"
+
 namespace Graphics
 {
 	class RenderSystem;
@@ -12,10 +14,10 @@ namespace Graphics
 	{
 		Mesh,
 		Material,
-
+		Camera,
 	};
 
-	class ResourceBuffer
+	class GRAPHICSENGINE_DLL_DECLSPEC ResourceBuffer
 	{
 	public:
 		ResourceBuffer(Graphics::RenderSystem* renderSystem, BufferType type)

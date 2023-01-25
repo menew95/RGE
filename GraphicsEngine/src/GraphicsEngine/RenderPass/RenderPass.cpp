@@ -3,9 +3,11 @@
 #include "GraphicsEngine/RenderPass/RenderPass.h"
 #include "GraphicsEngine/Resource/MeshBuffer.h"
 #include "GraphicsEngine/Resource/MaterialBuffer.h"
+#include "GraphicsEngine/Resource/ConstantBuffer.h"
 
 #include "GraphicsModule/Core/RenderTarget.h"
 #include "GraphicsModule/Core/CommandBuffer.h"
+
 
 namespace Graphics
 {
@@ -16,25 +18,39 @@ namespace Graphics
 
 	}
 
+	RenderPass::RenderPass(PipelineState* pipelineState, RenderTarget* renderTarget, std::vector<AttachmentClear> attachmentClears)
+		: m_PipelineState(pipelineState)
+		, m_RenderTarget(renderTarget)
+		, m_AttachmentClears(attachmentClears)
+	{
+
+	}
+
 	void RenderPass::RegistRenderObject(class RenderObject& renderObject)
 	{
 		m_RenderObjects.push_back(renderObject);
 	}
 
-	void RenderPass::BeginExcute(CommandBuffer* commandBuffer)
+	void RenderPass::ClearRenderObject()
 	{
-		AttachmentClear _attachmentClear[] =
-		{
-			{ {1,0,0,0}, 0 },
-			{ {0,0,0,0}, 1},
-			{ {0,0,0,0}, 2},
-			{ {0,0,0,0}, 3},
-			{ {0,0,0,0}, 4},
-			{ 1, 0 }
-		};
+		m_RenderObjects.clear();
+	}
 
+	void RenderPass::UpdatePerFrame(CommandBuffer* commandBuffer, void* src, uint32 size)
+	{
+		commandBuffer->UpdateBuffer(*m_PerFrameBuffer, 0, src, size);
+	}
+
+	void RenderPass::BeginExcute(CommandBuffer* commandBuffer, PerFrame* perFrameData)
+	{
 		commandBuffer->SetPipelineState(*m_PipelineState);
-		commandBuffer->SetRenderTarget(*m_RenderTarget, 6, _attachmentClear);
+		commandBuffer->SetRenderTarget(*m_RenderTarget, m_AttachmentClears.size(), m_AttachmentClears.data());
+
+
+		Math::Viewport _viewport{0, 0, 1280, 720, 0, 1};
+
+		commandBuffer->SetViewport(_viewport);
+		//commandBuffer->UpdateBuffer(*m_PerFrameBuffer, 0, perFrameData, sizeof(PerFrame));
 	}
 
 	void RenderPass::Excute(CommandBuffer* commandBuffer)
@@ -43,7 +59,7 @@ namespace Graphics
 		{
 			auto _vertexBuffer = m_RenderObjects[_index].GetMeshBuffer()->GetBuffer();
 
-			commandBuffer->SetVertexBuffer(_vertexBuffer);
+			commandBuffer->SetVertexBuffer(*_vertexBuffer);
 
 			for (uint32 _subMeshCnt = 0; _subMeshCnt < m_RenderObjects[_index].GetMeshBuffer()->GetSubMeshCount(); _subMeshCnt++)
 			{
@@ -65,6 +81,8 @@ namespace Graphics
 	void RenderPass::EndExcute(CommandBuffer* commandBuffer)
 	{
 		commandBuffer->EndRenderPass();
+
+		ClearRenderObject();
 	}
 
 	void RenderPass::UpdateConstBuffer(CommandBuffer* commandBuffer, RenderObject& renderObject)
@@ -72,9 +90,10 @@ namespace Graphics
 		auto& _buffers = renderObject.GetConstBuffers();
 		auto& _sources = renderObject.GetUpdateResourceData();
 
-		for (size_t i = 0; i < _buffers.size(); i++)
+
+		for (size_t i = 0; i < _sources.size(); i++)
 		{
-			commandBuffer->UpdateBuffer(*(_buffers[i]), 0, _sources[i]._dataSrc, _sources[i]._datasize);
+			commandBuffer->UpdateBuffer(*m_PerObjectBuffer, 0, _sources[0]._dataSrc, _sources[0]._datasize);
 		}
 	}
 

@@ -7,6 +7,8 @@
 #include "GraphicsEngine/Resource/ResourceManager.h"
 #include "GraphicsEngine/Resource/MeshBuffer.h"
 #include "GraphicsEngine/Resource/MaterialBuffer.h"
+#include "GraphicsEngine/Resource/ConstantBuffer.h"
+#include "GraphicsEngine/Resource/CameraBuffer.h"
 
 #include "GraphicsEngine/Json/JsonTable.h"
 
@@ -44,15 +46,41 @@ namespace Graphics
 
 		m_CommandBuffer = m_RenderSystem->CreateCommandBuffer(TEXT("MainCommandBuffer"), _commandBufferDesc);
 
-
-		auto* _state = m_ResourceManager->GetPipelineState(TEXT("Deferred_BumpMap"));
+		auto* _state = m_ResourceManager->GetPipelineState(TEXT("Deferred_Mesh_Base"));
 		auto* _rt = m_ResourceManager->GetRenderTarget(TEXT("Deferred_Mesh"));
 
-		m_Deferred_Mesh_Pass = new RenderPass(_state, _rt);
+		std::vector<AttachmentClear> _attachmentClears =
+		{
+			{ { 0, 0, 0, 0 }, 0 },
+			{ { 0, 0, 0, 0 }, 1 },
+			{ { 1, 0, 0, 0 }, 2 },
+			{ { 0, 0, 0, 0 }, 3 },
+			{ { 0, 0, 0, 0 }, 4 },
+			{ 1, 0 }
+		};
+
+		m_Deferred_Mesh_Pass = new RenderPass(_state, _rt, _attachmentClears);
+
+		m_Deferred_Mesh_Pass->SetPerFrameBuffer(m_ResourceManager->GetBuffer(TEXT("cbPerFrame")));
+		m_Deferred_Mesh_Pass->SetPerObjectBuffer(m_ResourceManager->GetBuffer(TEXT("cbPerObject")));
 
 		_state = m_ResourceManager->GetPipelineState(TEXT("Deferred_Merge"));
-		_rt = m_ResourceManager->GetRenderTarget(TEXT("Deferred_Light"));
-		m_Deferred_Light_Pass = new RenderPass(_state, _rt);
+		//_rt = m_ResourceManager->GetRenderTarget(TEXT("Deferred_Light"));
+
+		_attachmentClears =
+		{
+			{ { 1, 0, 0, 0 }, 0 },
+			{ 1, 0 }
+		};
+
+		m_Deferred_Light_Pass = new RenderPass(_state, m_SwapChain, _attachmentClears);
+
+		m_Deferred_Light_Pass->SetPerFrameBuffer(m_ResourceManager->GetBuffer(TEXT("cbPerLightFrame")));
+		m_Deferred_Light_Pass->SetPerObjectBuffer(m_ResourceManager->GetBuffer(TEXT("cbPerObject")));
+
+		IntiLightPass();
+
+		//m_Final_Pass = new RenderPass(_state, m_SwapChain);
 	}
 
 	void GraphicsEngine::IntiLightPass()
@@ -87,7 +115,7 @@ namespace Graphics
 
 		uint32 _size = static_cast<uint32>(sizeof(ScreenVertex) * _data.size());
 
-		m_Screen_Mesh->CreateVertexBuffer(TEXT("Screen_Mesh"), _data.data(), _size);
+		m_Screen_Mesh->CreateVertexBuffer(TEXT("Screen_Mesh"), _data.data(), _size, sizeof(ScreenVertex));
 		m_Screen_Mesh->CreateSubMesh(TEXT("Screen_Mesh"), triangles);
 	}
 
@@ -99,6 +127,23 @@ namespace Graphics
 	Graphics::MaterialBuffer* GraphicsEngine::CreateMaterialBuffer(uuid uuid, PipelineLayout* pipelineLayout)
 	{
 		return m_ResourceManager->CreateMaterialBuffer(uuid, pipelineLayout);
+	}
+
+	Graphics::MaterialBuffer* GraphicsEngine::CreateMaterialBuffer(uuid uuid, const tstring& pipelineLayout)
+	{
+		auto _pipelineLayout = m_ResourceManager->GetPipelineLayout(pipelineLayout);
+		auto _newMatBuffer = m_ResourceManager->CreateMaterialBuffer(uuid, _pipelineLayout);
+
+		_newMatBuffer->SetRenderPass(m_Deferred_Mesh_Pass);
+
+		return _newMatBuffer;
+	}
+
+	Graphics::CameraBuffer* GraphicsEngine::CreateCameraBuffer()
+	{
+		m_MainCameraBuffer = m_ResourceManager->CreateCameraBuffer();
+
+		return m_MainCameraBuffer;
 	}
 
 	Graphics::Texture* GraphicsEngine::LoadTexture(uuid uuid, ImageDesc* imageDesc)
@@ -118,11 +163,75 @@ namespace Graphics
 
 	void GraphicsEngine::Excute()
 	{
-		m_Deferred_Mesh_Pass->BeginExcute(m_CommandBuffer);
+		{
+			m_CommandBuffer->BeginEvent(TEXT("Mesh"));
 
-		m_Deferred_Mesh_Pass->Excute(m_CommandBuffer);
+			// Update Frame Buffer
+			PerFrame _perFrame;
 
-		m_Deferred_Mesh_Pass->EndExcute(m_CommandBuffer);
+			m_MainCameraBuffer->UpdateCamera(_perFrame._camera);
+
+			m_Deferred_Mesh_Pass->UpdatePerFrame(m_CommandBuffer, &_perFrame, sizeof(_perFrame));
+
+			m_Deferred_Mesh_Pass->BeginExcute(m_CommandBuffer, nullptr);
+
+			m_Deferred_Mesh_Pass->Excute(m_CommandBuffer);
+
+			m_Deferred_Mesh_Pass->EndExcute(m_CommandBuffer);
+
+			m_CommandBuffer->EndEvent();
+		}
+
+		{
+			RenderObject _deferredMergeRenderObject;
+			_deferredMergeRenderObject.m_MeshBuffer = m_Screen_Mesh;
+			_deferredMergeRenderObject.m_MaterialBuffer = m_Deferred_Light_Material;
+
+			m_Deferred_Light_Pass->RegistRenderObject(_deferredMergeRenderObject);
+
+
+			m_CommandBuffer->BeginEvent(TEXT("Light"));
+			
+			// Update Frame Buffer
+			PerLightFrame _perLightFrame;
+			_perLightFrame._lightCount = 1;
+			_perLightFrame._iblFactor = 0;
+
+			//  Todo : 게임 엔진으로 부터 라이트들을 받아오도록 만들어야 함
+			
+			//_perLightFrame._perLights[0] = ;
+
+
+			m_Deferred_Light_Pass->UpdatePerFrame(m_CommandBuffer, &_perLightFrame, sizeof(_perLightFrame));
+
+			m_Deferred_Light_Pass->BeginExcute(m_CommandBuffer, nullptr);
+
+			m_Deferred_Light_Pass->Excute(m_CommandBuffer);
+
+			m_Deferred_Light_Pass->EndExcute(m_CommandBuffer);
+
+			m_CommandBuffer->ResetResourceSlots(ResourceType::Texture, 0, 5, BindFlags::ShaderResource, StageFlags::PS);
+
+			m_CommandBuffer->EndEvent();
+		}
+
+		/*{
+			RenderObject _deferredMergeRenderObject;
+			_deferredMergeRenderObject.m_MeshBuffer = m_Screen_Mesh;
+			_deferredMergeRenderObject.m_MaterialBuffer = m_Deferred_Light_Material;
+
+			m_Final_Pass->BeginEvent(TEXT("Final"));
+
+			m_Final_Pass->BeginExcute(m_CommandBuffer, nullptr);
+
+			m_Final_Pass->Excute(m_CommandBuffer);
+
+			m_Final_Pass->EndExcute(m_CommandBuffer);
+
+			m_CommandBuffer->ResetResourceSlots(ResourceType::Texture, 0, 5, BindFlags::ShaderResource, StageFlags::PS);
+
+			m_CommandBuffer->EndEvent();
+		}*/
 
 		m_SwapChain->Present();
 	}
@@ -130,6 +239,7 @@ namespace Graphics
 	void GraphicsEngine::LoadGraphicsTable()
 	{
 		TableLoader::LoadShaderTable(m_ResourceManager.get());
+		TableLoader::LoadBufferTable(m_ResourceManager.get());
 		TableLoader::LoadSamplerTable(m_ResourceManager.get());
 		TableLoader::LoadTextureTable(m_ResourceManager.get());
 		TableLoader::LoadRenderTargetTable(m_ResourceManager.get(), { 1280.f, 720.f });

@@ -8,12 +8,13 @@
 
 #include "GraphicsModule/Core/SwapChainFlags.h"
 
+#include "GraphicsModule/Core/RenderTarget.h"
 
 struct IDXGIFactory;
 
 namespace Graphics
 {
-	class SwapChain
+	class SwapChain : public RenderTarget
 	{
 	public:
 		SwapChain();

@@ -3,6 +3,7 @@
 #include "GraphicsModule/Core/DX11/DX11SwapChain.h"
 #include "GraphicsModule/Core/DX11/Direct3D11.h"
 #include "GraphicsModule/Core/DX11/DX11RenderSystem.h"
+#include "GraphicsModule/Core/DX11/DX11CommandBuffer.h"
 
 namespace Graphics
 {
@@ -17,6 +18,8 @@ namespace Graphics
 			CreateSwapChain(factory, m_Device, desc);
 
 			CreateBackBuffer();
+
+			m_Type = Type::SwapChain;
 		}
 
 		DX11SwapChain::~DX11SwapChain()
@@ -33,6 +36,16 @@ namespace Graphics
 		{
 			assert(false);
 			return false;
+		}
+
+		void DX11SwapChain::BindFramebufferView(DX11CommandBuffer* commandBuffer)
+		{
+			/* Bind framebuffer of this swap-chain in command buffer */
+			if (commandBuffer != nullptr)
+				commandBuffer->BindFramebufferView(1, m_RenderTargetView.GetAddressOf(), m_DepthStencilView.Get());
+
+			/* Store reference to last used command buffer */
+			m_CommandBuffer = commandBuffer;
 		}
 
 		bool DX11SwapChain::ResizeBuffer(const Extent2D& resolution)
@@ -58,7 +71,7 @@ namespace Graphics
 		{
 			m_BackBufferFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
 
-			DXGI_SAMPLE_DESC swapChainSampleDesc_ = DX11RenderSystem::FindSuitableSampleDesc(device, DXGI_FORMAT_R8G8B8A8_UNORM, desc._samples);
+			m_SampleDesc = DX11RenderSystem::FindSuitableSampleDesc(device, DXGI_FORMAT_R8G8B8A8_UNORM, desc._samples);
 
 			auto _window = GetWindow();
 
@@ -71,7 +84,7 @@ namespace Graphics
 				_desc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED; // 디스플레이 비례 모드
 				_desc.BufferDesc.RefreshRate.Numerator = 60;
 				_desc.BufferDesc.RefreshRate.Denominator = 1;
-				_desc.SampleDesc = swapChainSampleDesc_;
+				_desc.SampleDesc = m_SampleDesc;
 				_desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 				_desc.BufferCount = (desc._swapBuffers >= 3 ? 2 : 1);
 				_desc.OutputWindow = _window.GetHwnd();
@@ -92,6 +105,8 @@ namespace Graphics
 			D3D11_TEXTURE2D_DESC _backBufferDesc;
 
 			m_BackBuffer->GetDesc(&_backBufferDesc);
+
+			m_DepthBufferFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 
 			if (m_DepthBufferFormat != DXGI_FORMAT_UNKNOWN)
 			{

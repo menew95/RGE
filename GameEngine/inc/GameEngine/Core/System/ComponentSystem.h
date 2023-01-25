@@ -22,6 +22,8 @@ namespace GameEngine
 
 			void UpdateComponent();
 
+			void RenderComponent();
+
 			void ClearComponentsList();
 
 		private:

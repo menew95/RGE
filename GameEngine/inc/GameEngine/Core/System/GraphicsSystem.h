@@ -9,6 +9,8 @@ namespace Graphics
 
 	class MeshBuffer;
 	class MaterialBuffer;
+	class CameraBuffer;
+	class Texture;
 }
 
 namespace GameEngine
@@ -30,11 +32,13 @@ namespace GameEngine
 
 			void CreateMeshBuffer(std::shared_ptr<Mesh>& mesh);
 			void CreateMaterialBuffer(std::shared_ptr<Material>& material);
+			Graphics::CameraBuffer* CreateCameraBuffer();
 
-			void LoadTexture();
+			Graphics::Texture* LoadTexture(uuid _uuid);
 
 			void DeleteMeshBuffer(Graphics::MeshBuffer*);
 			void DeleteMaterialBuffer(Graphics::MaterialBuffer*);
+			void DeleteTextureBuffer(Graphics::Texture*);
 
 		protected:
 			void LoadGraphicsEngineDll();

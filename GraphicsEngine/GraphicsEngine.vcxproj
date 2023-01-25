@@ -226,6 +226,9 @@ xcopy /E /S /Y /R "$(ProjectDir)Shader\*" "$(OutputPath)..\Client\Asset\Shader\*
     <ClInclude Include="inc\GraphicsEngine\RenderPass\RenderPass.h" />
     <ClInclude Include="inc\GraphicsEngine\RenderObject.h" />
     <ClInclude Include="inc\GraphicsEngine\RenderPassFlags.h" />
+    <ClInclude Include="inc\GraphicsEngine\Resource\CameraBuffer.h" />
+    <ClInclude Include="inc\GraphicsEngine\Resource\ConstantBuffer.h" />
+    <ClInclude Include="inc\GraphicsEngine\Resource\LightBuffer.h" />
     <ClInclude Include="inc\GraphicsEngine\Resource\MaterialBuffer.h" />
     <ClInclude Include="inc\GraphicsEngine\Resource\MaterialFlags.h" />
     <ClInclude Include="inc\GraphicsEngine\Resource\MeshBuffer.h" />
@@ -237,6 +240,7 @@ xcopy /E /S /Y /R "$(ProjectDir)Shader\*" "$(OutputPath)..\Client\Asset\Shader\*
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\GraphicsEngine\Json\JsonTable.cpp" />
+    <ClCompile Include="src\GraphicsEngine\Resource\CameraBuffer.cpp" />
     <ClCompile Include="src\GraphicsEngine\Resource\MaterialBuffer.cpp" />
     <ClCompile Include="src\GraphicsEngine\Resource\MeshBuffer.cpp" />
     <ClCompile Include="src\GraphicsEngine\Resource\ResourceBuffer.cpp" />
@@ -268,6 +272,10 @@ xcopy /E /S /Y /R "$(ProjectDir)Shader\*" "$(OutputPath)..\Client\Asset\Shader\*
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </None>
     <None Include="Shader\Header\H_Input.hlsli" />
+    <None Include="Shader\Header\H_Light.hlsli" />
+    <None Include="Shader\Header\H_MathHelper.hlsli" />
+    <None Include="Shader\Header\H_PBR.hlsli" />
+    <None Include="Shader\Header\H_Shadow.hlsli" />
     <None Include="Shader\Header\H_Struct.hlsli">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
@@ -276,6 +284,12 @@ xcopy /E /S /Y /R "$(ProjectDir)Shader\*" "$(OutputPath)..\Client\Asset\Shader\*
     </None>
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="Shader\PS_Final.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
     <FxCompile Include="Shader\PS_Deferred.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>

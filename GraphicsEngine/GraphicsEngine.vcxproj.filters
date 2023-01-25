@@ -57,6 +57,15 @@
     <ClInclude Include="inc\GraphicsEngine\Resource\MaterialFlags.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="inc\GraphicsEngine\Resource\CameraBuffer.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\GraphicsEngine\Resource\ConstantBuffer.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\GraphicsEngine\Resource\LightBuffer.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\GraphicsEngine_dllmain.cpp">
@@ -89,15 +98,23 @@
     <ClCompile Include="src\GraphicsEngine\Json\JsonTable.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="src\GraphicsEngine\Resource\CameraBuffer.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\Header\H_ConstBuffer.hlsli" />
     <None Include="Shader\Header\H_Struct.hlsli" />
     <None Include="Shader\Header\H_Input.hlsli" />
+    <None Include="Shader\Header\H_PBR.hlsli" />
+    <None Include="Shader\Header\H_Light.hlsli" />
+    <None Include="Shader\Header\H_Shadow.hlsli" />
+    <None Include="Shader\Header\H_MathHelper.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\VS_Mesh.hlsl" />
     <FxCompile Include="Shader\PS_Deferred.hlsl" />
     <FxCompile Include="Shader\PS_Light.hlsl" />
+    <FxCompile Include="Shader\PS_Final.hlsl" />
   </ItemGroup>
 </Project>

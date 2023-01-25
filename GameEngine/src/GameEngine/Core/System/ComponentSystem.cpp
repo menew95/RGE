@@ -7,7 +7,13 @@ namespace GameEngine
 {
 	namespace Core
 	{
-		DEFINE_SINGLETON_CLASS(ComponentSystem, {}, {})
+		DEFINE_SINGLETON_CLASS(ComponentSystem,
+			{
+				RegistComponent(0,TEXT("Transform"));
+				RegistComponent(1,TEXT("Camera"));
+				RegistComponent(2,TEXT("MeshFilter"));
+				RegistComponent(3,TEXT("MeshRenderer"));
+			}, {})
 
 		void ComponentSystem::RegistComponent(uint32 order, const tstring& componentName)
 		{
@@ -22,6 +28,11 @@ namespace GameEngine
 			if (_iter == m_ComponentsList.end())
 			{
 				m_ComponentsList.push_back(Components(order, componentName));
+
+				if (TEXT("MeshRenderer") == componentName)
+				{
+					m_ComponentsList.back().m_IsRender = true;
+				}
 			}
 			else
 			{
@@ -71,7 +82,7 @@ namespace GameEngine
 
 		void ComponentSystem::UpdateComponent()
 		{
-			for (auto _components : m_ComponentsList)
+			for (auto& _components : m_ComponentsList)
 			{
 				_components.StartComponents();
 				_components.UpdateComponents();
@@ -79,43 +90,17 @@ namespace GameEngine
 			}
 		}
 
+		void ComponentSystem::RenderComponent()
+		{
+			for (auto& _components : m_ComponentsList)
+			{
+				_components.RenderComponents();
+			}
+		}
+
 		void ComponentSystem::ClearComponentsList()
 		{
 			m_ComponentsList.clear();
 		}
-
-		/*void ComponentSystem::AddComponents()
-		{
-			for (auto iter = m_WaitForAddComponents.begin(); iter != m_WaitForAddComponents.end(); iter++)
-			{
-				(*iter)->Awake();
-
-				if ((*iter)->GetEnable() && (*iter)->GetGameObject()->GetActiveInHierarchy())
-				{
-					m_WaitForStartComponents.emplace_back(*iter);
-					m_WaitForAddComponents.erase(iter);
-				}
-			}
-		}
-
-		void ComponentSystem::StartComponent()
-		{
-			for (auto& component : m_WaitForStartComponents)
-			{
-				if (component->GetEnable() && component->GetGameObject()->GetActiveInHierarchy())
-				{
-					component->Start();
-
-					m_WaitForUpdateComponents.emplace_back(component);
-				}
-			}
-
-			m_WaitForStartComponents.clear();
-		}
-
-		void ComponentSystem::DeleteComponent()
-		{
-
-		}*/
 	}
 }

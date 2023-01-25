@@ -269,7 +269,7 @@ namespace Graphics
 				}
 			}
 
-			AssertMessageBox(image.GetImageCount() == 0, "D3D11Texture LoadFaile Error");
+			AssertMessageBox(image.GetImageCount() != 0, "D3D11Texture LoadFaile Error");
 
 			bool isCubeMap = image.GetMetadata().IsCubemap();
 
@@ -295,7 +295,7 @@ namespace Graphics
 			ZeroMemory(&srvDesc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
 
 			srvDesc.Format = textureDesc.Format;
-			srvDesc.Texture2D.MipLevels = m_TextureDesc._mipLevels;
+			srvDesc.Texture2D.MipLevels = textureDesc.MipLevels;
 			srvDesc.Texture2D.MostDetailedMip = 0;
 
 			if (isCubeMap)

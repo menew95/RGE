@@ -8,6 +8,7 @@
 #include "Importer/Importer.h"
 #include "Importer/ImportInfo.h"
 
+#include "Struct/VertexAttribute.h"
 
 namespace GameEngine 
 {
@@ -18,7 +19,63 @@ namespace GameEngine
 		void Resources::Init()
 		{
 			LoadFBX(TEXT("Asset/FBX/Wooden_Crate.fbx"));
-			//LoadFBX(TEXT("Wooden_Crate.fbx"));
+
+
+
+
+			{
+				std::vector<Common::VertexAttribute> _vertexAttributes =
+				{
+					{ { -1.f, -1.f, -1.f }, { 0, 0, 0, 0 }, { +0.f, +1.f }, { +0.f, +0.f, -1.f }, { 0.f, 0.f, 0.f }, { 0, 0, 0, 0 }, { 0.f, 0.f, 0.f, 0.f } },
+					{ { -1.f, +1.f, -1.f }, { 0, 0, 0, 0 }, { +0.f, +0.f }, { +0.f, +0.f, -1.f }, { 0.f, 0.f, 0.f }, { 0, 0, 0, 0 }, { 0.f, 0.f, 0.f, 0.f } },
+					{ { +1.f, +1.f, -1.f }, { 0, 0, 0, 0 }, { +1.f, +0.f }, { +0.f, +0.f, -1.f }, { 0.f, 0.f, 0.f }, { 0, 0, 0, 0 }, { 0.f, 0.f, 0.f, 0.f } },
+					{ { +1.f, -1.f, -1.f }, { 0, 0, 0, 0 }, { +1.f, +1.f }, { +0.f, +0.f, -1.f }, { 0.f, 0.f, 0.f }, { 0, 0, 0, 0 }, { 0.f, 0.f, 0.f, 0.f } },
+					{ { -1.f, -1.f, +1.f }, { 0, 0, 0, 0 }, { +1.f, +1.f }, { +0.f, +0.f, +1.f }, { 0.f, 0.f, 0.f }, { 0, 0, 0, 0 }, { 0.f, 0.f, 0.f, 0.f } },
+					{ { +1.f, -1.f, +1.f }, { 0, 0, 0, 0 }, { +0.f, +1.f }, { +0.f, +0.f, +1.f }, { 0.f, 0.f, 0.f }, { 0, 0, 0, 0 }, { 0.f, 0.f, 0.f, 0.f } },
+					{ { +1.f, +1.f, +1.f }, { 0, 0, 0, 0 }, { +0.f, +0.f }, { +0.f, +0.f, +1.f }, { 0.f, 0.f, 0.f }, { 0, 0, 0, 0 }, { 0.f, 0.f, 0.f, 0.f } },
+					{ { -1.f, +1.f, +1.f }, { 0, 0, 0, 0 }, { +1.f, +0.f }, { +0.f, +0.f, +1.f }, { 0.f, 0.f, 0.f }, { 0, 0, 0, 0 }, { 0.f, 0.f, 0.f, 0.f } },
+					{ { -1.f, +1.f, -1.f }, { 0, 0, 0, 0 }, { +0.f, +1.f }, { +0.f, +1.f, +0.f }, { 0.f, 0.f, 0.f }, { 0, 0, 0, 0 }, { 0.f, 0.f, 0.f, 0.f } },
+					{ { -1.f, +1.f, +1.f }, { 0, 0, 0, 0 }, { +0.f, +0.f }, { +0.f, +1.f, +0.f }, { 0.f, 0.f, 0.f }, { 0, 0, 0, 0 }, { 0.f, 0.f, 0.f, 0.f } },
+					{ { +1.f, +1.f, +1.f }, { 0, 0, 0, 0 }, { +1.f, +0.f }, { +0.f, +1.f, +0.f }, { 0.f, 0.f, 0.f }, { 0, 0, 0, 0 }, { 0.f, 0.f, 0.f, 0.f } },
+					{ { +1.f, +1.f, -1.f }, { 0, 0, 0, 0 }, { +1.f, +1.f }, { +0.f, +1.f, +0.f }, { 0.f, 0.f, 0.f }, { 0, 0, 0, 0 }, { 0.f, 0.f, 0.f, 0.f } },
+					{ { -1.f, -1.f, -1.f }, { 0, 0, 0, 0 }, { +1.f, +1.f }, { +0.f, -1.f, +0.f }, { 0.f, 0.f, 0.f }, { 0, 0, 0, 0 }, { 0.f, 0.f, 0.f, 0.f } },
+					{ { +1.f, -1.f, -1.f }, { 0, 0, 0, 0 }, { +0.f, +1.f }, { +0.f, -1.f, +0.f }, { 0.f, 0.f, 0.f }, { 0, 0, 0, 0 }, { 0.f, 0.f, 0.f, 0.f } },
+					{ { +1.f, -1.f, +1.f }, { 0, 0, 0, 0 }, { +0.f, +0.f }, { +0.f, -1.f, +0.f }, { 0.f, 0.f, 0.f }, { 0, 0, 0, 0 }, { 0.f, 0.f, 0.f, 0.f } },
+					{ { -1.f, -1.f, +1.f }, { 0, 0, 0, 0 }, { +1.f, +0.f }, { +0.f, -1.f, +0.f }, { 0.f, 0.f, 0.f }, { 0, 0, 0, 0 }, { 0.f, 0.f, 0.f, 0.f } },
+					{ { -1.f, -1.f, +1.f }, { 0, 0, 0, 0 }, { +0.f, +1.f }, { -1.f, +0.f, +0.f }, { 0.f, 0.f, 0.f }, { 0, 0, 0, 0 }, { 0.f, 0.f, 0.f, 0.f } },
+					{ { -1.f, +1.f, +1.f }, { 0, 0, 0, 0 }, { +0.f, +0.f }, { -1.f, +0.f, +0.f }, { 0.f, 0.f, 0.f }, { 0, 0, 0, 0 }, { 0.f, 0.f, 0.f, 0.f } },
+					{ { -1.f, +1.f, -1.f }, { 0, 0, 0, 0 }, { +1.f, +0.f }, { -1.f, +0.f, +0.f }, { 0.f, 0.f, 0.f }, { 0, 0, 0, 0 }, { 0.f, 0.f, 0.f, 0.f } },
+					{ { -1.f, -1.f, -1.f }, { 0, 0, 0, 0 }, { +1.f, +1.f }, { -1.f, +0.f, +0.f }, { 0.f, 0.f, 0.f }, { 0, 0, 0, 0 }, { 0.f, 0.f, 0.f, 0.f } },
+					{ { +1.f, -1.f, -1.f }, { 0, 0, 0, 0 }, { +0.f, +1.f }, { +1.f, +0.f, +0.f }, { 0.f, 0.f, 0.f }, { 0, 0, 0, 0 }, { 0.f, 0.f, 0.f, 0.f } },
+					{ { +1.f, +1.f, -1.f }, { 0, 0, 0, 0 }, { +0.f, +0.f }, { +1.f, +0.f, +0.f }, { 0.f, 0.f, 0.f }, { 0, 0, 0, 0 }, { 0.f, 0.f, 0.f, 0.f } },
+					{ { +1.f, +1.f, +1.f }, { 0, 0, 0, 0 }, { +1.f, +0.f }, { +1.f, +0.f, +0.f }, { 0.f, 0.f, 0.f }, { 0, 0, 0, 0 }, { 0.f, 0.f, 0.f, 0.f } },
+					{ { +1.f, -1.f, +1.f }, { 0, 0, 0, 0 }, { +1.f, +1.f }, { +1.f, +0.f, +0.f }, { 0.f, 0.f, 0.f }, { 0, 0, 0, 0 }, { 0.f, 0.f, 0.f, 0.f } },
+				};
+
+				std::vector<std::vector<uint32>> _indexAttributes = {
+					{
+						0, 1, 2,
+						0, 2, 3,
+						4, 5, 6,
+						4, 6, 7,
+						8, 9, 10,
+						8, 10, 11,
+						12, 13, 14,
+						12, 14, 15,
+						16, 17, 18,
+						16, 18, 19,
+						20, 21, 22,
+						20, 22, 23
+					}
+				};
+				std::shared_ptr<Mesh> _newMesh = std::make_shared<Mesh>(_vertexAttributes, _indexAttributes);
+
+				_newMesh->SetName(TEXT("Box"));
+
+				GraphicsSystem::GetInstance()->CreateMeshBuffer(_newMesh);
+
+				m_MeshMap.insert(std::make_pair(TEXT("Box"), _newMesh));
+			}
 		}
 
 		void* Resources::Load(const tstring& filePath)
@@ -44,6 +101,8 @@ namespace GameEngine
 				_newMesh->SetName(_pair.first);
 
 				GraphicsSystem::GetInstance()->CreateMeshBuffer(_newMesh);
+
+				m_MeshMap.insert(std::make_pair(_pair.first, _newMesh));
 			}
 
 			for (auto& _pair : _newPrefabData._materialDataMap)
@@ -53,6 +112,18 @@ namespace GameEngine
 				_newMaterial->SetName(_pair.first);
 
 
+				//_pair.second._albedoMapTexture;
+				_pair.second._normalMapTexture;
+				_pair.second._metalicRoughnessMapTexture;
+				_pair.second._emissiveMapTexture;
+				_pair.second._ambientMapTexture;
+				_pair.second._specularMapTexture;
+
+				GraphicsSystem::GetInstance()->CreateMaterialBuffer(_newMaterial);
+
+				_newMaterial->SetAlbedoTexture(GraphicsSystem::GetInstance()->LoadTexture(_pair.second._albedoMapTexture));
+
+				m_MaterialMap.insert(std::make_pair(_pair.first, _newMaterial));
 			}
 		}
 

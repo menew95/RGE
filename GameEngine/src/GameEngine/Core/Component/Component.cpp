@@ -2,6 +2,10 @@
 #include "GameEngine\Core\GameObject.h"
 #include "GameEngine\Core\Component\Component.h"
 
+#include "GameEngine\Core\System\ComponentSystem.h"
+
+static uint32 _order = 0;
+
 namespace GameEngine
 {
 	namespace Core
@@ -11,7 +15,7 @@ namespace GameEngine
 			, m_pGameObject(gameObject)
 			, m_bEnable(true)
 		{
-
+			//ComponentSystem::GetInstance()->RegistComponent(_order++, componentName);
 		}
 
 		Component::~Component()

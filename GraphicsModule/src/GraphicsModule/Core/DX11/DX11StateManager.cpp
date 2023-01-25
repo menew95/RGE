@@ -240,27 +240,27 @@ namespace Graphics
 
 		void DX11StateManager::SetConstantBuffers(uint32 startSlot, uint32 count, ID3D11Buffer* const* buffers, long stageFlags)
 		{
-			if ((stageFlags & StageFlags::VS) == 0)
+			if ((stageFlags & StageFlags::VS) != 0)
 			{
 				m_Context->VSSetConstantBuffers(startSlot, count, buffers);
 			}
-			if ((stageFlags & StageFlags::HS) == 0)
+			if ((stageFlags & StageFlags::HS) != 0)
 			{
 				m_Context->HSSetConstantBuffers(startSlot, count, buffers);
 			}
-			if ((stageFlags & StageFlags::DS) == 0)
+			if ((stageFlags & StageFlags::DS) != 0)
 			{
 				m_Context->DSSetConstantBuffers(startSlot, count, buffers);
 			}
-			if ((stageFlags & StageFlags::GS) == 0)
+			if ((stageFlags & StageFlags::GS) != 0)
 			{
 				m_Context->GSSetConstantBuffers(startSlot, count, buffers);
 			}
-			if ((stageFlags & StageFlags::PS) == 0)
+			if ((stageFlags & StageFlags::PS) != 0)
 			{
 				m_Context->PSSetConstantBuffers(startSlot, count, buffers);
 			}
-			if ((stageFlags & StageFlags::CS) == 0)
+			if ((stageFlags & StageFlags::CS) != 0)
 			{
 				m_Context->CSSetConstantBuffers(startSlot, count, buffers);
 			}
@@ -276,27 +276,27 @@ namespace Graphics
 				}
 			}
 
-			if ((stageFlags & StageFlags::VS) == 0)
+			if ((stageFlags & StageFlags::VS) != 0)
 			{
 				m_Context->VSSetConstantBuffers(startSlot, count, buffers);
 			}
-			if ((stageFlags & StageFlags::HS) == 0)
+			if ((stageFlags & StageFlags::HS) != 0)
 			{
 				m_Context->HSSetConstantBuffers(startSlot, count, buffers);
 			}
-			if ((stageFlags & StageFlags::DS) == 0)
+			if ((stageFlags & StageFlags::DS) != 0)
 			{
 				m_Context->DSSetConstantBuffers(startSlot, count, buffers);
 			}
-			if ((stageFlags & StageFlags::GS) == 0)
+			if ((stageFlags & StageFlags::GS) != 0)
 			{
 				m_Context->GSSetConstantBuffers(startSlot, count, buffers);
 			}
-			if ((stageFlags & StageFlags::PS) == 0)
+			if ((stageFlags & StageFlags::PS) != 0)
 			{
 				m_Context->PSSetConstantBuffers(startSlot, count, buffers);
 			}
-			if ((stageFlags & StageFlags::CS) == 0)
+			if ((stageFlags & StageFlags::CS) != 0)
 			{
 				m_Context->CSSetConstantBuffers(startSlot, count, buffers);
 			}
@@ -304,27 +304,27 @@ namespace Graphics
 
 		void DX11StateManager::SetShaderResources(uint32 startSlot, uint32 count, ID3D11ShaderResourceView* const* views, long stageFlags)
 		{
-			if ((stageFlags & StageFlags::VS) == 0)
+			if ((stageFlags & StageFlags::VS) != 0)
 			{
 				m_Context->VSSetShaderResources(startSlot, count, views);
 			}
-			if ((stageFlags & StageFlags::HS) == 0)
+			if ((stageFlags & StageFlags::HS) != 0)
 			{
 				m_Context->HSSetShaderResources(startSlot, count, views);
 			}
-			if ((stageFlags & StageFlags::DS) == 0)
+			if ((stageFlags & StageFlags::DS) != 0)
 			{
 				m_Context->DSSetShaderResources(startSlot, count, views);
 			}
-			if ((stageFlags & StageFlags::GS) == 0)
+			if ((stageFlags & StageFlags::GS) != 0)
 			{
 				m_Context->GSSetShaderResources(startSlot, count, views);
 			}
-			if ((stageFlags & StageFlags::PS) == 0)
+			if ((stageFlags & StageFlags::PS) != 0)
 			{
 				m_Context->PSSetShaderResources(startSlot, count, views);
 			}
-			if ((stageFlags & StageFlags::CS) == 0)
+			if ((stageFlags & StageFlags::CS) != 0)
 			{
 				m_Context->CSSetShaderResources(startSlot, count, views);
 			}
@@ -332,27 +332,27 @@ namespace Graphics
 
 		void DX11StateManager::SetSamplers(uint32 startSlot, uint32 count, ID3D11SamplerState* const* samplers, long stageFlags)
 		{
-			if ((stageFlags & StageFlags::VS) == 0)
+			if ((stageFlags & StageFlags::VS) != 0)
 			{
 				m_Context->VSSetSamplers(startSlot, count, samplers);
 			}
-			if ((stageFlags & StageFlags::HS) == 0)
+			if ((stageFlags & StageFlags::HS) != 0)
 			{
 				m_Context->HSSetSamplers(startSlot, count, samplers);
 			}
-			if ((stageFlags & StageFlags::DS) == 0)
+			if ((stageFlags & StageFlags::DS) != 0)
 			{
 				m_Context->DSSetSamplers(startSlot, count, samplers);
 			}
-			if ((stageFlags & StageFlags::GS) == 0)
+			if ((stageFlags & StageFlags::GS) != 0)
 			{
 				m_Context->GSSetSamplers(startSlot, count, samplers);
 			}
-			if ((stageFlags & StageFlags::PS) == 0)
+			if ((stageFlags & StageFlags::PS) != 0)
 			{
 				m_Context->PSSetSamplers(startSlot, count, samplers);
 			}
-			if ((stageFlags & StageFlags::CS) == 0)
+			if ((stageFlags & StageFlags::CS) != 0)
 			{
 				m_Context->CSSetSamplers(startSlot, count, samplers);
 			}
@@ -360,11 +360,11 @@ namespace Graphics
 
 		void DX11StateManager::SetUnorderedAccessViews(uint32 startSlot, uint32 count, ID3D11UnorderedAccessView* const* views, const uint32* initialCounts, long stageFlags)
 		{
-			if ((stageFlags & StageFlags::PS) == 0)
+			if ((stageFlags & StageFlags::PS) != 0)
 			{
 				m_Context->OMSetRenderTargetsAndUnorderedAccessViews(D3D11_KEEP_RENDER_TARGETS_AND_DEPTH_STENCIL, nullptr, nullptr, startSlot, count, views, initialCounts);
 			}
-			if ((stageFlags & StageFlags::CS) == 0)
+			if ((stageFlags & StageFlags::CS) != 0)
 			{
 				m_Context->CSSetUnorderedAccessViews(startSlot, count, views, initialCounts);
 			}

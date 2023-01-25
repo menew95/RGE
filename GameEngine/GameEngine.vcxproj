@@ -192,7 +192,14 @@ xcopy /E /S /Y /R "$(OutputPath)*.pdb" "$(OutputPath)..\Client\*"</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="inc\GameEngine\Core\Application.h" />
+    <ClInclude Include="inc\GameEngine\Core\Component\Camera.h" />
     <ClInclude Include="inc\GameEngine\Core\Component\MeshFilter.h" />
+    <ClInclude Include="inc\GameEngine\Core\Component\MeshRenderer.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="inc\GameEngine\Core\Resource\AudioClip.h" />
     <ClInclude Include="inc\GameEngine\Core\Resource\Material.h" />
     <ClInclude Include="inc\GameEngine\Core\Resource\Sprite.h" />
@@ -217,10 +224,18 @@ xcopy /E /S /Y /R "$(OutputPath)*.pdb" "$(OutputPath)..\Client\*"</Command>
     <ClInclude Include="inc\GameEngine\Window.h" />
     <ClInclude Include="src\GameEngine\GameEnginePCH.h" />
     <ClInclude Include="inc\GameEngine\Core\Component\Transform.h" />
+    <ClInclude Include="src\Test\TestScene.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\GameEngine\Core\Application.cpp" />
+    <ClCompile Include="src\GameEngine\Core\Component\Camera.cpp" />
     <ClCompile Include="src\GameEngine\Core\Component\MeshFilter.cpp" />
+    <ClCompile Include="src\GameEngine\Core\Component\MeshRenderer.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="src\GameEngine\Core\Resource\AudioClip.cpp" />
     <ClCompile Include="src\GameEngine\Core\Resource\Material.cpp" />
     <ClCompile Include="src\GameEngine\Core\Resource\Mesh.cpp" />
@@ -249,6 +264,7 @@ xcopy /E /S /Y /R "$(OutputPath)*.pdb" "$(OutputPath)..\Client\*"</Command>
     </ClCompile>
     <ClCompile Include="src\GameEngine\Core\Component\Transform.cpp" />
     <ClCompile Include="src\GameEngine\Window.cpp" />
+    <ClCompile Include="src\Test\TestScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.vcxproj">

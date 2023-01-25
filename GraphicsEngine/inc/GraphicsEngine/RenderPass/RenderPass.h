@@ -4,6 +4,10 @@
 
 #include "GraphicsEngine/RenderPassFlags.h"
 
+#include "GraphicsEngine/Export.h"
+
+#include "GraphicsModule/Core/CommandBufferFlags.h"
+
 namespace Graphics
 {
 	class PipelineState;
@@ -12,13 +16,17 @@ namespace Graphics
 	class Resource;
 	class CommandBuffer;
 
+	struct PerFrame;
+
 	class RenderPass
 	{
 	public:
 		RenderPass(PipelineState* pipelineState, RenderTarget* renderTarget);
+		RenderPass(PipelineState* pipelineState, RenderTarget* renderTarget, std::vector<AttachmentClear> attachmentClears);
 		virtual ~RenderPass();
 
 		void RegistRenderObject(class RenderObject& renderObject);
+		void ClearRenderObject();
 
 		inline const PipelineState* GetPipelineState() const
 		{
@@ -30,11 +38,16 @@ namespace Graphics
 			return m_RenderTarget;
 		}
 
-		void BeginExcute(CommandBuffer* commandBuffer);
+		void UpdatePerFrame(CommandBuffer* commandBuffer, void* src, uint32 size);
+
+		void BeginExcute(CommandBuffer* commandBuffer, PerFrame* perFrameData);
 		void Excute(CommandBuffer* commandBuffer);
 		void EndExcute(CommandBuffer* commandBuffer);
 
 		void UpdateConstBuffer(CommandBuffer* commandBuffer, RenderObject& renderObject);
+
+		inline void SetPerFrameBuffer(Buffer* perFrame) { m_PerFrameBuffer = perFrame; }
+		inline void SetPerObjectBuffer(Buffer* perObject) { m_PerObjectBuffer = perObject; }
 
 	protected:
 		PipelineState* m_PipelineState = nullptr;
@@ -43,5 +56,11 @@ namespace Graphics
 		std::vector<Resource*> m_Resources;
 
 		std::vector<RenderObject> m_RenderObjects;
+
+		std::vector<AttachmentClear> m_AttachmentClears;
+
+		Buffer* m_PerFrameBuffer;
+		Buffer* m_PerObjectBuffer;
+		//Buffer* m_PerMaterialBuffer;
 	};
 }

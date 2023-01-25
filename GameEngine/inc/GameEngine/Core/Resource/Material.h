@@ -7,6 +7,8 @@
 namespace Graphics
 {
 	class MaterialBuffer;
+	class Texture;
+	class Resource;
 }
 
 namespace GameEngine
@@ -24,6 +26,9 @@ namespace GameEngine
 
 			inline Graphics::MaterialBuffer* GetMaterialBuffer() { return m_MaterialBuffer; }
 
+			void SetAlbedoTexture(Graphics::Texture* texture);
+			void SetNormalTexture(Graphics::Texture* texture);
+			void SetMRATexture(Graphics::Texture* texture);
 		protected:
 			virtual void Release() override;
 

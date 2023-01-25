@@ -3,6 +3,7 @@
 
 #include "GraphicsEngine/Resource/MeshBuffer.h"
 #include "GraphicsEngine/Resource/MaterialBuffer.h"
+#include "GraphicsEngine/Resource/CameraBuffer.h"
 
 #include "Common/StringHelper.h"
 
@@ -87,6 +88,29 @@ namespace Graphics
 		m_MaterialBufferMap.insert(std::make_pair(uuid, _newMaterialBuffer));
 
 		return _newMaterialBuffer;
+	}
+
+	Graphics::CameraBuffer* ResourceManager::CreateCameraBuffer()
+	{
+		static uint32 _idx = 0;
+		uuid _uuid = TEXT("Camera") + std::to_wstring(_idx);
+
+		auto _find = std::find_if(std::begin(m_CameraBufferMap),
+			std::end(m_CameraBufferMap),
+			[&_uuid](auto& pair) { return (_uuid == pair.first); }
+		);
+
+		if (_find != m_CameraBufferMap.end())
+		{
+			AssertMessageBox(false, (StringHelper::WStringToString(_uuid) + " is a camera-buffer that already exists.").c_str());
+			return nullptr;
+		}
+
+		auto* _newCameraBuffer = new CameraBuffer(m_RenderSystem);
+
+		m_CameraBufferMap.insert(std::make_pair(_uuid, _newCameraBuffer));
+
+		return _newCameraBuffer;
 	}
 
 	Graphics::MeshBuffer* ResourceManager::GetMeshBuffer(uuid uuid)

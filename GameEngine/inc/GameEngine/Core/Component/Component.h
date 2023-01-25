@@ -3,12 +3,13 @@
 #define COMPONENT_H
 #include "Object\Object.h"
 
+
 namespace GameEngine
 {
 	namespace Core
 	{
 		class GAME_ENGINE_API Component
-			: public Object, public std::enable_shared_from_this<Component>
+			: public Object/*, public std::enable_shared_from_this<Component>*/
 		{
 		public:
 			Component(std::shared_ptr<class GameObject>& gameObject, const tstring& componentName = TEXT("Component"));
@@ -21,6 +22,7 @@ namespace GameEngine
 			virtual void FixedUpdate() {}
 			virtual void OnEnable() {}
 			virtual void OnDisable() {}
+			virtual void Render() {}
 
 			tstring& GetTag();
 			void SetTag(const tstring& value);

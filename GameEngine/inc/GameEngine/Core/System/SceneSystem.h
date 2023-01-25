@@ -16,6 +16,7 @@ namespace GameEngine
 
 			bool LoadScene(uint32 index);
 
+			void Initialize();
 		private:
 			std::vector<std::shared_ptr<Scene>> m_Scenes;
 		};

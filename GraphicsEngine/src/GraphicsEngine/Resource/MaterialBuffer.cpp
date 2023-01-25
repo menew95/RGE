@@ -1,6 +1,9 @@
 #include "GraphicsEnginePCH.h"
 #include "GraphicsEngine/Resource/MaterialBuffer.h"
 
+#include "GraphicsEngine/RenderObject.h"
+#include "GraphicsEngine/RenderPass/RenderPass.h"
+
 namespace Graphics
 {
 	
@@ -20,6 +23,11 @@ namespace Graphics
 	void MaterialBuffer::SetResource(uint32 i, Graphics::Resource* resource)
 	{
 		m_PipelineLayout->SetResource(i, resource);
+	}
+
+	void MaterialBuffer::RegistRenderObject(RenderObject& renderObject)
+	{
+		m_RenderPass->RegistRenderObject(renderObject);
 	}
 
 }

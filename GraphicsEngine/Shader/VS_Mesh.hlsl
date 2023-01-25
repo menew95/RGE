@@ -7,9 +7,8 @@ VSOutput main(VSInput input)
     VSOutput _output;
 
 #if defined(_SCREEN)
-    _output.posH = float4(input.posL, 1.0f);
     _output.posV = float4(input.posL, 1.0f);
-    _output.posH = float4(input.posL, 1.0f);
+    _output.posH = float4(input.posL.xy, 0.5f, 1.0f);
     _output.normal = float4(1.0f, 1.0f, 1.0f, 1.0f);
 #else
 
@@ -56,8 +55,10 @@ VSOutput main(VSInput input)
 #endif //_NORMAL_MESH
 
 #endif // !defined(_SKIN) && !defined(BONECNT)
-#endif // defined(_SCREEN)
+
     _output.color = input.color;
+
+#endif // defined(_SCREEN)
 
     _output.uv = input.uv;
 

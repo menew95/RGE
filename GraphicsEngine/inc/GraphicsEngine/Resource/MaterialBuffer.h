@@ -2,9 +2,10 @@
 
 #include "GraphicsEngine/Resource/ResourceBuffer.h"
 
+
 namespace Graphics
 {
-	class MaterialBuffer : public ResourceBuffer
+	class GRAPHICSENGINE_DLL_DECLSPEC MaterialBuffer : public ResourceBuffer
 	{
 	public:
 		MaterialBuffer(Graphics::RenderSystem* renderSystem, Graphics::PipelineLayout* pipelineLayout);
@@ -22,8 +23,19 @@ namespace Graphics
 
 		virtual void SetResource(uint32 i, Graphics::Resource* resource);
 
-	private:
+		inline void SetRenderPass(Graphics::RenderPass* renderPass)
+		{
+			m_RenderPass = renderPass;
+		}
 
+		inline Graphics::RenderPass* GetRenderPass()
+		{
+			return m_RenderPass;
+		}
+
+		void RegistRenderObject(class RenderObject& renderObject);
+
+	private:
 		Graphics::PipelineLayout* m_PipelineLayout;
 		Graphics::RenderPass* m_RenderPass;
 

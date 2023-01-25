@@ -3,6 +3,8 @@
 
 #include "GameEngine/Core/System/GraphicsSystem.h"
 
+#include "GraphicsEngine/Resource/MaterialBuffer.h"
+
 namespace GameEngine
 {
 	namespace Core
@@ -16,6 +18,21 @@ namespace GameEngine
 		Material::~Material()
 		{
 			Release();
+		}
+
+		void Material::SetAlbedoTexture(Graphics::Texture* texture)
+		{
+			m_MaterialBuffer->SetResource(4, (Graphics::Resource*)texture);
+		}
+
+		void Material::SetNormalTexture(Graphics::Texture* texture)
+		{
+
+		}
+
+		void Material::SetMRATexture(Graphics::Texture* texture)
+		{
+
 		}
 
 		void Material::Release()

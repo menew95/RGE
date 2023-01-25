@@ -13,6 +13,7 @@ struct ID3D11DepthStencilView;
 
 namespace Graphics
 {
+	class SwapChain;
 
 	namespace DX11
 	{
@@ -79,7 +80,12 @@ namespace Graphics
 			void ClearAttachments(uint32 numAttachments, const AttachmentClear* attachments) override;
 
 			/* ----- Render Target ----- */
+
 			void SetRenderTarget(RenderTarget& renderTarget, uint32 numAttachments, const AttachmentClear* attachments) override;
+
+			void BindSwapChain(SwapChain* swapChain);
+
+			void BindFramebufferView(uint32 numRTVs, ID3D11RenderTargetView* const* renderTargetViews, ID3D11DepthStencilView* depthStencilView);
 
 			/* ----- Pipeline States ----- */
 
@@ -131,3 +137,4 @@ namespace Graphics
 		};
 	}
 }
+

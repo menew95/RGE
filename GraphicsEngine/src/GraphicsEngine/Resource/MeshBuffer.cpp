@@ -23,12 +23,13 @@ namespace Graphics
 		}
 	}
 
-	void MeshBuffer::CreateVertexBuffer(uuid uuid_, const void* data, uint32 size)
+	void MeshBuffer::CreateVertexBuffer(uuid uuid_, const void* data, uint32 size, uint32 stride)
 	{
 		BufferDesc _bufferDesc;
 		_bufferDesc._bindFlags = BindFlags::VertexBuffer;
 		_bufferDesc._miscFlags = MiscFlags::DynamicUsage;
 		_bufferDesc._size = size;
+		_bufferDesc._stride = stride;
 
 		uuid _uuid = uuid_ + TEXT("V");
 
@@ -41,6 +42,7 @@ namespace Graphics
 		_bufferDesc._bindFlags = BindFlags::VertexBuffer;
 		_bufferDesc._miscFlags = MiscFlags::DynamicUsage;
 		_bufferDesc._size = static_cast<uint32>(sizeof(Common::VertexAttribute) * vertices.size());
+		_bufferDesc._stride = static_cast<uint32>(sizeof(Common::VertexAttribute));
 
 		uuid _uuid = uuid_ + TEXT("V");
 
@@ -55,6 +57,7 @@ namespace Graphics
 		_bufferDesc._bindFlags = BindFlags::IndexBuffer;
 		_bufferDesc._miscFlags = MiscFlags::DynamicUsage;
 		_bufferDesc._size = static_cast<uint32>(sizeof(uint32) * indices.size());
+		_bufferDesc._format = Format::R32_UINT;
 
 		uuid _uuid = uuid_ + TEXT("I") + std::to_wstring(m_SubMeshBuffers.size());
 

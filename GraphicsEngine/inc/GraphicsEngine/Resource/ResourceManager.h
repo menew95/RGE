@@ -10,6 +10,7 @@ namespace Graphics
 
 	class MeshBuffer;
 	class MaterialBuffer;
+	class CameraBuffer;
 
 	class ResourceManager
 	{
@@ -20,7 +21,8 @@ namespace Graphics
 		MeshBuffer* CreateMeshBuffer(uuid uuid);
 		MeshBuffer* CreateMeshBuffer(uuid uuid, std::vector<Common::VertexAttribute>& vertices, std::vector<std::vector<uint32>> subMeshs);
 		MaterialBuffer* CreateMaterialBuffer(uuid uuid, Graphics::PipelineLayout* pipelineLayout);
-		
+		CameraBuffer* CreateCameraBuffer();
+
 		MeshBuffer* GetMeshBuffer(uuid uuid);
 		MaterialBuffer* GetMaterialBuffer(uuid uuid);
 
@@ -53,6 +55,7 @@ namespace Graphics
 
 		std::map<uuid, MeshBuffer*> m_MeshBufferMap;
 		std::map<uuid, MaterialBuffer*> m_MaterialBufferMap;
+		std::map<uuid, CameraBuffer*> m_CameraBufferMap;
 
 		// Resource
 		std::unordered_map<uuid, Buffer*> m_BufferMap;

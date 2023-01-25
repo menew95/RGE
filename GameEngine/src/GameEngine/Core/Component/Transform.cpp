@@ -8,6 +8,25 @@ namespace GameEngine
 
 		Transform::Transform(std::shared_ptr<class GameObject>& gameObject, const tstring& componentName /*= TEXT("Transform")*/)
 			: Component(gameObject, componentName)
+			, m_Forward(Math::Vector3::Forward)
+			, m_Right(Math::Vector3::Right)
+			, m_Up(Math::Vector3::Up)
+			, m_LocalScale(Math::Vector3::One)
+			, m_LocalEulerRotation(Math::Vector3::Zero)
+			, m_LocalQuaternionRotation(Math::Quaternion::Identity)
+			, m_LocalPosition(Math::Vector3::Zero)
+			, m_LocalPositionTM(Math::Matrix::Identity)
+			, m_LocalRotateTM(Math::Matrix::Identity)
+			, m_LocalScaleTM(Math::Matrix::Identity)
+			, m_LocalTM(Math::Matrix::Identity)
+			, m_WorldScale(Math::Vector3::One)
+			, m_WorldEulerRotation(Math::Vector3::Zero)
+			, m_WorldQuaternionRotation(Math::Quaternion::Identity)
+			, m_WorldPosition(Math::Vector3::Zero)
+			, m_WorldPositionTM(Math::Matrix::Identity)
+			, m_WorldRotateTM(Math::Matrix::Identity)
+			, m_WorldScaleTM(Math::Matrix::Identity)
+			, m_WorldTM(Math::Matrix::Identity)
 		{
 
 		}

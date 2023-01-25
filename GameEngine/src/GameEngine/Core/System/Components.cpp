@@ -49,6 +49,7 @@ namespace GameEngine
 				if (_component->GetEnable() && _component->GetGameObject()->GetActiveInHierarchy())
 				{
 					_component->Start();
+					m_Components.push_back(_component);
 				}
 				else
 				{
@@ -72,6 +73,20 @@ namespace GameEngine
 				if (_componentIter->GetEnable() && _componentIter->GetGameObject()->GetActiveInHierarchy())
 				{
 					_componentIter->LateUpdate();
+				}
+			}
+		}
+
+		void Components::RenderComponents()
+		{
+			if (m_IsRender == false)
+				return;
+
+			for (auto& _componentIter : m_Components)
+			{
+				if (_componentIter->GetEnable() && _componentIter->GetGameObject()->GetActiveInHierarchy())
+				{
+					_componentIter->Render();
 				}
 			}
 		}

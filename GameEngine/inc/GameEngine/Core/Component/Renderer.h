@@ -12,7 +12,13 @@ namespace GameEngine
 		{
 		public:
 			Renderer(std::shared_ptr<GameObject>& gameObject, const tstring& componentName = TEXT("Renderer"));
-			virtual ~Renderer();
+			virtual ~Renderer() override;
+
+			//virtual void Render() abstract;
+
+			virtual void Link() abstract;
+			virtual void Unlink() abstract;
+
 		};
 	}
 }

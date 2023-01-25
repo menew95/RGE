@@ -25,6 +25,9 @@ namespace GameEngine
 			std::vector<std::vector<uint32>>& GetIndexAttributes() { return m_IndexAttributers; }
 			std::vector<uint32>& GetIndexAttributes(uint32 idx) { return m_IndexAttributers[idx]; }
 
+			inline uint32 GetSubMeshCount() { return static_cast<uint32>(m_IndexAttributers.size()); }
+
+			inline Graphics::MeshBuffer* GetMeshBuffer() { return m_MeshBuffer; }
 
 		protected:
 			virtual void Release() override;

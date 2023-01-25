@@ -15,6 +15,7 @@ namespace Graphics
 			, m_BufferDesc(desc)
 			, m_Size(desc._size)
 			, m_Stride(desc._stride)
+			, m_Format(MapFormat(desc._format))
 		{
 			CreateBuffer(device, desc, initData);
 		}
@@ -29,8 +30,9 @@ namespace Graphics
 			if (GetDXUsage() == D3D11_USAGE_DYNAMIC)
 			{
 				D3D11_MAPPED_SUBRESOURCE _mappedSubresource;
+				ZeroMemory(&_mappedSubresource, sizeof(D3D11_MAPPED_SUBRESOURCE));
 
-				context->Map(GetBuffer(), 0, D3D11_MAP_WRITE, 0, &_mappedSubresource);
+				context->Map(GetBuffer(), 0, D3D11_MAP_WRITE_DISCARD, 0, &_mappedSubresource);
 
 				memcpy(reinterpret_cast<char*>(_mappedSubresource.pData) + offset, data, dataSize);
 
@@ -109,6 +111,8 @@ namespace Graphics
 				_desc.MiscFlags = DXGetBufferMiscFlags(desc);
 				_desc.StructureByteStride = desc._stride;
 			}
+
+			m_Usage = _desc.Usage;
 
 			if (initData)
 			{

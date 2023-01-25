@@ -73,6 +73,8 @@ namespace GameEngine
 			m_Input->Initialize(m_pApplication->m_Window->GetWindowInfo()._hWnd);
 			m_GameTime->Initialize();
 
+			m_pApplication->m_SceneSystem->Initialize();
+			m_pApplication->m_SceneSystem->LoadScene(0);
 
 			return true;
 		}
@@ -97,6 +99,8 @@ namespace GameEngine
 				m_Input->PreTick();
 
 				m_ComponentSystem->UpdateComponent();
+
+				m_ComponentSystem->RenderComponent();
 			}
 
 			_sysTimer.Lap();

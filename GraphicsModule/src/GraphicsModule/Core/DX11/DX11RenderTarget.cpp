@@ -59,6 +59,8 @@ namespace Graphics
 		: m_Device(device)
 	{
 		CreateRenderTarget(device, desc);
+
+		m_Type = Type::RT;
 	}
 
 	DX11::DX11RenderTarget::~DX11RenderTarget()

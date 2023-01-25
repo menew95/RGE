@@ -34,7 +34,7 @@ PSOut main(VSOutput input)
 {
 	PSOut _out;
 
-	_out.Albedo = gAlbedoMap.Sample(samWrapLinear, input.uv);
+	_out.Albedo = float4(gAlbedoMap.Sample(samWrapLinear, input.uv).xyz, material._metallic);
 
 	float3 _normal = { 0.0f, 0.0f, 0.0f };
 
@@ -50,13 +50,13 @@ PSOut main(VSOutput input)
 	_normal = bumpedNormalW;
 #endif
 
-	_out.Normal = float4((_normal * 0.5 + 0.5), material.roughness);
+	_out.Normal = float4((_normal * 0.5 + 0.5), material._roughness);
 
 	_out.Depth = float4(input.posH.z, input.posH.z, input.posH.z, 1.0f);
 
 	_out.World = float4(input.posW.xyz, 1.0f);
 
-	_out.Emissive = float4(float3(material.emissive.rgb), input.posV.z);
+	_out.Emissive = float4(float3(material._emissive.rgb), input.posV.z);
 
 	return _out;
 }

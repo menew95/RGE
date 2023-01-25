@@ -13,6 +13,7 @@ namespace Graphics
 {
 	class MeshBuffer;
 	class MaterialBuffer;
+	class CameraBuffer;
 	class ResourceManager;
 
 	class GRAPHICSENGINE_DLL_DECLSPEC GraphicsEngine
@@ -27,6 +28,8 @@ namespace Graphics
 
 		MeshBuffer* CreateMeshBuffer(uuid uuid, std::vector<Common::VertexAttribute>& vertices, std::vector<std::vector<uint32>> subMeshs);
 		MaterialBuffer* CreateMaterialBuffer(uuid uuid, PipelineLayout* pipelineLayout);
+		MaterialBuffer* CreateMaterialBuffer(uuid uuid, const tstring& pipelineLayout);
+		CameraBuffer* CreateCameraBuffer();
 
 		Texture* LoadTexture(uuid uuid, ImageDesc* imageDesc);
 
@@ -51,9 +54,11 @@ namespace Graphics
 
 		Graphics::RenderPass* m_Deferred_Mesh_Pass;
 		Graphics::RenderPass* m_Deferred_Light_Pass;
+		Graphics::RenderPass* m_Final_Pass;
 
 		MaterialBuffer* m_Deferred_Light_Material;
 		MeshBuffer* m_Screen_Mesh;
+		CameraBuffer* m_MainCameraBuffer;
 	};
 
 	extern "C"

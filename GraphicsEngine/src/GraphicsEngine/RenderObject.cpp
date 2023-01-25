@@ -3,5 +3,8 @@
 
 namespace Graphics
 {
+	RenderObject::RenderObject()
+	{
 
+	}
 }

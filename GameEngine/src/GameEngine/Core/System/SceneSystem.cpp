@@ -4,6 +4,9 @@
 #include "GameEngine\Core\Scene.h"
 #include "GameEngine\Core\GameObject.h"
 
+
+#include "Test/TestScene.h"
+
 namespace GameEngine
 {
 	namespace Core
@@ -39,6 +42,13 @@ namespace GameEngine
 
 				return errorIndex;
 			}
+		}
+
+		void SceneSystem::Initialize()
+		{
+			std::shared_ptr<Scene> _testScene = std::make_shared<TestScene>();
+
+			m_Scenes.push_back(_testScene);
 		}
 
 	}

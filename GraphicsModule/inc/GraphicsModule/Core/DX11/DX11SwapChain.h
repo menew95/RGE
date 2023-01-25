@@ -24,6 +24,7 @@ namespace Graphics
 	namespace DX11
 	{
 		class DX11Device;
+		class DX11CommandBuffer;
 
 		class DX11SwapChain : public SwapChain
 		{
@@ -41,6 +42,10 @@ namespace Graphics
 			bool ResizeBuffer(const Extent2D& resolution) override;
 
 			bool SwitchFullscreen(bool enable) override;
+
+
+			// Binds the framebuffer view of this swap-chain and stores a references to this command buffer.
+			void BindFramebufferView(DX11CommandBuffer* commandBuffer);
 
 		private:
 			void ResizeBackBuffer(const Extent2D& resolution);
@@ -60,6 +65,8 @@ namespace Graphics
 			ComPtr<ID3D11DepthStencilView> m_DepthStencilView;
 			ComPtr<ID3D11Texture2D> m_DepthBuffer;
 			DXGI_FORMAT m_DepthBufferFormat;
+
+			DX11CommandBuffer* m_CommandBuffer = nullptr;
 		};
 	}
 }

@@ -66,32 +66,32 @@ namespace Graphics
 
 				AttachmentDesc _attachmentDesc;
 
-				if (_rtArray[_attachIdx].HasMember(renderTargetType))
+				if (_rtArray[_idx].HasMember(renderTargetType))
 				{
-					auto string = _rtArray[_attachIdx][renderTargetType].GetString();
+					auto string = _rtArray[_idx][renderTargetType].GetString();
 
-					if (!StringToEnum(_rtArray[_attachIdx][renderTargetType].GetString(), _attachmentDesc._renderTargetType))
+					if (!StringToEnum(_rtArray[_idx][renderTargetType].GetString(), _attachmentDesc._renderTargetType))
 					{
 						assert("Error");
 					}
 				}
 
-				if (_rtArray[_attachIdx].HasMember(resourceID))
+				if (_rtArray[_idx].HasMember(resourceID))
 				{
-					auto _findID = _rtArray[_attachIdx][resourceID].GetString();
+					auto _findID = _rtArray[_idx][resourceID].GetString();
 
 					_attachmentDesc._resource = resourceManager->GetTexture(_findID);
 					assert(_attachmentDesc._resource != nullptr);
 				}
 
-				if (_rtArray[_attachIdx].HasMember(mipLevels))
+				if (_rtArray[_idx].HasMember(mipLevels))
 				{
-					_attachmentDesc._mipLevel = _rtArray[_attachIdx][mipLevels].GetInt();
+					_attachmentDesc._mipLevel = _rtArray[_idx][mipLevels].GetInt();
 				}
 
-				if (_rtArray[_attachIdx].HasMember(arrayLayer))
+				if (_rtArray[_idx].HasMember(arrayLayer))
 				{
-					_attachmentDesc._arrayLayer = _rtArray[_attachIdx][arrayLayer].GetInt();
+					_attachmentDesc._arrayLayer = _rtArray[_idx][arrayLayer].GetInt();
 				}
 
 				_renderTargetDesc._attachments.push_back(_attachmentDesc);
@@ -99,81 +99,6 @@ namespace Graphics
 
 			resourceManager->CreateRenderTarget(_uuid, _renderTargetDesc);
 		}
-
-		/*for (auto& renderTarget : _renderTargetTable->GetArray())
-		{
-			RenderTargetDesc _renderTargetDesc;
-			uuid _uuid;
-
-			if (renderTarget.HasMember(UUID))
-			{
-				_uuid = renderTarget[UUID].GetString();
-			}
-
-			if (renderTarget.HasMember(extent))
-			{
-				if (renderTarget[extent].Size() > 2)
-				{
-					assert("Error");
-				}
-
-				for (uint32 i = 0; i < renderTarget[extent].Size(); i++)
-				{
-					if (i == 0)
-						_renderTargetDesc._extend._width = renderTarget[extent][i].GetInt();
-					if (i == 1)
-						_renderTargetDesc._extend._height = renderTarget[extent][i].GetInt();
-				}
-			}
-
-			if (renderTarget.HasMember(sample))
-			{
-				_renderTargetDesc._sample = renderTarget[sample].GetInt();
-			}
-
-			if (renderTarget.HasMember(attachments))
-			{
-
-				for (uint32 i = 0; i < renderTarget[attachments].Size(); i++)
-				{
-					AttachmentDesc _attachmentDesc;
-
-					if (renderTarget[attachments][i].HasMember(renderTargetType))
-					{
-						if (!StringToEnum(renderTarget[attachments][i][renderTargetType].GetString(), _attachmentDesc._renderTargetType))
-						{
-							assert("Error");
-						}
-					}
-
-					if (renderTarget[attachments][i].HasMember(resourceID))
-					{
-						auto _findID = renderTarget[attachments][i][resourceID].GetString();
-
-						_attachmentDesc._resource = resourceManager->GetTexture(_findID);
-						assert(_attachmentDesc._resource != nullptr);
-					}
-
-					if (renderTarget[attachments][i].HasMember(mipLevels))
-					{
-						_attachmentDesc._mipLevel = renderTarget[attachments][i][mipLevels].GetInt();
-					}
-
-					if (renderTarget[attachments][i].HasMember(arrayLayer))
-					{
-						_attachmentDesc._arrayLayer = renderTarget[attachments][i][arrayLayer].GetInt();
-					}
-
-					_renderTargetDesc._attachments.push_back(_attachmentDesc);
-				}
-			}
-			else
-			{
-				assert("Error");
-			}
-
-			resourceManager->CreateRenderTarget(_uuid, _renderTargetDesc);
-		}*/
 
 		_jsonReader->UnloadJson(TEXT("Asset/GraphicsTable/RenderTargetTable.json"));
 
@@ -1143,7 +1068,7 @@ namespace Graphics
 
 			if (_samplerTable.HasMember(maxAnisotropy))
 			{
-				_samplerDesc._maxAnisotropy = _samplerTable[maxAnisotropy].GetFloat();
+				_samplerDesc._maxAnisotropy = _samplerTable[maxAnisotropy].GetInt();
 			}
 
 			if (_samplerTable.HasMember(comparisonOp))
@@ -1183,7 +1108,7 @@ namespace Graphics
 			resourceManager->CreateSampler(_uuid, _samplerDesc);
 		}
 
-		_jsonReader->UnloadJson(TEXT("Asset/GraphicsTable/TextureTable.json"));
+		_jsonReader->UnloadJson(TEXT("Asset/GraphicsTable/SamplerTable.json"));
 
 		return true;
 	}
@@ -1201,19 +1126,83 @@ namespace Graphics
 		const TCHAR* cpuAccessFlags = TEXT("CPUAccessFlags");
 		const TCHAR* slot = TEXT("Slot");
 		const TCHAR* miscFlags = TEXT("MiscFlags");
-		const TCHAR* format = TEXT("Format");
 
 		for (auto& _bufferTable : _bufferTables->GetArray())
 		{
 			BufferDesc _bufferDesc;
 			uuid _uuid;
 
+			if (_bufferTable.HasMember(UUID))
+			{
+				_uuid = _bufferTable[UUID].GetString();
+			}
 
+			if (_bufferTable.HasMember(size))
+			{
+				_bufferDesc._size = _bufferTable[size].GetInt();
+			}
+
+			if (_bufferTable.HasMember(stride))
+			{
+				_bufferDesc._stride = _bufferTable[stride].GetInt();
+			}
+
+			if (_bufferTable.HasMember(bindFlags))
+			{
+				uint32 _flag = 0;
+
+				for (auto& _bind : _bufferTable[bindFlags].GetArray())
+				{
+					BindFlags::eBindFlags _flags;
+
+					if (StringToEnum(_bind.GetString(), _flags))
+					{
+						_flag |= _flags;
+					}
+					else
+					{
+						assert(false);
+					}
+				}
+
+				_bufferDesc._bindFlags = _flag;
+			}
+
+			if (_bufferTable.HasMember(cpuAccessFlags))
+			{
+
+			}
+
+			if (_bufferTable.HasMember(slot))
+			{
+				_bufferDesc._slot = _bufferTable[slot].GetInt();
+			}
+
+			if (_bufferTable.HasMember(miscFlags))
+			{
+				uint32 _flag = 0;
+
+				for (auto& _misc : _bufferTable[miscFlags].GetArray())
+				{
+					MiscFlags::eMiscFlags _flags;
+
+					if (StringToEnum(_misc.GetString(), _flags))
+					{
+						_flag |= _flags;
+					}
+					else
+					{
+						assert(false);
+					}
+				}
+
+				_bufferDesc._miscFlags = _flag;
+			}
 
 			resourceManager->CreateBuffer(_uuid, _bufferDesc);
 		}
 
-		_jsonReader->UnloadJson(TEXT("Asset/GraphicsTable/TextureTable.json"));
+		_jsonReader->UnloadJson(TEXT("Asset/GraphicsTable/BufferTable.json"));
 
 		return true;
 	}

@@ -54,7 +54,21 @@ namespace GameEngine
 		{
 			uuid _uuid = material->GetName();
 
-			material->m_MaterialBuffer = m_GraphicsEngine->CreateMaterialBuffer(_uuid, nullptr);
+			material->m_MaterialBuffer = m_GraphicsEngine->CreateMaterialBuffer(_uuid, TEXT("Deferred_Mesh_Layout"));
+		}
+
+		Graphics::CameraBuffer* GraphicsSystem::CreateCameraBuffer()
+		{
+			return m_GraphicsEngine->CreateCameraBuffer();
+		}
+
+		Graphics::Texture* GraphicsSystem::LoadTexture(uuid _uuid)
+		{
+			Graphics::ImageDesc _desc;
+
+			_desc._filePath = TEXT("Asset/Texture/") + _uuid;
+
+			return m_GraphicsEngine->LoadTexture(_uuid, &_desc);
 		}
 
 		void GraphicsSystem::DeleteMeshBuffer(Graphics::MeshBuffer* meshBuffer)
@@ -63,6 +77,11 @@ namespace GameEngine
 		}
 
 		void GraphicsSystem::DeleteMaterialBuffer(Graphics::MaterialBuffer* materialBuffer)
+		{
+			// Todo :
+		}
+
+		void GraphicsSystem::DeleteTextureBuffer(Graphics::Texture*)
 		{
 			// Todo :
 		}

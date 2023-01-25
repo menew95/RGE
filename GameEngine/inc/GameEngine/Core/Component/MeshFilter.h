@@ -17,7 +17,12 @@ namespace GameEngine
 			inline void SetSharedMesh(std::shared_ptr<class Mesh>& _sharedMesh) { m_pSharedMesh = _sharedMesh; }
 			inline std::shared_ptr<class Mesh>& GetSharedMesh() { return m_pSharedMesh; }
 
+			void OnEnable() override;
+			void OnDisable() override;
+
 		private:
+			std::shared_ptr<class Renderer> m_pRenderer;
+
 			std::shared_ptr<class Mesh> m_pSharedMesh;
 		};
 	}
