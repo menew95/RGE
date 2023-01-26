@@ -8,6 +8,7 @@
 #include "GraphicsEngine/Resource/MeshBuffer.h"
 #include "GraphicsEngine/Resource/MaterialBuffer.h"
 #include "GraphicsEngine/Resource/ConstantBuffer.h"
+#include "GraphicsEngine/Resource/LightBuffer.h"
 #include "GraphicsEngine/Resource/CameraBuffer.h"
 
 #include "GraphicsEngine/Json/JsonTable.h"
@@ -37,7 +38,7 @@ namespace Graphics
 		SwapChainDesc _swapChainDesc;
 
 		_swapChainDesc._fullScreen = false;
-		_swapChainDesc._resolution = { 1200, 720 };
+		_swapChainDesc._resolution = { 1280, 720 };
 		_swapChainDesc._windowDesc._hwnd = desc._handle;
 
 		m_SwapChain = m_RenderSystem->CreateSwapChain(TEXT("MainSwapChain"), _swapChainDesc);
@@ -61,11 +62,10 @@ namespace Graphics
 
 		m_Deferred_Mesh_Pass = new RenderPass(_state, _rt, _attachmentClears);
 
-		m_Deferred_Mesh_Pass->SetPerFrameBuffer(m_ResourceManager->GetBuffer(TEXT("cbPerFrame")));
-		m_Deferred_Mesh_Pass->SetPerObjectBuffer(m_ResourceManager->GetBuffer(TEXT("cbPerObject")));
+		m_Deferred_Mesh_Pass->SetPerFrameBuffer(m_ResourceManager->GetBuffer(TEXT("PerCamera")));
+		m_Deferred_Mesh_Pass->SetPerDrawBuffer(m_ResourceManager->GetBuffer(TEXT("Transform")));
 
 		_state = m_ResourceManager->GetPipelineState(TEXT("Deferred_Merge"));
-		//_rt = m_ResourceManager->GetRenderTarget(TEXT("Deferred_Light"));
 
 		_attachmentClears =
 		{
@@ -73,14 +73,14 @@ namespace Graphics
 			{ 1, 0 }
 		};
 
-		m_Deferred_Light_Pass = new RenderPass(_state, m_SwapChain, _attachmentClears);
+		m_Deferred_Light_Pass = new RenderPass(_state, m_SwapChain);
 
-		m_Deferred_Light_Pass->SetPerFrameBuffer(m_ResourceManager->GetBuffer(TEXT("cbPerLightFrame")));
-		m_Deferred_Light_Pass->SetPerObjectBuffer(m_ResourceManager->GetBuffer(TEXT("cbPerObject")));
+		m_Deferred_Light_Pass->SetPerFrameBuffer(m_ResourceManager->GetBuffer(TEXT("PerCamera")));
+		m_Deferred_Light_Pass->SetPerDrawBuffer(m_ResourceManager->GetBuffer(TEXT("Lighting")));
 
 		IntiLightPass();
 
-		//m_Final_Pass = new RenderPass(_state, m_SwapChain);
+		InitSkyBoxPass();
 	}
 
 	void GraphicsEngine::IntiLightPass()
@@ -119,6 +119,72 @@ namespace Graphics
 		m_Screen_Mesh->CreateSubMesh(TEXT("Screen_Mesh"), triangles);
 	}
 
+	void GraphicsEngine::InitSkyBoxPass()
+	{
+		m_SkyBox_Material = m_ResourceManager->CreateMaterialBuffer(TEXT("SkyBox"), m_ResourceManager->GetPipelineLayout(TEXT("SkyBox_Layout")));
+
+		m_SkyBox_Mesh = m_ResourceManager->CreateMeshBuffer(TEXT("SkyBox_Mesh"));
+
+		std::vector<Math::Vector3> _data =
+		{
+			{ -1.f, -1.f, -1.f },
+			{ -1.f, +1.f, -1.f },
+			{ +1.f, +1.f, -1.f },
+			{ +1.f, -1.f, -1.f },
+			{ -1.f, -1.f, +1.f },
+			{ +1.f, -1.f, +1.f },
+			{ +1.f, +1.f, +1.f },
+			{ -1.f, +1.f, +1.f },
+			{ -1.f, +1.f, -1.f },
+			{ -1.f, +1.f, +1.f },
+			{ +1.f, +1.f, +1.f },
+			{ +1.f, +1.f, -1.f },
+			{ -1.f, -1.f, -1.f },
+			{ +1.f, -1.f, -1.f },
+			{ +1.f, -1.f, +1.f },
+			{ -1.f, -1.f, +1.f },
+			{ -1.f, -1.f, +1.f },
+			{ -1.f, +1.f, +1.f },
+			{ -1.f, +1.f, -1.f },
+			{ -1.f, -1.f, -1.f },
+			{ +1.f, -1.f, -1.f },
+			{ +1.f, +1.f, -1.f },
+			{ +1.f, +1.f, +1.f },
+			{ +1.f, -1.f, +1.f }
+		};
+
+		std::vector<uint32> triangles =
+		{
+			0, 2, 1,
+			0, 3, 2,
+			4, 6, 5,
+			4, 7, 6,
+			8, 10, 9,
+			8, 11, 10,
+			12, 14, 13,
+			12, 15, 14,
+			16, 18, 17,
+			16, 19, 18,
+			20, 22, 21,
+			20, 23, 22
+		};
+
+		uint32 _size = static_cast<uint32>(sizeof(Math::Vector3) * _data.size());
+
+		m_SkyBox_Mesh->CreateVertexBuffer(TEXT("SkyBox_Mesh"), _data.data(), _size, sizeof(Math::Vector3));
+		m_SkyBox_Mesh->CreateSubMesh(TEXT("SkyBox_Mesh"), triangles);
+
+		auto* _state = m_ResourceManager->GetPipelineState(TEXT("SkyBox"));
+
+		std::vector<AttachmentClear> _attachmentClears =
+		{
+			{ { 1, 0, 0, 0 }, 0 },
+			{ 1, 0 }
+		};
+
+		m_SkyBox_Pass = new RenderPass(_state, m_SwapChain, _attachmentClears);
+	}
+
 	Graphics::MeshBuffer* GraphicsEngine::CreateMeshBuffer(uuid uuid, std::vector<Common::VertexAttribute>& vertices, std::vector<std::vector<uint32>> subMeshs)
 	{
 		return m_ResourceManager->CreateMeshBuffer(uuid, vertices, subMeshs);
@@ -146,6 +212,11 @@ namespace Graphics
 		return m_MainCameraBuffer;
 	}
 
+	Graphics::LightBuffer* GraphicsEngine::CreateLightBuffer()
+	{
+		return new LightBuffer(m_RenderSystem);
+	}
+
 	Graphics::Texture* GraphicsEngine::LoadTexture(uuid uuid, ImageDesc* imageDesc)
 	{
 		return m_ResourceManager->LoadTexture(uuid, imageDesc);
@@ -164,7 +235,7 @@ namespace Graphics
 	void GraphicsEngine::Excute()
 	{
 		{
-			m_CommandBuffer->BeginEvent(TEXT("Mesh"));
+			m_CommandBuffer->BeginEvent(TEXT("Deferred_Mesh Pass"));
 
 			// Update Frame Buffer
 			PerFrame _perFrame;
@@ -183,6 +254,24 @@ namespace Graphics
 		}
 
 		{
+			RenderObject _skyBoxObject;
+			_skyBoxObject.m_MeshBuffer = m_SkyBox_Mesh;
+			_skyBoxObject.m_MaterialBuffer = m_SkyBox_Material;
+
+			m_SkyBox_Pass->RegistRenderObject(_skyBoxObject);
+
+			m_CommandBuffer->BeginEvent(TEXT("SkyBox Pass"));
+
+			m_SkyBox_Pass->BeginExcute(m_CommandBuffer, nullptr);
+
+			m_SkyBox_Pass->Excute(m_CommandBuffer);
+
+			m_SkyBox_Pass->EndExcute(m_CommandBuffer);
+
+			m_CommandBuffer->EndEvent();
+		}
+
+		{
 			RenderObject _deferredMergeRenderObject;
 			_deferredMergeRenderObject.m_MeshBuffer = m_Screen_Mesh;
 			_deferredMergeRenderObject.m_MaterialBuffer = m_Deferred_Light_Material;
@@ -190,7 +279,7 @@ namespace Graphics
 			m_Deferred_Light_Pass->RegistRenderObject(_deferredMergeRenderObject);
 
 
-			m_CommandBuffer->BeginEvent(TEXT("Light"));
+			m_CommandBuffer->BeginEvent(TEXT("Lighting Pass"));
 			
 			// Update Frame Buffer
 			PerLightFrame _perLightFrame;
@@ -199,10 +288,16 @@ namespace Graphics
 
 			//  Todo : 게임 엔진으로 부터 라이트들을 받아오도록 만들어야 함
 			
-			//_perLightFrame._perLights[0] = ;
+			PerLight _perLight;
+
+			_perLight._type = (uint32)LightType::Directional;
+			_perLight._direction = Math::Vector3(0, -0.7, 0.7);
+			_perLight._direction.Normalize();
+			_perLight._color = { 1, 1, 1 };
+			_perLightFrame._perLights[0] = _perLight;
 
 
-			m_Deferred_Light_Pass->UpdatePerFrame(m_CommandBuffer, &_perLightFrame, sizeof(_perLightFrame));
+			m_Deferred_Light_Pass->UpdatePerDraw(m_CommandBuffer, &_perLightFrame, sizeof(_perLightFrame));
 
 			m_Deferred_Light_Pass->BeginExcute(m_CommandBuffer, nullptr);
 

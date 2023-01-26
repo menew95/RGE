@@ -39,6 +39,7 @@ namespace Graphics
 		}
 
 		void UpdatePerFrame(CommandBuffer* commandBuffer, void* src, uint32 size);
+		void UpdatePerDraw(CommandBuffer* commandBuffer, void* src, uint32 size);
 
 		void BeginExcute(CommandBuffer* commandBuffer, PerFrame* perFrameData);
 		void Excute(CommandBuffer* commandBuffer);
@@ -47,7 +48,9 @@ namespace Graphics
 		void UpdateConstBuffer(CommandBuffer* commandBuffer, RenderObject& renderObject);
 
 		inline void SetPerFrameBuffer(Buffer* perFrame) { m_PerFrameBuffer = perFrame; }
-		inline void SetPerObjectBuffer(Buffer* perObject) { m_PerObjectBuffer = perObject; }
+		inline void SetPerDrawBuffer(Buffer* perDraw) { m_PerDrawBuffer = perDraw; }
+
+		inline void SetRenderTarget(RenderTarget* renderTarget) { m_RenderTarget = renderTarget; }
 
 	protected:
 		PipelineState* m_PipelineState = nullptr;
@@ -60,7 +63,7 @@ namespace Graphics
 		std::vector<AttachmentClear> m_AttachmentClears;
 
 		Buffer* m_PerFrameBuffer;
-		Buffer* m_PerObjectBuffer;
+		Buffer* m_PerDrawBuffer;
 		//Buffer* m_PerMaterialBuffer;
 	};
 }

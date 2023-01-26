@@ -59,6 +59,10 @@ namespace Graphics
 			0.0f, 0.0f, 1.0f, 0.0f,
 			0.5f, 0.5f, 0.0f, 1.0f
 		};
+
+		Math::Matrix _camWorldMatrix = Math::Matrix::CreateTranslation(m_CameraPosition);
+
+		camera._worldViewProj = _camWorldMatrix * m_View * m_Proj;
 	}
 
 }

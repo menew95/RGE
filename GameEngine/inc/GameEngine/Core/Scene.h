@@ -19,8 +19,11 @@ namespace GameEngine
 
 			inline std::vector<std::shared_ptr<GameObject>>& GetAllGameObject() { return m_GameObjects; }
 
+			GameEngine::Core::GameObject* FindObject(const tstring& name);
+
 		protected:
 			std::vector<std::shared_ptr<GameObject>> m_GameObjects;
+
 		};
 	}
 }

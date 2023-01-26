@@ -38,7 +38,16 @@ namespace Graphics
 
 	void RenderPass::UpdatePerFrame(CommandBuffer* commandBuffer, void* src, uint32 size)
 	{
+		assert(m_PerFrameBuffer != nullptr);
+
 		commandBuffer->UpdateBuffer(*m_PerFrameBuffer, 0, src, size);
+	}
+
+	void RenderPass::UpdatePerDraw(CommandBuffer* commandBuffer, void* src, uint32 size)
+	{
+		assert(m_PerDrawBuffer != nullptr);
+
+		commandBuffer->UpdateBuffer(*m_PerDrawBuffer, 0, src, size);
 	}
 
 	void RenderPass::BeginExcute(CommandBuffer* commandBuffer, PerFrame* perFrameData)
@@ -49,7 +58,7 @@ namespace Graphics
 
 		Math::Viewport _viewport{0, 0, 1280, 720, 0, 1};
 
-		commandBuffer->SetViewport(_viewport);
+		//commandBuffer->SetViewport(_viewport);
 		//commandBuffer->UpdateBuffer(*m_PerFrameBuffer, 0, perFrameData, sizeof(PerFrame));
 	}
 
@@ -93,7 +102,7 @@ namespace Graphics
 
 		for (size_t i = 0; i < _sources.size(); i++)
 		{
-			commandBuffer->UpdateBuffer(*m_PerObjectBuffer, 0, _sources[0]._dataSrc, _sources[0]._datasize);
+			commandBuffer->UpdateBuffer(*m_PerDrawBuffer, 0, _sources[0]._dataSrc, _sources[0]._datasize);
 		}
 	}
 

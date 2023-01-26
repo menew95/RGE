@@ -67,10 +67,10 @@ namespace GameEngine
 
 			m_pApplication->m_GameTime = Time::GetInstance();
 
-			m_pApplication->m_Input = Input::GetInstance();
+			m_pApplication->m_Input = new Input();
 
 			
-			m_Input->Initialize(m_pApplication->m_Window->GetWindowInfo()._hWnd);
+			Input::Instance->Initialize(m_pApplication->m_Window->GetWindowInfo()._hWnd);
 			m_GameTime->Initialize();
 
 			m_pApplication->m_SceneSystem->Initialize();

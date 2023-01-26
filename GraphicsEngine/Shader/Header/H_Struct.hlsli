@@ -10,8 +10,8 @@ struct Camera
 	matrix _proj;
 	matrix _projInv;
 	matrix _viewToTexSpace;
+	matrix _worldViewProj;
 	//matrix _viewProj;
-	//matrix _worldViewProj;
 };
 
 struct SSAOInfo

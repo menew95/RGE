@@ -49,6 +49,10 @@ namespace Math
 
 	using namespace DirectX;
 
+	constexpr float PI = 3.141592654f;
+	constexpr float Deg2Rad = PI / 180.0f;
+	constexpr float Rad2Deg = 180.0f / PI;
+
 	//------------------------------------------------------------------------------
 	// 2D rectangle
 	struct Rectangle
@@ -870,6 +874,13 @@ namespace Math
 
 		static void Lerp(const Color& c1, const Color& c2, float t, Color& result) noexcept;
 		static Color Lerp(const Color& c1, const Color& c2, float t) noexcept;
+
+		// Constants
+		static const Color White;
+		static const Color Black;
+		static const Color Red;
+		static const Color Blue;
+		static const Color Green;
 	};
 
 	// Binary operators

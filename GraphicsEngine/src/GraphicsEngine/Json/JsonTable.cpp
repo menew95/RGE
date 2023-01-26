@@ -650,10 +650,19 @@ namespace Graphics
 
 				if (_pipelineStateTable.HasMember(viewport))
 				{
-					for (auto& _viewport : _pipelineStateTable[viewport].GetArray())
+					Math::Viewport _viewport;
+
+					for (uint32 i = 0; i < _pipelineStateTable[viewport].Size(); i++)
 					{
-						// Todo : 어떻게 해야 할까?
+						if(i == 0) _viewport.x = _pipelineStateTable[viewport][i].GetFloat();
+						if(i == 1) _viewport.y = _pipelineStateTable[viewport][i].GetFloat();
+						if(i == 2) _viewport.width = _pipelineStateTable[viewport][i].GetFloat();
+						if(i == 3) _viewport.height = _pipelineStateTable[viewport][i].GetFloat();
+						if(i == 4) _viewport.minDepth = _pipelineStateTable[viewport][i].GetFloat();
+						if(i == 5) _viewport.maxDepth = _pipelineStateTable[viewport][i].GetFloat();
 					}
+
+					_pipelineStateDesc._viewports.push_back(_viewport);
 				}
 
 				if (_pipelineStateTable.HasMember(scissors))
@@ -902,6 +911,7 @@ namespace Graphics
 		auto _textureTables = _jsonReader->LoadJson(TEXT("Asset/GraphicsTable/TextureTable.json"));
 
 		const TCHAR* UUID = TEXT("UUID");
+		const TCHAR* imageDesc = TEXT("ImageDesc");
 		const TCHAR* textureType = TEXT("TextureType");
 		const TCHAR* bindFlags = TEXT("BindFlags");
 		const TCHAR* miscFlags = TEXT("MiscFlags");
@@ -919,6 +929,17 @@ namespace Graphics
 			if (_textureTable.HasMember(UUID))
 			{
 				_uuid = _textureTable[UUID].GetString();
+			}
+
+			if (_textureTable.HasMember(imageDesc))
+			{
+				ImageDesc _imageDesc;
+
+				_imageDesc._filePath = _textureTable[imageDesc].GetString();
+
+				resourceManager->LoadTexture(_uuid, &_imageDesc);
+
+				continue;
 			}
 
 			if (_textureTable.HasMember(textureType))

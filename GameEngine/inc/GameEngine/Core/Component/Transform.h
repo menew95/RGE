@@ -31,6 +31,8 @@ namespace GameEngine
 
 			virtual void SetPositionAndRotation(Math::Vector3 position, Math::Quaternion& rotation);
 
+			void SetWorld(Math::Matrix world);
+
 			size_t GetChildCount() { return m_Childs.size(); }
 			Math::Vector3& GetForward() { return m_Forward; }
 			Math::Vector3& GetRight() { return m_Right; }
@@ -51,7 +53,6 @@ namespace GameEngine
 			std::shared_ptr<Transform>& GetParent() { return m_Parent; }
 			std::vector<std::shared_ptr<Transform>>& GetChilds() { return m_Childs; }
 			std::shared_ptr<Transform> GetChild(uint32 index);
-
 		private:
 			void SetLocalPosition(Math::Vector3& value);
 			void SetLocalRotate(Math::Vector3& value);

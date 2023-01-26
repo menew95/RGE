@@ -6,18 +6,23 @@
 
 #define BONE_MAX_CNT 128
 
-cbuffer cbPerFrame : register(b0)
+
+// Per Frame
+
+cbuffer PerCamera : register(b0)
 {
 	Camera camera;
-};
+}
 
-cbuffer cbPerObject : register(b1)
+// Per Draw
+
+cbuffer Transform : register(b1)
 {
 	matrix world;
 	matrix worldInvTranspose;
 };
 
-cbuffer cbLight : register(b1)
+cbuffer Lighting : register(b1)
 {
 	uint LightCount;
 	float IBLFactor;
@@ -27,13 +32,13 @@ cbuffer cbLight : register(b1)
 }
 
 #if defined(_SKIN) && defined(BONECNT)
-cbuffer cbPerSkin: register(b3)
+cbuffer PerSkin: register(b3)
 {
 	matrix boneTransforms[BONE_MAX_CNT];
 };
 #endif //_SKIN && BONECNT
 
-cbuffer cbPerMaterial : register(b2)
+cbuffer PerMaterial : register(b2)
 {
 	Material material;
 };

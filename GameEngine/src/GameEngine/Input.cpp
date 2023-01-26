@@ -2,7 +2,19 @@
 
 namespace GameEngine
 {
-	DEFINE_SINGLETON_CLASS(Input, {}, {})
+	Input* Input::Instance = nullptr;
+
+	Input::Input()
+	{
+		assert(Instance == nullptr);
+		Instance = this;
+	}
+
+	Input::~Input()
+	{
+		assert(Instance != nullptr);
+		Instance = nullptr;
+	}
 
 	void Input::Initialize(HWND _hWnd)
 	{
@@ -14,11 +26,11 @@ namespace GameEngine
 			m_LastKeyMessageDowns[i] = false;
 		}
 
-		m_CurrentMousePosition = Math::Vector2::Zero;
-		m_PreviousMousePosition = Math::Vector2::Zero;
-		m_MouseMovementDelta = Math::Vector2::Zero;
-		m_LastMouseDragStartPosition = Math::Vector2::Zero;
-		m_LastMouseDragEndPosition = Math::Vector2::Zero;
+		m_CurrentMousePosition = Vector2::Zero;
+		m_PreviousMousePosition = Vector2::Zero;
+		m_MouseMovementDelta = Vector2::Zero;
+		m_LastMouseDragStartPosition = Vector2::Zero;
+		m_LastMouseDragEndPosition = Vector2::Zero;
 		m_bMouseMove = false;
 	}
 
@@ -29,7 +41,7 @@ namespace GameEngine
 		POINT _currentMousePoint;
 		_bSuccess = GetCursorPos(&_currentMousePoint);
 		_bSuccess = ScreenToClient(m_hWnd, &_currentMousePoint);
-		const Math::Vector2 _newMousePosition{ static_cast<float>(_currentMousePoint.x), static_cast<float>(_currentMousePoint.y) };
+		const Vector2 _newMousePosition{ static_cast<float>(_currentMousePoint.x), static_cast<float>(_currentMousePoint.y) };
 
 		// 마우스 위치 정보를 갱신합니다.
 		m_PreviousMousePosition = m_CurrentMousePosition;
@@ -49,13 +61,22 @@ namespace GameEngine
 
 		// 마우스를 움직였는지에 대한 여부를 갱신합니다.
 		m_bMouseMove = m_CurrentMousePosition != m_PreviousMousePosition;
+
+		// 마우스 휠 delta를 갱신합니다.
+		int _wheelDelta = 0;
+		MouseWheelMessageInfo _info;
+		while (PopMouseWheelMessage(_info))
+		{
+			_wheelDelta += _info.wheelDelta;
+		}
+		m_MouseWheelDelta = _wheelDelta;
 	}
 
 	EKeyState Input::GetKeyState(EVirtualKey _vKey)
 	{
 		const auto _vKeyIndex = static_cast<int>(_vKey);
-		const auto _keyInfo = m_KeyInfos[_vKeyIndex];
-		const auto _gameTimePoint = Time::Instance.GetGameTimePoint();
+		const auto _keyInfo = Instance->m_KeyInfos[_vKeyIndex];
+		const auto _gameTimePoint = Time::GetGameTimePoint();
 
 		// 이번 프레임에 이미 추적되었는지 검사합니다.
 		// 이미 추적되었다면, 가장 마지막으로 갱신한 값을 그대로 반환합니다.
@@ -91,7 +112,7 @@ namespace GameEngine
 			// 지난번 상태가 true일 때 Up, (이 경우는 극히 드문 경우입니다)
 			// false라면 그 시간동안 누른 적이 전혀 없다는 것이므로 None으로 판별합니다.
 
-			m_KeyInfos[_vKeyIndex].state
+			Instance->m_KeyInfos[_vKeyIndex].state
 				= _previousKeyPress ? EKeyState::Up : EKeyState::None;
 		}
 		else if (_currentKeyState == 0x0001)
@@ -100,26 +121,26 @@ namespace GameEngine
 			// 지난번 상태가 true일 때 Up,
 			// false라면 키를 아주 빠르게 눌렀다 뗏다는 것으로 간주하여 DownAndUp으로 판별합니다.
 
-			m_KeyInfos[_vKeyIndex].state
+			Instance->m_KeyInfos[_vKeyIndex].state
 				= _previousKeyPress ? EKeyState::Up : EKeyState::DownAndUp;
 		}
 		else if (_currentKeyState & 0x8000)
 		{
 			// 키가 눌려있다면, 지난 상태를 반영해서 Down 또는 Hold로 판별합니다.
 
-			m_KeyInfos[_vKeyIndex].state
+			Instance->m_KeyInfos[_vKeyIndex].state
 				= _previousKeyPress ? EKeyState::Hold : EKeyState::Down;
 		}
 		else
 		{
-			m_KeyInfos[_vKeyIndex].state = EKeyState::None;
+			Instance->m_KeyInfos[_vKeyIndex].state = EKeyState::None;
 		}
 
 		// 가장 마지막으로 추적된 시간을
 		// 현재 프레임의 시간으로 갱신합니다.
-		m_KeyInfos[_vKeyIndex].lastUpdatedTime = _gameTimePoint;
+		Instance->m_KeyInfos[_vKeyIndex].lastUpdatedTime = _gameTimePoint;
 
-		return m_KeyInfos[_vKeyIndex].state;
+		return Instance->m_KeyInfos[_vKeyIndex].state;
 	}
 
 	bool Input::GetKeyPress(EVirtualKey _vKey)

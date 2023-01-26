@@ -1,8 +1,8 @@
 #if !defined(H_PBR)
 #define H_PBR
 
-#define PI 3.14159265359f
-#define e 2.71828182846f
+static const float PI = 3.14159265f;
+static const float EPSILON = 1e-6f;
 
 float Pow5(in float value)
 {
@@ -233,7 +233,7 @@ float Beckmann_Distribution(float cosThetaNH, float alpha)
 	float pows = (nh2 - 1) / (alpha2 * nh2);
 
 	// 1 / (pi * a^2 * (n¡¤m)^4) * e^(((n¡¤m)^2 - 1) / (a^2 * (n¡¤m)^2))
-	return pow(e, pows) / (nh4 * piAlpha2);
+	return pow(EPSILON, pows) / (nh4 * piAlpha2);
 }
 
 float3 CookTorrance_GGX(in float roughness2

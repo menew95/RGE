@@ -9,6 +9,8 @@
 
 #include "GameEngine/Core/System/Resources.h"
 
+#include "Test/CameraController.h"
+
 TestScene::TestScene()
 {
 	std::shared_ptr<GameObject> _testObject = GameObject::Instantiate();
@@ -20,6 +22,9 @@ TestScene::TestScene()
 	_testObject->AddComponent<MeshFilter>()->SetSharedMesh(_mesh);
 	_testObject->AddComponent<MeshRenderer>()->AddMaterial(_material);
 
+	auto camera = FindObject(TEXT("Camera"));
+
+	camera->AddComponent<CameraController>();
 
 	AddGameObject(_testObject);
 }

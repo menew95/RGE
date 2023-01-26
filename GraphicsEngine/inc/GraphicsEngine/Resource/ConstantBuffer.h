@@ -12,6 +12,7 @@ namespace Graphics
 		Math::Matrix _proj;
 		Math::Matrix _projInv;
 		Math::Matrix _viewToTexSpace;
+		Math::Matrix _worldViewProj;
 	};
 
 	struct alignas(16) SSAO
@@ -36,7 +37,7 @@ namespace Graphics
 	struct alignas(16) PerLight
 	{
 		uint32 _type;
-		float _renge;
+		float _range;
 		float _fallOff;
 		float _pad;
 
@@ -47,7 +48,7 @@ namespace Graphics
 		float _fallOffAngle;
 
 		Math::Vector3 _color;
-		float _power;
+		float _intensity;
 
 		Math::Matrix _shadowTransform;
 	};

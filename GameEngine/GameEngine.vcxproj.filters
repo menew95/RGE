@@ -105,6 +105,12 @@
     <ClInclude Include="inc\GameEngine\Core\Component\MeshRenderer.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="inc\GameEngine\Core\Component\Light.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Test\CameraController.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\GameEngine\Game_dllmain.cpp">
@@ -189,6 +195,12 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\GameEngine\Core\Component\MeshRenderer.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GameEngine\Core\Component\Light.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Test\CameraController.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

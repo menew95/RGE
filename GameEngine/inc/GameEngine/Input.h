@@ -5,6 +5,8 @@
 
 namespace GameEngine
 {
+    using namespace Math;
+
     constexpr int VKEY_COUNT = 256;
 
     /**
@@ -304,7 +306,7 @@ namespace GameEngine
     struct MouseWheelMessageInfo
     {
         int wheelDelta;
-        Math::Vector2 screenPoint;
+        Vector2 screenPoint;
     };
 
     inline bool operator&(EKeyState _lhs, short _rhs)
@@ -317,11 +319,14 @@ namespace GameEngine
         return static_cast<int>(_state) & static_cast<int>(_bit);
     }
 
-	class GAME_ENGINE_API Input
-	{
-		DECLARE_SINGLETON_CLASS(Input)
+    class GAME_ENGINE_API Input final
+    {
+    public:
+        static Input* Instance;
 
-	public:
+        Input();
+        ~Input();
+
         /**
          * @brief 추적 대상의 키의 상태와 마지막으로 갱신된 프레임 시간을 포함하는 구조체입니다.
          */
@@ -331,6 +336,7 @@ namespace GameEngine
             std::chrono::system_clock::time_point lastUpdatedTime;
         };
 
+    public:
         void Initialize(HWND _hWnd);
 
         void PreTick();
@@ -338,29 +344,29 @@ namespace GameEngine
         /**
          * @brief 현재 키의 상태를 반환합니다.
          */
-        EKeyState GetKeyState(EVirtualKey _vKey);
+        static EKeyState GetKeyState(EVirtualKey _vKey);
 
         /**
          * @brief 현재 키가 눌려있는지에 대한 상태를 반환합니다.
          * 다른 말로, 키의 상태가 Down 또는 Hold일 때 true를 반환합니다.
          */
-        bool GetKeyPress(EVirtualKey _vKey);
+        static bool GetKeyPress(EVirtualKey _vKey);
 
         /**
          * @brief 이전 프레임에서 키를 누르지 않다가 이번 프레임에 키를 누르기 시작했는지에 대한 여부를 반환합니다.
          * 다른 말로, 키의 상태가 Down 성분을 가질 때 true를 반환합니다.
          */
-        bool GetKeyDown(EVirtualKey _vKey);
+        static bool GetKeyDown(EVirtualKey _vKey);
 
         /**
          * @brief 이전 프레임에서 키를 누르고 있다가 이번 프레임에 키를 떼기 시작했는지에 대한 여부를 반환합니다.
          * 다른 말로, 키의 상태가 Up 성분을 가질 때 true를 반환합니다.
          */
-        bool GetKeyUp(EVirtualKey _vKey);
+        static bool GetKeyUp(EVirtualKey _vKey);
 
-        int GetAxisHorizontal();
+        static int GetAxisHorizontal();
 
-        int GetAxisVertical();
+        static int GetAxisVertical();
 
     private:
         static constexpr long long INPUT_TRACE_THRESHOLD_TIME = 500;
@@ -370,6 +376,7 @@ namespace GameEngine
         static constexpr int MAX_MOUSE_WHEEL_MESSAGE_QUEUE_SIZE = 50;
 
         HWND m_hWnd;
+        bool m_bUseWindowEvent;
 
         /**
          * \brief 지금까지 추적된 키의 정보를 저장하는 배열입니다.
@@ -381,29 +388,34 @@ namespace GameEngine
          */
         KeyInfo m_KeyInfos[VKEY_COUNT];
 
+        /**
+         * @brief 가상 키에 대응하는 가장 최근에 받은 키 입력 윈도우 메세지가 무엇인지 저장하는 배열입니다.
+         * 예를 들어, 윈도우 메세지 수신 기준으로 키보드의 'A'키가 현재 눌려있는지에 대한 여부를 알고 싶다면, 이 배열의 EVirtualKey::Key_A 번째 값을 얻으면 됩니다.
+        */
         bool m_LastKeyMessageDowns[VKEY_COUNT];
 
         std::queue<KeyMessageInfo> m_KeyMessageQueue;
         std::queue<MouseWheelMessageInfo> m_MouseWheelMessageQueue;
 
-        Math::Vector2 m_CurrentMousePosition;
-        Math::Vector2 m_PreviousMousePosition;
-        Math::Vector2 m_MouseMovementDelta;
-        Math::Vector2 m_LastMouseDragStartPosition;
-        Math::Vector2 m_LastMouseDragEndPosition;
+        Vector2 m_CurrentMousePosition;
+        Vector2 m_PreviousMousePosition;
+        Vector2 m_MouseMovementDelta;
+        Vector2 m_LastMouseDragStartPosition;
+        Vector2 m_LastMouseDragEndPosition;
         bool m_bMouseMove;
 
         int m_MouseWheelDelta;
-        Math::Vector2 m_MouseWheelPosition;
 
     public:
-        inline Math::Vector2 GetMousePosition() const { return m_CurrentMousePosition; }
+        static inline Vector2 GetMousePosition() { return Instance->m_CurrentMousePosition; }
 
-        inline Math::Vector2 GetMouseMovementDelta() const { return m_MouseMovementDelta; }
+        static inline Vector2 GetMouseMovementDelta() { return Instance->m_MouseMovementDelta; }
 
-        inline Math::Vector2 GetLastMouseDragStartPosition() const { return m_LastMouseDragStartPosition; }
+        static inline int GetMouseWheelDelta() { return Instance->m_MouseWheelDelta; }
 
-        inline Math::Vector2 GetLastMouseDragEndPosition() const { return m_LastMouseDragEndPosition; }
+        static inline Vector2 GetLastMouseDragStartPosition() { return Instance->m_LastMouseDragStartPosition; }
+
+        static inline Vector2 GetLastMouseDragEndPosition() { return Instance->m_LastMouseDragEndPosition; }
 
     public:
         /**
@@ -462,5 +474,5 @@ namespace GameEngine
             m_MouseWheelMessageQueue.pop();
             return true;
         }
-	};
+    };
 }

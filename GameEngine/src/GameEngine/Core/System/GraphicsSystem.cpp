@@ -62,6 +62,11 @@ namespace GameEngine
 			return m_GraphicsEngine->CreateCameraBuffer();
 		}
 
+		Graphics::LightBuffer* GraphicsSystem::CreateLightBuffer()
+		{
+			return m_GraphicsEngine->CreateLightBuffer();
+		}
+
 		Graphics::Texture* GraphicsSystem::LoadTexture(uuid _uuid)
 		{
 			Graphics::ImageDesc _desc;
@@ -82,6 +87,11 @@ namespace GameEngine
 		}
 
 		void GraphicsSystem::DeleteTextureBuffer(Graphics::Texture*)
+		{
+			// Todo :
+		}
+
+		void GraphicsSystem::DeleteLightBuffer(Graphics::LightBuffer*)
 		{
 			// Todo :
 		}

@@ -36,7 +36,6 @@ float4 main(VSOutput input) : SV_TARGET
 
 	float _roughness2 = max(0.001, _roughness * _roughness);
 
-
 	// Specular coefficiant - fixed reflectance value for non-metals
 	static const float kSpecularCoefficient = 0.04;
 
@@ -46,7 +45,7 @@ float4 main(VSOutput input) : SV_TARGET
 	//[unroll]
 	for (uint _lightIdx = 0; _lightIdx < LightCount; _lightIdx++)
 	{
-		_finColor += CalLight(LightInfo[_lightIdx], _specularColor, _diffuseColor, _worldPos.xyz, _normal.xyz, _toEye, _roughness2, _metallic);
+		_finColor += CalLight(LightInfo[_lightIdx], _specularColor, _diffuseColor, _worldPos.xyz, _normal.xyz, _toEye, _roughness, _metallic);
 	}
 
 	return float4(_finColor, 1.0f);

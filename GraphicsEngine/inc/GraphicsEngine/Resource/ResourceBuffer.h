@@ -15,6 +15,7 @@ namespace Graphics
 		Mesh,
 		Material,
 		Camera,
+		Light
 	};
 
 	class GRAPHICSENGINE_DLL_DECLSPEC ResourceBuffer

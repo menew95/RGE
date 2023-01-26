@@ -101,6 +101,9 @@
     <ClCompile Include="src\GraphicsEngine\Resource\CameraBuffer.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="src\GraphicsEngine\Resource\LightBuffer.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\Header\H_ConstBuffer.hlsli" />
@@ -116,5 +119,7 @@
     <FxCompile Include="Shader\PS_Deferred.hlsl" />
     <FxCompile Include="Shader\PS_Light.hlsl" />
     <FxCompile Include="Shader\PS_Final.hlsl" />
+    <FxCompile Include="Shader\PS_SkyBox.hlsl" />
+    <FxCompile Include="Shader\VS_SkyBox.hlsl" />
   </ItemGroup>
 </Project>

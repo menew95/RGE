@@ -68,6 +68,9 @@ namespace Graphics
 			stateManager.SetGeometryShader(m_GS.Get());
 			stateManager.SetPixelShader(m_PS.Get());
 			stateManager.SetComputeShader(m_CS.Get());
+
+			/* Set static viewports and scissors */
+			SetStaticViewportsAndScissors(stateManager);
 		}
 
 		void DX11PipelineState::SetStaticViewportsAndScissors(DX11StateManager& stateManager)

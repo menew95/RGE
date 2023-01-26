@@ -14,6 +14,7 @@ namespace GameEngine
 		{
 			std::shared_ptr<GameObject> _camera = GameObject::Instantiate();
 
+			_camera->SetName(TEXT("Camera"));
 			_camera->AddComponent<Camera>();
 
 			AddGameObject(_camera);
@@ -34,5 +35,20 @@ namespace GameEngine
 			m_GameObjects.emplace_back(gameObject);
 		}
 
+		GameEngine::Core::GameObject* Scene::FindObject(const tstring& name)
+		{
+			auto _find = std::find_if(std::begin(m_GameObjects), std::end(m_GameObjects),
+				[&name](auto& obj)
+				{
+					return obj->GetName() == name;
+				});
+
+			if (_find != m_GameObjects.end())
+			{
+				return (*_find).get();
+			}
+
+			return nullptr;
+		}
 	}
 }
