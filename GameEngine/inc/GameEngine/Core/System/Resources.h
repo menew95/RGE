@@ -2,6 +2,11 @@
 
 #include "Common.h"
 
+namespace Utility
+{
+	struct PrefabData;
+}
+
 namespace GameEngine
 {
 	namespace Core
@@ -10,6 +15,7 @@ namespace GameEngine
 		class Resource;
 		class Mesh;
 		class Material;
+		class Prefab;
 
 		class GAME_ENGINE_API Resources
 		{
@@ -22,6 +28,8 @@ namespace GameEngine
 
 			void LoadFBX(const tstring& filePath);
 
+			void CreatePrefab(const Utility::PrefabData& prefabData);
+
 			std::shared_ptr<Mesh>& GetMesh(uuid uuid);
 			std::shared_ptr<Material>& GetMaterial(uuid uuid);
 
@@ -31,6 +39,8 @@ namespace GameEngine
 
 			std::unordered_map<uuid, std::shared_ptr<Mesh>> m_MeshMap;
 			std::unordered_map<uuid, std::shared_ptr<Material>> m_MaterialMap;
+
+			std::unordered_map<uuid, std::shared_ptr<Prefab>> m_PrefabMap;
 		};
 	}
 }

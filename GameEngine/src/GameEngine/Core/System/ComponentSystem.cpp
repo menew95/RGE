@@ -14,6 +14,7 @@ namespace GameEngine
 				RegistComponent(2,TEXT("MeshFilter"));
 				RegistComponent(3,TEXT("MeshRenderer"));
 				RegistComponent(4,TEXT("CameraController"));
+				RegistComponent(5,TEXT("Light"));
 			}, {})
 
 		void ComponentSystem::RegistComponent(uint32 order, const tstring& componentName)

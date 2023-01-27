@@ -38,14 +38,14 @@ namespace Graphics
 
 	void RenderPass::UpdatePerFrame(CommandBuffer* commandBuffer, void* src, uint32 size)
 	{
-		assert(m_PerFrameBuffer != nullptr);
+		if (m_PerFrameBuffer == nullptr) return;
 
 		commandBuffer->UpdateBuffer(*m_PerFrameBuffer, 0, src, size);
 	}
 
 	void RenderPass::UpdatePerDraw(CommandBuffer* commandBuffer, void* src, uint32 size)
 	{
-		assert(m_PerDrawBuffer != nullptr);
+		if (m_PerDrawBuffer == nullptr) return;
 
 		commandBuffer->UpdateBuffer(*m_PerDrawBuffer, 0, src, size);
 	}
@@ -70,13 +70,15 @@ namespace Graphics
 
 			commandBuffer->SetVertexBuffer(*_vertexBuffer);
 
+			UpdatePerDraw(commandBuffer, m_RenderObjects[_index].m_UpdateResourcePerDraw._dataSrc, m_RenderObjects[_index].m_UpdateResourcePerDraw._datasize);
+
 			for (uint32 _subMeshCnt = 0; _subMeshCnt < m_RenderObjects[_index].GetMeshBuffer()->GetSubMeshCount(); _subMeshCnt++)
 			{
 				auto _subMeshBuffer = m_RenderObjects[_index].GetMeshBuffer()->GetSubMesh(_subMeshCnt);
 
 				auto _pipelineLayout = m_RenderObjects[_index].GetMaterialBuffer()->GetPipelineLayout();
 
-				UpdateConstBuffer(commandBuffer, m_RenderObjects[_index]);
+				//UpdateConstBuffer(commandBuffer, m_RenderObjects[_index]);
 
 				commandBuffer->SetIndexBuffer(*_subMeshBuffer.m_IndexBuffer);
 
@@ -96,6 +98,9 @@ namespace Graphics
 
 	void RenderPass::UpdateConstBuffer(CommandBuffer* commandBuffer, RenderObject& renderObject)
 	{
+		// 재설계중
+		assert(false);
+
 		auto& _buffers = renderObject.GetConstBuffers();
 		auto& _sources = renderObject.GetUpdateResourceData();
 

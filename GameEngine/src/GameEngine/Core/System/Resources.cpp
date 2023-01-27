@@ -1,9 +1,12 @@
 #include "GameEngine/GameEnginePCH.h"
+
+#include "GameEngine/Core/GameObject.h"
 #include "GameEngine/Core/System/Resources.h"
 #include "GameEngine/Core/System/GraphicsSystem.h"
 
 #include "GameEngine/Core/Resource/Mesh.h"
 #include "GameEngine/Core/Resource/Material.h"
+#include "GameEngine/Core/Resource/Prefab.h"
 
 #include "Importer/Importer.h"
 #include "Importer/ImportInfo.h"
@@ -125,6 +128,22 @@ namespace GameEngine
 
 				m_MaterialMap.insert(std::make_pair(_pair.first, _newMaterial));
 			}
+
+			CreatePrefab(_newPrefabData);
+		}
+
+		void Resources::CreatePrefab(const Utility::PrefabData& prefabData)
+		{
+			uuid _uuid;
+			std::shared_ptr<Prefab> _newPrefab;
+
+			auto _rootGameObject = GameObject::Instantiate();
+
+
+
+			_newPrefab->SetRootGameObject(_rootGameObject);
+
+			m_PrefabMap.insert(std::make_pair(_uuid, _newPrefab));
 		}
 
 		std::shared_ptr<GameEngine::Core::Mesh>& Resources::GetMesh(uuid uuid)

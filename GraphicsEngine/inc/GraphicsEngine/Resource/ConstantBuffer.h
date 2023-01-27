@@ -53,7 +53,7 @@ namespace Graphics
 		Math::Matrix _shadowTransform;
 	};
 
-	struct alignas(16) PerLightFrame
+	struct alignas(16) Lighting
 	{
 		uint32 _lightCount;
 		float _iblFactor;

@@ -203,6 +203,7 @@ xcopy /E /S /Y /R "$(OutputPath)*.pdb" "$(OutputPath)..\Client\*"</Command>
     </ClInclude>
     <ClInclude Include="inc\GameEngine\Core\Resource\AudioClip.h" />
     <ClInclude Include="inc\GameEngine\Core\Resource\Material.h" />
+    <ClInclude Include="inc\GameEngine\Core\Resource\Prefab.h" />
     <ClInclude Include="inc\GameEngine\Core\Resource\Sprite.h" />
     <ClInclude Include="inc\GameEngine\Core\Resource\Texture.h" />
     <ClInclude Include="inc\GameEngine\Core\System\Components.h" />
@@ -242,6 +243,7 @@ xcopy /E /S /Y /R "$(OutputPath)*.pdb" "$(OutputPath)..\Client\*"</Command>
     <ClCompile Include="src\GameEngine\Core\Resource\AudioClip.cpp" />
     <ClCompile Include="src\GameEngine\Core\Resource\Material.cpp" />
     <ClCompile Include="src\GameEngine\Core\Resource\Mesh.cpp" />
+    <ClCompile Include="src\GameEngine\Core\Resource\Prefab.cpp" />
     <ClCompile Include="src\GameEngine\Core\Resource\Resource.cpp" />
     <ClCompile Include="src\GameEngine\Core\Resource\Sprite.cpp" />
     <ClCompile Include="src\GameEngine\Core\Resource\Texture.cpp" />

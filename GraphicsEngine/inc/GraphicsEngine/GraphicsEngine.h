@@ -44,6 +44,8 @@ namespace Graphics
 		void Excute();
 
 	private:
+		void GetLightingData(struct Lighting& perLightFrame);
+
 		void LoadGraphicsTable();
 
 		void LoadDllAndCreateRenderSystem();
@@ -66,6 +68,8 @@ namespace Graphics
 		MaterialBuffer* m_SkyBox_Material;
 		MeshBuffer* m_SkyBox_Mesh;
 		Graphics::RenderPass* m_SkyBox_Pass;
+
+		std::vector<std::shared_ptr<LightBuffer>> m_LightBuffers;
 	};
 
 	extern "C"

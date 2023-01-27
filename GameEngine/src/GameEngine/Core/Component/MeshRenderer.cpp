@@ -53,17 +53,13 @@ namespace GameEngine
 						_renderObject.m_MeshBuffer = _sharedMesh->GetMeshBuffer();
 						_renderObject.m_MaterialBuffer = _materialBuffer;
 
-						Graphics::UpdateResourceData _perObjectData;
-
-						
-
 						_perObject._world = GetTransform()->GetWorldTM();
 						_perObject._worldInvTranspose = GetTransform()->GetWorldTM().Invert().Transpose();
 
-						_perObjectData._dataSrc = &_perObject;
-						_perObjectData._datasize = 128;
+						_renderObject.m_UpdateResourcePerDraw._dataSrc = &_perObject;
+						_renderObject.m_UpdateResourcePerDraw._datasize = sizeof(Math::Matrix) * 2;
 
-						_renderObject.m_UpdateResources.push_back(_perObjectData);
+						//_renderObject.m_UpdateResources.push_back(_perObjectData);
 
 						_materialBuffer->RegistRenderObject(_renderObject);
 					}

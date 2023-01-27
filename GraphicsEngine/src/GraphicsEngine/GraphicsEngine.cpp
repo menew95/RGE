@@ -214,7 +214,9 @@ namespace Graphics
 
 	Graphics::LightBuffer* GraphicsEngine::CreateLightBuffer()
 	{
-		return new LightBuffer(m_RenderSystem);
+		m_LightBuffers.push_back(std::make_shared<LightBuffer>(m_RenderSystem));
+
+		return m_LightBuffers.back().get();
 	}
 
 	Graphics::Texture* GraphicsEngine::LoadTexture(uuid uuid, ImageDesc* imageDesc)
@@ -276,29 +278,18 @@ namespace Graphics
 			_deferredMergeRenderObject.m_MeshBuffer = m_Screen_Mesh;
 			_deferredMergeRenderObject.m_MaterialBuffer = m_Deferred_Light_Material;
 
+			// Update Per Object Buffer(Lighting)
+			Lighting _perLighting;
+			GetLightingData(_perLighting);
+
+			UpdateResourceData _perDraw{ &_perLighting, sizeof(Lighting) };
+
+			_deferredMergeRenderObject.m_UpdateResourcePerDraw = _perDraw;
+
 			m_Deferred_Light_Pass->RegistRenderObject(_deferredMergeRenderObject);
-
-
+			
 			m_CommandBuffer->BeginEvent(TEXT("Lighting Pass"));
 			
-			// Update Frame Buffer
-			PerLightFrame _perLightFrame;
-			_perLightFrame._lightCount = 1;
-			_perLightFrame._iblFactor = 0;
-
-			//  Todo : 게임 엔진으로 부터 라이트들을 받아오도록 만들어야 함
-			
-			PerLight _perLight;
-
-			_perLight._type = (uint32)LightType::Directional;
-			_perLight._direction = Math::Vector3(0, -0.7, 0.7);
-			_perLight._direction.Normalize();
-			_perLight._color = { 1, 1, 1 };
-			_perLightFrame._perLights[0] = _perLight;
-
-
-			m_Deferred_Light_Pass->UpdatePerDraw(m_CommandBuffer, &_perLightFrame, sizeof(_perLightFrame));
-
 			m_Deferred_Light_Pass->BeginExcute(m_CommandBuffer, nullptr);
 
 			m_Deferred_Light_Pass->Excute(m_CommandBuffer);
@@ -329,6 +320,19 @@ namespace Graphics
 		}*/
 
 		m_SwapChain->Present();
+	}
+
+	void GraphicsEngine::GetLightingData(Lighting& perLightFrame)
+	{
+		perLightFrame._lightCount = m_LightBuffers.size();
+
+		for (uint32 i = 0; i < m_LightBuffers.size(); i++)
+		{
+			if (m_LightBuffers[i]->GetEnable())
+			{
+				perLightFrame._perLights[i] = m_LightBuffers[i]->GetPerLight();
+			}
+		}
 	}
 
 	void GraphicsEngine::LoadGraphicsTable()

@@ -58,6 +58,8 @@ namespace Graphics
 		std::vector<Graphics::Buffer*> m_ConstBuffers;
 
 		std::vector<UpdateResourceData> m_UpdateResources;
+
+		UpdateResourceData m_UpdateResourcePerDraw;
 	};
 }
 

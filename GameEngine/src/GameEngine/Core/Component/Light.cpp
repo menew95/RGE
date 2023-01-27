@@ -29,6 +29,37 @@ namespace GameEngine
 		void Light::Awake()
 		{
 			m_LightBuffer = GraphicsSystem::GetInstance()->CreateLightBuffer();
+
+			assert(m_LightBuffer != nullptr);
+
+			m_LightBuffer->SetDirection(GetComponent<Transform>()->GetForward());
+
+			m_LightBuffer->SetLightType(static_cast<uint32>(m_LightType));
+
+			Math::Vector3 _color = { m_LightColor.x, m_LightColor.y, m_LightColor.z };
+
+			m_LightBuffer->SetColor(_color);
+			m_LightBuffer->SetIntensity(m_Intensity);
+			m_LightBuffer->SetRange(m_Range);
+			m_LightBuffer->SetSpotAngle(m_SpotAngle);
+			m_LightBuffer->SetFalloffAngle(m_InnerSpotAngle);
+
+			switch (m_LightType)
+			{
+				case GameEngine::Core::LightType::Spot:
+					m_LightBuffer->SetRange(m_Range);
+					m_LightBuffer->SetFalloffAngle(m_InnerSpotAngle);
+
+					break;
+				case GameEngine::Core::LightType::Directional:
+
+					break;
+				case GameEngine::Core::LightType::Point:
+
+					break;
+				default:
+					break;
+			}
 		}
 
 		void Light::Update()
@@ -40,6 +71,8 @@ namespace GameEngine
 				m_PrevPosition = _currPos;
 
 				m_LightBuffer->SetLightPosition(m_PrevPosition);
+
+				m_LightBuffer->SetDirection(GetComponent<Transform>()->GetForward());
 			}
 		}
 
