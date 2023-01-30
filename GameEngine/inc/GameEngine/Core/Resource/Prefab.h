@@ -17,6 +17,10 @@ namespace GameEngine
 			inline void SetUUID(uuid uuid) { m_UUID = uuid; }
 			inline void SetRootGameObject(std::shared_ptr<GameObject>& rootGameObject) { m_RootGameObject = rootGameObject; }
 
+			inline auto GetRootGameObject() { return m_RootGameObject; }
+		protected:
+			void Release() override;
+
 		private:
 			uuid m_UUID;
 			std::shared_ptr<GameObject> m_RootGameObject;

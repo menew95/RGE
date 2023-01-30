@@ -14,8 +14,31 @@ namespace Graphics
 
 	struct UpdateResourceData
 	{
-		void* _dataSrc;
-		uint32 _datasize;
+		inline UpdateResourceData()
+		{}
+
+		inline UpdateResourceData(uint32 idx, ResourceType type, void* src, uint32 size)
+			: _index(idx)
+			, _resourceType(type)
+			, _dataSrc(src)
+			, _datasize(size)
+		{}
+
+		inline UpdateResourceData(void* src, uint32 size)
+			: _index(0)
+			, _resourceType(ResourceType::Buffer)
+			, _dataSrc(src)
+			, _datasize(size)
+		{}
+
+
+		uint32 _index = 0;
+
+		ResourceType _resourceType = ResourceType::Undefined;
+
+		void* _dataSrc = nullptr;
+
+		uint32 _datasize = 0;
 	};
 
 	// 랜더 패스에 하나의 랜더 오브젝트를 정의

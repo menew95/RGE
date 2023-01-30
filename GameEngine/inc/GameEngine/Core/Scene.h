@@ -16,6 +16,7 @@ namespace GameEngine
 
 			void Resize(size_t size);
 			void AddGameObject(std::shared_ptr<GameObject>& gameObject);
+			void AddGameObjects(std::shared_ptr<GameObject>& gameObject);
 
 			inline std::vector<std::shared_ptr<GameObject>>& GetAllGameObject() { return m_GameObjects; }
 

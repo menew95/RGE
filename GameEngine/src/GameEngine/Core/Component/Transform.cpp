@@ -46,10 +46,21 @@ namespace GameEngine
 			}
 		}
 
+		void Transform::AddChild(std::shared_ptr<Transform>& child)
+		{
+			m_Childs.push_back(child);
+		}
+
 		void Transform::SetParent(std::shared_ptr<Transform>& parent)
 		{
 			if (m_Parent == parent)
 				return;
+
+			m_Parent = parent;
+
+			auto _this = shared_from_this();
+
+			parent->AddChild(_this);
 
 			DecomposeWorldToLocal();
 		}
@@ -431,6 +442,53 @@ namespace GameEngine
 		void Transform::DecomposeLocalToWorld()
 		{
 			m_LocalTM = m_LocalScaleTM * m_LocalRotateTM * m_LocalPositionTM;
+
+			if (m_Parent != nullptr)
+			{
+				auto& _parentTM = m_Parent->GetTM();
+
+				m_WorldTM = m_LocalTM * _parentTM;
+
+				m_WorldTM.Decompose(m_WorldScale, m_WorldQuaternionRotation, m_WorldPosition);
+
+				m_WorldEulerRotation = m_WorldQuaternionRotation.ToEuler();
+
+				m_WorldPositionTM = Math::Matrix::CreateTranslation(m_WorldPosition);
+				m_WorldRotateTM = Math::Matrix::CreateFromQuaternion(m_WorldQuaternionRotation);
+				m_WorldScaleTM = Math::Matrix::CreateScale(m_WorldScale);
+			}
+			else
+			{
+				m_WorldPosition = m_LocalPosition;
+				m_WorldEulerRotation = m_WorldEulerRotation;
+				m_WorldQuaternionRotation = m_LocalQuaternionRotation;
+				m_WorldScale = m_LocalScale;
+
+				m_WorldTM = m_LocalTM;
+
+				m_WorldPositionTM = m_LocalPositionTM;
+				m_WorldRotateTM = m_LocalRotateTM;
+				m_WorldScaleTM = m_LocalScaleTM;
+			}
+
+			m_Forward = m_WorldRotateTM.Forward();
+			m_Up = m_WorldRotateTM.Up();
+			m_Right = m_WorldRotateTM.Right();
+		}
+
+		void Transform::SetLocal(Math::Matrix local)
+		{
+			m_LocalTM = local;
+
+			m_LocalTM.Decompose(m_LocalScale, m_LocalQuaternionRotation, m_LocalPosition);
+
+			m_LocalPositionTM = Math::Matrix::CreateTranslation(m_LocalPosition);
+
+			m_LocalEulerRotation = m_LocalQuaternionRotation.ToEuler();
+
+			m_LocalRotateTM = Math::Matrix::CreateFromQuaternion(m_LocalQuaternionRotation);
+
+			m_LocalScaleTM = Math::Matrix::CreateScale(m_LocalScale);
 
 			if (m_Parent != nullptr)
 			{

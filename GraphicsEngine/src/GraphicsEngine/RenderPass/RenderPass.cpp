@@ -78,7 +78,7 @@ namespace Graphics
 
 				auto _pipelineLayout = m_RenderObjects[_index].GetMaterialBuffer()->GetPipelineLayout();
 
-				//UpdateConstBuffer(commandBuffer, m_RenderObjects[_index]);
+				UpdateResource(commandBuffer, m_RenderObjects[_index]);
 
 				commandBuffer->SetIndexBuffer(*_subMeshBuffer.m_IndexBuffer);
 
@@ -108,6 +108,41 @@ namespace Graphics
 		for (size_t i = 0; i < _sources.size(); i++)
 		{
 			commandBuffer->UpdateBuffer(*m_PerDrawBuffer, 0, _sources[0]._dataSrc, _sources[0]._datasize);
+		}
+	}
+
+	void RenderPass::UpdateResource(CommandBuffer* commandBuffer, RenderObject& renderObject)
+	{
+		auto* _layout = renderObject.GetMaterialBuffer()->GetPipelineLayout();
+		auto& _sources = renderObject.GetUpdateResourceData();
+
+		for (size_t i = 0; i < _sources.size(); i++)
+		{
+			assert(_sources[i]._resourceType != ResourceType::Undefined);
+
+			switch (_sources[i]._resourceType)
+			{
+				case ResourceType::Buffer:
+				{
+					break;
+				}
+				case ResourceType::Sampler:
+				case ResourceType::Texture:
+				{
+					_layout->SetResource(_sources[i]._index, reinterpret_cast<Resource*>(_sources[i]._dataSrc));
+					break;
+				}
+				/*{
+					_layout->SetResource(_sources[i]._index, reinterpret_cast<Resource*>(_sources[i]._dataSrc));
+					break;
+				}*/
+				case ResourceType::Undefined:
+				default:
+				{
+					assert(false);
+					break;
+				}
+			}
 		}
 	}
 

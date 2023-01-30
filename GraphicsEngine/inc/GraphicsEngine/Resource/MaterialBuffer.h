@@ -38,6 +38,5 @@ namespace Graphics
 	private:
 		Graphics::PipelineLayout* m_PipelineLayout;
 		Graphics::RenderPass* m_RenderPass;
-
 	};
 }

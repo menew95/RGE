@@ -35,6 +35,16 @@ namespace GameEngine
 			m_GameObjects.emplace_back(gameObject);
 		}
 
+		void Scene::AddGameObjects(std::shared_ptr<GameObject>& gameObject)
+		{
+			m_GameObjects.emplace_back(gameObject);
+
+			for (auto& _childGO : gameObject->GetTransform()->GetChilds())
+			{
+				AddGameObjects(_childGO->GetGameObject());
+			}
+		}
+
 		GameEngine::Core::GameObject* Scene::FindObject(const tstring& name)
 		{
 			auto _find = std::find_if(std::begin(m_GameObjects), std::end(m_GameObjects),

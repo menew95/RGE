@@ -22,17 +22,20 @@ namespace GameEngine
 
 		void Material::SetAlbedoTexture(Graphics::Texture* texture)
 		{
-			m_MaterialBuffer->SetResource(4, (Graphics::Resource*)texture);
+			m_AlbedoMap = texture;
+			//m_MaterialBuffer->SetResource(4, (Graphics::Resource*)texture);
 		}
 
 		void Material::SetNormalTexture(Graphics::Texture* texture)
 		{
-
+			m_NormalMap = texture;
+			//m_MaterialBuffer->SetResource(5, (Graphics::Resource*)texture);
 		}
 
 		void Material::SetMRATexture(Graphics::Texture* texture)
 		{
-
+			m_MRAMap = texture;
+			//m_MaterialBuffer->SetResource(6, (Graphics::Resource*)texture);
 		}
 
 		void Material::Release()

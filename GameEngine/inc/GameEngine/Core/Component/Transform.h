@@ -21,6 +21,7 @@ namespace GameEngine
 
 			virtual void Update();
 
+			virtual void AddChild(std::shared_ptr<Transform>& child);
 			virtual void SetParent(std::shared_ptr<Transform>& parent);
 			virtual void Translate(Math::Vector3& translation, Space relativeTo = Space::Self);
 			virtual void Rotate(Math::Vector3& eulers, Space relativeTo = Space::Self);
@@ -32,6 +33,8 @@ namespace GameEngine
 			virtual void SetPositionAndRotation(Math::Vector3 position, Math::Quaternion& rotation);
 
 			void SetWorld(Math::Matrix world);
+
+			void SetLocal(Math::Matrix local);
 
 			size_t GetChildCount() { return m_Childs.size(); }
 			Math::Vector3& GetForward() { return m_Forward; }

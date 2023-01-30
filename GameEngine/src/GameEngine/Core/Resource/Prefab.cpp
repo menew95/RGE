@@ -13,7 +13,13 @@ namespace GameEngine
 
 		Prefab::~Prefab()
 		{
+			Release();
+		}
+
+		void Prefab::Release()
+		{
 
 		}
+
 	}
 }

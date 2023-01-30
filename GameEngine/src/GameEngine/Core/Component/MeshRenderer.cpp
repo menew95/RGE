@@ -59,7 +59,44 @@ namespace GameEngine
 						_renderObject.m_UpdateResourcePerDraw._dataSrc = &_perObject;
 						_renderObject.m_UpdateResourcePerDraw._datasize = sizeof(Math::Matrix) * 2;
 
-						//_renderObject.m_UpdateResources.push_back(_perObjectData);
+						if (m_Materials[i]->GetAlbedoTexture() != nullptr)
+						{
+							Graphics::UpdateResourceData _data;
+
+							_data._resourceType = Graphics::ResourceType::Texture;
+
+							_data._index = 4;
+
+							_data._dataSrc = reinterpret_cast<void*>(m_Materials[i]->GetAlbedoTexture());
+
+							_renderObject.m_UpdateResources.push_back(_data);
+						}
+
+						if (m_Materials[i]->GetNormalTexture() != nullptr)
+						{
+							Graphics::UpdateResourceData _data;
+
+							_data._resourceType = Graphics::ResourceType::Texture;
+
+							_data._index = 5;
+
+							_data._dataSrc = reinterpret_cast<void*>(m_Materials[i]->GetNormalTexture());
+
+							_renderObject.m_UpdateResources.push_back(_data);
+						}
+
+						if (m_Materials[i]->GetMRATexture() != nullptr)
+						{
+							Graphics::UpdateResourceData _data;
+
+							_data._resourceType = Graphics::ResourceType::Texture;
+
+							_data._index = 6;
+
+							_data._dataSrc = reinterpret_cast<void*>(m_Materials[i]->GetMRATexture());
+
+							_renderObject.m_UpdateResources.push_back(_data);
+						}
 
 						_materialBuffer->RegistRenderObject(_renderObject);
 					}

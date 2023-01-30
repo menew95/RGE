@@ -29,10 +29,19 @@ namespace GameEngine
 			void SetAlbedoTexture(Graphics::Texture* texture);
 			void SetNormalTexture(Graphics::Texture* texture);
 			void SetMRATexture(Graphics::Texture* texture);
+
+			Graphics::Texture* GetAlbedoTexture() { return m_AlbedoMap; }
+			Graphics::Texture* GetNormalTexture() { return m_NormalMap; }
+			Graphics::Texture* GetMRATexture() { return m_MRAMap; }
+
 		protected:
 			virtual void Release() override;
 
 		private:
+			Graphics::Texture* m_AlbedoMap = nullptr;
+			Graphics::Texture* m_NormalMap = nullptr;
+			Graphics::Texture* m_MRAMap = nullptr;
+
 			Graphics::MaterialBuffer* m_MaterialBuffer;
 		};
 	}

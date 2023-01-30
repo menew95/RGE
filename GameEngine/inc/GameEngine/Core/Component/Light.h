@@ -50,7 +50,7 @@ namespace GameEngine
 
 			LightType m_LightType				= LightType::Directional;
 			Math::Color m_LightColor			= Math::Color::White;
-			float m_Intensity					= 0.5f;
+			float m_Intensity					= 2.5f;
 			float m_Range						= 10.0f;
 			float m_SpotAngle					= 30.0f;
 			float m_InnerSpotAngle				= 21.80208f;	// _fallOffAngle

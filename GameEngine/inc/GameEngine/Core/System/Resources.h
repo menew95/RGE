@@ -32,7 +32,7 @@ namespace GameEngine
 
 			std::shared_ptr<Mesh>& GetMesh(uuid uuid);
 			std::shared_ptr<Material>& GetMaterial(uuid uuid);
-
+			std::shared_ptr<Prefab>& GetPrefab(uuid uuid);
 		private:
 			std::shared_ptr<Mesh> m_NullMesh = nullptr;
 			std::shared_ptr<Material> m_NullMaterial = nullptr;

@@ -148,7 +148,7 @@ namespace Utility
 		// 여러 머터리얼이 하나의 메쉬에 할당된것을 하나의 메쉬가 하나의 머터리얼로 가지게함
 		_geometryConverter->SplitMeshesPerMaterial(m_FbxScene.get(), true);
 
-		prefabData._name = StringHelper::StringToWString(m_FbxScene->GetName());
+		prefabData._name = filePath;// StringHelper::StringToWString(m_FbxScene->GetName());
 
 		FindAnimationData(prefabData);
 
@@ -423,7 +423,7 @@ namespace Utility
 					{
 						FbxCluster* _cluster = _fbxSkin->GetCluster(j);
 
-						if (_cluster->GetLink() != nullptr)
+						if (_cluster->GetLink() == nullptr)
 							continue;
 
 						int _boneIdx = FindBoneIndex(_cluster->GetLink()->GetName(), prefabData);
@@ -538,9 +538,18 @@ namespace Utility
 				vertexCounter++;
 			}
 
-			meshData._indexAttributes[subMeshCnt].push_back(arrIdx[0]);
-			meshData._indexAttributes[subMeshCnt].push_back(arrIdx[2]);
-			meshData._indexAttributes[subMeshCnt].push_back(arrIdx[1]);
+			if (meshNode->CheckIfVertexNormalsCCW())
+			{
+				meshData._indexAttributes[subMeshCnt].push_back(arrIdx[0]);
+				meshData._indexAttributes[subMeshCnt].push_back(arrIdx[1]);
+				meshData._indexAttributes[subMeshCnt].push_back(arrIdx[2]);
+			}
+			else
+			{
+				meshData._indexAttributes[subMeshCnt].push_back(arrIdx[0]);
+				meshData._indexAttributes[subMeshCnt].push_back(arrIdx[2]);
+				meshData._indexAttributes[subMeshCnt].push_back(arrIdx[1]);
+			}
 		}
 	}
 
@@ -695,8 +704,35 @@ namespace Utility
 	{
 		fbxsdk::FbxNodeAttribute* _nodeAttribute = node->GetNodeAttribute();
 
+#if defined(_DEBUG) || defined(DEBUG)
+		auto _nodeName = node->GetName();
+
+		if (_nodeAttribute && _nodeAttribute->GetAttributeType() == fbxsdk::FbxNodeAttribute::eSkeleton)
+		{
+			BoneData _newBoneData;
+
+			_newBoneData._boneName = StringHelper::StringToWString(node->GetName());
+
+			_newBoneData._parentBoneName = StringHelper::StringToWString(node->GetParent()->GetName());
+
+			_newBoneData._parentBoneIndex = FindBoneIndex(node->GetParent()->GetName(), prefabData);
+
+			_newBoneData._localTM = GetLocalMatrix(node);
+			_newBoneData._worldTM = GetWorldMatrix(node);
+
+			Rotate(_newBoneData._localTM);
+			Rotate(_newBoneData._worldTM);
+
+			prefabData._boneDatas.push_back(_newBoneData);
+
+			LoadAnimationData(node, prefabData);
+		}
+#endif
+		
 		if (_nodeAttribute != nullptr && _nodeAttribute->GetAttributeType() == FbxNodeAttribute::EType::eMesh)
 		{
+			InitInverse();
+
 			GameObjectData _objectData;
 
 			_objectData._gameObjectName = StringHelper::StringToWString(node->GetName());
@@ -721,6 +757,8 @@ namespace Utility
 			for (int _meshCnt = 0; _meshCnt < node->GetNodeAttributeCount(); _meshCnt++)
 			{
 				fbxsdk::FbxMesh* _meshNode = static_cast<fbxsdk::FbxMesh*>(node->GetNodeAttributeByIndex(_meshCnt));
+
+				_objectData._mesh = StringHelper::StringToWString(_meshNode->GetName());
 
 				LoadMesh(prefabData, _meshNode, _newMeshData, _meshCnt);
 
@@ -780,13 +818,21 @@ namespace Utility
 	{
 		auto _boneName = StringHelper::StringToWString(boneName);
 
-		for (int i = 0; i < prefabData._boneDatas.size(); ++i)
-		{
-			if (prefabData._boneDatas[i]._boneName == _boneName)
-				return i;
-		}
+		auto _iter = std::find_if(std::begin(prefabData._boneDatas), std::end(prefabData._boneDatas), 
+			[&_boneName](auto& v)
+			{
+				return v._boneName == _boneName;
+			}
+		);
 
-		return -1;
+		if (_iter != prefabData._boneDatas.end())
+		{
+			return _iter - prefabData._boneDatas.begin();
+		}
+		else
+		{
+			return -1;
+		}
 	}
 
 	Math::Matrix FBXImporter::GetLocalMatrix(fbxsdk::FbxNode* node, bool lh)

@@ -53,6 +53,8 @@ namespace Graphics
 		inline void SetRenderTarget(RenderTarget* renderTarget) { m_RenderTarget = renderTarget; }
 
 	protected:
+		void UpdateResource(CommandBuffer* commandBuffer, RenderObject& renderObject);
+
 		PipelineState* m_PipelineState = nullptr;
 		RenderTarget* m_RenderTarget = nullptr;
 

@@ -81,7 +81,7 @@ float3 CalcDirectionalLight(in Light light
 
 	//float3 brdf = CookTorrance_GGX(roughness2, metallic, specColor, diffColor, NoH, NoV, NoL, HoV);
 
-	litColor += NdotL * light.Color * (((diffColor * diffuse_factor) + specular));
+	litColor += NdotL * light.Color * (((diffColor * diffuse_factor) + specular)) * light.Power;
 
 	return litColor;
 }
