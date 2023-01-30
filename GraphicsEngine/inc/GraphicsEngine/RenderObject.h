@@ -12,13 +12,29 @@ namespace Graphics
 	class MaterialBuffer;
 	class Buffer;
 
+	enum class eUpdateTime
+	{
+		PerFrame	= 0,
+		PerObject	= 1,
+		PerMaterial	= 2,
+	};
+
 	struct UpdateResourceData
 	{
 		inline UpdateResourceData()
 		{}
 
+		inline UpdateResourceData(eUpdateTime time, uint32 idx, ResourceType type, void* src, uint32 size)
+			: _updateTime(time)
+			, _index(idx)
+			, _resourceType(type)
+			, _dataSrc(src)
+			, _datasize(size)
+		{}
+
 		inline UpdateResourceData(uint32 idx, ResourceType type, void* src, uint32 size)
-			: _index(idx)
+			: _updateTime(eUpdateTime::PerMaterial)
+			, _index(idx)
 			, _resourceType(type)
 			, _dataSrc(src)
 			, _datasize(size)
@@ -31,6 +47,7 @@ namespace Graphics
 			, _datasize(size)
 		{}
 
+		eUpdateTime _updateTime = eUpdateTime::PerMaterial;
 
 		uint32 _index = 0;
 
@@ -72,6 +89,11 @@ namespace Graphics
 			return m_UpdateResources;
 		}
 
+		inline const std::vector<UpdateResourceData>& GetUpdateResourceDataPerObject() const
+		{
+			return m_UpdateResources;
+		}
+
 	//private:
 		MeshBuffer* m_MeshBuffer;
 		MaterialBuffer* m_MaterialBuffer;
@@ -82,7 +104,7 @@ namespace Graphics
 
 		std::vector<UpdateResourceData> m_UpdateResources;
 
-		UpdateResourceData m_UpdateResourcePerDraw;
+		std::vector<UpdateResourceData> m_UpdateResourcePerObjects;
 	};
 }
 

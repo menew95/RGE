@@ -63,7 +63,7 @@ namespace Graphics
 		m_Deferred_Mesh_Pass = new RenderPass(_state, _rt, _attachmentClears);
 
 		m_Deferred_Mesh_Pass->SetPerFrameBuffer(m_ResourceManager->GetBuffer(TEXT("PerCamera")));
-		m_Deferred_Mesh_Pass->SetPerDrawBuffer(m_ResourceManager->GetBuffer(TEXT("Transform")));
+		//m_Deferred_Mesh_Pass->SetPerDrawBuffer(m_ResourceManager->GetBuffer(TEXT("Transform")));
 
 		_state = m_ResourceManager->GetPipelineState(TEXT("Deferred_Merge"));
 
@@ -76,7 +76,7 @@ namespace Graphics
 		m_Deferred_Light_Pass = new RenderPass(_state, m_SwapChain);
 
 		m_Deferred_Light_Pass->SetPerFrameBuffer(m_ResourceManager->GetBuffer(TEXT("PerCamera")));
-		m_Deferred_Light_Pass->SetPerDrawBuffer(m_ResourceManager->GetBuffer(TEXT("Lighting")));
+		//m_Deferred_Light_Pass->SetPerDrawBuffer(m_ResourceManager->GetBuffer(TEXT("Lighting")));
 
 		IntiLightPass();
 
@@ -284,7 +284,7 @@ namespace Graphics
 
 			UpdateResourceData _perDraw{ &_perLighting, sizeof(Lighting) };
 
-			_deferredMergeRenderObject.m_UpdateResourcePerDraw = _perDraw;
+			_deferredMergeRenderObject.m_UpdateResourcePerObjects.push_back(_perDraw);
 
 			m_Deferred_Light_Pass->RegistRenderObject(_deferredMergeRenderObject);
 			
@@ -324,7 +324,7 @@ namespace Graphics
 
 	void GraphicsEngine::GetLightingData(Lighting& perLightFrame)
 	{
-		perLightFrame._lightCount = m_LightBuffers.size();
+		perLightFrame._lightCount = static_cast<uint32>(m_LightBuffers.size());
 
 		for (uint32 i = 0; i < m_LightBuffers.size(); i++)
 		{

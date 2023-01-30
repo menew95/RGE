@@ -4,9 +4,12 @@
 
 #include "GraphicsEngine/RenderPassFlags.h"
 
+#include "GraphicsEngine/RenderObject.h"
+
 #include "GraphicsEngine/Export.h"
 
 #include "GraphicsModule/Core/CommandBufferFlags.h"
+
 
 namespace Graphics
 {
@@ -18,7 +21,7 @@ namespace Graphics
 
 	struct PerFrame;
 
-	class RenderPass
+	class GRAPHICSENGINE_DLL_DECLSPEC RenderPass
 	{
 	public:
 		RenderPass(PipelineState* pipelineState, RenderTarget* renderTarget);
@@ -39,21 +42,22 @@ namespace Graphics
 		}
 
 		void UpdatePerFrame(CommandBuffer* commandBuffer, void* src, uint32 size);
-		void UpdatePerDraw(CommandBuffer* commandBuffer, void* src, uint32 size);
+		//void UpdatePerDraw(CommandBuffer* commandBuffer, void* src, uint32 size);
 
 		void BeginExcute(CommandBuffer* commandBuffer, PerFrame* perFrameData);
 		void Excute(CommandBuffer* commandBuffer);
 		void EndExcute(CommandBuffer* commandBuffer);
 
-		void UpdateConstBuffer(CommandBuffer* commandBuffer, RenderObject& renderObject);
-
 		inline void SetPerFrameBuffer(Buffer* perFrame) { m_PerFrameBuffer = perFrame; }
-		inline void SetPerDrawBuffer(Buffer* perDraw) { m_PerDrawBuffer = perDraw; }
+		//inline void SetPerDrawBuffer(Buffer* perDraw) { m_PerDrawBuffer = perDraw; }
 
 		inline void SetRenderTarget(RenderTarget* renderTarget) { m_RenderTarget = renderTarget; }
 
 	protected:
 		void UpdateResource(CommandBuffer* commandBuffer, RenderObject& renderObject);
+		void UpdateResourcePerObject(CommandBuffer* commandBuffer, RenderObject& renderObject);
+
+		void UpdateBuffer(CommandBuffer* commandBuffer, Buffer* buffer, void* src, uint32 size);
 
 		PipelineState* m_PipelineState = nullptr;
 		RenderTarget* m_RenderTarget = nullptr;
@@ -65,7 +69,7 @@ namespace Graphics
 		std::vector<AttachmentClear> m_AttachmentClears;
 
 		Buffer* m_PerFrameBuffer;
-		Buffer* m_PerDrawBuffer;
+		//Buffer* m_PerDrawBuffer;
 		//Buffer* m_PerMaterialBuffer;
 	};
 }

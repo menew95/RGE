@@ -96,6 +96,25 @@ namespace GameEngine
 			// Todo :
 		}
 
+		void GraphicsSystem::RegistRenderObject(const tstring& passName, Graphics::RenderObject& renderObject)
+		{
+			auto _find = std::find_if(std::begin(m_RenderPassList), std::end(m_RenderPassList),
+				[&passName](auto& _pair)
+				{
+					return _pair.first == passName;
+				}
+			);
+
+			assert(_find != m_RenderPassList.end());
+
+			_find->second->RegistRenderObject(renderObject);
+		}
+
+		void GraphicsSystem::RegistRenderObject(uint32 passIdx, Graphics::RenderObject& renderObject)
+		{
+			m_RenderPassList[passIdx].second->RegistRenderObject(renderObject);
+		}
+
 		void GraphicsSystem::LoadGraphicsEngineDll()
 		{
 			std::string _moduleName = "GraphicsEngine";
@@ -138,6 +157,9 @@ namespace GameEngine
 			auto _ptr = createGraphicsEngine(_desc);
 
 			m_GraphicsEngine = std::make_unique<Graphics::GraphicsEngine>(*_ptr);
+
+			m_RenderPassList.push_back(std::make_pair(TEXT("StaticMesh"), m_GraphicsEngine->GetMeshPass()));
+			m_RenderPassList.push_back(std::make_pair(TEXT("SkinnedMesh"), m_GraphicsEngine->GetSkinnedMeshPass()));
 		}
 
 		void GraphicsSystem::FreeGraphicsEngineDll()

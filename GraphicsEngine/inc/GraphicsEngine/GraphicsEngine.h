@@ -43,6 +43,9 @@ namespace Graphics
 
 		void Excute();
 
+		Graphics::RenderPass* GetMeshPass() { return m_Deferred_Mesh_Pass; }
+		Graphics::RenderPass* GetSkinnedMeshPass() { return m_Deferred_Mesh_Skinned_Pass; }
+
 	private:
 		void GetLightingData(struct Lighting& perLightFrame);
 
@@ -60,6 +63,7 @@ namespace Graphics
 
 		CameraBuffer* m_MainCameraBuffer;
 		Graphics::RenderPass* m_Deferred_Mesh_Pass;
+		Graphics::RenderPass* m_Deferred_Mesh_Skinned_Pass;
 
 		MaterialBuffer* m_Deferred_Light_Material;
 		MeshBuffer* m_Screen_Mesh;

@@ -43,18 +43,35 @@ namespace GameEngine
 			void Link() override;
 			void Unlink() override;
 
+			inline void AddBone(std::weak_ptr<Transform> bone, Math::Matrix offset)
+			{ 
+				m_BoneTransformList.push_back(bone);
+				m_BoneOffset.push_back(offset);
+			}
+
 		private:
+			void UpdateBoneTransform();
+
 			struct PerObjectData
 			{
 				Math::Matrix _world;
 				Math::Matrix _worldInvTranspose;
 			};
 
+			struct PerSkinnedObjectData
+			{
+				Math::Matrix _boneTransform[128];
+			};
+
 			PerObjectData _perObject;
+			PerSkinnedObjectData _perSkinnedObject;
 
 			std::vector<std::shared_ptr<Material>> m_Materials;
 
 			std::weak_ptr<MeshFilter> m_MeshFilter;
+
+			std::vector<std::weak_ptr<Transform>> m_BoneTransformList;
+			std::vector<Math::Matrix> m_BoneOffset;
 		};
 	}
 }

@@ -43,5 +43,38 @@ namespace Graphics
 		{
 			return static_cast<uint32>(m_Bindings.size());
 		}
+
+		Resource* DX11PipelineLayout::GetResource(uint32 index)
+		{
+			return m_Resources.at(index);
+		}
+
+		Graphics::Buffer* DX11PipelineLayout::GetBuffer(uint32 index)
+		{
+			auto _resource = m_Resources.at(index);
+
+			assert(_resource->GetResourceType() == ResourceType::Buffer);
+
+			return reinterpret_cast<Buffer*>(_resource);
+		}
+
+		Graphics::Texture* DX11PipelineLayout::GetTexture(uint32 index)
+		{
+			auto _resource = m_Resources.at(index);
+
+			assert(_resource->GetResourceType() == ResourceType::Texture);
+
+			return reinterpret_cast<Texture*>(_resource);
+		}
+
+		Graphics::Sampler* DX11PipelineLayout::GetSampler(uint32 index)
+		{
+			auto _resource = m_Resources.at(index);
+
+			assert(_resource->GetResourceType() == ResourceType::Sampler);
+
+			return reinterpret_cast<Sampler*>(_resource);
+		}
+
 	}
 }

@@ -36,6 +36,14 @@ TestScene::TestScene()
 
 	AddGameObjects(_wooden_CrateObject);
 
+	std::shared_ptr<GameObject> _joyObject = Resources::GetInstance()->GetPrefab(TEXT("Asset/FBX/Joy.fbx"))->GetRootGameObject();
+
+	AddGameObjects(_joyObject);
+
+	Vector3 _move = { 10, 0, 0 };
+
+	_joyObject->GetTransform()->Translate(_move);
+
 	std::shared_ptr<GameObject> _dirLight = GameObject::Instantiate();
 
 	_dirLight->SetName(TEXT("Directional Light"));
