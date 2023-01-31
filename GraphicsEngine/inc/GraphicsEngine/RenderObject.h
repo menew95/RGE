@@ -91,7 +91,7 @@ namespace Graphics
 
 		inline const std::vector<UpdateResourceData>& GetUpdateResourceDataPerObject() const
 		{
-			return m_UpdateResources;
+			return m_UpdateResourcePerObjects;
 		}
 
 	//private:

@@ -8,24 +8,45 @@ namespace Utility
 
 	inline Math::Vector4 Convert(fbxsdk::FbxVector4& v, bool lh = true)
 	{
-		if (lh)
+		if (lh == false)
 		{
-			// xyzw -> xzyw
 			return Math::Vector4
 			(
 				static_cast<float>(v.mData[0]),
-				static_cast<float>(v.mData[2]),
 				static_cast<float>(v.mData[1]),
+				static_cast<float>(v.mData[2]),
 				static_cast<float>(v.mData[3])
 			);
 		}
 
+		// xyzw -> xzyw
 		return Math::Vector4
 		(
 			static_cast<float>(v.mData[0]),
-			static_cast<float>(v.mData[1]),
 			static_cast<float>(v.mData[2]),
+			static_cast<float>(v.mData[1]),
 			static_cast<float>(v.mData[3])
+		);
+	}
+
+	inline Math::Vector3 Convert(fbxsdk::FbxDouble3 v, bool lh = true)
+	{
+		if (lh == false)
+		{
+			return Math::Vector3
+			(
+				static_cast<float>(v.mData[0]),
+				static_cast<float>(v.mData[1]),
+				static_cast<float>(v.mData[2])
+			);
+		}
+
+		// xyz -> xzy
+		return Math::Vector3
+		(
+			static_cast<float>(v.mData[0]),
+			static_cast<float>(v.mData[2]),
+			static_cast<float>(v.mData[1])
 		);
 	}
 
@@ -38,23 +59,23 @@ namespace Utility
 		FbxVector4 r3 = matrix.GetRow(2);
 		FbxVector4 r4 = matrix.GetRow(3);
 
-		if (lh)
+		if (lh == false)
 		{
 			return Math::Matrix
 			(
-				Convert(r1, false),
-				Convert(r3, false),
-				Convert(r2, false),
-				Convert(r4, false)
+				Convert(r1, lh),
+				Convert(r2, lh),
+				Convert(r3, lh),
+				Convert(r4, lh)
 			);
 		}
 
 		return Math::Matrix
 		(
-			Convert(r1, false),
-			Convert(r2, false),
-			Convert(r3, false),
-			Convert(r4, false)
+			Convert(r1, lh),
+			Convert(r3, lh),
+			Convert(r2, lh),
+			Convert(r4, lh)
 		);
 	}
 
@@ -67,13 +88,9 @@ namespace Utility
 
 	inline void Rotate(Math::Matrix& matrix)
 	{
-		float _det = matrix.Determinant();
+		const auto _pitch = -90.0f * Math::Deg2Rad;
 
-		const auto _yaw = -90.0f * DirectX::XM_PI / 180.0f;
-
-		const auto _pitch = 180.0f * DirectX::XM_PI / 180.0f;
-
-		Math::Quaternion _q = Math::Quaternion::CreateFromYawPitchRoll(_yaw, _pitch, 0);
+		Math::Quaternion _q = Math::Quaternion::CreateFromYawPitchRoll(0, _pitch, 0);
 
 		matrix *= Math::Matrix::CreateFromQuaternion(_q);
 	}
@@ -450,24 +467,35 @@ namespace Utility
 							}
 						}
 
+						FbxAMatrix geometryTransform = GetTransformMatrix(meshNode->GetNode());
+						FbxAMatrix transformMatrix;
+						FbxAMatrix transformLinkMatrix;
+						FbxAMatrix globalBindposeInverseMatrix;
+						_cluster->GetTransformMatrix(transformMatrix);
+						// The transformation of the mesh at binding time 
+						_cluster->GetTransformLinkMatrix(transformLinkMatrix);
+						// The transformation of the cluster(joint) at binding time from joint space to world space 
+						globalBindposeInverseMatrix = transformLinkMatrix.Inverse() * transformMatrix * geometryTransform;
+						Math::Matrix _globalBindposeInverseMatrix = Convert(globalBindposeInverseMatrix, true);
+
 						fbxsdk::FbxAMatrix matClusterTransformMatrix;
 						fbxsdk::FbxAMatrix matClusterLinkTransformMatrix;
 
-						_cluster->GetTransformMatrix(matClusterTransformMatrix);				// The transformation of the mesh at binding time 
-						_cluster->GetTransformLinkMatrix(matClusterLinkTransformMatrix);		// The transformation of the cluster(joint) at binding time from joint space to world space 
+						_cluster->GetTransformMatrix(matClusterTransformMatrix);
+						_cluster->GetTransformLinkMatrix(matClusterLinkTransformMatrix);
 
 						// Bone Matrix 설정..
-						Math::Matrix _clusterMatrix = Convert(matClusterTransformMatrix);
-						Math::Matrix _clusterlinkMatrix = Convert(matClusterLinkTransformMatrix);
+						Math::Matrix _clusterMatrix = Convert(matClusterTransformMatrix, true);
+						Math::Matrix _clusterlinkMatrix = Convert(matClusterLinkTransformMatrix, true);
 
 						// BindPose 행렬을 구하자
 						fbxsdk::FbxAMatrix _geometryTransform = GetTransformMatrix(meshNode->GetNode());
-						Math::Matrix _geometryMatrix = Convert(_geometryTransform);
+						Math::Matrix _geometryMatrix = Convert(_geometryTransform, true);
 
 						// OffsetMatrix는 WorldBindPose의 역행렬
-						Math::Matrix _offsetMatrix = _clusterMatrix * _clusterlinkMatrix.Invert() * _geometryMatrix;
+						Math::Matrix _offsetMatrix = _clusterMatrix * _clusterlinkMatrix.Invert();//* _geometryMatrix;
 
-						//prefabData->fbxBoneInfoList[boneIdx]->offsetMatrix = _offsetMatrix;
+						prefabData._boneDatas[_boneIdx]._offsetTM = _offsetMatrix;
 					}
 				}
 			}
@@ -483,6 +511,15 @@ namespace Utility
 		const int triCount = meshNode->GetPolygonCount(); // 메쉬의 삼각형 개수를 가져온다
 
 		std::map<std::tuple<unsigned, float, float, float, float, float>, unsigned> indexMap;
+
+		/*if (!meshNode->CheckIfVertexNormalsCCW())
+		{
+			m_IsNegativeScaleFlag = false;
+		}
+		else
+		{
+			m_IsNegativeScaleFlag = true;
+		}*/
 
 		for (int i = 0; i < triCount; i++) // 삼각형의 개수
 		{
@@ -538,18 +575,18 @@ namespace Utility
 				vertexCounter++;
 			}
 
-			if (meshNode->CheckIfVertexNormalsCCW())
-			{
-				meshData._indexAttributes[subMeshCnt].push_back(arrIdx[0]);
-				meshData._indexAttributes[subMeshCnt].push_back(arrIdx[1]);
-				meshData._indexAttributes[subMeshCnt].push_back(arrIdx[2]);
-			}
-			else
+			//if (meshNode->CheckIfVertexNormalsCCW())
 			{
 				meshData._indexAttributes[subMeshCnt].push_back(arrIdx[0]);
 				meshData._indexAttributes[subMeshCnt].push_back(arrIdx[2]);
 				meshData._indexAttributes[subMeshCnt].push_back(arrIdx[1]);
 			}
+			/*else
+			{
+				meshData._indexAttributes[subMeshCnt].push_back(arrIdx[0]);
+				meshData._indexAttributes[subMeshCnt].push_back(arrIdx[2]);
+				meshData._indexAttributes[subMeshCnt].push_back(arrIdx[1]);
+			}*/
 		}
 	}
 
@@ -582,9 +619,18 @@ namespace Utility
 
 			FbxVector4 vec = normal->GetDirectArray().GetAt(normalIdx);
 
-			_normal.x = static_cast<float>(vec.mData[0]);
-			_normal.y = static_cast<float>(vec.mData[2]);
-			_normal.z = static_cast<float>(vec.mData[1]);
+			if (m_IsNegativeScaleFlag)
+			{
+				_normal.x = -static_cast<float>(vec.mData[0]);
+				_normal.y = -static_cast<float>(vec.mData[2]);
+				_normal.z = -static_cast<float>(vec.mData[1]);
+			}
+			else
+			{
+				_normal.x = static_cast<float>(vec.mData[0]);
+				_normal.y = static_cast<float>(vec.mData[2]);
+				_normal.z = static_cast<float>(vec.mData[1]);
+			}
 
 			return _normal;
 		}
@@ -720,19 +766,37 @@ namespace Utility
 			_newBoneData._localTM = GetLocalMatrix(node);
 			_newBoneData._worldTM = GetWorldMatrix(node);
 
-			Rotate(_newBoneData._localTM);
-			Rotate(_newBoneData._worldTM);
+			/*Rotate(_newBoneData._localTM);
+			Rotate(_newBoneData._worldTM);*/
+
 
 			prefabData._boneDatas.push_back(_newBoneData);
 
 			LoadAnimationData(node, prefabData);
 		}
 #endif
-		
+		if (_nodeAttribute != nullptr && _nodeAttribute->GetAttributeType() == FbxNodeAttribute::EType::eNull)
+		{
+			GameObjectData _objectData;
+
+			_objectData._gameObjectName = StringHelper::StringToWString(node->GetName());
+
+			auto* _parentNode = node->GetParent();
+
+			if (_parentNode != nullptr)
+			{
+				_objectData._hasParent = true;
+				_objectData._parent = StringHelper::StringToWString(_parentNode->GetName());
+			}
+
+			_objectData._localTM = GetLocalMatrix(node);
+			_objectData._worldTM = GetWorldMatrix(node);
+
+			prefabData._gameObjectDatas.emplace_back(_objectData);
+		}
+
 		if (_nodeAttribute != nullptr && _nodeAttribute->GetAttributeType() == FbxNodeAttribute::EType::eMesh)
 		{
-			InitInverse();
-
 			GameObjectData _objectData;
 
 			_objectData._gameObjectName = StringHelper::StringToWString(node->GetName());
@@ -749,6 +813,30 @@ namespace Utility
 			_objectData._worldTM = GetWorldMatrix(node);
 
 			_objectData._hasMesh = true;
+
+			float _det = _objectData._localTM.Determinant();
+
+			// Negative scale 일 경우 negative scale flag 를 true로 설정
+			if (_det < 0)
+			{
+				Math::Matrix _parentWorld = _objectData._worldTM * _objectData._localTM.Invert();
+
+				m_IsNegativeScaleFlag = true;
+				// Decompose 했다가 scale -주고 다시 합쳐야함..
+				Math::Vector3 _scale;
+				Math::Quaternion _rotQuat;
+				Math::Vector3 _trans;
+				_objectData._localTM.Decompose(_scale, _rotQuat, _trans);
+
+				if (_scale.x < 0) _scale.x *= -1;
+				if (_scale.y < 0) _scale.y *= -1;
+				if (_scale.z < 0) _scale.z *= -1;
+
+				// 다시 SRT 조립
+				_objectData._localTM = Math::Matrix::CreateScale(_scale) * Math::Matrix::CreateFromQuaternion(_rotQuat) * Math::Matrix::CreateTranslation(_trans);
+				
+				_objectData._worldTM = _parentWorld * _objectData._localTM;
+			}
 
 			MeshData _newMeshData;
 
@@ -773,6 +861,8 @@ namespace Utility
 					LoadMaterial(surfaceMaterial, prefabData, _newMeshData);
 				}
 			}
+
+			m_IsNegativeScaleFlag = false;
 
 			prefabData._meshDataMap.insert(std::make_pair(_newMeshData._meshName, _newMeshData));
 
@@ -814,7 +904,7 @@ namespace Utility
 		return filename;
 	}
 
-	int FBXImporter::FindBoneIndex(std::string boneName, PrefabData& prefabData)
+	int32 FBXImporter::FindBoneIndex(std::string boneName, PrefabData& prefabData)
 	{
 		auto _boneName = StringHelper::StringToWString(boneName);
 
@@ -827,7 +917,7 @@ namespace Utility
 
 		if (_iter != prefabData._boneDatas.end())
 		{
-			return _iter - prefabData._boneDatas.begin();
+			return static_cast<int32>(_iter - prefabData._boneDatas.begin());
 		}
 		else
 		{
@@ -841,6 +931,20 @@ namespace Utility
 
 		Math::Matrix _localTM = Convert(_localPos, lh);
 
+		auto _fbxtran = Convert(node->LclTranslation.Get(), lh);
+		auto _fbxRot = Convert(node->LclRotation.Get(), lh);
+		auto _fbxscale = Convert(node->LclScaling.Get(), lh);
+
+		auto _rotQuat = Math::Quaternion::CreateFromYawPitchRoll(_fbxRot * Math::Deg2Rad);
+
+		auto _scaleTM = Math::Matrix::CreateScale(_fbxscale);
+		auto _rotTM = Math::Matrix::CreateFromQuaternion(_rotQuat);
+		auto _transTM = Math::Matrix::CreateTranslation(_fbxtran);
+
+		auto _localTM2 = Math::Matrix::CreateScale(_fbxscale) * Math::Matrix::CreateFromQuaternion(_rotQuat) * Math::Matrix::CreateTranslation(_fbxtran);
+
+		auto _det = _localTM.Determinant();
+
 		return _localTM;
 	}
 
@@ -849,6 +953,8 @@ namespace Utility
 		fbxsdk::FbxMatrix _globalPos = m_FbxScene->GetAnimationEvaluator()->GetNodeGlobalTransform(node);
 
 		Math::Matrix _worldTM = Convert(_globalPos, lh);
+
+		Rotate(_worldTM);
 
 		return _worldTM;
 	}

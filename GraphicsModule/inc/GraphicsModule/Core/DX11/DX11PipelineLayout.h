@@ -31,8 +31,8 @@ namespace Graphics
 			Buffer* GetBuffer(uint32 index) override;
 			Texture* GetTexture(uint32 index) override;
 			Sampler* GetSampler(uint32 index) override;
+
 		private:
-			// Buffer, Texture, Sampler
 			std::vector<Resource*> m_Resources;
 			std::vector<BindingDescriptor> m_Bindings;
 		};

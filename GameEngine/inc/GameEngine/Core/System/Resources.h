@@ -5,6 +5,7 @@
 namespace Utility
 {
 	struct PrefabData;
+	struct AnimationClipData;
 }
 
 namespace GameEngine
@@ -15,7 +16,10 @@ namespace GameEngine
 		class Resource;
 		class Mesh;
 		class Material;
+		class AnimationClip;
+
 		class Prefab;
+
 
 		class GAME_ENGINE_API Resources
 		{
@@ -32,13 +36,15 @@ namespace GameEngine
 
 			std::shared_ptr<Mesh>& GetMesh(uuid uuid);
 			std::shared_ptr<Material>& GetMaterial(uuid uuid);
+			std::shared_ptr<AnimationClip>& GetAnimationClip(uuid uuid);
+
 			std::shared_ptr<Prefab>& GetPrefab(uuid uuid);
 		private:
-			std::shared_ptr<Mesh> m_NullMesh = nullptr;
-			std::shared_ptr<Material> m_NullMaterial = nullptr;
+			void CreateAnimationClip(Utility::AnimationClipData* clipData);
 
 			std::unordered_map<uuid, std::shared_ptr<Mesh>> m_MeshMap;
 			std::unordered_map<uuid, std::shared_ptr<Material>> m_MaterialMap;
+			std::unordered_map<uuid, std::shared_ptr<AnimationClip>> m_AnimationClipMap;
 
 			std::unordered_map<uuid, std::shared_ptr<Prefab>> m_PrefabMap;
 		};

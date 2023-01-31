@@ -41,6 +41,8 @@ namespace GameEngine
 
 			std::vector<std::shared_ptr<Component>>& GetComponents() { return m_Components; }
 
+			GameObject* FindGameObject(const tstring& goName);
+
 			template<typename T>
 			std::shared_ptr<T> AddComponent();
 

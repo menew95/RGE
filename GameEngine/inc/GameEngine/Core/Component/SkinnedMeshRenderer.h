@@ -49,6 +49,11 @@ namespace GameEngine
 				m_BoneOffset.push_back(offset);
 			}
 
+			inline void SetRootBone(std::weak_ptr<Transform> root)
+			{
+				m_RootBone = root;
+			}
+
 		private:
 			void UpdateBoneTransform();
 
@@ -69,6 +74,8 @@ namespace GameEngine
 			std::vector<std::shared_ptr<Material>> m_Materials;
 
 			std::weak_ptr<MeshFilter> m_MeshFilter;
+
+			std::weak_ptr<Transform> m_RootBone;
 
 			std::vector<std::weak_ptr<Transform>> m_BoneTransformList;
 			std::vector<Math::Matrix> m_BoneOffset;

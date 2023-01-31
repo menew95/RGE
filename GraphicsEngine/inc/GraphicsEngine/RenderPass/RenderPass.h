@@ -24,8 +24,8 @@ namespace Graphics
 	class GRAPHICSENGINE_DLL_DECLSPEC RenderPass
 	{
 	public:
-		RenderPass(PipelineState* pipelineState, RenderTarget* renderTarget);
-		RenderPass(PipelineState* pipelineState, RenderTarget* renderTarget, std::vector<AttachmentClear> attachmentClears);
+		RenderPass(PipelineState* pipelineState, PipelineLayout* pipelineLayout, RenderTarget* renderTarget);
+		RenderPass(PipelineState* pipelineState, PipelineLayout* pipelineLayout, RenderTarget* renderTarget, std::vector<AttachmentClear> attachmentClears);
 		virtual ~RenderPass();
 
 		void RegistRenderObject(class RenderObject& renderObject);
@@ -36,30 +36,34 @@ namespace Graphics
 			return m_PipelineState;
 		}
 
+		inline const PipelineLayout* GetPipelineLayout() const
+		{
+			return m_PipelineLayout;
+		}
+
 		inline const RenderTarget* GetRenderTarget() const
 		{
 			return m_RenderTarget;
 		}
 
 		void UpdatePerFrame(CommandBuffer* commandBuffer, void* src, uint32 size);
-		//void UpdatePerDraw(CommandBuffer* commandBuffer, void* src, uint32 size);
 
 		void BeginExcute(CommandBuffer* commandBuffer, PerFrame* perFrameData);
 		void Excute(CommandBuffer* commandBuffer);
 		void EndExcute(CommandBuffer* commandBuffer);
 
 		inline void SetPerFrameBuffer(Buffer* perFrame) { m_PerFrameBuffer = perFrame; }
-		//inline void SetPerDrawBuffer(Buffer* perDraw) { m_PerDrawBuffer = perDraw; }
 
 		inline void SetRenderTarget(RenderTarget* renderTarget) { m_RenderTarget = renderTarget; }
 
 	protected:
-		void UpdateResource(CommandBuffer* commandBuffer, RenderObject& renderObject);
+		void UpdateResourcePerMaterial(CommandBuffer* commandBuffer, RenderObject& renderObject);
 		void UpdateResourcePerObject(CommandBuffer* commandBuffer, RenderObject& renderObject);
 
 		void UpdateBuffer(CommandBuffer* commandBuffer, Buffer* buffer, void* src, uint32 size);
 
 		PipelineState* m_PipelineState = nullptr;
+		PipelineLayout* m_PipelineLayout = nullptr;
 		RenderTarget* m_RenderTarget = nullptr;
 
 		std::vector<Resource*> m_Resources;
@@ -69,7 +73,5 @@ namespace Graphics
 		std::vector<AttachmentClear> m_AttachmentClears;
 
 		Buffer* m_PerFrameBuffer;
-		//Buffer* m_PerDrawBuffer;
-		//Buffer* m_PerMaterialBuffer;
 	};
 }

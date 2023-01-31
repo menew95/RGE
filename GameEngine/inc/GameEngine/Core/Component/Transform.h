@@ -22,10 +22,11 @@ namespace GameEngine
 			virtual void Update();
 
 			virtual void AddChild(std::shared_ptr<Transform>& child);
-			virtual void SetParent(std::shared_ptr<Transform>& parent);
+			virtual void SetParent(std::shared_ptr<Transform>& parent, Space relativeTo = Space::Self);
 			virtual void Translate(Math::Vector3& translation, Space relativeTo = Space::Self);
 			virtual void Rotate(Math::Vector3& eulers, Space relativeTo = Space::Self);
 			virtual void Rotate(Math::Quaternion& quaternion, Space relativeTo = Space::Self);
+			virtual void Scale(Math::Vector3& scale, Space relativeTo = Space::Self);
 
 			virtual void LookAt(std::shared_ptr<Transform>& target, Math::Vector3 worldUp = Math::Vector3::Up);
 			virtual void LookAt(Math::Vector3& worldPosition, Math::Vector3 worldUp = Math::Vector3::Up);

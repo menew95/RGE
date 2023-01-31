@@ -88,7 +88,7 @@ namespace GameEngine
 
 							_data._resourceType = Graphics::ResourceType::Texture;
 
-							_data._index = 4;
+							_data._index = 5;
 
 							_data._dataSrc = reinterpret_cast<void*>(m_Materials[i]->GetAlbedoTexture());
 
@@ -101,7 +101,7 @@ namespace GameEngine
 
 							_data._resourceType = Graphics::ResourceType::Texture;
 
-							_data._index = 5;
+							_data._index = 6;
 
 							_data._dataSrc = reinterpret_cast<void*>(m_Materials[i]->GetNormalTexture());
 
@@ -114,7 +114,7 @@ namespace GameEngine
 
 							_data._resourceType = Graphics::ResourceType::Texture;
 
-							_data._index = 6;
+							_data._index = 7;
 
 							_data._dataSrc = reinterpret_cast<void*>(m_Materials[i]->GetMRATexture());
 
@@ -147,7 +147,12 @@ namespace GameEngine
 				if(m_BoneTransformList[i].expired())
 					continue;
 
-				_perSkinnedObject._boneTransform[i] = m_BoneTransformList[i].lock()->GetWorldTM() * m_BoneOffset[i];
+				auto _world = m_BoneTransformList[i].lock()->GetWorldTM();
+				auto _local = m_BoneTransformList[i].lock()->GetLocalTM();
+
+				//m_RootBone.lock()->GetWorldTM() * m_RootBone.lock()->GetLocalTM();
+
+				_perSkinnedObject._boneTransform[i] = m_BoneOffset[i] * m_BoneTransformList[i].lock()->GetWorldTM();
 			}
 		}
 	}

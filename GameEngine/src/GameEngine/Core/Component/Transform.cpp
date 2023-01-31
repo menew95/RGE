@@ -51,7 +51,7 @@ namespace GameEngine
 			m_Childs.push_back(child);
 		}
 
-		void Transform::SetParent(std::shared_ptr<Transform>& parent)
+		void Transform::SetParent(std::shared_ptr<Transform>& parent, Space relativeTo /*= Space::Self*/)
 		{
 			if (m_Parent == parent)
 				return;
@@ -133,6 +133,32 @@ namespace GameEngine
 					m_LocalQuaternionRotation *= quaternion;
 
 					SetLocalRotateQ(m_LocalQuaternionRotation);
+					break;
+				}
+				default:
+				{
+					assert(false);
+					break;
+				}
+			}
+		}
+
+		void Transform::Scale(Math::Vector3& scale, Space relativeTo /*= Space::Self*/)
+		{
+			switch (relativeTo)
+			{
+				case GameEngine::Core::Space::World:
+				{
+					m_WorldScale *= scale;
+
+					SetWorldScale(m_WorldScale);
+					break;
+				}
+				case GameEngine::Core::Space::Self:
+				{
+					m_LocalScale *= scale;
+
+					SetLocalScale(m_LocalScale);
 					break;
 				}
 				default:

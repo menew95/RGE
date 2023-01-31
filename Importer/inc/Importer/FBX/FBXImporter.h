@@ -50,20 +50,11 @@ namespace Utility
 
 		tstring GetTextureRelativeName(fbxsdk::FbxSurfaceMaterial* surface, const char* materialProperty);
 
-		int FindBoneIndex(std::string boneName, PrefabData& prefabData);
+		int32 FindBoneIndex(std::string boneName, PrefabData& prefabData);
 
 		Math::Matrix GetLocalMatrix(fbxsdk::FbxNode* node, bool lh = true);
 		Math::Matrix GetWorldMatrix(fbxsdk::FbxNode* node, bool lh = true);
 
-		inline void InitInverse()
-		{
-			m_InverseX = false; 
-			m_InverseY = false; 
-			m_InverseZ = false; 
-		}
-
-		bool m_InverseX = false;
-		bool m_InverseY = false;
-		bool m_InverseZ = false;
+		bool m_IsNegativeScaleFlag = false;
 	};
 }

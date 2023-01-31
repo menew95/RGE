@@ -192,6 +192,7 @@ xcopy /E /S /Y /R "$(OutputPath)*.pdb" "$(OutputPath)..\Client\*"</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="inc\GameEngine\Core\Application.h" />
+    <ClInclude Include="inc\GameEngine\Core\Component\Animation.h" />
     <ClInclude Include="inc\GameEngine\Core\Component\Camera.h" />
     <ClInclude Include="inc\GameEngine\Core\Component\Light.h" />
     <ClInclude Include="inc\GameEngine\Core\Component\MeshFilter.h" />
@@ -202,6 +203,7 @@ xcopy /E /S /Y /R "$(OutputPath)*.pdb" "$(OutputPath)..\Client\*"</Command>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="inc\GameEngine\Core\Component\SkinnedMeshRenderer.h" />
+    <ClInclude Include="inc\GameEngine\Core\Resource\AnimationClip.h" />
     <ClInclude Include="inc\GameEngine\Core\Resource\AudioClip.h" />
     <ClInclude Include="inc\GameEngine\Core\Resource\Material.h" />
     <ClInclude Include="inc\GameEngine\Core\Resource\Prefab.h" />
@@ -232,6 +234,7 @@ xcopy /E /S /Y /R "$(OutputPath)*.pdb" "$(OutputPath)..\Client\*"</Command>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\GameEngine\Core\Application.cpp" />
+    <ClCompile Include="src\GameEngine\Core\Component\Animation.cpp" />
     <ClCompile Include="src\GameEngine\Core\Component\Camera.cpp" />
     <ClCompile Include="src\GameEngine\Core\Component\Light.cpp" />
     <ClCompile Include="src\GameEngine\Core\Component\MeshFilter.cpp" />
@@ -242,6 +245,7 @@ xcopy /E /S /Y /R "$(OutputPath)*.pdb" "$(OutputPath)..\Client\*"</Command>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="src\GameEngine\Core\Component\SkinnedMeshRenderer.cpp" />
+    <ClCompile Include="src\GameEngine\Core\Resource\AnimationClip.cpp" />
     <ClCompile Include="src\GameEngine\Core\Resource\AudioClip.cpp" />
     <ClCompile Include="src\GameEngine\Core\Resource\Material.cpp" />
     <ClCompile Include="src\GameEngine\Core\Resource\Mesh.cpp" />

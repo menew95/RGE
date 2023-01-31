@@ -108,6 +108,9 @@ namespace Utility
 	{
 		tstring _name;
 
+		GameObjectData _rootObject;
+		GameObjectData _amatureObject;
+
 		std::vector<GameObjectData> _gameObjectDatas;
 
 		std::vector<BoneData> _boneDatas;

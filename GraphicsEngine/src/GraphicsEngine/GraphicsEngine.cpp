@@ -47,36 +47,51 @@ namespace Graphics
 
 		m_CommandBuffer = m_RenderSystem->CreateCommandBuffer(TEXT("MainCommandBuffer"), _commandBufferDesc);
 
-		auto* _state = m_ResourceManager->GetPipelineState(TEXT("Deferred_Mesh_Base"));
-		auto* _rt = m_ResourceManager->GetRenderTarget(TEXT("Deferred_Mesh"));
-
-		std::vector<AttachmentClear> _attachmentClears =
 		{
-			{ { 0, 0, 0, 0 }, 0 },
-			{ { 0, 0, 0, 0 }, 1 },
-			{ { 1, 0, 0, 0 }, 2 },
-			{ { 0, 0, 0, 0 }, 3 },
-			{ { 0, 0, 0, 0 }, 4 },
-			{ 1, 0 }
-		};
+			auto* _state = m_ResourceManager->GetPipelineState(TEXT("Deferred_Mesh_Base"));
+			auto* _layout = m_ResourceManager->GetPipelineLayout(TEXT("Deferred_Mesh_Layout"));
+			auto* _rt = m_ResourceManager->GetRenderTarget(TEXT("Deferred_Mesh"));
 
-		m_Deferred_Mesh_Pass = new RenderPass(_state, _rt, _attachmentClears);
+			std::vector<AttachmentClear> _attachmentClears =
+			{
+				{ { 0, 0, 0, 0 }, 0 },
+				{ { 0, 0, 0, 0 }, 1 },
+				{ { 1, 0, 0, 0 }, 2 },
+				{ { 0, 0, 0, 0 }, 3 },
+				{ { 0, 0, 0, 0 }, 4 },
+				{ 1, 0 }
+			};
 
-		m_Deferred_Mesh_Pass->SetPerFrameBuffer(m_ResourceManager->GetBuffer(TEXT("PerCamera")));
-		//m_Deferred_Mesh_Pass->SetPerDrawBuffer(m_ResourceManager->GetBuffer(TEXT("Transform")));
+			m_Deferred_Mesh_Pass = new RenderPass(_state, _layout, _rt, _attachmentClears);
 
-		_state = m_ResourceManager->GetPipelineState(TEXT("Deferred_Merge"));
+			m_Deferred_Mesh_Pass->SetPerFrameBuffer(m_ResourceManager->GetBuffer(TEXT("PerCamera")));
+		}
 
-		_attachmentClears =
 		{
-			{ { 1, 0, 0, 0 }, 0 },
-			{ 1, 0 }
-		};
+			auto* _state = m_ResourceManager->GetPipelineState(TEXT("Deferred_SkinnedMesh_Base"));
+			auto* _layout = m_ResourceManager->GetPipelineLayout(TEXT("Deferred_Mesh_Skin_Layout"));
+			auto* _rt = m_ResourceManager->GetRenderTarget(TEXT("Deferred_Mesh"));
 
-		m_Deferred_Light_Pass = new RenderPass(_state, m_SwapChain);
+			m_Deferred_Mesh_Skinned_Pass = new RenderPass(_state, _layout, _rt);
 
-		m_Deferred_Light_Pass->SetPerFrameBuffer(m_ResourceManager->GetBuffer(TEXT("PerCamera")));
-		//m_Deferred_Light_Pass->SetPerDrawBuffer(m_ResourceManager->GetBuffer(TEXT("Lighting")));
+			m_Deferred_Mesh_Skinned_Pass->SetPerFrameBuffer(m_ResourceManager->GetBuffer(TEXT("PerCamera")));
+		}
+
+		{
+			auto* _state = m_ResourceManager->GetPipelineState(TEXT("Deferred_Merge"));
+			auto* _layout = m_ResourceManager->GetPipelineLayout(TEXT("Deferred_Light_Layout"));
+
+			std::vector<AttachmentClear> _attachmentClears =
+			{
+				{ { 1, 0, 0, 0 }, 0 },
+				{ 1, 0 }
+			};
+
+			m_Deferred_Light_Pass = new RenderPass(_state, _layout, m_SwapChain);
+
+			m_Deferred_Light_Pass->SetPerFrameBuffer(m_ResourceManager->GetBuffer(TEXT("PerCamera")));
+		}
+
 
 		IntiLightPass();
 
@@ -175,6 +190,7 @@ namespace Graphics
 		m_SkyBox_Mesh->CreateSubMesh(TEXT("SkyBox_Mesh"), triangles);
 
 		auto* _state = m_ResourceManager->GetPipelineState(TEXT("SkyBox"));
+		auto* _layout = m_ResourceManager->GetPipelineLayout(TEXT("SkyBox_Layout"));
 
 		std::vector<AttachmentClear> _attachmentClears =
 		{
@@ -182,7 +198,7 @@ namespace Graphics
 			{ 1, 0 }
 		};
 
-		m_SkyBox_Pass = new RenderPass(_state, m_SwapChain, _attachmentClears);
+		m_SkyBox_Pass = new RenderPass(_state, _layout, m_SwapChain, _attachmentClears);
 	}
 
 	Graphics::MeshBuffer* GraphicsEngine::CreateMeshBuffer(uuid uuid, std::vector<Common::VertexAttribute>& vertices, std::vector<std::vector<uint32>> subMeshs)
@@ -256,6 +272,25 @@ namespace Graphics
 		}
 
 		{
+			m_CommandBuffer->BeginEvent(TEXT("Deferred_Mesh_Skin Pass"));
+
+			//// Update Frame Buffer
+			//PerFrame _perFrame;
+
+			//m_MainCameraBuffer->UpdateCamera(_perFrame._camera);
+
+			//m_Deferred_Mesh_Skinned_Pass->UpdatePerFrame(m_CommandBuffer, &_perFrame, sizeof(_perFrame));
+
+			m_Deferred_Mesh_Skinned_Pass->BeginExcute(m_CommandBuffer, nullptr);
+
+			m_Deferred_Mesh_Skinned_Pass->Excute(m_CommandBuffer);
+
+			m_Deferred_Mesh_Skinned_Pass->EndExcute(m_CommandBuffer);
+
+			m_CommandBuffer->EndEvent();
+		}
+
+		{
 			RenderObject _skyBoxObject;
 			_skyBoxObject.m_MeshBuffer = m_SkyBox_Mesh;
 			_skyBoxObject.m_MaterialBuffer = m_SkyBox_Material;
@@ -282,7 +317,7 @@ namespace Graphics
 			Lighting _perLighting;
 			GetLightingData(_perLighting);
 
-			UpdateResourceData _perDraw{ &_perLighting, sizeof(Lighting) };
+			UpdateResourceData _perDraw{ eUpdateTime::PerObject, 1, ResourceType::Buffer, &_perLighting, sizeof(Lighting) };
 
 			_deferredMergeRenderObject.m_UpdateResourcePerObjects.push_back(_perDraw);
 

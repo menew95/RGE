@@ -63,5 +63,27 @@ namespace GameEngine
 			}
 		}
 
+		GameObject* GameObject::FindGameObject(const tstring& goName)
+		{
+			GameObject* _findGameObject = nullptr;
+
+			if (GetName() == goName)
+			{
+				return this;
+			}
+
+			for (const auto& _child : m_pTransform->GetChilds())
+			{
+				_findGameObject = _child->GetGameObject()->FindGameObject(goName);
+
+				if (_findGameObject != nullptr)
+				{
+					return _findGameObject;
+				}
+			}
+
+			return _findGameObject;
+		}
+
 	}
 }
