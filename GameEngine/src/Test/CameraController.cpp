@@ -82,7 +82,7 @@ void CameraController::Update()
 
 		const auto _nextPosition = m_Transform->GetPosition() + _direction * m_Speed * Time::GetDeltaTime();
 
-		m_Transform->SetWorld(Matrix{
+		m_Transform->SetWorldTM(Matrix{
 			_rightDir.x, _rightDir.y, _rightDir.z, 0.f,
 			_upDir.x, _upDir.y, _upDir.z, 0.f,
 			_forwardDir.x, _forwardDir.y, _forwardDir.z, 0.f,

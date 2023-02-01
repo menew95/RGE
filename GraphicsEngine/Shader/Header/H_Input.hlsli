@@ -23,7 +23,12 @@ struct VSInput
 };
 
 struct VSOutput
-{
+{/*
+#if defined(_SCREEN)
+	float4 posH		: SV_POSITION;
+	float3 normal	: NORMAL;
+	float2 uv		: TEXCOORD1;
+#else*/
 	float4 posH		: SV_POSITION;
 	float4 posW		: POSITION1;
 	float4 posV		: POSITION2;
@@ -34,6 +39,7 @@ struct VSOutput
 #ifdef _NORMAL_MAP
 	float3 tangent	: TANGENT;
 #endif
+//#endif
 };
 
 struct PSOut

@@ -28,6 +28,7 @@ namespace Graphics
 
 		void IntiLightPass();
 		void InitSkyBoxPass();
+		void InitDebugPass();
 
 		MeshBuffer* CreateMeshBuffer(uuid uuid, std::vector<Common::VertexAttribute>& vertices, std::vector<std::vector<uint32>> subMeshs);
 		MaterialBuffer* CreateMaterialBuffer(uuid uuid, PipelineLayout* pipelineLayout);
@@ -74,6 +75,17 @@ namespace Graphics
 		Graphics::RenderPass* m_SkyBox_Pass;
 
 		std::vector<std::shared_ptr<LightBuffer>> m_LightBuffers;
+
+		MaterialBuffer* m_Debug_Material;
+		Graphics::RenderPass* m_Debug_Pass;
+
+		// Deferrd resource for debug
+		Texture* m_Albedo;
+		Texture* m_Normal;
+		Texture* m_Depth;
+		Texture* m_World;
+
+		std::vector<RenderObject> m_DebugRenderObject;
 	};
 
 	extern "C"

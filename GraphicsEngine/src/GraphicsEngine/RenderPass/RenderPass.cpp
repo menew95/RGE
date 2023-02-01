@@ -63,6 +63,11 @@ namespace Graphics
 
 			UpdateResourcePerObject(commandBuffer, m_RenderObjects[_index]);
 			
+			if (m_RenderObjects[_index].IsHasViewport())
+			{
+				commandBuffer->SetViewport(m_RenderObjects[_index].GetViewport());
+			}
+
 			for (uint32 _subMeshCnt = 0; _subMeshCnt < m_RenderObjects[_index].GetMeshBuffer()->GetSubMeshCount(); _subMeshCnt++)
 			{
 				auto _subMeshBuffer = m_RenderObjects[_index].GetMeshBuffer()->GetSubMesh(_subMeshCnt);

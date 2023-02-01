@@ -70,7 +70,18 @@ namespace GameEngine
 				std::vector<Matrix> _initLocalTMs;
 			};
 
-			void MakeTargetList(std::shared_ptr<AnimationClip>& clip, TargetList& list);
+			struct AnimationInfo
+			{
+				std::shared_ptr<AnimationClip> _clip;
+				TargetList _targetList;
+
+				inline bool IsVaild()
+				{
+					return (_clip != nullptr && _targetList._isInit);
+				}
+			};
+
+			void MakeTargetList(AnimationInfo& info);
 
 			Frame m_Frame;
 
@@ -81,13 +92,13 @@ namespace GameEngine
 			bool m_IsCallOnStart;
 
 			/// @brief 현재 적용 중인 클립 캐싱
-			std::shared_ptr<AnimationClip> m_CurrAnimationClip;
-			TargetList* m_CurrTarget;
+			//std::shared_ptr<AnimationClip> m_CurrAnimationClip;
+			//TargetList* m_CurrTarget;
 			uint32 m_CurrIndex;
-
+			AnimationInfo* m_CurrAnimationInfo;
 
 			/// @brief 애니메이션클립과 클립과 페어를 이루고 있는 타겟 게임 오브젝트들을 담고 있는 컨테이너
-			std::vector<std::pair<TargetList, std::shared_ptr<AnimationClip>>> m_AnimationClipList;
+			std::vector<AnimationInfo> m_AnimationClipList;
 		};
 	}
 }

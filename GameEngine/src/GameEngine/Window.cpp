@@ -4,7 +4,14 @@
 
 namespace GameEngine
 {
-	DEFINE_SINGLETON_CLASS(Window, {}, {})
+	DEFINE_SINGLETON_CLASS(Window, {}, 
+		{
+			/*if (m_IsCmdOn)
+			{
+				m_IsCmdOn = false;
+				FreeConsole();
+			}*/
+		})
 
 	HRESULT Window::Initialize(bool showCmd, HINSTANCE hInstance, const tstring& windowClassName, const tstring& windowName, UINT width, UINT height)
 	{

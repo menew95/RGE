@@ -53,31 +53,32 @@ namespace GameEngine
 			}
 
 			// pos
-			if (frame._posFrame < (uint32)m_PosKeyFrameList.size() - 2)
+			if (frame._posFrame < (uint32)m_PosKeyFrameList.size() - 1)
 			{
-				uint32 _next = frame._posFrame + 1;
+				uint32 _nextFrame = frame._posFrame + 1;
 
-				if (frame._frameRate > m_PosKeyFrameList[_next].m_FrameRate)
+				if (frame._frameRate > m_PosKeyFrameList[_nextFrame].m_FrameRate)
 				{
 					frame._posFrame++;
+					_nextFrame++;
 				}
 
-				Vector3 _preFrame =
+				Vector3 _prePosFrame =
 				{
 					m_PosKeyFrameList[frame._posFrame].m_Data.x,
 					m_PosKeyFrameList[frame._posFrame].m_Data.y,
 					m_PosKeyFrameList[frame._posFrame].m_Data.z
 				};
 
-				Vector3 _nextFrame =
+				Vector3 _nextPosFrame =
 				{
-					m_PosKeyFrameList[_next].m_Data.x,
-					m_PosKeyFrameList[_next].m_Data.y,
-					m_PosKeyFrameList[_next].m_Data.z
+					m_PosKeyFrameList[_nextFrame].m_Data.x,
+					m_PosKeyFrameList[_nextFrame].m_Data.y,
+					m_PosKeyFrameList[_nextFrame].m_Data.z
 				};
 
 				float _alpha = (frame._frameRate - m_PosKeyFrameList[frame._posFrame].m_FrameRate)
-					/ (m_PosKeyFrameList[_next].m_FrameRate - m_PosKeyFrameList[frame._posFrame].m_FrameRate);
+					/ (m_PosKeyFrameList[_nextFrame].m_FrameRate - m_PosKeyFrameList[frame._posFrame].m_FrameRate);
 
 				if (_alpha < 0.f)
 				{
@@ -88,17 +89,18 @@ namespace GameEngine
 					_alpha = 1.0f;
 				}
 
-				_lerpPos = Vector3::Lerp(_preFrame, _nextFrame, _alpha);
+				_lerpPos = Vector3::Lerp(_prePosFrame, _nextPosFrame, _alpha);
 			}
 
 			// rot
-			if (frame._rotFrame < (uint32)m_RotKeyFrameList.size() - 2)
+			if (frame._rotFrame < (uint32)m_RotKeyFrameList.size() - 1)
 			{
 				uint32 _nextFrame = frame._rotFrame + 1;
 
 				if (frame._frameRate > m_RotKeyFrameList[_nextFrame].m_FrameRate)
 				{
 					frame._rotFrame++;
+					_nextFrame++;
 				}
 
 				Quaternion _preQFrame =
@@ -133,13 +135,14 @@ namespace GameEngine
 			}
 
 			// scale
-			if (frame._scaleFrame < (uint32)m_ScaleKeyFrameList.size() - 2)
+			if (frame._scaleFrame < (uint32)m_ScaleKeyFrameList.size() - 1)
 			{
 				uint32 _nextFrame = frame._scaleFrame + 1;
 
 				if (frame._frameRate > m_ScaleKeyFrameList[_nextFrame].m_FrameRate)
 				{
 					frame._scaleFrame++;
+					_nextFrame++;
 				}
 
 				Vector3 _preScaleFrame =

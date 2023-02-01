@@ -96,6 +96,8 @@ namespace Graphics
 		IntiLightPass();
 
 		InitSkyBoxPass();
+
+		InitDebugPass();
 	}
 
 	void GraphicsEngine::IntiLightPass()
@@ -199,6 +201,58 @@ namespace Graphics
 		};
 
 		m_SkyBox_Pass = new RenderPass(_state, _layout, m_SwapChain, _attachmentClears);
+	}
+
+	void GraphicsEngine::InitDebugPass()
+	{
+		m_Debug_Material = m_ResourceManager->CreateMaterialBuffer(TEXT("MRT_Debug"), m_ResourceManager->GetPipelineLayout(TEXT("MRT_Debug")));
+
+		auto* _state = m_ResourceManager->GetPipelineState(TEXT("Screen"));
+		auto* _layout = m_ResourceManager->GetPipelineLayout(TEXT("MRT_Debug"));
+
+		m_Debug_Pass = new RenderPass(_state, _layout, m_SwapChain);
+
+		m_Albedo = m_ResourceManager->GetTexture(TEXT("Albedo"));
+		m_Normal = m_ResourceManager->GetTexture(TEXT("Normal"));
+		m_Depth = m_ResourceManager->GetTexture(TEXT("Depth"));
+		m_World = m_ResourceManager->GetTexture(TEXT("WorldPosition"));
+
+
+
+		//UpdateResourceData _perDraw{ eUpdateTime::PerMaterial, 1, ResourceType::Texture, &_perLighting, sizeof(Lighting) };
+
+		RenderObject _albedoObject;
+		_albedoObject.m_MeshBuffer = m_Screen_Mesh;
+		_albedoObject.m_MaterialBuffer = m_Debug_Material;
+
+		UpdateResourceData _resourceA{ 1,  m_Albedo };
+		_albedoObject.m_UpdateResources.push_back(_resourceA);
+
+		RenderObject _normalObject;
+		_normalObject.m_MeshBuffer = m_Screen_Mesh;
+		_normalObject.m_MaterialBuffer = m_Debug_Material;
+
+		UpdateResourceData _resourceN{ 1,  m_Normal };
+		_normalObject.m_UpdateResources.push_back(_resourceN);
+
+		RenderObject _depthObject;
+		_depthObject.m_MeshBuffer = m_Screen_Mesh;
+		_depthObject.m_MaterialBuffer = m_Debug_Material;
+
+		UpdateResourceData _resourceD{ 1,  m_Depth };
+		_depthObject.m_UpdateResources.push_back(_resourceD);
+
+		RenderObject _worldPosObject;
+		_worldPosObject.m_MeshBuffer = m_Screen_Mesh;
+		_worldPosObject.m_MaterialBuffer = m_Debug_Material;
+
+		UpdateResourceData _resourceW{ 1,  m_World };
+		_worldPosObject.m_UpdateResources.push_back(_resourceW);
+
+		m_DebugRenderObject.push_back(_albedoObject);
+		m_DebugRenderObject.push_back(_normalObject);
+		m_DebugRenderObject.push_back(_depthObject);
+		m_DebugRenderObject.push_back(_worldPosObject);
 	}
 
 	Graphics::MeshBuffer* GraphicsEngine::CreateMeshBuffer(uuid uuid, std::vector<Common::VertexAttribute>& vertices, std::vector<std::vector<uint32>> subMeshs)
@@ -336,23 +390,30 @@ namespace Graphics
 			m_CommandBuffer->EndEvent();
 		}
 
-		/*{
-			RenderObject _deferredMergeRenderObject;
-			_deferredMergeRenderObject.m_MeshBuffer = m_Screen_Mesh;
-			_deferredMergeRenderObject.m_MaterialBuffer = m_Deferred_Light_Material;
+		{
+			for (uint i = 0; i < m_DebugRenderObject.size(); i++)
+			{
+				Math::Viewport _viewport{ 256.f * i, 0.f, 256.f, 144.f };
+				//Math::Viewport _viewport{ 128.f, 0.f, 128.f, 72.f  };
 
-			m_Final_Pass->BeginEvent(TEXT("Final"));
+				m_DebugRenderObject[i].SetViewport(_viewport);
 
-			m_Final_Pass->BeginExcute(m_CommandBuffer, nullptr);
+				m_Debug_Pass->RegistRenderObject(m_DebugRenderObject[i]);
+			}
 
-			m_Final_Pass->Excute(m_CommandBuffer);
 
-			m_Final_Pass->EndExcute(m_CommandBuffer);
+			m_CommandBuffer->BeginEvent(TEXT("MRT Debug Pass"));
 
-			m_CommandBuffer->ResetResourceSlots(ResourceType::Texture, 0, 5, BindFlags::ShaderResource, StageFlags::PS);
+			m_Debug_Pass->BeginExcute(m_CommandBuffer, nullptr);
+
+			m_Debug_Pass->Excute(m_CommandBuffer);
+
+			m_Debug_Pass->EndExcute(m_CommandBuffer);
+
+			m_CommandBuffer->ResetResourceSlots(ResourceType::Texture, 0, 1, BindFlags::ShaderResource, StageFlags::PS);
 
 			m_CommandBuffer->EndEvent();
-		}*/
+		}
 
 		m_SwapChain->Present();
 	}

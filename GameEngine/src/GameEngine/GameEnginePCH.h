@@ -19,6 +19,9 @@
 #endif
 #endif
 
-#include "GameEngine\Time.h"
-#include "GameEngine\Input.h"
+#include "GameEngine/Time.h"
+#include "GameEngine/Input.h"
+
+#include "Log/Log.h"
+
 #endif //PCH_H

@@ -40,6 +40,13 @@ namespace Graphics
 			, _datasize(size)
 		{}
 
+		inline UpdateResourceData(uint32 idx,  void* src)
+			: _updateTime(eUpdateTime::PerMaterial)
+			, _index(idx)
+			, _resourceType(ResourceType::Texture)
+			, _dataSrc(src)
+		{}
+
 		inline UpdateResourceData(void* src, uint32 size)
 			: _index(0)
 			, _resourceType(ResourceType::Buffer)
@@ -94,6 +101,21 @@ namespace Graphics
 			return m_UpdateResourcePerObjects;
 		}
 
+		inline const bool IsHasViewport() const
+		{
+			return m_UseViewport;
+		}
+
+		inline void SetViewport(Math::Viewport viewport)
+		{
+			m_UseViewport = true;
+			m_Viewport = viewport;
+		}
+
+		inline Math::Viewport& GetViewport()
+		{
+			return m_Viewport;
+		}
 	//private:
 		MeshBuffer* m_MeshBuffer;
 		MaterialBuffer* m_MaterialBuffer;
@@ -105,6 +127,10 @@ namespace Graphics
 		std::vector<UpdateResourceData> m_UpdateResources;
 
 		std::vector<UpdateResourceData> m_UpdateResourcePerObjects;
+
+		bool m_UseViewport = false;
+
+		Math::Viewport m_Viewport;
 	};
 }
 

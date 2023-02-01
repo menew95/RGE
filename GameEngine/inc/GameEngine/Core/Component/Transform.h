@@ -33,9 +33,9 @@ namespace GameEngine
 
 			virtual void SetPositionAndRotation(Math::Vector3 position, Math::Quaternion& rotation);
 
-			void SetWorld(Math::Matrix world);
+			void SetWorldTM(Math::Matrix world);
 
-			void SetLocal(Math::Matrix local);
+			void SetLocalTM(Math::Matrix local);
 
 			size_t GetChildCount() { return m_Childs.size(); }
 			Math::Vector3& GetForward() { return m_Forward; }

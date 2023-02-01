@@ -198,7 +198,7 @@ namespace GameEngine
 			DecomposeWorldToLocal();
 		}
 
-		void Transform::SetWorld(Math::Matrix world)
+		void Transform::SetWorldTM(Math::Matrix world)
 		{
 			m_WorldTM = world;
 
@@ -502,7 +502,7 @@ namespace GameEngine
 			m_Right = m_WorldRotateTM.Right();
 		}
 
-		void Transform::SetLocal(Math::Matrix local)
+		void Transform::SetLocalTM(Math::Matrix local)
 		{
 			m_LocalTM = local;
 

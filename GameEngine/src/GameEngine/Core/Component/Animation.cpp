@@ -15,7 +15,8 @@ namespace GameEngine
 			: Component(gameObject, type)
 			, m_IsPlaying(false)
 			, m_IsCallOnStart(false)
-			, m_CurrTarget(nullptr)
+			, m_CurrAnimationInfo(nullptr)
+			, m_CurrIndex(0)
 		{
 
 		}
@@ -27,7 +28,7 @@ namespace GameEngine
 
 		void Animation::Play()
 		{
-			if (m_CurrAnimationClip != nullptr)
+			if (m_CurrAnimationInfo != nullptr)
 			{
 				m_IsPlaying = true;
 			}
@@ -37,71 +38,87 @@ namespace GameEngine
 		{
 			m_IsPlaying = false;
 
-			const AnimationClip* _findClip = nullptr;
 			uint _findIndex = 0;
-			for (auto& _clip : m_AnimationClipList)
+			for (auto& _info : m_AnimationClipList)
 			{
-				if (_clip.second->GetClipName() == name)
+				if (_info._clip->GetClipName() == name)
 				{
-					_findClip = _clip.second.get();
-
-					m_CurrAnimationClip = _clip.second;
-					m_CurrTarget = &_clip.first;
 					m_IsPlaying = true;
+					
+					m_CurrAnimationInfo = &_info;
+
 					m_CurrIndex = _findIndex;
+					
 					return;
 				}
 				_findIndex++;
 			}
 
-			m_CurrTarget = nullptr;
+			m_CurrAnimationInfo = nullptr;
 		}
 
 		std::shared_ptr<AnimationClip> Animation::GetAnimationClip(uint32 index)
 		{
-			assert(index < m_AnimationClipList.size());
+			if(index < m_AnimationClipList.size()) return std::shared_ptr<AnimationClip>(nullptr);
 
-			return m_AnimationClipList[index].second;
+			return m_AnimationClipList[index]._clip;
 		}
 
 		std::shared_ptr<AnimationClip> Animation::GetAnimationClip(const tstring& clipName)
 		{
-			for (auto& _clip : m_AnimationClipList)
+			for (auto& _info : m_AnimationClipList)
 			{
-				if (_clip.second->GetClipName() == clipName)
+				if (_info._clip->GetClipName() == clipName)
 				{
-					return _clip.second;
+					return _info._clip;
 				}
 			}
 
-			assert(false);
+			return std::shared_ptr<AnimationClip>(nullptr);
 		}
 
 		void Animation::AddClip(std::shared_ptr<AnimationClip> clip)
 		{
 			assert(clip != nullptr);
 
-			auto _iter = m_AnimationClipList.emplace_back(std::make_pair(TargetList(), clip));
+			AnimationInfo _newInfo;
+
+			_newInfo._clip = clip;
+			
+			auto& _iter = m_AnimationClipList.emplace_back(_newInfo);
+
+			if (m_CurrAnimationInfo == nullptr)
+			{
+				m_CurrAnimationInfo = &_iter;
+
+				m_CurrIndex = 0;
+
+				m_IsPlaying = true;
+			}
 
 			if (m_IsCallOnStart)
 			{
-				MakeTargetList(clip, _iter.first);
+				MakeTargetList(_iter);
 			}
 		}
 
 		void Animation::Update()
 		{
-			if (m_IsPlaying == true && m_CurrAnimationClip != nullptr && m_CurrTarget->_isInit)
+			assert(m_CurrAnimationInfo != nullptr);
+
+			if (m_IsPlaying == true && m_CurrAnimationInfo->IsVaild())
 			{
-				assert(m_CurrTarget != nullptr);
+				m_Frame._frameRate += Time::GetDeltaTime();
 
-				for (uint32 i = 0; i < m_CurrAnimationClip->GetAnimationSnapCount(); i++)
+				Log::Core_Info("Animation : " + std::to_string(m_Frame._frameRate));
+
+				for (uint32 i = 0; i < m_CurrAnimationInfo->_clip->GetAnimationSnapCount(); i++)
 				{
-					m_Frame._frameRate += 0.001f;//(float)GameTime::GetDeltaTime();
+					if (m_CurrAnimationInfo->_targetList._targets[i] == nullptr) continue;
 
-					auto _transform = m_CurrAnimationClip->GetTransform(m_Frame, i);
+					auto _transform = m_CurrAnimationInfo->_clip->GetTransform(m_Frame, i);
 
-					m_CurrTarget->_targets[i]->GetTransform()->SetLocal(_transform);
+					m_CurrAnimationInfo->_targetList._targets[i]->GetTransform()->SetLocalTM(_transform);
 				}
 			}
 		}
@@ -112,12 +129,7 @@ namespace GameEngine
 
 			for (auto& _pair : m_AnimationClipList)
 			{
-				MakeTargetList(_pair.second, _pair.first);
-			}
-
-			if (m_CurrAnimationClip != nullptr && m_CurrTarget != nullptr && m_CurrTarget->_isInit)
-			{
-				MakeTargetList(m_CurrAnimationClip, *m_CurrTarget);
+				MakeTargetList(_pair);
 			}
 		}
 
@@ -125,7 +137,7 @@ namespace GameEngine
 		{
 			for (auto _iter = m_AnimationClipList.begin(); _iter != m_AnimationClipList.end(); _iter++)
 			{
-				if ((*_iter).second == clip)
+				if ((*_iter)._clip == clip)
 				{
 					m_AnimationClipList.erase(_iter);
 
@@ -138,7 +150,7 @@ namespace GameEngine
 		{
 			for (auto _iter = m_AnimationClipList.begin(); _iter != m_AnimationClipList.end(); _iter++)
 			{
-				if ((*_iter).second->GetClipName() == name)
+				if ((*_iter)._clip->GetClipName() == name)
 				{
 					m_AnimationClipList.erase(_iter);
 
@@ -147,16 +159,21 @@ namespace GameEngine
 			}
 		}
 
-		void Animation::MakeTargetList(std::shared_ptr<AnimationClip>& clip, TargetList& list)
+		void Animation::MakeTargetList(AnimationInfo& info)
 		{
-			list._targets.reserve(clip->GetAnimationSnapCount());
-			list._isInit = true;
-			for (uint32 i = 0; i < clip->GetAnimationSnapCount(); i++)
-			{
-				auto* _findObject = GetGameObject()->FindGameObject(clip->GetSnapList()[i].m_TargetName);
+			if (info._targetList._isInit && info._targetList._targets.size() > 0 && info._targetList._initLocalTMs.size() > 0) return;
 
-				list._targets.emplace_back(_findObject);
+			info._targetList._targets.reserve(info._clip->GetAnimationSnapCount());
+			info._targetList._isInit = true;
+			for (uint32 i = 0; i < info._clip->GetAnimationSnapCount(); i++)
+			{
+				auto* _findObject = GetGameObject()->FindGameObject(info._clip->GetSnapList()[i].m_TargetName);
+
+				info._targetList._targets.emplace_back(_findObject);
+
+				info._targetList._initLocalTMs.emplace_back(_findObject->GetTransform()->GetLocalTM());
 			}
 		}
+
 	}
 }

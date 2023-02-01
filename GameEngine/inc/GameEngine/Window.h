@@ -47,6 +47,8 @@ namespace GameEngine
 		tstring m_WindowClassName;
 		tstring m_WindowName;
 
+		bool m_IsCmdOn = false;
+
 		WindowInfo m_WindowInfo;
 
 	};

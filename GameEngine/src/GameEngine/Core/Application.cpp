@@ -10,6 +10,8 @@
 #include "GameEngine\Core\System\SceneSystem.h"
 #include "GameEngine\Core\System\Resources.h"
 
+#include "Log/Log.h"
+
 namespace GameEngine
 {
 	namespace Core
@@ -52,11 +54,18 @@ namespace GameEngine
 			UINT width,
 			UINT height)
 		{
+			if (Log::IsInitialized() == false)
+			{
+				Log::Initialize();
+			}
+
 			m_pApplication->m_Window = Window::GetInstance();
 			m_pApplication->m_Window->Initialize(showCmd, hInstance, windowClassName, windowName, width, height);
+			Log::Client_Info("Window create succeed");
 
 			m_GraphicsSystem = GraphicsSystem::GetInstance();
 			m_GraphicsSystem->Initialize();
+			Log::Client_Info("Graphics System init succeed");
 
 			m_pApplication->m_ComponentSystem = ComponentSystem::GetInstance();
 
@@ -64,17 +73,20 @@ namespace GameEngine
 
 			m_pApplication->m_Resources = Resources::GetInstance();
 			m_pApplication->m_Resources->Init();
+			Log::Client_Info("Resource System init succeed");
 
 			m_pApplication->m_GameTime = Time::GetInstance();
+			m_GameTime->Initialize();
+			Log::Client_Info("Time init succeed");
 
 			m_pApplication->m_Input = new Input();
 
-			
 			Input::Instance->Initialize(m_pApplication->m_Window->GetWindowInfo()._hWnd);
-			m_GameTime->Initialize();
+			Log::Client_Info("Input init succeed");
 
 			m_pApplication->m_SceneSystem->Initialize();
 			m_pApplication->m_SceneSystem->LoadScene(0);
+			Log::Client_Info("Scene load succeed");
 
 			return true;
 		}
