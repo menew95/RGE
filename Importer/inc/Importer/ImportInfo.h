@@ -3,6 +3,14 @@
 #include "Common.h"
 #include "Struct/VertexAttribute.h"
 
+namespace boost
+{
+	namespace serialization
+	{
+		class access;
+	}
+}
+
 namespace Utility
 {
 	struct KeyFrame
@@ -12,6 +20,15 @@ namespace Utility
 		Math::Vector3 _pos;
 		Math::Quaternion _rot;
 		Math::Vector3 _scale;
+
+		template<typename Archive>
+		void serialize(Archive& ar, const unsigned int version)
+		{
+			ar& _time;
+			ar& _pos;
+			ar& _rot;
+			ar& _scale;
+		}
 	};
 
 	struct AnimationSnapData
@@ -26,7 +43,6 @@ namespace Utility
 	{
 		tstring _clipName;
 		std::vector<AnimationSnapData> _snapList;
-
 
 		float _frameRate; // 엔진에서 60프레임으로 돌린다고 했을때, 한 프레임을 얼만큼 보여줄건지에 대한 비율
 		uint32 _tickPerFrame;
@@ -60,11 +76,11 @@ namespace Utility
 		Math::Vector4 _emissive;	// 발광색
 
 		float _emissionFactor;
-		float _roughness;
-		float _metallic;
 		float _shininess;	// 빛남의 광도
 		float _transparency; // 투명도 
 		float _reflectivity; // 반사율
+		float _roughness;
+		float _metallic;
 
 		tstring _albedoMapTexture; // baseColor + opacity
 		tstring _normalMapTexture;

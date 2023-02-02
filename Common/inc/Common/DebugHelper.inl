@@ -1,11 +1,11 @@
 ﻿#pragma once
 
-#include "DebugHelper.h"
+#include "Common/DebugHelper.h"
 
 #include <Windows.h>
 #include <debugapi.h>
 
-#include "StringHelper.h"
+#include "Common/StringHelper.h"
 
 template <typename ... Args>
 void DebugHelper::PrintDebugString(const tstring& _format, Args ... _args)

@@ -39,6 +39,11 @@ namespace GameEngine
 			std::shared_ptr<AnimationClip>& GetAnimationClip(uuid uuid);
 
 			std::shared_ptr<Prefab>& GetPrefab(uuid uuid);
+
+			bool LoadMaterial(uuid uuid);
+			bool LoadMesh(uuid uuid);
+			bool LoadAnimation(uuid uuid);
+
 		private:
 			void CreateAnimationClip(Utility::AnimationClipData* clipData);
 

@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "Common/Common_typedef.h"
+#include "Common.h"
 #include <Windows.h>
 
 class DebugHelper

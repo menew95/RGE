@@ -4,6 +4,17 @@
 
 #include "Common.h"
 
+
+
+namespace boost
+{
+	namespace serialization
+	{
+		class access;
+	}
+
+}
+
 namespace Common
 {
 	struct VertexAttribute
@@ -15,6 +26,20 @@ namespace Common
 		Math::Vector3 _tangent = Math::Vector3::Zero;
 		uint32 _bone[4] = { UINT32_MAX, UINT32_MAX, UINT32_MAX, UINT32_MAX };
 		float _weight[4] = { 0.f, 0.f, 0.f, 0.f };
+
+		friend class boost::serialization::access;
+
+		template <typename Archive>
+		void serialize(Archive& ar, const unsigned int version)
+		{
+			ar& _position;
+			ar& _color;
+			ar& _uv;
+			ar& _normal;
+			ar& _tangent;
+			ar& _bone;
+			ar& _weight;
+		}
 	};
 }
 

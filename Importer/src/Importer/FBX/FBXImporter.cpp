@@ -268,7 +268,7 @@ namespace Utility
 				{
 					FbxNodeAttribute* ParentAttribute = parent->GetNodeAttribute();
 
-					if (ParentAttribute && ParentAttribute->GetAttributeType() == FbxNodeAttribute::eSkeleton)
+					//if (ParentAttribute && ParentAttribute->GetAttributeType() == FbxNodeAttribute::eSkeleton)
 					{
 						FbxAMatrix GlobalParentTransform = parent->EvaluateGlobalTransform(fbxTime);
 
@@ -276,21 +276,21 @@ namespace Utility
 
 						localTM = Convert(localTransform);
 					}
-					else
+					/*else
 					{
+						FbxAMatrix GlobalParentTransform = parent->EvaluateGlobalTransform(fbxTime);
+
+						localTransform = GlobalParentTransform.Inverse() * localTransform;
+
 						localTM = Convert(localTransform);
-
-						const auto roll = -90.0f * DirectX::XM_PI / 180.0f;
-
-						const auto pitch = 180.0f * DirectX::XM_PI / 180.0f;
-
-						Math::Quaternion q = DirectX::XMQuaternionRotationRollPitchYaw(roll, pitch, 0.0f);
-
-						localTM *= XMMatrixRotationQuaternion(q);
-					}
+					}*/
+				}
+				else
+				{
+					localTM = Convert(localTransform);
 				}
 
-				localTM.Decompose(keyFrameInfo._pos, keyFrameInfo._rot, keyFrameInfo._scale);
+				localTM.Decompose(keyFrameInfo._scale, keyFrameInfo._rot, keyFrameInfo._pos);
 
 				keyFrameInfo._time = static_cast<float>(fbxTime.GetSecondDouble());
 

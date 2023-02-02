@@ -39,6 +39,15 @@
 
 #pragma warning(disable : 4251)
 
+namespace boost
+{
+	namespace serialization
+	{
+		class access;
+	}
+
+}
+
 namespace Math
 {
 	struct Vector2;
@@ -220,6 +229,15 @@ namespace Math
 		static const Vector2 One;
 		static const Vector2 UnitX;
 		static const Vector2 UnitY;
+
+		friend boost::serialization::access;
+
+		template <typename Archive>
+		void serialize(Archive& ar, const unsigned int version)
+		{
+			ar& x;
+			ar& y;
+		}
 	};
 
 	// Binary operators
@@ -340,6 +358,16 @@ namespace Math
 		static const Vector3 Left;
 		static const Vector3 Forward;
 		static const Vector3 Backward;
+
+		friend boost::serialization::access;
+
+		template <typename Archive>
+		void serialize(Archive& ar, const unsigned int version)
+		{
+			ar& x;
+			ar& y;
+			ar& z;
+		}
 	};
 
 	// Binary operators
@@ -455,6 +483,17 @@ namespace Math
 		static const Vector4 UnitY;
 		static const Vector4 UnitZ;
 		static const Vector4 UnitW;
+
+		friend boost::serialization::access;
+
+		template <typename Archive>
+		void serialize(Archive& ar, const unsigned int version)
+		{
+			ar& x;
+			ar& y;
+			ar& z;
+			ar& w;
+		}
 	};
 
 	// Binary operators
@@ -622,6 +661,15 @@ namespace Math
 
 		// Constants
 		static const Matrix Identity;
+
+
+		friend boost::serialization::access;
+
+		template <typename Archive>
+		void serialize(Archive& ar, const unsigned int version)
+		{
+			ar& m;
+		}
 	};
 
 	// Binary operators
@@ -776,6 +824,17 @@ namespace Math
 
 		// Constants
 		static const Quaternion Identity;
+
+		friend boost::serialization::access;
+
+		template <typename Archive>
+		void serialize(Archive& ar, const unsigned int version)
+		{
+			ar& x;
+			ar& y;
+			ar& z;
+			ar& w;
+		}
 	};
 
 	// Binary operators
@@ -881,6 +940,17 @@ namespace Math
 		static const Color Red;
 		static const Color Blue;
 		static const Color Green;
+
+		friend boost::serialization::access;
+
+		template <typename Archive>
+		void serialize(Archive& ar, const unsigned int version)
+		{
+			ar& x;
+			ar& y;
+			ar& z;
+			ar& w;
+		}
 	};
 
 	// Binary operators
