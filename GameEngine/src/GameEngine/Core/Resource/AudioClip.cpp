@@ -7,6 +7,7 @@ namespace GameEngine
 	{
 
 		AudioClip::AudioClip(const tstring& _typeName /*= TEXT("AudioClip")*/)
+			: Resource(_typeName)
 		{
 
 		}

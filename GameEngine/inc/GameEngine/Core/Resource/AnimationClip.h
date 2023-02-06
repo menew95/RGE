@@ -84,15 +84,20 @@ namespace GameEngine
 			std::vector<KeyFrame> m_ScaleKeyFrameList;
 		};
 
-		class GAME_ENGINE_API AnimationClip
+		class GAME_ENGINE_API AnimationClip : public Resource
 		{
 		public:
-			AnimationClip() {}
+			AnimationClip()
+				: Resource(TEXT("AnimationClip"))
+			{}
+
 			AnimationClip(const tstring& clipName)
-				: m_ClipName(clipName)
+				: Resource(TEXT("AnimationClip"))
+				, m_ClipName(clipName)
 			{}
 			AnimationClip(const tstring& clipName, std::vector<AnimationSnap>& snapList)
-				: m_ClipName(clipName)
+				: Resource(TEXT("AnimationClip"))
+				, m_ClipName(clipName)
 				, m_AnimationSnapList(snapList)
 			{}
 			~AnimationClip() {}
@@ -109,6 +114,9 @@ namespace GameEngine
 			uint32 GetAnimationSnapCount() const { return (uint32)m_AnimationSnapList.size(); }
 
 			const std::vector<AnimationSnap>& GetSnapList() const { return m_AnimationSnapList; }
+
+			void Release() override
+			{}
 
 		private:
 			/**

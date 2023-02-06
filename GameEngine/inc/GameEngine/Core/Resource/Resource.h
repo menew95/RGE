@@ -3,6 +3,9 @@
 #include "Common.h"
 #include "Object\Object.h"
 
+#include "rttr/registration_friend.h"
+#include "rttr/rttr_enable.h"
+
 namespace GameEngine
 {
 	namespace Core
@@ -15,12 +18,19 @@ namespace GameEngine
 			virtual ~Resource();
 
 			inline void SetName(const tstring& resourceName) { m_ResourceName = resourceName; }
-			inline const tstring& GetName() { return m_ResourceName; }
+			inline const tstring& GetName() 
+			{
+				return m_ResourceName;
+			}
 
 		protected:
 			tstring m_ResourceName;
 
 			virtual void Release() abstract;
+
+			RTTR_ENABLE();
+
+			RTTR_REGISTRATION_FRIEND
 		};
 
 	}

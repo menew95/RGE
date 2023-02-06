@@ -2,6 +2,15 @@
 #include "GameEngine\Core\GameObject.h"
 #include "GameEngine\Core\Component\Transform.h"
 
+//using namespace rttr;
+//RTTR_REGISTRATION
+//{
+//	registration::class_<GameEngine::Core::GameObject>("GameObject")
+//		.constructor<const tstring&>()
+//		.property("m_Layer", GameEngine::Core::GameObject::GetLayer, GameEngine::Core::GameObject::SetLayer);
+//		//.property("m_Components", GameEngine::Core::GameObject::m_Components, registration::protected_access);
+//}
+
 namespace GameEngine
 {
 	namespace Core
@@ -26,6 +35,13 @@ namespace GameEngine
 			std::shared_ptr<GameObject> _newGamObject = std::make_shared<GameObject>();
 
 			_newGamObject->m_pTransform = _newGamObject->AddComponent<Transform>();
+
+			return _newGamObject;
+		}
+
+		std::shared_ptr<GameEngine::Core::GameObject> GameObject::Create()
+		{
+			std::shared_ptr<GameObject> _newGamObject = std::make_shared<GameObject>();
 
 			return _newGamObject;
 		}
@@ -83,6 +99,13 @@ namespace GameEngine
 			}
 
 			return _findGameObject;
+		}
+
+		bool GameObject::AddComponent(Component* component)
+		{
+			m_Components.push_back(std::shared_ptr<Component>(component));
+
+			return true;
 		}
 
 	}

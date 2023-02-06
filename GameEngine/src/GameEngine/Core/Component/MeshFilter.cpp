@@ -3,6 +3,25 @@
 
 #include "GameEngine/Core/Component/Renderer.h"
 
+#include "GameEngine/Core/Resource/Mesh.h"
+
+#include <rttr/registration.h>
+using namespace rttr;
+
+RTTR_REGISTRATION
+{
+	rttr::registration::class_<GameEngine::Core::MeshFilter>("MeshFilter")
+	.constructor<std::shared_ptr<GameEngine::Core::GameObject>&, const tstring&>()
+	.property("m_pShadredMesh", &GameEngine::Core::MeshFilter::GetSharedMesh, &GameEngine::Core::MeshFilter::SetSharedMesh)
+	(
+		metadata(GameEngine::Core::MetaData::Serializable, GameEngine::Core::MetaDataType::UUID),
+		metadata(GameEngine::Core::Util::Check_Vaild, "CheckVaild"),
+		metadata(GameEngine::Core::MetaDataType::UUID, "GetName")
+	)
+	.method("GetName", &GameEngine::Core::Mesh::GetName)
+	.method("CheckVaild", &GameEngine::Core::MeshFilter::CheckVaild);
+}
+
 namespace GameEngine
 {
 	namespace Core

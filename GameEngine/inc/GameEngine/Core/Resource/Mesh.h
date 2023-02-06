@@ -37,6 +37,9 @@ namespace GameEngine
 			std::vector<std::vector<uint32>> m_IndexAttributers;
 
 			Graphics::MeshBuffer* m_MeshBuffer;
+
+			RTTR_ENABLE(Resource);
+			RTTR_REGISTRATION_FRIEND
 		};
 	}
 }

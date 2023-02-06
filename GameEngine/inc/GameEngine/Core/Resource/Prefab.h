@@ -15,15 +15,22 @@ namespace GameEngine
 			~Prefab() override;
 
 			inline void SetUUID(uuid uuid) { m_UUID = uuid; }
-			inline void SetRootGameObject(std::shared_ptr<GameObject>& rootGameObject) { m_RootGameObject = rootGameObject; }
+			void SetRootGameObject(std::shared_ptr<GameObject>& rootGameObject);
 
-			inline auto GetRootGameObject() { return m_RootGameObject; }
+			inline std::vector<std::shared_ptr<GameObject>>& GetGameObjectList() { return m_GameObjectList; }
+
+			inline std::shared_ptr<GameObject> GetRootGameObject() { return m_RootGameObject; }
+
+			void RegistGameObject(std::shared_ptr<GameObject>& gameObject);
 		protected:
+			void AddGameObject(std::shared_ptr<GameObject>& gameObject);
+
 			void Release() override;
 
 		private:
 			uuid m_UUID;
 			std::shared_ptr<GameObject> m_RootGameObject;
+			std::vector<std::shared_ptr<GameObject>> m_GameObjectList;
 		};
 	}
 }

@@ -1,0 +1,12 @@
+{
+    "Asset\/FBX\/Wooden_Crate.fbx": {
+        "m_Typename": "Transform",
+        "": ""
+    },
+    "Crate": {
+        "m_Typename": "MeshRenderer",
+        "": "",
+        "": "",
+        "": ""
+    }
+}

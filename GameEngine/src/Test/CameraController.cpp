@@ -80,7 +80,7 @@ void CameraController::Update()
 		auto _direction = (_forwardDir * _forward + _rightDir * _right + _upDir * _up);
 		_direction.Normalize();
 
-		const auto _nextPosition = m_Transform->GetPosition() + _direction * m_Speed * Time::GetDeltaTime();
+		const auto _nextPosition = m_Transform->GetPosition() + _direction * m_Speed * static_cast<float>(Time::GetDeltaTime());
 
 		m_Transform->SetWorldTM(Matrix{
 			_rightDir.x, _rightDir.y, _rightDir.z, 0.f,

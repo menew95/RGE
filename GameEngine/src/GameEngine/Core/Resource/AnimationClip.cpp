@@ -6,6 +6,15 @@
 
 #include "GameEngine/Core/GameObject.h"
 
+#include <rttr/registration.h>
+using namespace rttr;
+
+RTTR_REGISTRATION
+{
+	registration::class_<GameEngine::Core::AnimationClip>("AnimationClip")
+	.constructor<const tstring&>();
+}
+
 namespace GameEngine
 {
 	namespace Core

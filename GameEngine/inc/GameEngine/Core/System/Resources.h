@@ -43,6 +43,7 @@ namespace GameEngine
 			bool LoadMaterial(uuid uuid);
 			bool LoadMesh(uuid uuid);
 			bool LoadAnimation(uuid uuid);
+			bool LoadPrefab(uuid uuid);
 
 		private:
 			void CreateAnimationClip(Utility::AnimationClipData* clipData);

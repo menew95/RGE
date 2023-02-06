@@ -51,6 +51,10 @@ namespace GameEngine
 			Graphics::Texture* m_MRAMap = nullptr;
 
 			Graphics::MaterialBuffer* m_MaterialBuffer;
+
+			RTTR_ENABLE(Resource);
+
+			RTTR_REGISTRATION_FRIEND
 		};
 	}
 }

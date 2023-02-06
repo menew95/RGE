@@ -21,19 +21,20 @@ namespace GameEngine
 			void AddTransform();
 
 			static std::shared_ptr<GameObject> Instantiate();
+			static std::shared_ptr<GameObject> Create();
 
 			bool CompareTag(const tstring& value) { return value == m_Tag; }
 
 			void SetActiveInHierarchy(bool value);
 			void SetActiveSelf(bool value);
 			void SetIsStatic(bool value) { m_bIsStatic = value; }
-			void SetLayer(const Layer value) { m_Layer =  value; }
+			void SetLayer(uint32 value) { m_Layer =  value; }
 			void SetTag(const tstring& value) { m_Tag = value; }
 
 			bool GetActiveInHierarchy() { return m_bActiveInHierarchy; }
 			bool GetActiveSelf() { return m_bActiveInHierarchy; }
 			bool GetIsStatic() { return m_bIsStatic; }
-			Layer GetLayer() { return m_Layer; }
+			uint32 GetLayer() { return m_Layer; }
 			tstring& GetTag() { return m_Tag; }
 
 			std::weak_ptr<Scene>& GetScene() { return m_pScene; }
@@ -42,6 +43,8 @@ namespace GameEngine
 			std::vector<std::shared_ptr<Component>>& GetComponents() { return m_Components; }
 
 			GameObject* FindGameObject(const tstring& goName);
+
+			bool AddComponent(Component* component);
 
 			template<typename T>
 			std::shared_ptr<T> AddComponent();

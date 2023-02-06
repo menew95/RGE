@@ -12,6 +12,23 @@
 #include "GraphicsEngine/Resource/MaterialBuffer.h"
 #include "GraphicsEngine/RenderPass/RenderPass.h"
 
+#include <rttr/registration.h>
+using namespace rttr;
+
+RTTR_REGISTRATION
+{
+	rttr::registration::class_<GameEngine::Core::MeshRenderer>("MeshRenderer")
+	.constructor<std::shared_ptr<GameEngine::Core::GameObject>&, const tstring&>()
+	.property("m_Materials", &GameEngine::Core::MeshRenderer::GetMaterials, &GameEngine::Core::MeshRenderer::SetMaterials)
+	(
+		metadata(GameEngine::Core::MetaData::Serializable, GameEngine::Core::MetaDataType::UUID),
+		metadata(GameEngine::Core::Util::Check_Vaild, "CheckVaild"),
+		metadata(GameEngine::Core::MetaDataType::UUID, "GetName")
+	)
+	.method("GetName", &GameEngine::Core::Material::GetName)
+	.method("CheckVaild", &GameEngine::Core::MeshRenderer::CheckVaild);
+}
+
 namespace GameEngine
 {
 	namespace Core

@@ -22,6 +22,20 @@
 
 #include "Struct/VertexAttribute.h"
 
+#include "GameEngine/Utility/Serialize/Serialization.h"
+
+void ReconstructionAnimName(tstring& name)
+{
+	if (name.find(L"/") != tstring::npos)
+	{
+		int idx = name.find(L"/") + 1;
+
+		name.erase(0, idx);
+
+		ReconstructionAnimName(name);
+	}
+}
+
 namespace GameEngine 
 {
 	namespace Core
@@ -84,8 +98,10 @@ namespace GameEngine
 				m_MeshMap.insert(std::make_pair(TEXT("Box"), _newMesh));
 			}
 
-			LoadFBX(TEXT("Asset/FBX/Wooden_Crate.fbx"));
-			LoadFBX(TEXT("Asset/FBX/Joy.fbx"));
+			LoadPrefab(TEXT("Wooden_Crate"));
+
+			//LoadFBX(TEXT("Asset/FBX/Wooden_Crate.fbx"));
+			//LoadFBX(TEXT("Asset/FBX/Joy.fbx"));
 		}
 
 		void* Resources::Load(const tstring& filePath)
@@ -191,7 +207,7 @@ namespace GameEngine
 				}
 
 				//_trans->SetLocal(prefabData._gameObjectDatas[i]._localTM);
-				_trans->SetWorld(prefabData._gameObjectDatas[i]._worldTM);
+				_trans->SetWorldTM(prefabData._gameObjectDatas[i]._worldTM);
 #pragma endregion
 			}
 #pragma endregion
@@ -240,7 +256,7 @@ namespace GameEngine
 					}
 
 					//_boneTrans->SetLocal(prefabData._boneDatas[i]._localTM);
-					_boneTrans->SetWorld(prefabData._boneDatas[i]._worldTM);
+					_boneTrans->SetWorldTM(prefabData._boneDatas[i]._worldTM);
 				}
 #pragma endregion
 			}
@@ -314,10 +330,25 @@ namespace GameEngine
 			std::shared_ptr<Prefab> _newPrefab = std::make_shared<Prefab>();
 
 			_newPrefab->SetRootGameObject(_rootGameObject);
+			
+			ReconstructionAnimName(_uuid);
+
+			int idx = _uuid.find(L".") + 1;
+
+			size_t dot_pos = _uuid.find_last_of(L".");
+			if (dot_pos != std::string::npos)
+			{
+				_uuid = _uuid.substr(0, dot_pos);
+			}
+
+			_newPrefab->SetName(_uuid);
+			Serializable _ser;
+
+			_ser.serialize(*_newPrefab);
 
 			m_PrefabMap.insert(std::make_pair(_uuid, _newPrefab));
 		}
-
+		
 		std::shared_ptr<GameEngine::Core::Mesh>& Resources::GetMesh(uuid uuid)
 		{
 			auto _find = m_MeshMap.find(uuid);
@@ -354,13 +385,102 @@ namespace GameEngine
 			return _find->second;
 		}
 
+		bool Resources::LoadMaterial(uuid uuid)
+		{
+			using namespace Utility;
+
+			Importer _importer;
+
+			Utility::MaterialData _matData;
+
+			if (!_importer.Deserialize(_matData, uuid))
+				return false;
+
+			std::shared_ptr<Material> _newMaterial = std::make_shared<Material>();
+
+			_newMaterial->SetName(_matData._matarialName);
+			_newMaterial->SetUUID(_matData._matarialName);
+
+			GraphicsSystem::GetInstance()->CreateMaterialBuffer(_newMaterial);
+
+			if(_matData._albedoMapTexture.length() > 0)
+				_newMaterial->SetAlbedoTexture(GraphicsSystem::GetInstance()->LoadTexture(_matData._albedoMapTexture));
+
+			if (_matData._normalMapTexture.length() > 0)
+				_newMaterial->SetNormalTexture(GraphicsSystem::GetInstance()->LoadTexture(_matData._normalMapTexture));
+
+			if (_matData._metalicRoughnessMapTexture.length() > 0)
+				_newMaterial->SetMRATexture(GraphicsSystem::GetInstance()->LoadTexture(_matData._metalicRoughnessMapTexture));
+
+			m_MaterialMap.insert(std::make_pair(uuid, _newMaterial));
+
+			return true;
+		}
+
+		bool Resources::LoadMesh(uuid uuid)
+		{
+			using namespace Utility;
+
+			Importer _importer;
+
+			Utility::MeshData _meshData;
+
+			if (!_importer.Deserialize(_meshData, uuid))
+				return false;
+
+			std::shared_ptr<Mesh> _newMesh = std::make_shared<Mesh>(_meshData._vertexAttributes, _meshData._indexAttributes);
+
+			_newMesh->SetName(_meshData._meshName);
+			_newMesh->SetUUID(_meshData._meshName);
+
+			GraphicsSystem::GetInstance()->CreateMeshBuffer(_newMesh);
+
+			m_MeshMap.insert(std::make_pair(uuid, _newMesh));
+
+			return true;
+		}
+
+		bool Resources::LoadAnimation(uuid uuid)
+		{
+			using namespace Utility;
+
+			Importer _importer;
+
+			Utility::AnimationClipData _clipData;
+
+			if (!_importer.Deserialize(_clipData, uuid))
+				return false;
+			
+			CreateAnimationClip(&_clipData);
+
+			return true;
+		}
+
+		bool Resources::LoadPrefab(uuid uuid)
+		{
+			std::shared_ptr<Prefab> _newPrefab = std::make_shared<Prefab>();
+
+			Serializable _ser;
+
+			if (!_ser.Deserialize(*_newPrefab, uuid))
+				return false;
+
+			_newPrefab->SetName(uuid);
+			_newPrefab->SetUUID(uuid);
+			
+			m_PrefabMap.insert(std::make_pair(uuid, _newPrefab));
+
+			return true;
+		}
+
 		void Resources::CreateAnimationClip(Utility::AnimationClipData* clipData)
 		{
 			std::shared_ptr<AnimationClip> _newAnimClip = std::make_shared<AnimationClip>();
 
 			_newAnimClip->SetClipName(clipData->_clipName);
+			_newAnimClip->SetUUID(clipData->_clipName);
 
-			float _totalTime = (float)clipData->_totalKeyFrame / clipData->_frameRate;
+			float _totalTime = (float)(clipData->_totalKeyFrame - 1) / clipData->_frameRate;
 
 			for (size_t _snpIdx = 0; _snpIdx < clipData->_snapList.size(); _snpIdx++)
 			{
@@ -398,7 +518,6 @@ namespace GameEngine
 
 				_newAnimClip->AddAniamtionSnap(_newSnap);
 			}
-
 
 			m_AnimationClipMap.insert(std::make_pair(clipData->_clipName, _newAnimClip));
 		}

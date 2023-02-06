@@ -32,6 +32,10 @@ TestScene::TestScene()
 
 	//AddGameObject(_testObject);
 
+	Resources::GetInstance()->LoadMaterial(TEXT("Material.001"));
+	Resources::GetInstance()->LoadMesh(TEXT("Boy01_Hands_Geo"));
+	Resources::GetInstance()->LoadAnimation(TEXT("Layer0"));
+
 	std::shared_ptr<GameObject> _wooden_CrateObject = Resources::GetInstance()->GetPrefab(TEXT("Asset/FBX/Wooden_Crate.fbx"))->GetRootGameObject();
 
 	AddGameObjects(_wooden_CrateObject);

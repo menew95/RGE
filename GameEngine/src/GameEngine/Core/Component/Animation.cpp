@@ -7,6 +7,23 @@
 #include "GameEngine/Core/Component/Animation.h"
 #include "GameEngine/Core/Component/Transform.h"
 
+#include <rttr/registration>
+using namespace rttr;
+
+RTTR_REGISTRATION
+{
+	rttr::registration::class_<GameEngine::Core::Animation>("Animation")
+	.constructor<std::shared_ptr<GameEngine::Core::GameObject>&, const tstring&>()
+	.property("m_AnimationClipList", &GameEngine::Core::Animation::GetAnimationClips, &GameEngine::Core::Animation::SetAnimationClips)
+	(
+		metadata(GameEngine::Core::MetaData::Serializable, GameEngine::Core::MetaDataType::UUID),
+		metadata(GameEngine::Core::Util::Check_Vaild, "CheckVaild"),
+		metadata(GameEngine::Core::MetaDataType::UUID, "GetName")
+	)
+	.method("GetName", &GameEngine::Core::AnimationClip::GetName)
+	.method("CheckVaild", &GameEngine::Core::Animation::CheckVaild);
+}
+
 namespace GameEngine
 {
 	namespace Core
@@ -108,7 +125,7 @@ namespace GameEngine
 
 			if (m_IsPlaying == true && m_CurrAnimationInfo->IsVaild())
 			{
-				m_Frame._frameRate += Time::GetDeltaTime();
+				m_Frame._frameRate += static_cast<float>(Time::GetDeltaTime());
 
 				Log::Core_Info("Animation : " + std::to_string(m_Frame._frameRate));
 
@@ -157,6 +174,28 @@ namespace GameEngine
 					break;
 				}
 			}
+		}
+
+		void Animation::SetAnimationClips(std::vector<std::shared_ptr<AnimationClip>> clips)
+		{
+			for (auto& _clip : clips)
+			{
+				AddClip(_clip);
+			}
+		}
+
+		std::vector<std::shared_ptr<AnimationClip>> Animation::GetAnimationClips()
+		{
+			std::vector<std::shared_ptr<AnimationClip>> _clipList;
+
+			_clipList.reserve(m_AnimationClipList.size());
+
+			for (auto& _clip : m_AnimationClipList)
+			{
+				_clipList.push_back(_clip._clip);
+			}
+
+			return _clipList;
 		}
 
 		void Animation::MakeTargetList(AnimationInfo& info)

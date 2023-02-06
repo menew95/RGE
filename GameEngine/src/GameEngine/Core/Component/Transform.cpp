@@ -1,6 +1,53 @@
 #include "GameEngine\GameEnginePCH.h"
 #include "GameEngine\Core\Component\Transform.h"
 
+#include <rttr/registration.h>
+
+using namespace rttr;
+
+std::shared_ptr<GameEngine::Core::Component> conv_func(std::shared_ptr<GameEngine::Core::Transform> value, bool& ok)
+{
+	ok = true;
+	return std::static_pointer_cast<GameEngine::Core::Component>(value);
+}
+
+RTTR_REGISTRATION
+{
+	rttr::registration::class_<GameEngine::Core::Transform>("Transform")
+	.constructor<std::shared_ptr<GameEngine::Core::GameObject>&, const tstring&>()
+	.property("m_Parent", &GameEngine::Core::Transform::GetParent, &GameEngine::Core::Transform::SetParent)
+	(
+		metadata(GameEngine::Core::MetaData::Serializable, GameEngine::Core::MetaDataType::UUID),
+		metadata(GameEngine::Core::Util::Check_Vaild, "CheckVaild"),
+		metadata(GameEngine::Core::MetaDataType::UUID, "GetGameObjectName")
+	)
+	.property("m_Childs", &GameEngine::Core::Transform::m_Childs)
+	(
+		metadata(GameEngine::Core::MetaData::Serializable, GameEngine::Core::MetaDataType::UUID),
+		metadata(GameEngine::Core::Util::Check_Vaild, "CheckChildVaild"),
+		metadata(GameEngine::Core::MetaDataType::UUID, "GetGameObjectName")
+	)
+	.property("m_LocalTM", &GameEngine::Core::Transform::GetLocalTM, &GameEngine::Core::Transform::SetLocalTM)
+	(
+		metadata(GameEngine::Core::MetaData::Serializable, GameEngine::Core::MetaDataType::MATRIX)
+	)
+	.property("m_WorldTM", &GameEngine::Core::Transform::GetWorldTM, &GameEngine::Core::Transform::SetWorldTM)
+	(
+		metadata(GameEngine::Core::MetaData::Serializable, GameEngine::Core::MetaDataType::MATRIX)
+	)
+	.property("m_bIsDirty", &GameEngine::Core::Transform::m_bIsDrity)
+	(
+		metadata(GameEngine::Core::MetaData::Serializable, GameEngine::Core::MetaDataType::BOOL)
+	)
+	.method("GetParent", &GameEngine::Core::Transform::GetParent)
+	.method("CheckVaild", &GameEngine::Core::Transform::CheckVaild)
+	.method("CheckChildVaild", &GameEngine::Core::Transform::CheckChildVaild);
+
+
+	rttr::type::register_converter_func(conv_func);
+	rttr::type::register_wrapper_converter_for_base_classes<std::shared_ptr<GameEngine::Core::Component>>();
+}
+
 namespace GameEngine
 {
 	namespace Core
@@ -51,7 +98,7 @@ namespace GameEngine
 			m_Childs.push_back(child);
 		}
 
-		void Transform::SetParent(std::shared_ptr<Transform>& parent, Space relativeTo /*= Space::Self*/)
+		void Transform::SetParent(std::shared_ptr<Transform> parent)
 		{
 			if (m_Parent == parent)
 				return;
@@ -245,7 +292,7 @@ namespace GameEngine
 			m_Right = m_WorldRotateTM.Right();
 		}
 
-		Math::Matrix& Transform::GetWorldTM()
+		Math::Matrix Transform::GetWorldTM()
 		{
 			if (m_bIsDrity)
 			{
@@ -369,7 +416,7 @@ namespace GameEngine
 		{
 			if (m_Parent != nullptr)
 			{
-				auto& _parentTM = m_Parent->GetWorldTM();
+				auto _parentTM = m_Parent->GetWorldTM();
 
 				UpdateLocalMatrix();
 

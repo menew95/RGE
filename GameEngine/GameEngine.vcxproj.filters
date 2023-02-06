@@ -93,7 +93,7 @@
     <ClInclude Include="inc\GameEngine\SystemTimer.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="inc\GameEngine\Utility\Serialization.h">
+    <ClInclude Include="inc\GameEngine\Utility\Serialize\Serialization.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="inc\GameEngine\Core\Component\Camera.h">
@@ -121,6 +121,9 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="inc\GameEngine\Core\Component\Animation.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\GameEngine\Core\MetaDataInfo.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -225,6 +228,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\GameEngine\Core\Resource\AnimationClip.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GameEngine\Utility\Serialize\Serialization.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

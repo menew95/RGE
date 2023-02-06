@@ -13,6 +13,31 @@
 #include "GraphicsEngine/Resource/MaterialBuffer.h"
 #include "GraphicsEngine/RenderPass/RenderPass.h"
 
+#include <rttr/registration.h>
+using namespace rttr;
+
+RTTR_REGISTRATION
+{
+	rttr::registration::class_<GameEngine::Core::SkinnedMeshRenderer>("SkinnedMeshRenderer")
+	.constructor<std::shared_ptr<GameEngine::Core::GameObject>&, const tstring&>()
+	.property("m_Materials", &GameEngine::Core::SkinnedMeshRenderer::GetMaterials, &GameEngine::Core::SkinnedMeshRenderer::SetMaterials)
+	(
+		metadata(GameEngine::Core::MetaData::Serializable, GameEngine::Core::MetaDataType::UUID),
+		metadata(GameEngine::Core::Util::Check_Vaild, "CheckVaild"),
+		metadata(GameEngine::Core::MetaDataType::UUID, "GetUUID")
+	)
+	.property("m_RootBone", &GameEngine::Core::SkinnedMeshRenderer::GetRootBone, &GameEngine::Core::SkinnedMeshRenderer::SetRootBone)
+	(
+		metadata(GameEngine::Core::MetaData::Serializable, GameEngine::Core::MetaDataType::UUID),
+		metadata(GameEngine::Core::Util::Check_Vaild, "CheckRootVaild"),
+		metadata(GameEngine::Core::MetaDataType::UUID, "GetUUID")
+	)
+	.method("GetUUID", &GameEngine::Core::Material::GetUUID)
+	.method("CheckVaild", &GameEngine::Core::SkinnedMeshRenderer::CheckVaild)
+	.method("CheckRootVaild", &GameEngine::Core::SkinnedMeshRenderer::CheckRootVaild);
+}
+
+
 namespace GameEngine
 {
 	namespace Core
@@ -149,8 +174,6 @@ namespace GameEngine
 
 				auto _world = m_BoneTransformList[i].lock()->GetWorldTM();
 				auto _local = m_BoneTransformList[i].lock()->GetLocalTM();
-
-				//m_RootBone.lock()->GetWorldTM() * m_RootBone.lock()->GetLocalTM();
 
 				_perSkinnedObject._boneTransform[i] = m_BoneOffset[i] * m_BoneTransformList[i].lock()->GetWorldTM();
 			}
