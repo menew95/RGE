@@ -34,11 +34,11 @@ namespace GameEngine
 				}
 			}
 
-			inline void SetMaterials(std::vector<std::shared_ptr<Material>>& materials) { m_Materials = materials; }
+			inline void SetMaterials(std::vector<std::shared_ptr<Material>> materials) { m_Materials = materials; }
 
 			inline std::shared_ptr<Material>& GetMaterial(uint32 i) { return m_Materials[i]; }
 
-			inline auto GetMaterials() { return m_Materials; }
+			inline std::vector<std::shared_ptr<Material>> GetMaterials() { return m_Materials; }
 
 			void Link() override;
 			void Unlink() override;
@@ -49,12 +49,20 @@ namespace GameEngine
 				m_BoneOffset.push_back(offset);
 			}
 
+			inline std::weak_ptr<Transform> GetRootBone()
+			{
+				return m_RootBone;
+			}
+
 			inline void SetRootBone(std::weak_ptr<Transform> root)
 			{
 				m_RootBone = root;
 			}
 
 		private:
+			bool CheckVaild() { return m_Materials.size() > 0; }
+			bool CheckRootVaild() { return !m_RootBone.expired(); }
+
 			void UpdateBoneTransform();
 
 			struct PerObjectData
@@ -79,6 +87,10 @@ namespace GameEngine
 
 			std::vector<std::weak_ptr<Transform>> m_BoneTransformList;
 			std::vector<Math::Matrix> m_BoneOffset;
+
+			RTTR_ENABLE(Renderer)
+
+			RTTR_REGISTRATION_FRIEND
 		};
 	}
 }

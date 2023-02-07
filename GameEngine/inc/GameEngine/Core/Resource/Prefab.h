@@ -22,6 +22,9 @@ namespace GameEngine
 			inline std::shared_ptr<GameObject> GetRootGameObject() { return m_RootGameObject; }
 
 			void RegistGameObject(std::shared_ptr<GameObject>& gameObject);
+
+			std::shared_ptr<GameObject> FindGameObject(const tstring& name);
+
 		protected:
 			void AddGameObject(std::shared_ptr<GameObject>& gameObject);
 

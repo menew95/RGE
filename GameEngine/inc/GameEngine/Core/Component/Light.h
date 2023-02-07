@@ -54,6 +54,10 @@ namespace GameEngine
 			float m_Range						= 10.0f;
 			float m_SpotAngle					= 30.0f;
 			float m_InnerSpotAngle				= 21.80208f;	// _fallOffAngle
+
+			RTTR_ENABLE(Component)
+
+			RTTR_REGISTRATION_FRIEND
 		};
 	}
 }

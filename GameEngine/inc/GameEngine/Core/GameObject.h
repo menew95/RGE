@@ -44,7 +44,7 @@ namespace GameEngine
 
 			GameObject* FindGameObject(const tstring& goName);
 
-			bool AddComponent(Component* component);
+			bool AddComponent(std::shared_ptr<Component> component);
 
 			template<typename T>
 			std::shared_ptr<T> AddComponent();
@@ -64,6 +64,9 @@ namespace GameEngine
 			template<typename T>
 			std::vector<std::shared_ptr<T>> GetComponentsInParent();
 
+
+			std::shared_ptr<Component> GetComponent(const tstring& componentName);
+
 		protected:
 			bool m_bActiveInHierarchy;
 
@@ -81,7 +84,6 @@ namespace GameEngine
 
 			std::vector<std::shared_ptr<Component>> m_Components;
 		};
-
 	}
 }
 

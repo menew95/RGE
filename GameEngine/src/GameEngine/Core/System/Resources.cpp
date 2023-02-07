@@ -98,10 +98,10 @@ namespace GameEngine
 				m_MeshMap.insert(std::make_pair(TEXT("Box"), _newMesh));
 			}
 
-			LoadPrefab(TEXT("Wooden_Crate"));
+			LoadPrefab(TEXT("Joy"));
 
-			//LoadFBX(TEXT("Asset/FBX/Wooden_Crate.fbx"));
 			//LoadFBX(TEXT("Asset/FBX/Joy.fbx"));
+			//LoadFBX(TEXT("Asset/FBX/Wooden_Crate.fbx"));
 		}
 
 		void* Resources::Load(const tstring& filePath)
@@ -225,11 +225,11 @@ namespace GameEngine
 
 					
 #if defined(_DEBUG) || defined(DEBUG)
-					auto _material = GetMaterial(TEXT("Material.001"));
-					auto _mesh = GetMesh(TEXT("Box"));
-
-					_newBone->AddComponent<MeshRenderer>()->AddMaterial(_material);
-					_newBone->AddComponent<MeshFilter>()->SetSharedMesh(_mesh);
+					//auto _material = GetMaterial(TEXT("Material.001"));
+					//auto _mesh = GetMesh(TEXT("Box"));
+					//
+					//_newBone->AddComponent<MeshRenderer>()->AddMaterial(_material);
+					//_newBone->AddComponent<MeshFilter>()->SetSharedMesh(_mesh);
 #endif // defined(_DEBUG) || defined(DEBUG)
 
 
@@ -347,6 +347,74 @@ namespace GameEngine
 			_ser.serialize(*_newPrefab);
 
 			m_PrefabMap.insert(std::make_pair(_uuid, _newPrefab));
+		}
+
+		template<>
+		std::shared_ptr<Mesh> Resources::GetResource(uuid uuid)
+		{
+			auto _find = m_MeshMap.find(uuid);
+
+			if (_find != m_MeshMap.end())
+				return _find->second;
+				
+			if (LoadMesh(uuid))
+			{
+				return GetResource<Mesh>(uuid);
+			}
+
+			assert(false);
+			return std::shared_ptr<Mesh>(nullptr);
+		}
+
+		template<>
+		std::shared_ptr<Material> Resources::GetResource(uuid uuid)
+		{
+			auto _find = m_MaterialMap.find(uuid);
+
+			if (_find != m_MaterialMap.end())
+				return _find->second;
+
+			if (LoadMaterial(uuid))
+			{
+				return GetResource<Material>(uuid);
+			}
+
+			assert(false);
+			return std::shared_ptr<Material>(nullptr);
+		}
+
+		template<>
+		std::shared_ptr<AnimationClip> Resources::GetResource(uuid uuid)
+		{
+			auto _find = m_AnimationClipMap.find(uuid);
+
+			if (_find != m_AnimationClipMap.end())
+				return _find->second;
+
+			if (LoadAnimation(uuid))
+			{
+				return GetResource<AnimationClip>(uuid);
+			}
+
+			assert(false);
+			return std::shared_ptr<AnimationClip>(nullptr);
+		}
+
+		template<>
+		std::shared_ptr<Prefab> Resources::GetResource(uuid uuid)
+		{
+			auto _find = m_PrefabMap.find(uuid);
+
+			if (_find != m_PrefabMap.end())
+				return _find->second;
+
+			if (LoadPrefab(uuid))
+			{
+				return GetResource<Prefab>(uuid);
+			}
+
+			assert(false);
+			return std::shared_ptr<Prefab>(nullptr);
 		}
 		
 		std::shared_ptr<GameEngine::Core::Mesh>& Resources::GetMesh(uuid uuid)
@@ -478,6 +546,7 @@ namespace GameEngine
 			std::shared_ptr<AnimationClip> _newAnimClip = std::make_shared<AnimationClip>();
 
 			_newAnimClip->SetClipName(clipData->_clipName);
+			_newAnimClip->SetName(clipData->_clipName);
 			_newAnimClip->SetUUID(clipData->_clipName);
 
 			float _totalTime = (float)(clipData->_totalKeyFrame - 1) / clipData->_frameRate;

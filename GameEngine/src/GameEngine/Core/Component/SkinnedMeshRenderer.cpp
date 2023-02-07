@@ -24,13 +24,17 @@ RTTR_REGISTRATION
 	(
 		metadata(GameEngine::Core::MetaData::Serializable, GameEngine::Core::MetaDataType::UUID),
 		metadata(GameEngine::Core::Util::Check_Vaild, "CheckVaild"),
-		metadata(GameEngine::Core::MetaDataType::UUID, "GetUUID")
+		metadata(GameEngine::Core::MetaDataType::UUID, "GetUUID"),
+		metadata(GameEngine::Core::MetaData::ObjectType, GameEngine::Core::ObjectType::Resource),
+		metadata(GameEngine::Core::ObjectType::Resource, GameEngine::Core::ResourceType::Material)
 	)
 	.property("m_RootBone", &GameEngine::Core::SkinnedMeshRenderer::GetRootBone, &GameEngine::Core::SkinnedMeshRenderer::SetRootBone)
 	(
 		metadata(GameEngine::Core::MetaData::Serializable, GameEngine::Core::MetaDataType::UUID),
 		metadata(GameEngine::Core::Util::Check_Vaild, "CheckRootVaild"),
-		metadata(GameEngine::Core::MetaDataType::UUID, "GetUUID")
+		metadata(GameEngine::Core::MetaDataType::UUID, "GetUUID"),
+		metadata(GameEngine::Core::MetaData::ObjectType, GameEngine::Core::ObjectType::Resource),
+		metadata(GameEngine::Core::ObjectType::Resource, GameEngine::Core::ResourceType::Bone)
 	)
 	.method("GetUUID", &GameEngine::Core::Material::GetUUID)
 	.method("CheckVaild", &GameEngine::Core::SkinnedMeshRenderer::CheckVaild)

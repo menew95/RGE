@@ -34,16 +34,17 @@ namespace GameEngine
 				}
 			}
 
-			inline void SetMaterials(std::vector<std::shared_ptr<Material>>& materials) { m_Materials = materials; }
+			inline void SetMaterials(std::vector<std::shared_ptr<Material>> materials) { m_Materials = materials; }
 
 			inline std::shared_ptr<Material>& GetMaterial(uint32 i) { return m_Materials[i]; }
 
-			inline auto GetMaterials() { return m_Materials; }
+			inline std::vector<std::shared_ptr<Material>> GetMaterials() { return m_Materials; }
 
 			void Link() override;
 			void Unlink() override;
 
 		private:
+			bool CheckVaild() { return m_Materials.size() > 0; }
 			struct PerObjectData
 			{
 				Math::Matrix _world;
@@ -55,6 +56,10 @@ namespace GameEngine
 			std::vector<std::shared_ptr<Material>> m_Materials;
 
 			std::weak_ptr<MeshFilter> m_MeshFilter;
+
+			RTTR_ENABLE(Renderer)
+
+			RTTR_REGISTRATION_FRIEND
 		};
 	}
 }

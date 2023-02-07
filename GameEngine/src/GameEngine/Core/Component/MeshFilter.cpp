@@ -16,7 +16,9 @@ RTTR_REGISTRATION
 	(
 		metadata(GameEngine::Core::MetaData::Serializable, GameEngine::Core::MetaDataType::UUID),
 		metadata(GameEngine::Core::Util::Check_Vaild, "CheckVaild"),
-		metadata(GameEngine::Core::MetaDataType::UUID, "GetName")
+		metadata(GameEngine::Core::MetaDataType::UUID, "GetName"),
+		metadata(GameEngine::Core::MetaData::ObjectType, GameEngine::Core::ObjectType::Resource),
+		metadata(GameEngine::Core::ObjectType::Resource, GameEngine::Core::ResourceType::Mesh)
 	)
 	.method("GetName", &GameEngine::Core::Mesh::GetName)
 	.method("CheckVaild", &GameEngine::Core::MeshFilter::CheckVaild);

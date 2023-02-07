@@ -5,10 +5,43 @@
 
 using namespace rttr;
 
-std::shared_ptr<GameEngine::Core::Component> conv_func(std::shared_ptr<GameEngine::Core::Transform> value, bool& ok)
+std::shared_ptr<GameEngine::Core::Component> conv_func_to_base(std::shared_ptr<GameEngine::Core::Transform> value, bool& ok)
 {
 	ok = true;
 	return std::static_pointer_cast<GameEngine::Core::Component>(value);
+}
+
+std::shared_ptr<GameEngine::Core::Transform> conv_func_to_derived(std::shared_ptr<GameEngine::Core::Component> value, bool& ok)
+{
+	ok = true;
+	return std::static_pointer_cast<GameEngine::Core::Transform>(value);
+}
+
+std::vector<std::shared_ptr<GameEngine::Core::Component>> conv_func_to_array_base(std::vector<std::shared_ptr<GameEngine::Core::Transform>> value, bool& ok)
+{
+	ok = true;
+	std::vector<std::shared_ptr<GameEngine::Core::Component>> _ret;
+
+	for (auto& _ptr : value)
+	{
+		_ret.push_back(std::static_pointer_cast<GameEngine::Core::Component>(_ptr));
+	}
+
+	return _ret;
+}
+
+
+std::vector<std::shared_ptr<GameEngine::Core::Transform>> conv_func_to_array_derived(std::vector<std::shared_ptr<GameEngine::Core::Component>> value, bool& ok)
+{
+	ok = true;
+	std::vector<std::shared_ptr<GameEngine::Core::Transform>> _ret;
+
+	for (auto& _ptr : value)
+	{
+		_ret.push_back(std::static_pointer_cast<GameEngine::Core::Transform>(_ptr));
+	}
+
+	return _ret;
 }
 
 RTTR_REGISTRATION
@@ -19,13 +52,17 @@ RTTR_REGISTRATION
 	(
 		metadata(GameEngine::Core::MetaData::Serializable, GameEngine::Core::MetaDataType::UUID),
 		metadata(GameEngine::Core::Util::Check_Vaild, "CheckVaild"),
-		metadata(GameEngine::Core::MetaDataType::UUID, "GetGameObjectName")
+		metadata(GameEngine::Core::MetaDataType::UUID, "GetGameObjectName"),
+		metadata(GameEngine::Core::MetaData::ObjectType, GameEngine::Core::ObjectType::Component),
+		metadata(GameEngine::Core::ObjectType::Component, "Transform")
 	)
 	.property("m_Childs", &GameEngine::Core::Transform::m_Childs)
 	(
 		metadata(GameEngine::Core::MetaData::Serializable, GameEngine::Core::MetaDataType::UUID),
 		metadata(GameEngine::Core::Util::Check_Vaild, "CheckChildVaild"),
-		metadata(GameEngine::Core::MetaDataType::UUID, "GetGameObjectName")
+		metadata(GameEngine::Core::MetaDataType::UUID, "GetGameObjectName"),
+		metadata(GameEngine::Core::MetaData::ObjectType, GameEngine::Core::ObjectType::Component),
+		metadata(GameEngine::Core::ObjectType::Component, "Transform")
 	)
 	.property("m_LocalTM", &GameEngine::Core::Transform::GetLocalTM, &GameEngine::Core::Transform::SetLocalTM)
 	(
@@ -43,9 +80,10 @@ RTTR_REGISTRATION
 	.method("CheckVaild", &GameEngine::Core::Transform::CheckVaild)
 	.method("CheckChildVaild", &GameEngine::Core::Transform::CheckChildVaild);
 
-
-	rttr::type::register_converter_func(conv_func);
-	rttr::type::register_wrapper_converter_for_base_classes<std::shared_ptr<GameEngine::Core::Component>>();
+	type::register_converter_func(conv_func_to_base);
+	type::register_converter_func(conv_func_to_derived);
+	type::register_converter_func(conv_func_to_array_base);
+	type::register_converter_func(conv_func_to_array_derived);
 }
 
 namespace GameEngine

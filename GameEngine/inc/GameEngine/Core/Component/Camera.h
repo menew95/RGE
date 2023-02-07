@@ -37,6 +37,10 @@ namespace GameEngine
 			static std::weak_ptr<Camera> m_MainCamera;
 
 			Graphics::CameraBuffer* m_CameraBuffer = nullptr;
+
+			RTTR_ENABLE(Component)
+
+			RTTR_REGISTRATION_FRIEND
 		};
 	}
 }

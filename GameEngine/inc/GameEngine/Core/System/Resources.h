@@ -34,6 +34,25 @@ namespace GameEngine
 
 			void CreatePrefab(const Utility::PrefabData& prefabData);
 
+			template<typename T>
+			std::shared_ptr<T> GetResource(uuid uuid)
+			{
+				static_assert(false, "need template specialization for T");
+			}
+
+			template<>
+			std::shared_ptr<Mesh> GetResource(uuid uuid);
+
+			template<>
+			std::shared_ptr<Material> GetResource(uuid uuid);
+
+			template<>
+			std::shared_ptr<AnimationClip> GetResource(uuid uuid);
+
+			template<>
+			std::shared_ptr<Prefab> GetResource(uuid uuid);
+
+
 			std::shared_ptr<Mesh>& GetMesh(uuid uuid);
 			std::shared_ptr<Material>& GetMaterial(uuid uuid);
 			std::shared_ptr<AnimationClip>& GetAnimationClip(uuid uuid);

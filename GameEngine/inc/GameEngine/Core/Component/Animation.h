@@ -59,7 +59,11 @@ namespace GameEngine
 			void RemoveClip(std::shared_ptr<AnimationClip> clip);
 			void RemoveClip(const tstring& name);
 
+			void SetAnimationClips(std::vector<std::shared_ptr<AnimationClip>> clips);
+			std::vector<std::shared_ptr<AnimationClip>> GetAnimationClips();
+
 		private:
+			bool CheckVaild() { return m_AnimationClipList.size(); }
 			/// @brief 애니메이션을 적용하기위한 게임오브젝트의 리스트
 			/// 애니메이션이 적용되어야할 게임 오브젝트가 삭제되는 경우가 없음이 보장되어야 한다.
 			/// 만약 보장되지 못한다면 매 프레임 애니메이션이 적용되어야할 게임오브젝트를 찾아야 한다.
@@ -99,6 +103,10 @@ namespace GameEngine
 
 			/// @brief 애니메이션클립과 클립과 페어를 이루고 있는 타겟 게임 오브젝트들을 담고 있는 컨테이너
 			std::vector<AnimationInfo> m_AnimationClipList;
+
+			RTTR_ENABLE(Component)
+
+			RTTR_REGISTRATION_FRIEND
 		};
 	}
 }

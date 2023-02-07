@@ -101,11 +101,31 @@ namespace GameEngine
 			return _findGameObject;
 		}
 
-		bool GameObject::AddComponent(Component* component)
+		bool GameObject::AddComponent(std::shared_ptr<Component> component)
 		{
-			m_Components.push_back(std::shared_ptr<Component>(component));
+			m_Components.push_back(component);
+
+			if (m_pTransform == nullptr && component->GetTypeName() == TEXT("Transform"))
+			{
+				m_pTransform = std::static_pointer_cast<Transform>(component);
+			}
 
 			return true;
+		}
+
+		std::shared_ptr<GameEngine::Core::Component> GameObject::GetComponent(const tstring& componentName)
+		{
+			auto _find = std::find_if(std::begin(m_Components), std::end(m_Components),
+				[&componentName](auto& com)
+				{
+					return componentName == com->GetTypeName();
+				}
+			);
+
+			if (_find != m_Components.end())
+				return *_find;
+
+			return std::shared_ptr<Component>(nullptr);
 		}
 
 	}

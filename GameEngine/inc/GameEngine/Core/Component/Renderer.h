@@ -19,6 +19,9 @@ namespace GameEngine
 			virtual void Link() abstract;
 			virtual void Unlink() abstract;
 
+			RTTR_ENABLE(Component)
+
+			RTTR_REGISTRATION_FRIEND
 		};
 	}
 }

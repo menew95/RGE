@@ -127,6 +127,9 @@ namespace GameEngine
 
 			// 게임 오브젝트 갯수 만큼 스냅 데이터가 있음
 			std::vector<AnimationSnap> m_AnimationSnapList;
+
+			RTTR_ENABLE(Resource);
+			RTTR_REGISTRATION_FRIEND
 		};
 	}
 }

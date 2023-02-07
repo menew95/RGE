@@ -7,6 +7,7 @@ namespace GameEngine
 		enum class MetaData
 		{
 			Serializable,
+			ObjectType,
 		};
 
 		enum class MetaDataType
@@ -26,6 +27,27 @@ namespace GameEngine
 		enum class Util
 		{
 			Check_Vaild
+		};
+
+		enum class ObjectType
+		{
+			GameObject,
+			Component,
+			Resource,
+		};
+
+		enum class ComponentType
+		{
+			Transform,
+		};
+
+		enum class ResourceType
+		{
+			Mesh,
+			Bone,
+			Material,
+			AnimationClip,
+			AudioClip
 		};
 	}
 }

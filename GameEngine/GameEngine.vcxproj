@@ -72,41 +72,45 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir)inc;$(ProjectDir)src;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)inc;$(ProjectDir)src;$(ProjectDir)include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <SourcePath>$(ProjectDir)inc;$(VC_SourcePath);</SourcePath>
     <IntDir>$(SolutionDir)_build\_int\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
     <OutDir>$(SolutionDir)_build\$(Configuration)\$(Platform)\$(ProjectName)\</OutDir>
     <TargetName>$(ProjectName)_$(Configuration)_$(Platform)</TargetName>
+    <LibraryPath>$(ProjectDir)lib;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(ProjectDir)inc;$(ProjectDir)src;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)inc;$(ProjectDir)src;$(ProjectDir)include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <SourcePath>$(ProjectDir)inc;$(VC_SourcePath);</SourcePath>
     <IntDir>$(SolutionDir)_build\_int\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
     <OutDir>$(SolutionDir)_build\$(Configuration)\$(Platform)\$(ProjectName)\</OutDir>
     <TargetName>$(ProjectName)_$(Configuration)_$(Platform)</TargetName>
+    <LibraryPath>$(ProjectDir)lib;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir)inc;$(ProjectDir)src;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)inc;$(ProjectDir)src;$(ProjectDir)include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <SourcePath>$(ProjectDir)inc;$(VC_SourcePath);</SourcePath>
     <IntDir>$(SolutionDir)_build\_int\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
     <OutDir>$(SolutionDir)_build\$(Configuration)\$(Platform)\$(ProjectName)\</OutDir>
     <TargetName>$(ProjectName)_$(Configuration)_$(Platform)</TargetName>
+    <LibraryPath>$(ProjectDir)lib;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(ProjectDir)inc;$(ProjectDir)src;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)inc;$(ProjectDir)src;$(ProjectDir)include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <SourcePath>$(ProjectDir)inc;$(VC_SourcePath);</SourcePath>
     <IntDir>$(SolutionDir)_build\_int\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
     <OutDir>$(SolutionDir)_build\$(Configuration)\$(Platform)\$(ProjectName)\</OutDir>
     <TargetName>$(ProjectName)_$(Configuration)_$(Platform)</TargetName>
+    <LibraryPath>$(ProjectDir)lib;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>GAME_ENGINE_EXPORT;COMMON_EXPORT;WIN32;_DEBUG;GAMEENGINE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>RTTR_DLL;GAME_ENGINE_EXPORT;COMMON_EXPORT;WIN32;_DEBUG;GAMEENGINE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>GameEngine\GameEnginePCH.h</PrecompiledHeaderFile>
@@ -117,6 +121,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
+      <AdditionalDependencies>rttr_core_d.lib;rttr_core_s_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /E /S /Y /R "$(OutputPath)*.dll" "$(OutputPath)..\Client\*"
@@ -129,7 +134,7 @@ xcopy /E /S /Y /R "$(OutputPath)*.pdb" "$(OutputPath)..\Client\*"</Command>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>GAME_ENGINE_EXPORT;COMMON_EXPORT;WIN32;NDEBUG;GAMEENGINE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>RTTR_DLL;GAME_ENGINE_EXPORT;COMMON_EXPORT;WIN32;NDEBUG;GAMEENGINE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>GameEngine\GameEnginePCH.h</PrecompiledHeaderFile>
@@ -142,6 +147,7 @@ xcopy /E /S /Y /R "$(OutputPath)*.pdb" "$(OutputPath)..\Client\*"</Command>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
+      <AdditionalDependencies>rttr_core.lib;rttr_core_s.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /E /S /Y /R "$(OutputPath)*.dll" "$(OutputPath)..\Client\*"
@@ -152,17 +158,17 @@ xcopy /E /S /Y /R "$(OutputPath)*.pdb" "$(OutputPath)..\Client\*"</Command>
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>x64;GAME_ENGINE_EXPORT;COMMON_EXPORT;_DEBUG;GAMEENGINE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
+      <PreprocessorDefinitions>RTTR_DLL;x64;GAME_ENGINE_EXPORT;COMMON_EXPORT;_DEBUG;GAMEENGINE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>GameEngine\GameEnginePCH.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)Common\inc;$(SolutionDir)GraphicsEngine\inc;$(SolutionDir)GraphicsModule\inc;$(SolutionDir)PhysicsModule\inc;$(SolutionDir)SoundModule\inc;$(SolutionDir)Importer\inc;$(SolutionDir)Log\inc;$(SolutionDir)spdlog\inc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Common\inc;$(SolutionDir)GraphicsEngine\inc;$(SolutionDir)GraphicsModule\inc;$(SolutionDir)PhysicsModule\inc;$(SolutionDir)SoundModule\inc;$(SolutionDir)Importer\inc;$(SolutionDir)Log\inc;$(SolutionDir)spdlog\inc;$(SolutionDir)Importer\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
+      <AdditionalDependencies>rttr_core_d.lib;rttr_core_s_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /E /S /Y /R "$(OutputPath)*.dll" "$(OutputPath)..\Client\*"
@@ -175,7 +181,7 @@ xcopy /E /S /Y /R "$(OutputPath)*.pdb" "$(OutputPath)..\Client\*"</Command>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>x64;GAME_ENGINE_EXPORT;COMMON_EXPORT;NDEBUG;GAMEENGINE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>RTTR_DLL;x64;GAME_ENGINE_EXPORT;COMMON_EXPORT;NDEBUG;GAMEENGINE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>GameEngine\GameEnginePCH.h</PrecompiledHeaderFile>
@@ -188,6 +194,7 @@ xcopy /E /S /Y /R "$(OutputPath)*.pdb" "$(OutputPath)..\Client\*"</Command>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
+      <AdditionalDependencies>rttr_core.lib;rttr_core_s.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /E /S /Y /R "$(OutputPath)*.dll" "$(OutputPath)..\Client\*"
@@ -207,6 +214,7 @@ xcopy /E /S /Y /R "$(OutputPath)*.pdb" "$(OutputPath)..\Client\*"</Command>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="inc\GameEngine\Core\Component\SkinnedMeshRenderer.h" />
+    <ClInclude Include="inc\GameEngine\Core\MetaDataInfo.h" />
     <ClInclude Include="inc\GameEngine\Core\Resource\AnimationClip.h" />
     <ClInclude Include="inc\GameEngine\Core\Resource\AudioClip.h" />
     <ClInclude Include="inc\GameEngine\Core\Resource\Material.h" />
@@ -229,7 +237,7 @@ xcopy /E /S /Y /R "$(OutputPath)*.pdb" "$(OutputPath)..\Client\*"</Command>
     <ClInclude Include="inc\GameEngine\Core\Component\Renderer.h" />
     <ClInclude Include="inc\GameEngine\Core\System\SceneSystem.h" />
     <ClInclude Include="inc\GameEngine\Core\Resource\Resource.h" />
-    <ClInclude Include="inc\GameEngine\Utility\Serialization.h" />
+    <ClInclude Include="inc\GameEngine\Utility\Serialize\Serialization.h" />
     <ClInclude Include="inc\GameEngine\Window.h" />
     <ClInclude Include="src\GameEngine\GameEnginePCH.h" />
     <ClInclude Include="inc\GameEngine\Core\Component\Transform.h" />
@@ -251,6 +259,7 @@ xcopy /E /S /Y /R "$(OutputPath)*.pdb" "$(OutputPath)..\Client\*"</Command>
     <ClCompile Include="src\GameEngine\Core\Component\SkinnedMeshRenderer.cpp" />
     <ClCompile Include="src\GameEngine\Core\Resource\AnimationClip.cpp" />
     <ClCompile Include="src\GameEngine\Core\Resource\AudioClip.cpp" />
+    <ClCompile Include="src\GameEngine\Utility\Serialize\Serialization.cpp" />
     <ClCompile Include="src\GameEngine\Core\Resource\Material.cpp" />
     <ClCompile Include="src\GameEngine\Core\Resource\Mesh.cpp" />
     <ClCompile Include="src\GameEngine\Core\Resource\Prefab.cpp" />

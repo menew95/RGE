@@ -1,7 +1,11 @@
 #include "GameEngine/GameEnginePCH.h"
+
+#include "GameEngine/Core/GameObject.h"
+
 #include "GameEngine/Core/Resource/Prefab.h"
 
 #include "GameEngine/Core/Component/Transform.h"
+
 
 namespace GameEngine
 {
@@ -29,6 +33,22 @@ namespace GameEngine
 		void Prefab::RegistGameObject(std::shared_ptr<GameObject>& gameObject)
 		{
 			m_GameObjectList.push_back(gameObject);
+		}
+
+		std::shared_ptr<GameEngine::Core::GameObject> Prefab::FindGameObject(const tstring& name)
+		{
+			auto _find = std::find_if(std::begin(m_GameObjectList), std::end(m_GameObjectList),
+				[&name](auto& go)
+				{
+					return go->GetName() == name;
+				});
+
+			if (_find != m_GameObjectList.end())
+			{
+				return *_find;
+			}
+
+			return std::shared_ptr<GameEngine::Core::GameObject>(nullptr);
 		}
 
 		void Prefab::AddGameObject(std::shared_ptr<GameObject>& gameObject)
