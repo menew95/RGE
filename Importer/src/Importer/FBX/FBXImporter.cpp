@@ -95,6 +95,29 @@ namespace Utility
 		matrix *= Math::Matrix::CreateFromQuaternion(_q);
 	}
 
+	void ReconstructionName(tstring& name, const wchar_t* c)
+	{
+		if (name.find(c) != tstring::npos)
+		{
+			int idx = name.find(c) + 1;
+
+			name.erase(0, idx);
+
+			ReconstructionName(name, c);
+		}
+	}
+
+	void RemoveExtension(tstring& name)
+	{
+		int idx = name.find(L".") + 1;
+
+		size_t dot_pos = name.find_last_of(L".");
+		if (dot_pos != std::wstring::npos)
+		{
+			name = name.substr(0, dot_pos);
+		}
+	}
+
 	inline FbxAMatrix GetTransformMatrix(FbxNode* node)
 	{
 		const FbxVector4 translation = node->GetGeometricTranslation(FbxNode::eSourcePivot);
@@ -165,10 +188,13 @@ namespace Utility
 		// 여러 머터리얼이 하나의 메쉬에 할당된것을 하나의 메쉬가 하나의 머터리얼로 가지게함
 		_geometryConverter->SplitMeshesPerMaterial(m_FbxScene.get(), true);
 
+		prefabData._filePath = filePath;// StringHelper::StringToWString(m_FbxScene->GetName());
 		prefabData._name = filePath;// StringHelper::StringToWString(m_FbxScene->GetName());
 
-		FindAnimationData(prefabData);
+		ReconstructionName(prefabData._name, L"/");
+		RemoveExtension(prefabData._name);
 
+		FindAnimationData(prefabData);
 		FbxNode* _rootNode = m_FbxScene->GetRootNode();
 
 		TraversalNode(_rootNode, prefabData);
@@ -206,6 +232,7 @@ namespace Utility
 
 			AnimationClipData _newClip;
 			_newClip._clipName = StringHelper::StringToWString(animStack->GetName());
+			ReconstructionName(_newClip._clipName, L"|");
 
 			// 시작시간, 종료시간, 초당 프레임에 대한 정보
 			FbxTakeInfo* takeInfo = m_FbxScene->GetTakeInfo(animStack->GetName());
@@ -425,6 +452,8 @@ namespace Utility
 		for (int i = 0; i < _deformerCount; i++)
 		{
 			meshData._isSkin = true;
+
+			meshData._skinName = prefabData._name;
 
 			FbxSkin* _fbxSkin = static_cast<FbxSkin*>(meshNode->GetDeformer(i, FbxDeformer::eSkin));
 

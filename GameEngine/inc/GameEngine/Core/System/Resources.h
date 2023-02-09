@@ -17,6 +17,7 @@ namespace GameEngine
 		class Mesh;
 		class Material;
 		class AnimationClip;
+		struct SkinnedData;
 
 		class Prefab;
 
@@ -44,6 +45,9 @@ namespace GameEngine
 			std::shared_ptr<Mesh> GetResource(uuid uuid);
 
 			template<>
+			std::shared_ptr<SkinnedData> GetResource(uuid uuid);
+
+			template<>
 			std::shared_ptr<Material> GetResource(uuid uuid);
 
 			template<>
@@ -53,14 +57,16 @@ namespace GameEngine
 			std::shared_ptr<Prefab> GetResource(uuid uuid);
 
 
+
 			std::shared_ptr<Mesh>& GetMesh(uuid uuid);
 			std::shared_ptr<Material>& GetMaterial(uuid uuid);
 			std::shared_ptr<AnimationClip>& GetAnimationClip(uuid uuid);
 
 			std::shared_ptr<Prefab>& GetPrefab(uuid uuid);
 
-			bool LoadMaterial(uuid uuid);
 			bool LoadMesh(uuid uuid);
+			bool LoadSkinned(uuid uuid);
+			bool LoadMaterial(uuid uuid);
 			bool LoadAnimation(uuid uuid);
 			bool LoadPrefab(uuid uuid);
 
@@ -68,6 +74,7 @@ namespace GameEngine
 			void CreateAnimationClip(Utility::AnimationClipData* clipData);
 
 			std::unordered_map<uuid, std::shared_ptr<Mesh>> m_MeshMap;
+			std::unordered_map<uuid, std::shared_ptr<SkinnedData>> m_SkinnedMap;
 			std::unordered_map<uuid, std::shared_ptr<Material>> m_MaterialMap;
 			std::unordered_map<uuid, std::shared_ptr<AnimationClip>> m_AnimationClipMap;
 

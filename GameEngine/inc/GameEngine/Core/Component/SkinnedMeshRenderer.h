@@ -14,7 +14,7 @@ namespace GameEngine
 			: public Renderer, public std::enable_shared_from_this<SkinnedMeshRenderer>
 		{
 		public:
-			SkinnedMeshRenderer(std::shared_ptr<GameObject>& gameObject, const tstring& componentName = TEXT("MeshRenderer"));
+			SkinnedMeshRenderer(std::shared_ptr<GameObject>& gameObject, const tstring& componentName = TEXT("SkinnedMeshRenderer"));
 			~SkinnedMeshRenderer() override;
 
 			void Awake() override;
@@ -38,7 +38,10 @@ namespace GameEngine
 
 			inline std::shared_ptr<Material>& GetMaterial(uint32 i) { return m_Materials[i]; }
 
-			inline std::vector<std::shared_ptr<Material>> GetMaterials() { return m_Materials; }
+			inline std::vector<std::shared_ptr<Material>> GetMaterials() 
+			{
+				return m_Materials; 
+			}
 
 			void Link() override;
 			void Unlink() override;
@@ -49,19 +52,19 @@ namespace GameEngine
 				m_BoneOffset.push_back(offset);
 			}
 
-			inline std::weak_ptr<Transform> GetRootBone()
+			inline std::shared_ptr<Transform> GetRootBone()
 			{
 				return m_RootBone;
 			}
 
-			inline void SetRootBone(std::weak_ptr<Transform> root)
+			inline void SetRootBone(std::shared_ptr<Transform> root)
 			{
 				m_RootBone = root;
 			}
 
 		private:
 			bool CheckVaild() { return m_Materials.size() > 0; }
-			bool CheckRootVaild() { return !m_RootBone.expired(); }
+			bool CheckRootVaild() { return m_RootBone != nullptr; }
 
 			void UpdateBoneTransform();
 
@@ -83,7 +86,7 @@ namespace GameEngine
 
 			std::weak_ptr<MeshFilter> m_MeshFilter;
 
-			std::weak_ptr<Transform> m_RootBone;
+			std::shared_ptr<Transform> m_RootBone;
 
 			std::vector<std::weak_ptr<Transform>> m_BoneTransformList;
 			std::vector<Math::Matrix> m_BoneOffset;

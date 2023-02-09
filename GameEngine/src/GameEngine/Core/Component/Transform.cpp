@@ -133,6 +133,11 @@ namespace GameEngine
 
 		void Transform::AddChild(std::shared_ptr<Transform>& child)
 		{
+			auto _find = std::find(m_Childs.begin(), m_Childs.end(), child);
+
+			if (_find != m_Childs.end())
+				return;
+
 			m_Childs.push_back(child);
 		}
 
@@ -152,6 +157,8 @@ namespace GameEngine
 
 		void Transform::Translate(Math::Vector3& translation, Space relativeTo /*= Space::Self*/)
 		{
+			m_bIsDrity = true;
+
 			switch (relativeTo)
 			{
 				case GameEngine::Core::Space::World:
@@ -178,6 +185,8 @@ namespace GameEngine
 
 		void Transform::Rotate(Math::Vector3& eulers, Space relativeTo /*= Space::Self*/)
 		{
+			m_bIsDrity = true;
+
 			switch (relativeTo)
 			{
 				case GameEngine::Core::Space::World:
@@ -204,6 +213,8 @@ namespace GameEngine
 
 		void Transform::Rotate(Math::Quaternion& quaternion, Space relativeTo /*= Space::Self*/)
 		{
+			m_bIsDrity = true;
+
 			switch (relativeTo)
 			{
 				case GameEngine::Core::Space::World:
@@ -230,6 +241,8 @@ namespace GameEngine
 
 		void Transform::Scale(Math::Vector3& scale, Space relativeTo /*= Space::Self*/)
 		{
+			m_bIsDrity = true;
+
 			switch (relativeTo)
 			{
 				case GameEngine::Core::Space::World:

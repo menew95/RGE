@@ -9,16 +9,18 @@ namespace GameEngine
 	{
 		DEFINE_SINGLETON_CLASS(ComponentSystem,
 			{
-				RegistComponent(0,TEXT("Transform"));
-				RegistComponent(1,TEXT("Camera"));
-				RegistComponent(2,TEXT("MeshFilter"));
-				RegistComponent(3,TEXT("MeshRenderer"));
-				RegistComponent(4,TEXT("Animation"));
-				RegistComponent(5,TEXT("Light"));
-				RegistComponent(6,TEXT("CameraController"));
+				int i = 0;
+				RegistComponent(i++,TEXT("Transform"));
+				RegistComponent(i++,TEXT("Camera"));
+				RegistComponent(i++,TEXT("MeshFilter"));
+				RegistComponent(i++,TEXT("MeshRenderer"), true);
+				RegistComponent(i++,TEXT("SkinnedMeshRenderer"), true);
+				RegistComponent(i++,TEXT("Animation"));
+				RegistComponent(i++,TEXT("Light"));
+				RegistComponent(i++,TEXT("CameraController"));
 			}, {})
 
-		void ComponentSystem::RegistComponent(uint32 order, const tstring& componentName)
+		void ComponentSystem::RegistComponent(uint32 order, const tstring& componentName, bool render)
 		{
 			auto _iter = std::ranges::find_if(m_ComponentsList.begin()
 				, m_ComponentsList.end()
@@ -32,9 +34,9 @@ namespace GameEngine
 			{
 				m_ComponentsList.push_back(Components(order, componentName));
 
-				if (TEXT("MeshRenderer") == componentName)
+				if (render)
 				{
-					m_ComponentsList.back().m_IsRender = true;
+					m_ComponentsList.back().m_IsRender = render;
 				}
 			}
 			else

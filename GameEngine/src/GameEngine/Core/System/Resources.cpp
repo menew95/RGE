@@ -24,7 +24,7 @@
 
 #include "GameEngine/Utility/Serialize/Serialization.h"
 
-void ReconstructionAnimName(tstring& name)
+void ReconstructionFileName(tstring& name)
 {
 	if (name.find(L"/") != tstring::npos)
 	{
@@ -32,7 +32,18 @@ void ReconstructionAnimName(tstring& name)
 
 		name.erase(0, idx);
 
-		ReconstructionAnimName(name);
+		ReconstructionFileName(name);
+	}
+}
+
+void RemoveExtension(tstring& name)
+{
+	int idx = name.find(L".") + 1;
+
+	size_t dot_pos = name.find_last_of(L".");
+	if (dot_pos != std::wstring::npos)
+	{
+		name = name.substr(0, dot_pos);
 	}
 }
 
@@ -97,10 +108,7 @@ namespace GameEngine
 
 				m_MeshMap.insert(std::make_pair(TEXT("Box"), _newMesh));
 			}
-
-			LoadPrefab(TEXT("Joy"));
-
-			//LoadFBX(TEXT("Asset/FBX/Joy.fbx"));
+			
 			//LoadFBX(TEXT("Asset/FBX/Wooden_Crate.fbx"));
 		}
 
@@ -164,7 +172,13 @@ namespace GameEngine
 		{
 			auto _rootGameObject = GameObject::Instantiate();
 
-			_rootGameObject->SetName(prefabData._name);
+			tstring _fileName = prefabData._filePath;
+
+			RemoveExtension(_fileName);
+
+			ReconstructionFileName(_fileName);
+
+			_rootGameObject->SetName(_fileName);
 
 			std::unordered_map<tstring, std::shared_ptr<GameObject>> _newGameObjectMap;
 			std::vector<std::shared_ptr<GameObject>> _newGameObjectList;
@@ -326,27 +340,17 @@ namespace GameEngine
 				}
 			}
 
-			uuid _uuid = prefabData._name;
+			uuid _uuid = prefabData._filePath;
 			std::shared_ptr<Prefab> _newPrefab = std::make_shared<Prefab>();
 
 			_newPrefab->SetRootGameObject(_rootGameObject);
 			
-			ReconstructionAnimName(_uuid);
-
-			int idx = _uuid.find(L".") + 1;
-
-			size_t dot_pos = _uuid.find_last_of(L".");
-			if (dot_pos != std::string::npos)
-			{
-				_uuid = _uuid.substr(0, dot_pos);
-			}
-
-			_newPrefab->SetName(_uuid);
+			_newPrefab->SetName(_fileName);
 			Serializable _ser;
 
 			_ser.serialize(*_newPrefab);
 
-			m_PrefabMap.insert(std::make_pair(_uuid, _newPrefab));
+			m_PrefabMap.insert(std::make_pair(_fileName, _newPrefab));
 		}
 
 		template<>
@@ -364,6 +368,23 @@ namespace GameEngine
 
 			assert(false);
 			return std::shared_ptr<Mesh>(nullptr);
+		}
+
+		template<>
+		std::shared_ptr<SkinnedData> Resources::GetResource(uuid uuid)
+		{
+			auto _find = m_SkinnedMap.find(uuid);
+
+			if (_find != m_SkinnedMap.end())
+				return _find->second;
+
+			if (LoadSkinned(uuid))
+			{
+				return GetResource<SkinnedData>(uuid);
+			}
+
+			assert(false);
+			return std::shared_ptr<SkinnedData>(nullptr);
 		}
 
 		template<>
@@ -453,6 +474,61 @@ namespace GameEngine
 			return _find->second;
 		}
 
+		bool Resources::LoadMesh(uuid uuid)
+		{
+			using namespace Utility;
+
+			Importer _importer;
+
+			Utility::MeshData _meshData;
+
+			if (!_importer.Deserialize(_meshData, uuid))
+				return false;
+
+			std::shared_ptr<Mesh> _newMesh = std::make_shared<Mesh>(_meshData._vertexAttributes, _meshData._indexAttributes);
+
+			_newMesh->SetName(_meshData._meshName);
+			_newMesh->SetUUID(_meshData._meshName);
+
+			if (_meshData._isSkin)
+			{
+				_newMesh->SetBoneName(_meshData._skinName);
+
+				auto _skin = GetResource<SkinnedData>(_meshData._skinName);
+
+				_newMesh->SetSkinned(_skin);
+			}
+
+			GraphicsSystem::GetInstance()->CreateMeshBuffer(_newMesh);
+
+			m_MeshMap.insert(std::make_pair(uuid, _newMesh));
+
+			return true;
+		}
+
+		bool Resources::LoadSkinned(uuid uuid)
+		{
+			using namespace Utility;
+
+			Importer _importer;
+
+			std::vector<Utility::BoneData> _newBones;
+
+			if (!_importer.Deserialize(_newBones, uuid))
+				return false;
+
+			std::shared_ptr<SkinnedData> _newSkinned = std::make_shared<SkinnedData>();
+
+			for (auto _boneData : _newBones)
+			{
+				_newSkinned->_boneDatas.push_back({ _boneData._boneName, _boneData._offsetTM });
+			}
+
+			m_SkinnedMap.insert(std::make_pair(uuid, _newSkinned));
+
+			return true;
+		}
+
 		bool Resources::LoadMaterial(uuid uuid)
 		{
 			using namespace Utility;
@@ -471,7 +547,7 @@ namespace GameEngine
 
 			GraphicsSystem::GetInstance()->CreateMaterialBuffer(_newMaterial);
 
-			if(_matData._albedoMapTexture.length() > 0)
+			if (_matData._albedoMapTexture.length() > 0)
 				_newMaterial->SetAlbedoTexture(GraphicsSystem::GetInstance()->LoadTexture(_matData._albedoMapTexture));
 
 			if (_matData._normalMapTexture.length() > 0)
@@ -481,29 +557,6 @@ namespace GameEngine
 				_newMaterial->SetMRATexture(GraphicsSystem::GetInstance()->LoadTexture(_matData._metalicRoughnessMapTexture));
 
 			m_MaterialMap.insert(std::make_pair(uuid, _newMaterial));
-
-			return true;
-		}
-
-		bool Resources::LoadMesh(uuid uuid)
-		{
-			using namespace Utility;
-
-			Importer _importer;
-
-			Utility::MeshData _meshData;
-
-			if (!_importer.Deserialize(_meshData, uuid))
-				return false;
-
-			std::shared_ptr<Mesh> _newMesh = std::make_shared<Mesh>(_meshData._vertexAttributes, _meshData._indexAttributes);
-
-			_newMesh->SetName(_meshData._meshName);
-			_newMesh->SetUUID(_meshData._meshName);
-
-			GraphicsSystem::GetInstance()->CreateMeshBuffer(_newMesh);
-
-			m_MeshMap.insert(std::make_pair(uuid, _newMesh));
 
 			return true;
 		}

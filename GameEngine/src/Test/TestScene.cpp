@@ -20,27 +20,11 @@ TestScene::TestScene()
 
 	camera->AddComponent<CameraController>();
 
-	//std::shared_ptr<GameObject> _testObject = GameObject::Instantiate();
-	//_testObject->SetName(TEXT("Box Object"));
-
-	//auto _mesh = Resources::GetInstance()->GetMesh(TEXT("Plane.005"));
-	////auto _mesh = Resources::GetInstance()->GetMesh(TEXT("Box"));
-	//auto _material = Resources::GetInstance()->GetMaterial(TEXT("Material.001"));
-
-	//_testObject->AddComponent<MeshFilter>()->SetSharedMesh(_mesh);
-	//_testObject->AddComponent<MeshRenderer>()->AddMaterial(_material);
-
-	//AddGameObject(_testObject);
-
-	Resources::GetInstance()->LoadMaterial(TEXT("Material.001"));
-	Resources::GetInstance()->LoadMesh(TEXT("Boy01_Hands_Geo"));
-	Resources::GetInstance()->LoadAnimation(TEXT("Layer0"));
-
-	std::shared_ptr<GameObject> _wooden_CrateObject = Resources::GetInstance()->GetPrefab(TEXT("Asset/FBX/Wooden_Crate.fbx"))->GetRootGameObject();
+	std::shared_ptr<GameObject> _wooden_CrateObject = Resources::GetInstance()->GetResource<Prefab>(TEXT("Wooden_Crate"))->GetRootGameObject();
 
 	AddGameObjects(_wooden_CrateObject);
 
-	std::shared_ptr<GameObject> _joyObject = Resources::GetInstance()->GetPrefab(TEXT("Asset/FBX/Joy.fbx"))->GetRootGameObject();
+	std::shared_ptr<GameObject> _joyObject = Resources::GetInstance()->GetResource<Prefab>(TEXT("Joy"))->GetRootGameObject();
 
 	AddGameObjects(_joyObject);
 
@@ -57,7 +41,6 @@ TestScene::TestScene()
 	_dirLight->GetComponent<Transform>()->Rotate(_eular);
 
 	auto _lightCom = _dirLight->AddComponent<Light>();
-
 
 	AddGameObject(_dirLight);
 }

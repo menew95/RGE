@@ -215,6 +215,5 @@ namespace GameEngine
 				info._targetList._initLocalTMs.emplace_back(_findObject->GetTransform()->GetLocalTM());
 			}
 		}
-
 	}
 }

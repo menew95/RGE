@@ -32,18 +32,8 @@
 
 namespace Utility
 {
-	void BinarySerializer::SaveBinaryFile(PrefabData* prefabData, std::string name, std::string path)
+	void BinarySerializer::SaveBinaryFile(PrefabData* prefabData, std::string fileName, std::string path)
 	{
-		// MaterialList.json을 불러와서 Materials에 이름들이 뭐가 있는지 확인
-		//rapidjson::Document document;
-
-// 		std::ifstream file("BinaryFile/Material/MaterialList.json");
-// 		rapidjson::IStreamWrapper isw{ file };
-// 
-// 		document.ParseStream(isw);
-// 
-// 		rapidjson::Value& matKey = document["Materials"];
-// 
  		std::string modelPathStr = "Model/";
  		std::string materialPathStr = "Material/";
  		std::string meshPathStr = "Mesh/";
@@ -90,26 +80,6 @@ namespace Utility
 				oaMat << binaryMaterial;
 			}
 
-			//// 메시 시리얼라이즈
-			std::vector<std::string> meshInfoList;
-
-			for (auto& _meshPair : prefabData->_meshDataMap)
-			{
-				std::string _meshName = StringHelper::WStringToString(_meshPair.second._meshName)/* + "_" + name*/;
-
-				BinaryData::MeshData meshData(_meshName, _meshPair.second._vertexAttributes, _meshPair.second._indexAttributes);
-
-				std::ofstream mesh_ofs(path + meshPathStr + _meshName + ".mesh", std::ios_base::binary);
-				boost::iostreams::filtering_stream<boost::iostreams::output> meshBuffer;
-				meshBuffer.push(boost::iostreams::zlib_compressor());
-				meshBuffer.push(mesh_ofs);
-
-				boost::archive::binary_oarchive oaMesh(meshBuffer);
-				oaMesh << meshData;
-
-				meshInfoList.emplace_back(meshData.meshName);
-			}
-
 			if (prefabData->_boneDatas.size() > 0)
 			{
 				BinaryData::SkinnedData _skinnedData;
@@ -124,7 +94,7 @@ namespace Utility
 					_skinnedData._boneDatas.emplace_back(boneData);
 				}
 
-				std::ofstream anim_ofs(path + bonePathStr + name + ".bone", std::ios_base::binary);
+				std::ofstream anim_ofs(path + bonePathStr + fileName + ".bone", std::ios_base::binary);
 				boost::iostreams::filtering_stream<boost::iostreams::output> boneBuffer;
 				boneBuffer.push(boost::iostreams::zlib_compressor());
 				boneBuffer.push(anim_ofs);
@@ -133,6 +103,33 @@ namespace Utility
 				oaAnim << _skinnedData;
 			}
 
+			//// 메시 시리얼라이즈
+			std::vector<std::string> meshInfoList;
+
+			for (auto& _meshPair : prefabData->_meshDataMap)
+			{
+				std::string _meshName = StringHelper::WStringToString(_meshPair.second._meshName)/* + "_" + name*/;
+
+				BinaryData::MeshData meshData;
+				if (prefabData->_boneDatas.size() == 0)
+				{
+					meshData = { _meshName, _meshPair.second._vertexAttributes, _meshPair.second._indexAttributes };
+				}
+				else
+				{
+					meshData = { _meshName, _meshPair.second._vertexAttributes, _meshPair.second._indexAttributes, fileName};
+				}
+
+				std::ofstream mesh_ofs(path + meshPathStr + _meshName + ".mesh", std::ios_base::binary);
+				boost::iostreams::filtering_stream<boost::iostreams::output> meshBuffer;
+				meshBuffer.push(boost::iostreams::zlib_compressor());
+				meshBuffer.push(mesh_ofs);
+
+				boost::archive::binary_oarchive oaMesh(meshBuffer);
+				oaMesh << meshData;
+
+				meshInfoList.emplace_back(meshData.meshName);
+			}
 
 			// Animation Serialize
 			std::vector<std::string> animationClipList;

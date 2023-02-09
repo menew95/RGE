@@ -24,7 +24,7 @@ RTTR_REGISTRATION
 	(
 		metadata(GameEngine::Core::MetaData::Serializable, GameEngine::Core::MetaDataType::UUID),
 		metadata(GameEngine::Core::Util::Check_Vaild, "CheckVaild"),
-		metadata(GameEngine::Core::MetaDataType::UUID, "GetUUID"),
+		metadata(GameEngine::Core::MetaDataType::UUID, "GetName"),
 		metadata(GameEngine::Core::MetaData::ObjectType, GameEngine::Core::ObjectType::Resource),
 		metadata(GameEngine::Core::ObjectType::Resource, GameEngine::Core::ResourceType::Material)
 	)
@@ -32,11 +32,11 @@ RTTR_REGISTRATION
 	(
 		metadata(GameEngine::Core::MetaData::Serializable, GameEngine::Core::MetaDataType::UUID),
 		metadata(GameEngine::Core::Util::Check_Vaild, "CheckRootVaild"),
-		metadata(GameEngine::Core::MetaDataType::UUID, "GetUUID"),
-		metadata(GameEngine::Core::MetaData::ObjectType, GameEngine::Core::ObjectType::Resource),
-		metadata(GameEngine::Core::ObjectType::Resource, GameEngine::Core::ResourceType::Bone)
+		metadata(GameEngine::Core::MetaDataType::UUID, "GetGameObjectName"),
+		metadata(GameEngine::Core::MetaData::ObjectType, GameEngine::Core::ObjectType::Component),
+		metadata(GameEngine::Core::ObjectType::Component, "Transform")
 	)
-	.method("GetUUID", &GameEngine::Core::Material::GetUUID)
+	.method("GetName", &GameEngine::Core::Material::GetName)
 	.method("CheckVaild", &GameEngine::Core::SkinnedMeshRenderer::CheckVaild)
 	.method("CheckRootVaild", &GameEngine::Core::SkinnedMeshRenderer::CheckRootVaild);
 }
@@ -61,6 +61,26 @@ namespace GameEngine
 		void SkinnedMeshRenderer::Awake()
 		{
 			m_MeshFilter = GetComponent<MeshFilter>();
+
+			if (!m_MeshFilter.expired() && m_MeshFilter.lock() != nullptr)
+			{
+				auto _sharedMesh = m_MeshFilter.lock()->GetSharedMesh();
+
+				if (_sharedMesh->IsSkinned() && m_RootBone != nullptr)
+				{
+					auto _skinnedData = _sharedMesh->GetSkinned();
+
+					auto _rootGO = m_RootBone->GetGameObject();
+					for (auto& _bone : _skinnedData->_boneDatas)
+					{
+						auto* _boneGO = _rootGO->FindGameObject(_bone._boneName);
+						if (_boneGO != nullptr)
+						{
+							AddBone(_boneGO->GetTransform(), _bone._offsetTM);
+						}
+					}
+				}
+			}
 		}
 
 		void SkinnedMeshRenderer::Render()

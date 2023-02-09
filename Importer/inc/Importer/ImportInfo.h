@@ -63,6 +63,7 @@ namespace Utility
 
 		bool _isSkin = false;
 
+		tstring _skinName;
 		std::vector<tstring> _boneList;
 	};
 
@@ -122,6 +123,7 @@ namespace Utility
 
 	struct PrefabData
 	{
+		tstring _filePath;
 		tstring _name;
 
 		GameObjectData _rootObject;

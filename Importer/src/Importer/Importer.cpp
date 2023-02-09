@@ -8,6 +8,18 @@
 
 namespace Utility
 {
+	void ReconstructionFileName(std::string& name)
+	{
+		if (name.find("/") != std::string::npos)
+		{
+			int idx = name.find("/") + 1;
+
+			name.erase(0, idx);
+
+			ReconstructionFileName(name);
+		}
+	}
+
 	void Importer::LoadPrefabDataFormFile(const tstring& filePath, PrefabData& prefabData)
 	{
 		auto _format = CheckFileFormat(filePath);
@@ -27,8 +39,18 @@ namespace Utility
 		std::shared_ptr<BinarySerializer> binarySerializer = std::make_shared<BinarySerializer>();
 
 		std::string saveBinaryPath = "Asset/BinaryFile/";
-		std::string saveName = "Test";
-		binarySerializer->SaveBinaryFile(&prefabData, saveName, saveBinaryPath);
+		std::string _fileName = StringHelper::WStringToString(filePath);
+		int idx = filePath.find(L".") + 1;
+
+		size_t dot_pos = filePath.find_last_of(L".");
+		if (dot_pos != std::string::npos)
+		{
+			_fileName = _fileName.substr(0, dot_pos);
+		}
+
+		ReconstructionFileName(_fileName);
+
+		binarySerializer->SaveBinaryFile(&prefabData, _fileName, saveBinaryPath);
 	}
 
 	bool Importer::Deserialize(MaterialData& materialData, uuid uuid)
@@ -73,6 +95,8 @@ namespace Utility
 		meshData._meshName = StringHelper::StringToWString(_meshData.meshName);
 		meshData._vertexAttributes = _meshData.meshVertexList;
 		meshData._indexAttributes = _meshData.indices;
+		meshData._isSkin = _meshData._isSkinned;
+		meshData._skinName = StringHelper::StringToWString(_meshData._boneName);
 
 		return true;
 	}

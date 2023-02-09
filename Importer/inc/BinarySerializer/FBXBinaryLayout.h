@@ -11,151 +11,6 @@ namespace fs = std::filesystem;
 
 namespace BinaryData
 {
-	/*struct Float2
-	{
-		friend boost::serialization::access;
-
-		Float2() = default;
-
-		Float2(float _x, float _y)
-			: x(_x), y(_y)
-		{}
-
-		Float2(Math::Vector2 v)
-			: x(v.x)
-			, y(v.y)
-		{}
-		float x = 0.0f;
-		float y = 0.0f;
-
-		inline Vector2 ToVector() { return Math::Vector2(x, y); }
-
-		template <typename Archive>
-		void serialize(Archive& ar, const unsigned int version)
-		{
-			ar& x;
-			ar& y;
-		}
-	};
-	
-	struct Float3
-	{
-		friend boost::serialization::access;
-
-		Float3() = default;
-
-		Float3(float _x, float _y, float _z)
-			: x(_x), y(_y), z(_z)
-		{}
-
-		Float3(Math::Vector3 v)
-			: x(v.x)
-			, y(v.y)
-			, z(v.z)
-		{}
-
-		float x = 0.0f;
-		float y = 0.0f;
-		float z = 0.0f;
-
-		inline Vector3 ToVector() { return Math::Vector3(x, y, z); }
-
-		template <typename Archive>
-		void serialize(Archive& ar, const unsigned int version)
-		{
-			ar& x;
-			ar& y;
-			ar& z;
-		}
-	};
-
-	struct Float4
-	{
-		friend boost::serialization::access;
-
-		Float4() = default;
-
-		Float4(float _x, float _y, float _z, float _w)
-			: x(_x), y(_y), z(_z), w(_w)
-		{}
-
-		Float4(Math::Vector4 v)
-			: x(v.x)
-			, y(v.y)
-			, z(v.z)
-			, w(v.w)
-		{}
-
-		Float4(Math::Quaternion q)
-			: x(q.x)
-			, y(q.y)
-			, z(q.z)
-			, w(q.w)
-		{}
-
-		float x = 0.0f;
-		float y = 0.0f;
-		float z = 0.0f;
-		float w = 0.0f;
-
-		inline Vector4 ToVector() { return Math::Vector4(x, y, z, w); }
-
-		template <typename Archive>
-		void serialize(Archive& ar, const unsigned int version)
-		{
-			ar& x;
-			ar& y;
-			ar& z;
-			ar& w;
-		}
-	};
-
-	struct Float4x4
-	{
-		friend boost::serialization::access;
-
-		Float4x4()
-		{
-			ZeroMemory(this, sizeof(Float4x4));
-		}
-
-		Float4x4(Math::Matrix m)
-			: m00(m._11), m01(m._12), m02(m._13), m03(m._14)
-			, m10(m._21), m11(m._22), m12(m._23), m13(m._24)
-			, m20(m._31), m21(m._32), m22(m._33), m23(m._34)
-			, m30(m._41), m31(m._42), m32(m._43), m33(m._44)
-		{}
-
-		union
-		{
-			struct
-			{
-				float m00, m01, m02, m03;
-				float m10, m11, m12, m13;
-				float m20, m21, m22, m23;
-				float m30, m31, m32, m33;
-			};
-
-			float m[4][4];
-		};
-
-		inline Math::Matrix ToMatrix() { 
-			return Math::Matrix
-			(
-				m00, m01, m02, m03,
-				m10, m11, m12, m13,
-				m20, m21, m22, m23,
-				m30, m31, m32, m33
-			); 
-		}
-
-		template <typename Archive>
-		void serialize(Archive& ar, const unsigned int version)
-		{
-			ar& m;
-		}
-	};*/
-
 	class MaterialData
 	{
 	public:
@@ -250,12 +105,25 @@ namespace BinaryData
 			: meshName(std::move(_meshName))
 			, meshVertexList(std::move(_meshVertexList))
 			, indices(std::move(_indices))
+			, _isSkinned(false)
+		{}
+
+		MeshData(std::string _meshName, std::vector<Common::VertexAttribute> _meshVertexList
+			, std::vector<std::vector<uint32>> _indices, std::string bone)
+			: meshName(std::move(_meshName))
+			, meshVertexList(std::move(_meshVertexList))
+			, indices(std::move(_indices))
+			, _isSkinned(true)
+			, _boneName(std::move(bone))
 		{}
 
 	public:
 		std::string								meshName = "";
 		std::vector<Common::VertexAttribute>	meshVertexList;
 		std::vector<std::vector<uint32>>		indices;
+
+		bool _isSkinned;
+		std::string _boneName;
 
 	private:
 		template<typename Archive>
@@ -264,6 +132,8 @@ namespace BinaryData
 			ar& meshName;
 			ar& meshVertexList;
 			ar& indices;
+			ar& _isSkinned;
+			ar& _boneName;
 		}
 	};
 

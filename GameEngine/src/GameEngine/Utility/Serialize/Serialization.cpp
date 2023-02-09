@@ -150,9 +150,9 @@ namespace GameEngine
 				if (!_method.is_valid())
 					break;
 
-				auto vartype = var.get_type();
-
 				auto _value = _method.invoke(var);
+
+				assert(_value.is_valid());
 
 				if (_value.can_convert<uuid>())
 				{
@@ -168,6 +168,8 @@ namespace GameEngine
 						pt.put(prop.get_name().to_string(), _stringUUID);
 					}
 				}
+				else
+					assert(false);
 
 				break;
 			}
@@ -943,7 +945,8 @@ namespace GameEngine
 
 					if (_resource != nullptr)
 					{
-						holder->_prop.set_value(holder->_variant, _resource);
+						if (!holder->_prop.set_value(holder->_variant, _resource))
+							assert(false);
 					}
 				}
 				break;
@@ -996,7 +999,7 @@ namespace GameEngine
 						}
 					}
 
-					holder->_prop.set_value(holder->_variant, _resources);
+					assert(holder->_prop.set_value(holder->_variant, _resources));
 				}
 				else
 				{
@@ -1006,7 +1009,7 @@ namespace GameEngine
 
 					if (_resource != nullptr)
 					{
-						holder->_prop.set_value(holder->_variant, _resource);
+						assert(holder->_prop.set_value(holder->_variant, _resource));
 					}
 				}
 				break;
@@ -1027,7 +1030,7 @@ namespace GameEngine
 						}
 					}
 
-					holder->_prop.set_value(holder->_variant, _resources);
+					assert(holder->_prop.set_value(holder->_variant, _resources));
 				}
 				else
 				{
@@ -1037,7 +1040,7 @@ namespace GameEngine
 
 					if (_resource != nullptr)
 					{
-						holder->_prop.set_value(holder->_variant, _resource);
+						assert(holder->_prop.set_value(holder->_variant, _resource));
 					}
 				}
 				break;

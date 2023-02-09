@@ -33,6 +33,9 @@ namespace GameEngine
 		void Prefab::RegistGameObject(std::shared_ptr<GameObject>& gameObject)
 		{
 			m_GameObjectList.push_back(gameObject);
+
+			if (m_RootGameObject == nullptr)
+				m_RootGameObject = gameObject;
 		}
 
 		std::shared_ptr<GameEngine::Core::GameObject> Prefab::FindGameObject(const tstring& name)

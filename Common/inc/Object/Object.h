@@ -2,6 +2,8 @@
 
 #include "Common.h"
 
+#include "Common/StringHelper.h"
+
 class UUIDGenerator
 {
 public:
@@ -22,6 +24,8 @@ public:
 class COMMON Object
 {
 public:
+	Object() = default;
+
 	Object(const tstring& _typeName);
 
 	Object(const tstring& _typeName, const tstring& _uuid);
@@ -34,13 +38,16 @@ public:
 
 	tstring m_TypeName;
 
+	std::string m_rawTypeName;
+
 	[[nodiscard]] tstring GetName() const { return m_Name; }
 
-	[[nodiscard]] uuid GetUUID() const { return m_UUID; }
+	[[nodiscard]] const uuid& GetUUID() const { return m_UUID; }
 
 	[[nodiscard]] tstring GetTypeName() const { return m_TypeName; }
 
 	void SetName(const tstring& _name) { m_Name = _name; }
 
-	void SetUUID(const tstring& _uuid) { m_UUID = _uuid; }
+	void SetUUID(const uuid& _uuid) { m_UUID = _uuid; }
+
 };

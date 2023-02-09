@@ -44,6 +44,7 @@ namespace GameEngine
 		void MeshFilter::OnEnable()
 		{
 			m_pRenderer = GetComponent<Renderer>();
+
 			if (m_pRenderer != nullptr)
 			{
 				m_pRenderer->Link();

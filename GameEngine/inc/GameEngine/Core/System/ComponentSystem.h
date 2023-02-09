@@ -14,7 +14,7 @@ namespace GameEngine
 			DECLARE_SINGLETON_CLASS(ComponentSystem)
 
 		public:
-			void RegistComponent(uint32 order, const tstring& componentName);
+			void RegistComponent(uint32 order, const tstring& componentName, bool render = false);
 
 			void ReserveAddComponent(std::shared_ptr<Component>& component);
 
