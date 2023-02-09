@@ -159,7 +159,11 @@ namespace GameEngine
 			m_GraphicsEngine = std::make_unique<Graphics::GraphicsEngine>(*_ptr);
 
 			m_RenderPassList.push_back(std::make_pair(TEXT("StaticMesh"), m_GraphicsEngine->GetMeshPass()));
+			m_RenderPassList.push_back(std::make_pair(TEXT("StaticMeshBump"), m_GraphicsEngine->GetMeshBumpPass()));
+			m_RenderPassList.push_back(std::make_pair(TEXT("StaticMeshBumpMRA"), m_GraphicsEngine->GetMeshBumpMRAPass()));
 			m_RenderPassList.push_back(std::make_pair(TEXT("SkinnedMesh"), m_GraphicsEngine->GetSkinnedMeshPass()));
+			m_RenderPassList.push_back(std::make_pair(TEXT("SkinnedMeshBump"), m_GraphicsEngine->GetSkinnedMeshBumpPass()));
+			m_RenderPassList.push_back(std::make_pair(TEXT("SkinnedMeshBumpMRA"), m_GraphicsEngine->GetSkinnedMeshBumpMRAPass()));
 		}
 
 		void GraphicsSystem::FreeGraphicsEngineDll()

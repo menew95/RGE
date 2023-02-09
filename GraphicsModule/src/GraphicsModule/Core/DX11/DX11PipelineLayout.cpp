@@ -28,6 +28,9 @@ namespace Graphics
 
 		void DX11PipelineLayout::SetResource(uint32 index, Resource* resource)
 		{
+			if (index >= m_Bindings.size())
+				return;
+
 			if (resource->GetResourceType() != m_Bindings[index]._type)
 			{
 				// m_Bindings에 기록된 바인딩 정보와 다른 리소스를 저장하려고 함

@@ -109,7 +109,9 @@ namespace GameEngine
 				m_MeshMap.insert(std::make_pair(TEXT("Box"), _newMesh));
 			}
 			
+			//LoadFBX(TEXT("Asset/FBX/Joy.fbx"));
 			//LoadFBX(TEXT("Asset/FBX/Wooden_Crate.fbx"));
+			//LoadFBX(TEXT("Asset/FBX/Wooden_Crate_Normal_MRA.fbx"));
 		}
 
 		void* Resources::Load(const tstring& filePath)
@@ -147,15 +149,17 @@ namespace GameEngine
 
 
 				//_pair.second._albedoMapTexture;
-				_pair.second._normalMapTexture;
-				_pair.second._metalicRoughnessMapTexture;
+				//_pair.second._normalMapTexture;
+				//_pair.second._metalicRoughnessMapTexture;
 				_pair.second._emissiveMapTexture;
 				_pair.second._ambientMapTexture;
 				_pair.second._specularMapTexture;
 
 				GraphicsSystem::GetInstance()->CreateMaterialBuffer(_newMaterial);
 
-				_newMaterial->SetAlbedoTexture(GraphicsSystem::GetInstance()->LoadTexture(_pair.second._albedoMapTexture));
+				if(_pair.second._albedoMapTexture.length() > 0) _newMaterial->SetAlbedoTexture(GraphicsSystem::GetInstance()->LoadTexture(_pair.second._albedoMapTexture));
+				if(_pair.second._normalMapTexture.length() > 0) _newMaterial->SetNormalTexture(GraphicsSystem::GetInstance()->LoadTexture(_pair.second._normalMapTexture));
+				if(_pair.second._metalicRoughnessMapTexture.length() > 0) _newMaterial->SetMRATexture(GraphicsSystem::GetInstance()->LoadTexture(_pair.second._metalicRoughnessMapTexture));
 
 				m_MaterialMap.insert(std::make_pair(_pair.first, _newMaterial));
 			}

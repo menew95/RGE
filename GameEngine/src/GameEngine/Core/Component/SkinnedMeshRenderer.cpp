@@ -131,6 +131,8 @@ namespace GameEngine
 
 						_renderObject.m_UpdateResourcePerObjects.push_back(_perSkinnedObjectResource);
 
+						uint32 _idx = 3;
+
 						if (m_Materials[i]->GetAlbedoTexture() != nullptr)
 						{
 							Graphics::UpdateResourceData _data;
@@ -155,6 +157,8 @@ namespace GameEngine
 							_data._dataSrc = reinterpret_cast<void*>(m_Materials[i]->GetNormalTexture());
 
 							_renderObject.m_UpdateResources.push_back(_data);
+
+							_idx++;
 						}
 
 						if (m_Materials[i]->GetMRATexture() != nullptr)
@@ -168,10 +172,12 @@ namespace GameEngine
 							_data._dataSrc = reinterpret_cast<void*>(m_Materials[i]->GetMRATexture());
 
 							_renderObject.m_UpdateResources.push_back(_data);
+
+							_idx++;
 						}
 
 						// Todo : 임시 나중에 그래픽스 시스템이 랜더 패스 소유하고 리스트를 순회 할 때 바꿀것
-						GraphicsSystem::GetInstance()->RegistRenderObject(1, _renderObject);
+						GraphicsSystem::GetInstance()->RegistRenderObject(_idx, _renderObject);
 
 						//_materialBuffer->RegistRenderObject(_renderObject);
 					}

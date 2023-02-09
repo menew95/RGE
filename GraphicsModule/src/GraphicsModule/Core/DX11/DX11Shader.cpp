@@ -57,6 +57,13 @@ namespace Graphics
 				&m_Errors);
 			HR(_hr, "failed to complie shader file");
 
+			if (_hr == E_FAIL)
+			{
+				auto error = (char*)m_Errors->GetBufferPointer();
+
+				int a = 0;
+			}
+
 			if (m_Blob.Get() != nullptr && m_Blob->GetBufferSize() > 0)
 			{
 				CreateNativeShader(device, desc);

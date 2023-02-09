@@ -20,15 +20,23 @@ TestScene::TestScene()
 
 	camera->AddComponent<CameraController>();
 
-	std::shared_ptr<GameObject> _wooden_CrateObject = Resources::GetInstance()->GetResource<Prefab>(TEXT("Wooden_Crate"))->GetRootGameObject();
+	std::shared_ptr<GameObject> _wooden_CrateObject_Base = Resources::GetInstance()->GetResource<Prefab>(TEXT("Wooden_Crate"))->GetRootGameObject();
 
-	AddGameObjects(_wooden_CrateObject);
+	AddGameObjects(_wooden_CrateObject_Base);
+
+	std::shared_ptr<GameObject> _wooden_CrateObject_Bump_MRA = Resources::GetInstance()->GetResource<Prefab>(TEXT("Wooden_Crate_Normal_MRA"))->GetRootGameObject();
+
+	AddGameObjects(_wooden_CrateObject_Bump_MRA);
+
+	Vector3 _move = { -10, 0, 0 };
+
+	_wooden_CrateObject_Bump_MRA->GetTransform()->Translate(_move);
 
 	std::shared_ptr<GameObject> _joyObject = Resources::GetInstance()->GetResource<Prefab>(TEXT("Joy"))->GetRootGameObject();
 
 	AddGameObjects(_joyObject);
 
-	Vector3 _move = { 10, 0, 0 };
+	_move = { 10, 0, 0 };
 
 	_joyObject->GetTransform()->Translate(_move);
 

@@ -47,6 +47,19 @@ namespace Graphics
 
 		m_CommandBuffer = m_RenderSystem->CreateCommandBuffer(TEXT("MainCommandBuffer"), _commandBufferDesc);
 
+		InitMeshPass();
+
+		InitLightPass();
+
+		InitSkyBoxPass();
+
+		InitDebugPass();
+	}
+
+	void GraphicsEngine::InitMeshPass()
+	{
+
+#pragma region Mesh Base
 		{
 			auto* _state = m_ResourceManager->GetPipelineState(TEXT("Deferred_Mesh_Base"));
 			auto* _layout = m_ResourceManager->GetPipelineLayout(TEXT("Deferred_Mesh_Layout"));
@@ -62,45 +75,74 @@ namespace Graphics
 				{ 1, 0 }
 			};
 
-			m_Deferred_Mesh_Pass = new RenderPass(_state, _layout, _rt, _attachmentClears);
+			m_Deferred_Mesh_Pass = std::make_shared<RenderPass>(TEXT("Deferred_Mesh Pass"), _state, _layout, _rt, _attachmentClears);
 
 			m_Deferred_Mesh_Pass->SetPerFrameBuffer(m_ResourceManager->GetBuffer(TEXT("PerCamera")));
 		}
+#pragma endregion
 
+#pragma region Mesh Bump
+		{
+			auto* _state = m_ResourceManager->GetPipelineState(TEXT("Deferred_Mesh_Bump"));
+			auto* _layout = m_ResourceManager->GetPipelineLayout(TEXT("Deferred_Mesh_Bump_Layout"));
+			auto* _rt = m_ResourceManager->GetRenderTarget(TEXT("Deferred_Mesh"));
+
+			m_Deferred_Mesh_Bump_Pass = std::make_shared<RenderPass>(TEXT("Deferred_Mesh_Bump Pass"), _state, _layout, _rt);
+
+			m_Deferred_Mesh_Bump_Pass->SetPerFrameBuffer(m_ResourceManager->GetBuffer(TEXT("PerCamera")));
+		}
+#pragma endregion
+
+#pragma region Mesh Bump + MRA
+		{
+			auto* _state = m_ResourceManager->GetPipelineState(TEXT("Deferred_Mesh_Bump_MRA"));
+			auto* _layout = m_ResourceManager->GetPipelineLayout(TEXT("Deferred_Mesh_Bump_MRA_Layout"));
+			auto* _rt = m_ResourceManager->GetRenderTarget(TEXT("Deferred_Mesh"));
+
+			m_Deferred_Mesh_Bump_MRA_Pass = std::make_shared<RenderPass>(TEXT("Deferred_Mesh_Bump_MRA Pass"), _state, _layout, _rt);
+
+			m_Deferred_Mesh_Bump_MRA_Pass->SetPerFrameBuffer(m_ResourceManager->GetBuffer(TEXT("PerCamera")));
+		}
+#pragma endregion
+
+#pragma region  SkinnedMesh Base
 		{
 			auto* _state = m_ResourceManager->GetPipelineState(TEXT("Deferred_SkinnedMesh_Base"));
 			auto* _layout = m_ResourceManager->GetPipelineLayout(TEXT("Deferred_Mesh_Skin_Layout"));
 			auto* _rt = m_ResourceManager->GetRenderTarget(TEXT("Deferred_Mesh"));
 
-			m_Deferred_Mesh_Skinned_Pass = new RenderPass(_state, _layout, _rt);
+			m_Deferred_Mesh_Skinned_Pass = std::make_shared<RenderPass>(TEXT("Deferred_Mesh_Skin Pass"), _state, _layout, _rt);
 
 			m_Deferred_Mesh_Skinned_Pass->SetPerFrameBuffer(m_ResourceManager->GetBuffer(TEXT("PerCamera")));
 		}
+#pragma endregion
 
+#pragma region  SkinnedMesh Bump
 		{
-			auto* _state = m_ResourceManager->GetPipelineState(TEXT("Deferred_Merge"));
-			auto* _layout = m_ResourceManager->GetPipelineLayout(TEXT("Deferred_Light_Layout"));
+			auto* _state = m_ResourceManager->GetPipelineState(TEXT("Deferred_SkinnedMesh_Bump"));
+			auto* _layout = m_ResourceManager->GetPipelineLayout(TEXT("Deferred_Mesh_Skin_Bump_Layout"));
+			auto* _rt = m_ResourceManager->GetRenderTarget(TEXT("Deferred_Mesh"));
 
-			std::vector<AttachmentClear> _attachmentClears =
-			{
-				{ { 1, 0, 0, 0 }, 0 },
-				{ 1, 0 }
-			};
+			m_Deferred_Mesh_Skinned_Bump_Pass = std::make_shared<RenderPass>(TEXT("Deferred_Mesh_Skin_Bump Pass"), _state, _layout, _rt);
 
-			m_Deferred_Light_Pass = new RenderPass(_state, _layout, m_SwapChain);
-
-			m_Deferred_Light_Pass->SetPerFrameBuffer(m_ResourceManager->GetBuffer(TEXT("PerCamera")));
+			m_Deferred_Mesh_Skinned_Bump_Pass->SetPerFrameBuffer(m_ResourceManager->GetBuffer(TEXT("PerCamera")));
 		}
+#pragma endregion
 
+#pragma region  SkinnedMesh Bump + MRA
+		{
+			auto* _state = m_ResourceManager->GetPipelineState(TEXT("Deferred_SkinnedMesh_Bump_MRA"));
+			auto* _layout = m_ResourceManager->GetPipelineLayout(TEXT("Deferred_Mesh_Skin_Bump_MRA_Layout"));
+			auto* _rt = m_ResourceManager->GetRenderTarget(TEXT("Deferred_Mesh"));
 
-		IntiLightPass();
+			m_Deferred_Mesh_Skinned_Bump_MRA_Pass = std::make_shared<RenderPass>(TEXT("Deferred_Mesh_Skin_Bump_MRA Pass"), _state, _layout, _rt);
 
-		InitSkyBoxPass();
-
-		InitDebugPass();
+			m_Deferred_Mesh_Skinned_Bump_MRA_Pass->SetPerFrameBuffer(m_ResourceManager->GetBuffer(TEXT("PerCamera")));
+		}
+#pragma endregion
 	}
 
-	void GraphicsEngine::IntiLightPass()
+	void GraphicsEngine::InitLightPass()
 	{
 		m_Deferred_Light_Material = m_ResourceManager->CreateMaterialBuffer(TEXT("Light"), m_ResourceManager->GetPipelineLayout(TEXT("Deferred_Light_Layout")));
 
@@ -134,6 +176,19 @@ namespace Graphics
 
 		m_Screen_Mesh->CreateVertexBuffer(TEXT("Screen_Mesh"), _data.data(), _size, sizeof(ScreenVertex));
 		m_Screen_Mesh->CreateSubMesh(TEXT("Screen_Mesh"), triangles);
+
+		auto* _state = m_ResourceManager->GetPipelineState(TEXT("Deferred_Merge"));
+		auto* _layout = m_ResourceManager->GetPipelineLayout(TEXT("Deferred_Light_Layout"));
+
+		std::vector<AttachmentClear> _attachmentClears =
+		{
+			{ { 1, 0, 0, 0 }, 0 },
+			{ 1, 0 }
+		};
+
+		m_Deferred_Light_Pass = std::make_shared<RenderPass>(TEXT("Deferred_Light Pass"), _state, _layout, m_SwapChain);
+
+		m_Deferred_Light_Pass->SetPerFrameBuffer(m_ResourceManager->GetBuffer(TEXT("PerCamera")));
 	}
 
 	void GraphicsEngine::InitSkyBoxPass()
@@ -200,26 +255,17 @@ namespace Graphics
 			{ 1, 0 }
 		};
 
-		m_SkyBox_Pass = new RenderPass(_state, _layout, m_SwapChain, _attachmentClears);
+		m_SkyBox_Pass = std::make_shared<RenderPass>(TEXT("Skybox Pass"), _state, _layout, m_SwapChain, _attachmentClears);
 	}
 
 	void GraphicsEngine::InitDebugPass()
 	{
 		m_Debug_Material = m_ResourceManager->CreateMaterialBuffer(TEXT("MRT_Debug"), m_ResourceManager->GetPipelineLayout(TEXT("MRT_Debug")));
 
-		auto* _state = m_ResourceManager->GetPipelineState(TEXT("Screen"));
-		auto* _layout = m_ResourceManager->GetPipelineLayout(TEXT("MRT_Debug"));
-
-		m_Debug_Pass = new RenderPass(_state, _layout, m_SwapChain);
-
 		m_Albedo = m_ResourceManager->GetTexture(TEXT("Albedo"));
 		m_Normal = m_ResourceManager->GetTexture(TEXT("Normal"));
 		m_Depth = m_ResourceManager->GetTexture(TEXT("Depth"));
 		m_World = m_ResourceManager->GetTexture(TEXT("WorldPosition"));
-
-
-
-		//UpdateResourceData _perDraw{ eUpdateTime::PerMaterial, 1, ResourceType::Texture, &_perLighting, sizeof(Lighting) };
 
 		RenderObject _albedoObject;
 		_albedoObject.m_MeshBuffer = m_Screen_Mesh;
@@ -253,6 +299,11 @@ namespace Graphics
 		m_DebugRenderObject.push_back(_normalObject);
 		m_DebugRenderObject.push_back(_depthObject);
 		m_DebugRenderObject.push_back(_worldPosObject);
+
+		auto* _state = m_ResourceManager->GetPipelineState(TEXT("Screen"));
+		auto* _layout = m_ResourceManager->GetPipelineLayout(TEXT("MRT_Debug"));
+
+		m_Debug_Pass = std::make_shared<RenderPass>(TEXT("MRT Debug Pass"), _state, _layout, m_SwapChain);
 	}
 
 	Graphics::MeshBuffer* GraphicsEngine::CreateMeshBuffer(uuid uuid, std::vector<Common::VertexAttribute>& vertices, std::vector<std::vector<uint32>> subMeshs)
@@ -270,7 +321,7 @@ namespace Graphics
 		auto _pipelineLayout = m_ResourceManager->GetPipelineLayout(pipelineLayout);
 		auto _newMatBuffer = m_ResourceManager->CreateMaterialBuffer(uuid, _pipelineLayout);
 
-		_newMatBuffer->SetRenderPass(m_Deferred_Mesh_Pass);
+		//_newMatBuffer->SetRenderPass(m_Deferred_Mesh_Pass);
 
 		return _newMatBuffer;
 	}
@@ -307,9 +358,6 @@ namespace Graphics
 	void GraphicsEngine::Excute()
 	{
 		{
-			m_CommandBuffer->BeginEvent(TEXT("Deferred_Mesh Pass"));
-
-			// Update Frame Buffer
 			PerFrame _perFrame;
 
 			m_MainCameraBuffer->UpdateCamera(_perFrame._camera);
@@ -321,27 +369,46 @@ namespace Graphics
 			m_Deferred_Mesh_Pass->Excute(m_CommandBuffer);
 
 			m_Deferred_Mesh_Pass->EndExcute(m_CommandBuffer);
-
-			m_CommandBuffer->EndEvent();
 		}
 
 		{
-			m_CommandBuffer->BeginEvent(TEXT("Deferred_Mesh_Skin Pass"));
+			m_Deferred_Mesh_Bump_Pass->BeginExcute(m_CommandBuffer, nullptr);
 
-			//// Update Frame Buffer
-			//PerFrame _perFrame;
+			m_Deferred_Mesh_Bump_Pass->Excute(m_CommandBuffer);
 
-			//m_MainCameraBuffer->UpdateCamera(_perFrame._camera);
+			m_Deferred_Mesh_Bump_Pass->EndExcute(m_CommandBuffer);
+		}
 
-			//m_Deferred_Mesh_Skinned_Pass->UpdatePerFrame(m_CommandBuffer, &_perFrame, sizeof(_perFrame));
+		{
+			m_Deferred_Mesh_Bump_MRA_Pass->BeginExcute(m_CommandBuffer, nullptr);
 
+			m_Deferred_Mesh_Bump_MRA_Pass->Excute(m_CommandBuffer);
+
+			m_Deferred_Mesh_Bump_MRA_Pass->EndExcute(m_CommandBuffer);
+		}
+
+		{
 			m_Deferred_Mesh_Skinned_Pass->BeginExcute(m_CommandBuffer, nullptr);
 
 			m_Deferred_Mesh_Skinned_Pass->Excute(m_CommandBuffer);
 
 			m_Deferred_Mesh_Skinned_Pass->EndExcute(m_CommandBuffer);
+		}
 
-			m_CommandBuffer->EndEvent();
+		{
+			m_Deferred_Mesh_Skinned_Bump_Pass->BeginExcute(m_CommandBuffer, nullptr);
+
+			m_Deferred_Mesh_Skinned_Bump_Pass->Excute(m_CommandBuffer);
+
+			m_Deferred_Mesh_Skinned_Bump_Pass->EndExcute(m_CommandBuffer);
+		}
+
+		{
+			m_Deferred_Mesh_Skinned_Bump_MRA_Pass->BeginExcute(m_CommandBuffer, nullptr);
+
+			m_Deferred_Mesh_Skinned_Bump_MRA_Pass->Excute(m_CommandBuffer);
+
+			m_Deferred_Mesh_Skinned_Bump_MRA_Pass->EndExcute(m_CommandBuffer);
 		}
 
 		{
@@ -351,15 +418,11 @@ namespace Graphics
 
 			m_SkyBox_Pass->RegistRenderObject(_skyBoxObject);
 
-			m_CommandBuffer->BeginEvent(TEXT("SkyBox Pass"));
-
 			m_SkyBox_Pass->BeginExcute(m_CommandBuffer, nullptr);
 
 			m_SkyBox_Pass->Excute(m_CommandBuffer);
 
 			m_SkyBox_Pass->EndExcute(m_CommandBuffer);
-
-			m_CommandBuffer->EndEvent();
 		}
 
 		{
@@ -377,8 +440,6 @@ namespace Graphics
 
 			m_Deferred_Light_Pass->RegistRenderObject(_deferredMergeRenderObject);
 			
-			m_CommandBuffer->BeginEvent(TEXT("Lighting Pass"));
-			
 			m_Deferred_Light_Pass->BeginExcute(m_CommandBuffer, nullptr);
 
 			m_Deferred_Light_Pass->Excute(m_CommandBuffer);
@@ -386,8 +447,6 @@ namespace Graphics
 			m_Deferred_Light_Pass->EndExcute(m_CommandBuffer);
 
 			m_CommandBuffer->ResetResourceSlots(ResourceType::Texture, 0, 5, BindFlags::ShaderResource, StageFlags::PS);
-
-			m_CommandBuffer->EndEvent();
 		}
 
 		{
@@ -401,9 +460,6 @@ namespace Graphics
 				m_Debug_Pass->RegistRenderObject(m_DebugRenderObject[i]);
 			}
 
-
-			m_CommandBuffer->BeginEvent(TEXT("MRT Debug Pass"));
-
 			m_Debug_Pass->BeginExcute(m_CommandBuffer, nullptr);
 
 			m_Debug_Pass->Excute(m_CommandBuffer);
@@ -411,8 +467,6 @@ namespace Graphics
 			m_Debug_Pass->EndExcute(m_CommandBuffer);
 
 			m_CommandBuffer->ResetResourceSlots(ResourceType::Texture, 0, 1, BindFlags::ShaderResource, StageFlags::PS);
-
-			m_CommandBuffer->EndEvent();
 		}
 
 		m_SwapChain->Present();

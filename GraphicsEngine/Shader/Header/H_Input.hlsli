@@ -36,7 +36,7 @@ struct VSOutput
 	float3 normal	: NORMAL;
 	float2 uv		: TEXCOORD1;
 
-#ifdef _NORMAL_MAP
+#if defined(_NORMAL_MAP)
 	float3 tangent	: TANGENT;
 #endif
 //#endif

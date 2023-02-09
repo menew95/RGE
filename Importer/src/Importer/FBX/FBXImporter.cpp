@@ -617,6 +617,10 @@ namespace Utility
 				meshData._indexAttributes[subMeshCnt].push_back(arrIdx[1]);
 			}*/
 		}
+
+		// tangent 정보를 가져온다.
+		if (meshNode->GetElementNormalCount() >= 1)
+			GetTangent(meshData, subMeshCnt);
 	}
 
 	Math::Vector3 FBXImporter::GetNormal(fbxsdk::FbxMesh* mesh, int controlPointIndex, int vertexCounter)

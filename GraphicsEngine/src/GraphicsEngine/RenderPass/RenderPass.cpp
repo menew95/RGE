@@ -11,19 +11,44 @@
 
 namespace Graphics
 {
-	RenderPass::RenderPass(PipelineState* pipelineState, PipelineLayout* pipelineLayout, RenderTarget* renderTarget)
-		: m_PipelineState(pipelineState)
+	RenderPass::RenderPass(const tstring& passName, PipelineState* pipelineState, PipelineLayout* pipelineLayout, RenderTarget* renderTarget)
+		: m_PassName(passName)
+		, m_PipelineState(pipelineState)
 		, m_PipelineLayout(pipelineLayout)
 		, m_RenderTarget(renderTarget)
+		, m_PerFrameBuffer(nullptr)
+	{
+
+	}
+
+	RenderPass::RenderPass(PipelineState* pipelineState, PipelineLayout* pipelineLayout, RenderTarget* renderTarget)
+		: m_PassName(TEXT("RenderPass"))
+		, m_PipelineState(pipelineState)
+		, m_PipelineLayout(pipelineLayout)
+		, m_RenderTarget(renderTarget)
+		, m_PerFrameBuffer(nullptr)
+	{
+
+	}
+
+	RenderPass::RenderPass(const tstring& passName, PipelineState* pipelineState, PipelineLayout* pipelineLayout, RenderTarget* renderTarget, std::vector<AttachmentClear> attachmentClears)
+		: m_PassName(passName)
+		, m_PipelineState(pipelineState)
+		, m_PipelineLayout(pipelineLayout)
+		, m_RenderTarget(renderTarget)
+		, m_AttachmentClears(attachmentClears)
+		, m_PerFrameBuffer(nullptr)
 	{
 
 	}
 
 	RenderPass::RenderPass(PipelineState* pipelineState, PipelineLayout* pipelineLayout, RenderTarget* renderTarget, std::vector<AttachmentClear> attachmentClears)
-		: m_PipelineState(pipelineState)
+		: m_PassName(TEXT("RenderPass"))
+		, m_PipelineState(pipelineState)
 		, m_PipelineLayout(pipelineLayout)
 		, m_RenderTarget(renderTarget)
 		, m_AttachmentClears(attachmentClears)
+		, m_PerFrameBuffer(nullptr)
 	{
 
 	}
@@ -47,10 +72,13 @@ namespace Graphics
 
 	void RenderPass::BeginExcute(CommandBuffer* commandBuffer, PerFrame* perFrameData)
 	{
+#if defined(_DEBUG) || defined(DEBUG)
+		commandBuffer->BeginEvent(m_PassName.c_str());
+#endif
+
 		commandBuffer->SetPipelineState(*m_PipelineState);
 		commandBuffer->SetRenderTarget(*m_RenderTarget, static_cast<uint32>(m_AttachmentClears.size()), m_AttachmentClears.data());
 
-		//commandBuffer->UpdateBuffer(*m_PerFrameBuffer, 0, perFrameData, sizeof(PerFrame));
 	}
 
 	void RenderPass::Excute(CommandBuffer* commandBuffer)
@@ -88,6 +116,10 @@ namespace Graphics
 		commandBuffer->EndRenderPass();
 
 		ClearRenderObject();
+
+#if defined(_DEBUG) || defined(DEBUG)
+		commandBuffer->EndEvent();
+#endif
 	}
 
 	void RenderPass::UpdateResourcePerMaterial(CommandBuffer* commandBuffer, RenderObject& renderObject)

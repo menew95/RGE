@@ -18,16 +18,16 @@ VSOutput main(VSInput input)
     
     _output.normal = normalize(mul(input.normal, (float3x3)worldInvTranspose));
 
-#if defined(_NORMAL_MESH)
-    _output.tangent = input.tangent;
-#endif //_NORMAL_MESH
+#if defined(_NORMAL_MAP)
+    _output.tangent = normalize(mul(input.tangent, (float3x3)world));
+#endif //_NORMAL_MAP
 
 #else // !defined(_SKIN) && !defined(BONECNT)
     float3 _posL = float3(0.0f, 0.0f, 0.0f);
     float3 _normalL = float3(0.0f, 0.0f, 0.0f);
-#if defined(_NORMAL_MESH)
+#if defined(_NORMAL_MAP)
     float3 _tangentL = float3(0.0f, 0.0f, 0.0f);
-#endif //_NORMAL_MESH
+#endif //_NORMAL_MAP
 
     [unroll]
     for (int i = 0; i < BONECNT; i++)
@@ -37,9 +37,9 @@ VSOutput main(VSInput input)
             _posL        += input.weight[i] * mul(float4(input.posL, 1.0f), boneTransforms[input.bone[i]]).xyz;
             _normalL     += input.weight[i] * mul(input.normal, (float3x3)boneTransforms[input.bone[i]]).xyz;
 
-#if defined(_NORMAL_MESH)
+#if defined(_NORMAL_MAP)
             _tangentL    += input.weight[i] * mul(input.tangent, (float3x3)boneTransforms[input.bone[i]]).xyz;
-#endif //_NORMAL_MESH
+#endif //_NORMAL_MAP
         }
     }
 
@@ -50,9 +50,9 @@ VSOutput main(VSInput input)
 
     _output.normal = normalize(_normalL);// normalize(mul(_normalL, (float3x3)worldInvTranspose));
 
-#if defined(_NORMAL_MESH)
-    _output.Tangent = normalize(mul(_tangentL, (float3x3)world));
-#endif //_NORMAL_MESH
+#if defined(_NORMAL_MAP)
+    _output.tangent = normalize(mul(_tangentL, (float3x3)world));
+#endif //_NORMAL_MAP
 
 #endif // !defined(_SKIN) && !defined(BONECNT)
 
