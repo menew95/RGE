@@ -20,10 +20,16 @@ namespace Graphics
 	class CommandBuffer;
 
 	struct PerFrame;
+
 	struct ResourceClear
 	{
-
+		ResourceType _type;
+		uint32 _fristSlot;
+		uint32 _numSlots;
+		long _bindFlags;
+		long _stageFlags;
 	};
+
 	class GRAPHICSENGINE_DLL_DECLSPEC RenderPass
 	{
 	public:
@@ -68,6 +74,11 @@ namespace Graphics
 
 		inline void SetRenderTarget(RenderTarget* renderTarget) { m_RenderTarget = renderTarget; }
 
+		inline void SetClearObjects(bool value) { m_IsClearObjects = value; }
+
+		inline void SetResourceClear(std::vector<ResourceClear>& clears) { m_ResourceClears = clears; }
+		inline void AddResourceClear(ResourceClear clear) { m_ResourceClears.push_back(clear); }
+
 	protected:
 		void UpdateResourcePerMaterial(CommandBuffer* commandBuffer, RenderObject& renderObject);
 		void UpdateResourcePerObject(CommandBuffer* commandBuffer, RenderObject& renderObject);
@@ -88,8 +99,8 @@ namespace Graphics
 
 		Buffer* m_PerFrameBuffer;
 
-		bool m_IsClearObject = true;
+		bool m_IsClearObjects = true;
 
-		ResourceClear m_ResourceClear;
+		std::vector<ResourceClear> m_ResourceClears;
 	};
 }

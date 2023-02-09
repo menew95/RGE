@@ -115,7 +115,13 @@ namespace Graphics
 	{
 		commandBuffer->EndRenderPass();
 
-		ClearRenderObject();
+		if (m_IsClearObjects)
+			ClearRenderObject();
+
+		for (auto& _clear : m_ResourceClears)
+		{
+			commandBuffer->ResetResourceSlots(_clear._type, _clear._fristSlot, _clear._numSlots, _clear._bindFlags, _clear._stageFlags);
+		}
 
 #if defined(_DEBUG) || defined(DEBUG)
 		commandBuffer->EndEvent();

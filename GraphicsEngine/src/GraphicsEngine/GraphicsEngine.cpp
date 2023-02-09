@@ -189,6 +189,8 @@ namespace Graphics
 		m_Deferred_Light_Pass = std::make_shared<RenderPass>(TEXT("Deferred_Light Pass"), _state, _layout, m_SwapChain);
 
 		m_Deferred_Light_Pass->SetPerFrameBuffer(m_ResourceManager->GetBuffer(TEXT("PerCamera")));
+
+		m_Deferred_Light_Pass->AddResourceClear({ ResourceType::Texture, 0, 5, BindFlags::ShaderResource, StageFlags::PS });
 	}
 
 	void GraphicsEngine::InitSkyBoxPass()
@@ -256,6 +258,15 @@ namespace Graphics
 		};
 
 		m_SkyBox_Pass = std::make_shared<RenderPass>(TEXT("Skybox Pass"), _state, _layout, m_SwapChain, _attachmentClears);
+
+
+		RenderObject _skyBoxObject;
+		_skyBoxObject.m_MeshBuffer = m_SkyBox_Mesh;
+		_skyBoxObject.m_MaterialBuffer = m_SkyBox_Material;
+
+		m_SkyBox_Pass->RegistRenderObject(_skyBoxObject);
+
+		m_SkyBox_Pass->SetClearObjects(false);
 	}
 
 	void GraphicsEngine::InitDebugPass()
@@ -304,6 +315,19 @@ namespace Graphics
 		auto* _layout = m_ResourceManager->GetPipelineLayout(TEXT("MRT_Debug"));
 
 		m_Debug_Pass = std::make_shared<RenderPass>(TEXT("MRT Debug Pass"), _state, _layout, m_SwapChain);
+		m_Debug_Pass->AddResourceClear({ ResourceType::Texture, 0, 1, BindFlags::ShaderResource, StageFlags::PS });
+
+		for (uint i = 0; i < m_DebugRenderObject.size(); i++)
+		{
+			Math::Viewport _viewport{ 256.f * i, 0.f, 256.f, 144.f };
+			//Math::Viewport _viewport{ 128.f, 0.f, 128.f, 72.f  };
+
+			m_DebugRenderObject[i].SetViewport(_viewport);
+
+			m_Debug_Pass->RegistRenderObject(m_DebugRenderObject[i]);
+		}
+
+		m_Debug_Pass->SetClearObjects(false);
 	}
 
 	Graphics::MeshBuffer* GraphicsEngine::CreateMeshBuffer(uuid uuid, std::vector<Common::VertexAttribute>& vertices, std::vector<std::vector<uint32>> subMeshs)
@@ -357,13 +381,29 @@ namespace Graphics
 
 	void GraphicsEngine::Excute()
 	{
+		PerFrame _perFrame;
+
+		m_MainCameraBuffer->UpdateCamera(_perFrame._camera);
+
+		m_Deferred_Mesh_Pass->UpdatePerFrame(m_CommandBuffer, &_perFrame, sizeof(_perFrame));
+
+
+		RenderObject _deferredMergeRenderObject;
+		_deferredMergeRenderObject.m_MeshBuffer = m_Screen_Mesh;
+		_deferredMergeRenderObject.m_MaterialBuffer = m_Deferred_Light_Material;
+
+		// Update Per Object Buffer(Lighting)
+		Lighting _perLighting;
+		GetLightingData(_perLighting);
+
+		UpdateResourceData _perDraw{ eUpdateTime::PerObject, 1, ResourceType::Buffer, &_perLighting, sizeof(Lighting) };
+
+		_deferredMergeRenderObject.m_UpdateResourcePerObjects.push_back(_perDraw);
+
+		m_Deferred_Light_Pass->RegistRenderObject(_deferredMergeRenderObject);
+
+
 		{
-			PerFrame _perFrame;
-
-			m_MainCameraBuffer->UpdateCamera(_perFrame._camera);
-
-			m_Deferred_Mesh_Pass->UpdatePerFrame(m_CommandBuffer, &_perFrame, sizeof(_perFrame));
-
 			m_Deferred_Mesh_Pass->BeginExcute(m_CommandBuffer, nullptr);
 
 			m_Deferred_Mesh_Pass->Excute(m_CommandBuffer);
@@ -412,12 +452,6 @@ namespace Graphics
 		}
 
 		{
-			RenderObject _skyBoxObject;
-			_skyBoxObject.m_MeshBuffer = m_SkyBox_Mesh;
-			_skyBoxObject.m_MaterialBuffer = m_SkyBox_Material;
-
-			m_SkyBox_Pass->RegistRenderObject(_skyBoxObject);
-
 			m_SkyBox_Pass->BeginExcute(m_CommandBuffer, nullptr);
 
 			m_SkyBox_Pass->Excute(m_CommandBuffer);
@@ -426,47 +460,19 @@ namespace Graphics
 		}
 
 		{
-			RenderObject _deferredMergeRenderObject;
-			_deferredMergeRenderObject.m_MeshBuffer = m_Screen_Mesh;
-			_deferredMergeRenderObject.m_MaterialBuffer = m_Deferred_Light_Material;
-
-			// Update Per Object Buffer(Lighting)
-			Lighting _perLighting;
-			GetLightingData(_perLighting);
-
-			UpdateResourceData _perDraw{ eUpdateTime::PerObject, 1, ResourceType::Buffer, &_perLighting, sizeof(Lighting) };
-
-			_deferredMergeRenderObject.m_UpdateResourcePerObjects.push_back(_perDraw);
-
-			m_Deferred_Light_Pass->RegistRenderObject(_deferredMergeRenderObject);
-			
 			m_Deferred_Light_Pass->BeginExcute(m_CommandBuffer, nullptr);
 
 			m_Deferred_Light_Pass->Excute(m_CommandBuffer);
 
 			m_Deferred_Light_Pass->EndExcute(m_CommandBuffer);
-
-			m_CommandBuffer->ResetResourceSlots(ResourceType::Texture, 0, 5, BindFlags::ShaderResource, StageFlags::PS);
 		}
 
 		{
-			for (uint i = 0; i < m_DebugRenderObject.size(); i++)
-			{
-				Math::Viewport _viewport{ 256.f * i, 0.f, 256.f, 144.f };
-				//Math::Viewport _viewport{ 128.f, 0.f, 128.f, 72.f  };
-
-				m_DebugRenderObject[i].SetViewport(_viewport);
-
-				m_Debug_Pass->RegistRenderObject(m_DebugRenderObject[i]);
-			}
-
 			m_Debug_Pass->BeginExcute(m_CommandBuffer, nullptr);
 
 			m_Debug_Pass->Excute(m_CommandBuffer);
 
 			m_Debug_Pass->EndExcute(m_CommandBuffer);
-
-			m_CommandBuffer->ResetResourceSlots(ResourceType::Texture, 0, 1, BindFlags::ShaderResource, StageFlags::PS);
 		}
 
 		m_SwapChain->Present();
