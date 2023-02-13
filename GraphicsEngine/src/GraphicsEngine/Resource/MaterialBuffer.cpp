@@ -16,7 +16,7 @@ namespace Graphics
 
 	MaterialBuffer::~MaterialBuffer()
 	{
-		m_RenderSystem->Release(*m_PipelineLayout);
+		//m_RenderSystem->Release(*m_PipelineLayout);
 		m_PipelineLayout = nullptr;
 	}
 

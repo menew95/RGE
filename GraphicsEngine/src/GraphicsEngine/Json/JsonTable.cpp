@@ -592,7 +592,7 @@ namespace Graphics
 			auto _pipelineStateTables = _jsonReader->LoadJson(TEXT("Asset/GraphicsTable/PipelineStateTable.json"));
 
 			const TCHAR* UUID = TEXT("UUID");
-			const TCHAR* pipelineLayoutUUID = TEXT("PipelineLayout");
+			//const TCHAR* pipelineLayoutUUID = TEXT("PipelineLayout");
 			const TCHAR* shaderProgram = TEXT("ShaderProgram");
 
 			const TCHAR* primitiveTopology = TEXT("PrimitiveTopology");
@@ -615,18 +615,18 @@ namespace Graphics
 					_uuid = _pipelineStateTable[UUID].GetString();
 				}
 
-				if (_pipelineStateTable.HasMember(pipelineLayoutUUID))
+				/*if (_pipelineStateTable.HasMember(pipelineLayoutUUID))
 				{
 					uuid _layoutUUID = _pipelineStateTable[pipelineLayoutUUID].GetString();
 
 					_pipelineStateDesc._pipelineLayout = resourceManager->GetPipelineLayout(_layoutUUID);
-				}
+				}*/
 
 				if (_pipelineStateTable.HasMember(shaderProgram))
 				{
 					for (uint32 i = 0; i < _pipelineStateTable[shaderProgram].Size(); i++)
 					{
-						auto _shaderID = _pipelineStateTable[shaderProgram][i].GetString();
+						uuid _shaderID = _pipelineStateTable[shaderProgram][i].GetString();
 
 						if (_shaderID != TEXT("NULL"))
 						{
@@ -1224,6 +1224,103 @@ namespace Graphics
 		}
 
 		_jsonReader->UnloadJson(TEXT("Asset/GraphicsTable/BufferTable.json"));
+
+		return true;
+	}
+
+	bool TableLoader::LoadRenderPassTable(ResourceManager* resourceManager)
+	{
+		auto* _jsonReader = Utility::JsonReader::GetInstance();
+
+		auto _renderPassTables = _jsonReader->LoadJson(TEXT("Asset/GraphicsTable/RenderPassTable.json"));
+
+		const TCHAR* UUID = TEXT("UUID");
+		const TCHAR* pipelineStateUUID = TEXT("PipelineStateUUID");
+		const TCHAR* pipelineLayoutUUID = TEXT("PipelineLayoutUUID");
+		const TCHAR* renderTargetUUID = TEXT("RenderTargetUUID");
+		const TCHAR* bufferUUID = TEXT("BufferUUID");
+
+		const TCHAR* attachmentClearCount = TEXT("AttachmentClearCount");
+		const TCHAR* attachmentClears = TEXT("AttachmentClears");
+
+		const TCHAR* isClearObjects = TEXT("IsClearObjects");
+
+		const TCHAR* resourceClearCount = TEXT("ResourceClearCount");
+		const TCHAR* resourceClears = TEXT("ResourceClears");
+
+		for (auto& _renderPassTable : _renderPassTables->GetArray())
+		{
+			uuid _uuid;
+			RenderPassDesc _renderPassDesc;
+
+			if (_renderPassTable.HasMember(UUID))
+			{
+				_uuid = _renderPassTable[UUID].GetString();
+				_renderPassDesc._passName = _uuid;
+			}
+
+			if (_renderPassTable.HasMember(pipelineStateUUID))
+			{
+				uuid _id = _renderPassTable[pipelineStateUUID].GetString();
+
+				if (_id.length() > 0) _renderPassDesc._pipelineState = resourceManager->GetPipelineState(_id);
+			}
+
+			if (_renderPassTable.HasMember(pipelineLayoutUUID))
+			{
+				uuid _id = _renderPassTable[pipelineLayoutUUID].GetString();
+
+				if (_id.length() > 0) _renderPassDesc._pipelineLayout = resourceManager->GetPipelineLayout(_id);
+			}
+
+			if (_renderPassTable.HasMember(renderTargetUUID))
+			{
+				uuid _id = _renderPassTable[renderTargetUUID].GetString();
+
+				if (_id.length() > 0) _renderPassDesc._renderTarget = resourceManager->GetRenderTarget(_id);
+			}
+
+			if (_renderPassTable.HasMember(bufferUUID))
+			{
+				uuid _id = _renderPassTable[bufferUUID].GetString();
+
+				if(_id.length() > 0) _renderPassDesc._perFrameBuffer = resourceManager->GetBuffer(_id);
+			}
+
+			if (_renderPassTable.HasMember(attachmentClears))
+			{
+
+			}
+
+			if (_renderPassTable.HasMember(isClearObjects))
+			{
+				_renderPassDesc._IsClearObjects = _renderPassTable[isClearObjects].GetBool();
+			}
+
+			if (_renderPassTable.HasMember(resourceClears))
+			{
+				_renderPassDesc._resourceClears.reserve(_renderPassTable[resourceClears].GetArray().Size());
+
+				for (auto& _resourceClear : _renderPassTable[resourceClears].GetArray())
+				{
+					assert(_resourceClear.GetArray().Size() == 5);
+
+					ResourceClear _clear;
+
+					_clear._type = static_cast<ResourceType>(_resourceClear.GetArray()[0].GetUint());
+					_clear._fristSlot = _resourceClear.GetArray()[1].GetUint();
+					_clear._numSlots = _resourceClear.GetArray()[2].GetUint();
+					_clear._bindFlags = _resourceClear.GetArray()[3].GetUint();
+					_clear._stageFlags = _resourceClear.GetArray()[4].GetUint();
+
+					_renderPassDesc._resourceClears.emplace_back(_clear);
+				}
+			}
+
+			resourceManager->CreateRenderPass(_uuid, _renderPassDesc);
+		}
+
+		_jsonReader->UnloadJson(TEXT("Asset/GraphicsTable/RenderPassTable.json"));
 
 		return true;
 	}

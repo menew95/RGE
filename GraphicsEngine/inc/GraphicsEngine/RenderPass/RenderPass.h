@@ -2,14 +2,11 @@
 
 #include "Common.h"
 
-#include "GraphicsEngine/RenderPassFlags.h"
+#include "GraphicsEngine/RenderPass/RenderPassFlags.h"
 
 #include "GraphicsEngine/RenderObject.h"
 
 #include "GraphicsEngine/Export.h"
-
-#include "GraphicsModule/Core/CommandBufferFlags.h"
-
 
 namespace Graphics
 {
@@ -21,18 +18,10 @@ namespace Graphics
 
 	struct PerFrame;
 
-	struct ResourceClear
-	{
-		ResourceType _type;
-		uint32 _fristSlot;
-		uint32 _numSlots;
-		long _bindFlags;
-		long _stageFlags;
-	};
-
 	class GRAPHICSENGINE_DLL_DECLSPEC RenderPass
 	{
 	public:
+		RenderPass(RenderPassDesc desc);
 		RenderPass(const tstring& passName, PipelineState* pipelineState, PipelineLayout* pipelineLayout, RenderTarget* renderTarget);
 		RenderPass(PipelineState* pipelineState, PipelineLayout* pipelineLayout, RenderTarget* renderTarget);
 		RenderPass(const tstring& passName, PipelineState* pipelineState, PipelineLayout* pipelineLayout, RenderTarget* renderTarget, std::vector<AttachmentClear> attachmentClears);
@@ -76,8 +65,13 @@ namespace Graphics
 
 		inline void SetClearObjects(bool value) { m_IsClearObjects = value; }
 
-		inline void SetResourceClear(std::vector<ResourceClear>& clears) { m_ResourceClears = clears; }
 		inline void AddResourceClear(ResourceClear clear) { m_ResourceClears.push_back(clear); }
+
+		inline void SetResourceClear(std::vector<ResourceClear>& clears) { m_ResourceClears = clears; }
+		inline std::vector<ResourceClear> GetResourceClear() { return m_ResourceClears; }
+
+		inline void SetAttachmentClears(std::vector<AttachmentClear> clears) { m_AttachmentClears = clears; }
+		inline std::vector<AttachmentClear> GetAttachmentClears() { return m_AttachmentClears; }
 
 	protected:
 		void UpdateResourcePerMaterial(CommandBuffer* commandBuffer, RenderObject& renderObject);

@@ -225,7 +225,7 @@ xcopy /E /S /Y /R "$(ProjectDir)Shader\*" "$(OutputPath)..\Client\Asset\Shader\*
     <ClInclude Include="inc\GraphicsEngine\GraphicsEngineFlags.h" />
     <ClInclude Include="inc\GraphicsEngine\RenderPass\RenderPass.h" />
     <ClInclude Include="inc\GraphicsEngine\RenderObject.h" />
-    <ClInclude Include="inc\GraphicsEngine\RenderPassFlags.h" />
+    <ClInclude Include="inc\GraphicsEngine\RenderPass\RenderPassFlags.h" />
     <ClInclude Include="inc\GraphicsEngine\Resource\CameraBuffer.h" />
     <ClInclude Include="inc\GraphicsEngine\Resource\ConstantBuffer.h" />
     <ClInclude Include="inc\GraphicsEngine\Resource\LightBuffer.h" />

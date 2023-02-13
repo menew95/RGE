@@ -65,7 +65,7 @@ namespace Graphics
 		Graphics::SwapChain* m_SwapChain;
 		Graphics::CommandBuffer* m_CommandBuffer;
 
-		std::shared_ptr<ResourceManager> m_ResourceManager;
+		ResourceManager* m_ResourceManager;
 
 		CameraBuffer* m_MainCameraBuffer;
 		std::shared_ptr<Graphics::RenderPass> m_Deferred_Mesh_Pass;

@@ -21,7 +21,7 @@ namespace Graphics
 	{
 		LoadDllAndCreateRenderSystem();
 
-		m_ResourceManager = std::make_shared<ResourceManager>(m_RenderSystem);
+		m_ResourceManager = new ResourceManager(m_RenderSystem);
 
 		LoadGraphicsTable();
 
@@ -30,6 +30,14 @@ namespace Graphics
 
 	GraphicsEngine::~GraphicsEngine()
 	{
+		m_CommandBuffer->ResetResourceSlots(ResourceType::Texture, 0, 8, StageFlags::AllStages);
+		m_CommandBuffer->EndRenderPass();
+
+		m_RenderSystem->Release(*m_SwapChain);
+		m_RenderSystem->Release(*m_CommandBuffer);
+
+		delete m_ResourceManager;
+
 		FreeDllAndReleaseRenderSystem();
 	}
 
@@ -58,88 +66,29 @@ namespace Graphics
 
 	void GraphicsEngine::InitMeshPass()
 	{
-
-#pragma region Mesh Base
+		std::vector<AttachmentClear> _attachmentClears =
 		{
-			auto* _state = m_ResourceManager->GetPipelineState(TEXT("Deferred_Mesh_Base"));
-			auto* _layout = m_ResourceManager->GetPipelineLayout(TEXT("Deferred_Mesh_Layout"));
-			auto* _rt = m_ResourceManager->GetRenderTarget(TEXT("Deferred_Mesh"));
+			{ { 0, 0, 0, 0 }, 0 },
+			{ { 0, 0, 0, 0 }, 1 },
+			{ { 1, 0, 0, 0 }, 2 },
+			{ { 0, 0, 0, 0 }, 3 },
+			{ { 0, 0, 0, 0 }, 4 },
+			{ 1, 0 }
+		};
 
-			std::vector<AttachmentClear> _attachmentClears =
-			{
-				{ { 0, 0, 0, 0 }, 0 },
-				{ { 0, 0, 0, 0 }, 1 },
-				{ { 1, 0, 0, 0 }, 2 },
-				{ { 0, 0, 0, 0 }, 3 },
-				{ { 0, 0, 0, 0 }, 4 },
-				{ 1, 0 }
-			};
+		m_Deferred_Mesh_Pass = m_ResourceManager->GetRenderPass(TEXT("Deferred_Mesh Pass"));
+		m_Deferred_Mesh_Pass->SetAttachmentClears(_attachmentClears);
 
-			m_Deferred_Mesh_Pass = std::make_shared<RenderPass>(TEXT("Deferred_Mesh Pass"), _state, _layout, _rt, _attachmentClears);
+		m_Deferred_Mesh_Bump_Pass = m_ResourceManager->GetRenderPass(TEXT("Deferred_Mesh_Bump Pass"));
 
-			m_Deferred_Mesh_Pass->SetPerFrameBuffer(m_ResourceManager->GetBuffer(TEXT("PerCamera")));
-		}
-#pragma endregion
+		m_Deferred_Mesh_Bump_MRA_Pass = m_ResourceManager->GetRenderPass(TEXT("Deferred_Mesh_Bump_MRA Pass"));
 
-#pragma region Mesh Bump
-		{
-			auto* _state = m_ResourceManager->GetPipelineState(TEXT("Deferred_Mesh_Bump"));
-			auto* _layout = m_ResourceManager->GetPipelineLayout(TEXT("Deferred_Mesh_Bump_Layout"));
-			auto* _rt = m_ResourceManager->GetRenderTarget(TEXT("Deferred_Mesh"));
+		m_Deferred_Mesh_Skinned_Pass = m_ResourceManager->GetRenderPass(TEXT("Deferred_Mesh_Skin Pass"));
 
-			m_Deferred_Mesh_Bump_Pass = std::make_shared<RenderPass>(TEXT("Deferred_Mesh_Bump Pass"), _state, _layout, _rt);
 
-			m_Deferred_Mesh_Bump_Pass->SetPerFrameBuffer(m_ResourceManager->GetBuffer(TEXT("PerCamera")));
-		}
-#pragma endregion
+		m_Deferred_Mesh_Skinned_Bump_Pass = m_ResourceManager->GetRenderPass(TEXT("Deferred_Mesh_Skin_Bump Pass"));
 
-#pragma region Mesh Bump + MRA
-		{
-			auto* _state = m_ResourceManager->GetPipelineState(TEXT("Deferred_Mesh_Bump_MRA"));
-			auto* _layout = m_ResourceManager->GetPipelineLayout(TEXT("Deferred_Mesh_Bump_MRA_Layout"));
-			auto* _rt = m_ResourceManager->GetRenderTarget(TEXT("Deferred_Mesh"));
-
-			m_Deferred_Mesh_Bump_MRA_Pass = std::make_shared<RenderPass>(TEXT("Deferred_Mesh_Bump_MRA Pass"), _state, _layout, _rt);
-
-			m_Deferred_Mesh_Bump_MRA_Pass->SetPerFrameBuffer(m_ResourceManager->GetBuffer(TEXT("PerCamera")));
-		}
-#pragma endregion
-
-#pragma region  SkinnedMesh Base
-		{
-			auto* _state = m_ResourceManager->GetPipelineState(TEXT("Deferred_SkinnedMesh_Base"));
-			auto* _layout = m_ResourceManager->GetPipelineLayout(TEXT("Deferred_Mesh_Skin_Layout"));
-			auto* _rt = m_ResourceManager->GetRenderTarget(TEXT("Deferred_Mesh"));
-
-			m_Deferred_Mesh_Skinned_Pass = std::make_shared<RenderPass>(TEXT("Deferred_Mesh_Skin Pass"), _state, _layout, _rt);
-
-			m_Deferred_Mesh_Skinned_Pass->SetPerFrameBuffer(m_ResourceManager->GetBuffer(TEXT("PerCamera")));
-		}
-#pragma endregion
-
-#pragma region  SkinnedMesh Bump
-		{
-			auto* _state = m_ResourceManager->GetPipelineState(TEXT("Deferred_SkinnedMesh_Bump"));
-			auto* _layout = m_ResourceManager->GetPipelineLayout(TEXT("Deferred_Mesh_Skin_Bump_Layout"));
-			auto* _rt = m_ResourceManager->GetRenderTarget(TEXT("Deferred_Mesh"));
-
-			m_Deferred_Mesh_Skinned_Bump_Pass = std::make_shared<RenderPass>(TEXT("Deferred_Mesh_Skin_Bump Pass"), _state, _layout, _rt);
-
-			m_Deferred_Mesh_Skinned_Bump_Pass->SetPerFrameBuffer(m_ResourceManager->GetBuffer(TEXT("PerCamera")));
-		}
-#pragma endregion
-
-#pragma region  SkinnedMesh Bump + MRA
-		{
-			auto* _state = m_ResourceManager->GetPipelineState(TEXT("Deferred_SkinnedMesh_Bump_MRA"));
-			auto* _layout = m_ResourceManager->GetPipelineLayout(TEXT("Deferred_Mesh_Skin_Bump_MRA_Layout"));
-			auto* _rt = m_ResourceManager->GetRenderTarget(TEXT("Deferred_Mesh"));
-
-			m_Deferred_Mesh_Skinned_Bump_MRA_Pass = std::make_shared<RenderPass>(TEXT("Deferred_Mesh_Skin_Bump_MRA Pass"), _state, _layout, _rt);
-
-			m_Deferred_Mesh_Skinned_Bump_MRA_Pass->SetPerFrameBuffer(m_ResourceManager->GetBuffer(TEXT("PerCamera")));
-		}
-#pragma endregion
+		m_Deferred_Mesh_Skinned_Bump_MRA_Pass = m_ResourceManager->GetRenderPass(TEXT("Deferred_Mesh_Skin_Bump_MRA Pass"));
 	}
 
 	void GraphicsEngine::InitLightPass()
@@ -177,20 +126,9 @@ namespace Graphics
 		m_Screen_Mesh->CreateVertexBuffer(TEXT("Screen_Mesh"), _data.data(), _size, sizeof(ScreenVertex));
 		m_Screen_Mesh->CreateSubMesh(TEXT("Screen_Mesh"), triangles);
 
-		auto* _state = m_ResourceManager->GetPipelineState(TEXT("Deferred_Merge"));
-		auto* _layout = m_ResourceManager->GetPipelineLayout(TEXT("Deferred_Light_Layout"));
+		m_Deferred_Light_Pass = m_ResourceManager->GetRenderPass(TEXT("Deferred_Light Pass"));
 
-		std::vector<AttachmentClear> _attachmentClears =
-		{
-			{ { 1, 0, 0, 0 }, 0 },
-			{ 1, 0 }
-		};
-
-		m_Deferred_Light_Pass = std::make_shared<RenderPass>(TEXT("Deferred_Light Pass"), _state, _layout, m_SwapChain);
-
-		m_Deferred_Light_Pass->SetPerFrameBuffer(m_ResourceManager->GetBuffer(TEXT("PerCamera")));
-
-		m_Deferred_Light_Pass->AddResourceClear({ ResourceType::Texture, 0, 5, BindFlags::ShaderResource, StageFlags::PS });
+		m_Deferred_Light_Pass->SetRenderTarget(m_SwapChain);
 	}
 
 	void GraphicsEngine::InitSkyBoxPass()
@@ -257,16 +195,15 @@ namespace Graphics
 			{ 1, 0 }
 		};
 
-		m_SkyBox_Pass = std::make_shared<RenderPass>(TEXT("Skybox Pass"), _state, _layout, m_SwapChain, _attachmentClears);
-
+		m_SkyBox_Pass = m_ResourceManager->GetRenderPass(TEXT("Skybox Pass"));
+		m_SkyBox_Pass->SetRenderTarget(m_SwapChain);
+		m_SkyBox_Pass->SetAttachmentClears(_attachmentClears);
 
 		RenderObject _skyBoxObject;
 		_skyBoxObject.m_MeshBuffer = m_SkyBox_Mesh;
 		_skyBoxObject.m_MaterialBuffer = m_SkyBox_Material;
 
 		m_SkyBox_Pass->RegistRenderObject(_skyBoxObject);
-
-		m_SkyBox_Pass->SetClearObjects(false);
 	}
 
 	void GraphicsEngine::InitDebugPass()
@@ -311,10 +248,9 @@ namespace Graphics
 		m_DebugRenderObject.push_back(_depthObject);
 		m_DebugRenderObject.push_back(_worldPosObject);
 
-		auto* _state = m_ResourceManager->GetPipelineState(TEXT("Screen"));
-		auto* _layout = m_ResourceManager->GetPipelineLayout(TEXT("MRT_Debug"));
+		m_Debug_Pass = m_ResourceManager->GetRenderPass(TEXT("MRT Debug Pass"));
 
-		m_Debug_Pass = std::make_shared<RenderPass>(TEXT("MRT Debug Pass"), _state, _layout, m_SwapChain);
+		m_Debug_Pass->SetRenderTarget(m_SwapChain);
 		m_Debug_Pass->AddResourceClear({ ResourceType::Texture, 0, 1, BindFlags::ShaderResource, StageFlags::PS });
 
 		for (uint i = 0; i < m_DebugRenderObject.size(); i++)
@@ -326,8 +262,6 @@ namespace Graphics
 
 			m_Debug_Pass->RegistRenderObject(m_DebugRenderObject[i]);
 		}
-
-		m_Debug_Pass->SetClearObjects(false);
 	}
 
 	Graphics::MeshBuffer* GraphicsEngine::CreateMeshBuffer(uuid uuid, std::vector<Common::VertexAttribute>& vertices, std::vector<std::vector<uint32>> subMeshs)
@@ -344,8 +278,6 @@ namespace Graphics
 	{
 		auto _pipelineLayout = m_ResourceManager->GetPipelineLayout(pipelineLayout);
 		auto _newMatBuffer = m_ResourceManager->CreateMaterialBuffer(uuid, _pipelineLayout);
-
-		//_newMatBuffer->SetRenderPass(m_Deferred_Mesh_Pass);
 
 		return _newMatBuffer;
 	}
@@ -401,7 +333,6 @@ namespace Graphics
 		_deferredMergeRenderObject.m_UpdateResourcePerObjects.push_back(_perDraw);
 
 		m_Deferred_Light_Pass->RegistRenderObject(_deferredMergeRenderObject);
-
 
 		{
 			m_Deferred_Mesh_Pass->BeginExcute(m_CommandBuffer, nullptr);
@@ -493,37 +424,38 @@ namespace Graphics
 
 	void GraphicsEngine::LoadGraphicsTable()
 	{
-		TableLoader::LoadShaderTable(m_ResourceManager.get());
-		TableLoader::LoadBufferTable(m_ResourceManager.get());
-		TableLoader::LoadSamplerTable(m_ResourceManager.get());
-		TableLoader::LoadTextureTable(m_ResourceManager.get());
-		TableLoader::LoadRenderTargetTable(m_ResourceManager.get(), { 1280.f, 720.f });
-		TableLoader::LoadRenderingPipelineTable(m_ResourceManager.get());
-		TableLoader::LoadPipelineStateTable(m_ResourceManager.get());
+		TableLoader::LoadShaderTable(m_ResourceManager);
+		TableLoader::LoadBufferTable(m_ResourceManager);
+		TableLoader::LoadSamplerTable(m_ResourceManager);
+		TableLoader::LoadTextureTable(m_ResourceManager);
+		TableLoader::LoadRenderTargetTable(m_ResourceManager, { 1280.f, 720.f });
+		TableLoader::LoadRenderingPipelineTable(m_ResourceManager);
+		TableLoader::LoadPipelineStateTable(m_ResourceManager);
+		TableLoader::LoadRenderPassTable(m_ResourceManager);
 	}
 
 	void GraphicsEngine::LoadDllAndCreateRenderSystem()
 	{
 		std::string _moduleName = "GraphicsModule";
-		
-		#ifdef _DEBUG
-		#ifdef x64
-				_moduleName += "_Debug_x64.dll";
-		#else
-				_moduleName += "_Debug_x86.dll";
-		#endif // x64
-		#else
-		#ifdef x64
-				_moduleName += "_Release_x64.dll";
-		#else
-				_moduleName += "_Release_x64.dll";
-		#endif // x64
-		#endif
+
+#ifdef _DEBUG
+#ifdef x64
+		_moduleName += "_Debug_x64.dll";
+#else
+		_moduleName += "_Debug_x86.dll";
+#endif // x64
+#else
+#ifdef x64
+		_moduleName += "_Release_x64.dll";
+#else
+		_moduleName += "_Release_x64.dll";
+#endif // x64
+#endif
 
 		m_GraphicsModule = LoadLibraryA(_moduleName.c_str());
-		
+
 		assert(m_GraphicsModule != NULL);
-		
+
 		using CreateRenderSystem = RenderSystem * (*)(RenderSystemDesc&);
 
 		auto createRenderSystem = (CreateRenderSystem)LoadProcedure("CreateRenderSystem");

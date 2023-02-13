@@ -5,6 +5,8 @@
 #include "GraphicsEngine/Resource/MaterialBuffer.h"
 #include "GraphicsEngine/Resource/CameraBuffer.h"
 
+#include "GraphicsEngine/RenderPass/RenderPass.h"
+
 #include "Common/StringHelper.h"
 
 namespace Graphics
@@ -18,10 +20,8 @@ namespace Graphics
 
 	ResourceManager::~ResourceManager()
 	{
-
+		Release();
 	}
-
-	
 
 	MeshBuffer* ResourceManager::CreateMeshBuffer(uuid uuid)
 	{
@@ -283,9 +283,9 @@ namespace Graphics
 		return _newLayout;
 	}
 
-	RenderPass* ResourceManager::CreateRenderPass(uuid uuid, RenderTargetDesc& desc)
+	Graphics::RenderPass* ResourceManager::CreateRenderPass(uuid uuid, RenderPassDesc& desc)
 	{
-		/*auto _find = std::find_if(std::begin(m_RenderPassMap),
+		auto _find = std::find_if(std::begin(m_RenderPassMap),
 			std::end(m_RenderPassMap),
 			[&uuid](auto& pair) { return (uuid == pair.first); }
 		);
@@ -296,13 +296,11 @@ namespace Graphics
 			return nullptr;
 		}
 
-		auto* _newRenderPass = m_RenderSystem->CreatePipelineLayout(uuid, desc);
+		auto* _newRenderPass = new RenderPass(desc);
 
 		m_RenderPassMap.insert(std::make_pair(uuid, _newRenderPass));
 
-		return _newRenderPass;*/
-
-		return nullptr;
+		return _newRenderPass;
 	}
 
 	Graphics::Buffer* ResourceManager::GetBuffer(uuid uuid)
@@ -317,6 +315,7 @@ namespace Graphics
 			return _find->second;
 		}
 
+		assert(false);
 		return nullptr;
 	}
 
@@ -332,6 +331,7 @@ namespace Graphics
 			return _find->second;
 		}
 
+		assert(false);
 		return nullptr;
 	}
 
@@ -347,6 +347,7 @@ namespace Graphics
 			return _find->second;
 		}
 
+		assert(false);
 		return nullptr;
 	}
 
@@ -361,7 +362,8 @@ namespace Graphics
 		{
 			return _find->second;
 		}
-			
+
+		//assert(false);
 		return nullptr;
 	}
 
@@ -377,6 +379,7 @@ namespace Graphics
 			return _find->second;
 		}
 
+		assert(false);
 		return nullptr;
 	}
 
@@ -392,6 +395,7 @@ namespace Graphics
 			return _find->second;
 		}
 
+		assert(false);
 		return nullptr;
 	}
 	
@@ -407,10 +411,23 @@ namespace Graphics
 			return _find->second;
 		}
 
+		assert(false);
 		return nullptr;
 	}
-	RenderPass* ResourceManager::GetRenderPass(uuid uuid)
+
+	std::shared_ptr<RenderPass> ResourceManager::GetRenderPass(uuid uuid)
 	{
+		auto _find = std::find_if(std::begin(m_RenderPassMap),
+			std::end(m_RenderPassMap),
+			[&uuid](auto& pair) { return (uuid == pair.first); }
+		);
+
+		if (_find != m_RenderPassMap.end())
+		{
+			return _find->second;
+		}
+
+		assert(false);
 		return nullptr;
 	}
 
@@ -435,4 +452,70 @@ namespace Graphics
 		return _loadTex;
 	}
 
+	void ResourceManager::Release()
+	{
+		for (auto& _meshBuffer : m_MeshBufferMap)
+		{
+			delete _meshBuffer.second;
+		}
+
+		for (auto& _matBuffer : m_MaterialBufferMap)
+		{
+			delete _matBuffer.second;
+		}
+
+		for (auto& _camBuffer : m_CameraBufferMap)
+		{
+			delete _camBuffer.second;
+		}
+
+		for (auto& _buffer : m_BufferMap)
+		{
+			m_RenderSystem->Release(*_buffer.second);
+
+			_buffer.second = nullptr;
+		}
+
+		for (auto& _sampler : m_SamplerMap)
+		{
+			m_RenderSystem->Release(*_sampler.second);
+
+			_sampler.second = nullptr;
+		}
+
+		for (auto& _texture : m_TextureMap)
+		{
+			m_RenderSystem->Release(*_texture.second);
+
+			_texture.second = nullptr;
+		}
+
+		for (auto& _shader : m_ShaderMap)
+		{
+			m_RenderSystem->Release(*_shader.second);
+
+			_shader.second = nullptr;
+		}
+
+		for (auto& _rt : m_RenderTargetMap)
+		{
+			m_RenderSystem->Release(*_rt.second);
+
+			_rt.second = nullptr;
+		}
+
+		for (auto& _state : m_PipelineStateMap)
+		{
+			m_RenderSystem->Release(*_state.second);
+
+			_state.second = nullptr;
+		}
+
+		for (auto& _layout : m_PipelineLayoutMap)
+		{
+			m_RenderSystem->Release(*_layout.second);
+
+			_layout.second = nullptr;
+		}
+	}
 }

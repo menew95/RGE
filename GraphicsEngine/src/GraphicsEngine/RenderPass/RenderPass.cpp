@@ -53,6 +53,19 @@ namespace Graphics
 
 	}
 
+	RenderPass::RenderPass(RenderPassDesc desc)
+		: m_PassName(desc._passName)
+		, m_PipelineState(desc._pipelineState)
+		, m_PipelineLayout(desc._pipelineLayout)
+		, m_RenderTarget(desc._renderTarget)
+		, m_PerFrameBuffer(desc._perFrameBuffer)
+		, m_AttachmentClears(desc._attachmentClears)
+		, m_IsClearObjects(desc._IsClearObjects)
+		, m_ResourceClears(desc._resourceClears)
+	{
+
+	}
+
 	void RenderPass::RegistRenderObject(class RenderObject& renderObject)
 	{
 		m_RenderObjects.push_back(renderObject);

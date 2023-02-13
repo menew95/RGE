@@ -29,5 +29,6 @@ namespace Graphics
 
 		static bool LoadBufferTable(ResourceManager* resourceManager);
 
+		static bool LoadRenderPassTable(ResourceManager* resourceManager);
 	};
 }

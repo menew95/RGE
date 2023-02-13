@@ -167,6 +167,11 @@ bool PhysicsModule::Shape::CreateMeshShape(MeshColliderInfo& meshColliderInfo, p
 			return false;
 		}
 
+		if (_result != physx::PxTriangleMeshCookingResult::eSUCCESS)
+		{
+			assert(false);
+		}
+
 		physx::PxDefaultMemoryInputData _readBuffer(_buf.getData(), _buf.getSize());
 		
 		physx::PxTriangleMesh* _triMesh = PhysicsSDK->GetPhysics()->createTriangleMesh(_readBuffer);
