@@ -31,6 +31,10 @@ namespace Graphics
 		void InitSkyBoxPass();
 		void InitDebugPass();
 
+		void InitIBL();
+		void CreatePreFiltered();
+		void CreateIrradiance();
+
 		MeshBuffer* CreateMeshBuffer(uuid uuid, std::vector<Common::VertexAttribute>& vertices, std::vector<std::vector<uint32>> subMeshs);
 		MaterialBuffer* CreateMaterialBuffer(uuid uuid, PipelineLayout* pipelineLayout);
 		MaterialBuffer* CreateMaterialBuffer(uuid uuid, const tstring& pipelineLayout);
@@ -44,13 +48,16 @@ namespace Graphics
 		void RegistRenderObject(RenderObject& renderObject);
 
 		void Excute();
-
+		void ExcuteRenderPass(Graphics::RenderPass* renderPass);
+		void Present();
 		Graphics::RenderPass* GetMeshPass() { return m_Deferred_Mesh_Pass.get(); }
 		Graphics::RenderPass* GetMeshBumpPass() { return m_Deferred_Mesh_Bump_Pass.get(); }
 		Graphics::RenderPass* GetMeshBumpMRAPass() { return m_Deferred_Mesh_Bump_MRA_Pass.get(); }
 		Graphics::RenderPass* GetSkinnedMeshPass() { return m_Deferred_Mesh_Skinned_Pass.get(); }
 		Graphics::RenderPass* GetSkinnedMeshBumpPass() { return m_Deferred_Mesh_Skinned_Bump_Pass.get(); }
 		Graphics::RenderPass* GetSkinnedMeshBumpMRAPass() { return m_Deferred_Mesh_Skinned_Bump_MRA_Pass.get(); }
+
+		Graphics::RenderPass* GetRenderPass(uuid uuid);
 
 	private:
 		void GetLightingData(struct Lighting& perLightFrame);
@@ -66,6 +73,9 @@ namespace Graphics
 		Graphics::CommandBuffer* m_CommandBuffer;
 
 		ResourceManager* m_ResourceManager;
+
+		std::shared_ptr<Graphics::RenderPass> m_PreFiltered_Pass;
+		std::shared_ptr<Graphics::RenderPass> m_Irradiance_Pass;
 
 		CameraBuffer* m_MainCameraBuffer;
 		std::shared_ptr<Graphics::RenderPass> m_Deferred_Mesh_Pass;
@@ -95,6 +105,12 @@ namespace Graphics
 		Texture* m_World;
 
 		std::vector<RenderObject> m_DebugRenderObject;
+
+		struct CubeMapMatrix
+		{
+			Math::Matrix _view[6];
+			Math::Matrix _proj;
+		} m_CubeMapMatrix;
 	};
 
 	extern "C"

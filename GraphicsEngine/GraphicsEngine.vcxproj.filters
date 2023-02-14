@@ -122,5 +122,9 @@
     <FxCompile Include="Shader\PS_SkyBox.hlsl" />
     <FxCompile Include="Shader\VS_SkyBox.hlsl" />
     <FxCompile Include="Shader\PS_Screen.hlsl" />
+    <FxCompile Include="Shader\PS_PreFiltered.hlsl" />
+    <FxCompile Include="Shader\GS_IBL.hlsl" />
+    <FxCompile Include="Shader\VS_IBL.hlsl" />
+    <FxCompile Include="Shader\PS_Irradiance.hlsl" />
   </ItemGroup>
 </Project>

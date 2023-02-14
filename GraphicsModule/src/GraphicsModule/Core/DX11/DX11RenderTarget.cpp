@@ -39,8 +39,8 @@ namespace Graphics
 	{
 		viewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2DARRAY;
 		viewDesc.Texture2DArray.MipSlice = attachmentDesc._mipLevel;
-		viewDesc.Texture2DArray.FirstArraySlice = attachmentDesc._arrayLayer;
-		viewDesc.Texture2DArray.ArraySize = 1;
+		viewDesc.Texture2DArray.FirstArraySlice = 0;// attachmentDesc._arrayLayer;
+		viewDesc.Texture2DArray.ArraySize = 6;
 	}
 
 	static void FillViewDescForTexture2DMS(const AttachmentDesc& attachmentDesc, D3D11_RENDER_TARGET_VIEW_DESC& viewDesc)

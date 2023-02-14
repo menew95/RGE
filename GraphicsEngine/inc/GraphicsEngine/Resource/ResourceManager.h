@@ -49,6 +49,7 @@ namespace Graphics
 		PipelineLayout*					GetPipelineLayout(uuid uuid);
 
 		std::shared_ptr<RenderPass>		GetRenderPass(uuid uuid);
+		std::unordered_map<uuid, std::shared_ptr<RenderPass>>		GetRenderPasss() { return m_RenderPassMap; }
 
 
 		Texture* LoadTexture(uuid uuid, ImageDesc* imageDesc);

@@ -31,11 +31,13 @@ namespace GameEngine
 		void GraphicsSystem::Render()
 		{
 			m_GraphicsEngine->Excute();
-
-			for (auto& _renderPass : m_RenderPassList)
+			
+			/*for (auto _renderPass : m_RenderPassList)
 			{
+				m_GraphicsEngine->ExcuteRenderPass(_renderPass.second);
+			}*/
 
-			}
+			m_GraphicsEngine->Present();
 		}
 
 		void GraphicsSystem::Initialize()
@@ -158,12 +160,46 @@ namespace GameEngine
 
 			m_GraphicsEngine = std::make_unique<Graphics::GraphicsEngine>(*_ptr);
 
-			m_RenderPassList.push_back(std::make_pair(TEXT("StaticMesh"), m_GraphicsEngine->GetMeshPass()));
-			m_RenderPassList.push_back(std::make_pair(TEXT("StaticMeshBump"), m_GraphicsEngine->GetMeshBumpPass()));
-			m_RenderPassList.push_back(std::make_pair(TEXT("StaticMeshBumpMRA"), m_GraphicsEngine->GetMeshBumpMRAPass()));
-			m_RenderPassList.push_back(std::make_pair(TEXT("SkinnedMesh"), m_GraphicsEngine->GetSkinnedMeshPass()));
-			m_RenderPassList.push_back(std::make_pair(TEXT("SkinnedMeshBump"), m_GraphicsEngine->GetSkinnedMeshBumpPass()));
-			m_RenderPassList.push_back(std::make_pair(TEXT("SkinnedMeshBumpMRA"), m_GraphicsEngine->GetSkinnedMeshBumpMRAPass()));
+			//m_RenderPassList.push_back(std::make_pair(TEXT("StaticMesh"), m_GraphicsEngine->GetMeshPass()));
+			//m_RenderPassList.push_back(std::make_pair(TEXT("StaticMeshBump"), m_GraphicsEngine->GetMeshBumpPass()));
+			//m_RenderPassList.push_back(std::make_pair(TEXT("StaticMeshBumpMRA"), m_GraphicsEngine->GetMeshBumpMRAPass()));
+			//m_RenderPassList.push_back(std::make_pair(TEXT("SkinnedMesh"), m_GraphicsEngine->GetSkinnedMeshPass()));
+			//m_RenderPassList.push_back(std::make_pair(TEXT("SkinnedMeshBump"), m_GraphicsEngine->GetSkinnedMeshBumpPass()));
+			//m_RenderPassList.push_back(std::make_pair(TEXT("SkinnedMeshBumpMRA"), m_GraphicsEngine->GetSkinnedMeshBumpMRAPass()));
+			uuid _uuid = TEXT("Deferred_Mesh Pass");
+			m_RenderPassList.push_back(std::make_pair(_uuid, m_GraphicsEngine->GetRenderPass(_uuid)));
+
+			_uuid = TEXT("Deferred_Mesh_Bump Pass");
+			m_RenderPassList.push_back(std::make_pair(_uuid, m_GraphicsEngine->GetRenderPass(_uuid)));
+
+			_uuid = TEXT("Deferred_Mesh_Bump_MRA Pass");
+			m_RenderPassList.push_back(std::make_pair(_uuid, m_GraphicsEngine->GetRenderPass(_uuid)));
+
+			_uuid = TEXT("Deferred_Mesh_Skin Pass");
+			m_RenderPassList.push_back(std::make_pair(_uuid, m_GraphicsEngine->GetRenderPass(_uuid)));
+
+			_uuid = TEXT("Deferred_Mesh_Skin_Bump Pass");
+			m_RenderPassList.push_back(std::make_pair(_uuid, m_GraphicsEngine->GetRenderPass(_uuid)));
+
+			_uuid = TEXT("Deferred_Mesh_Skin_Bump_MRA Pass");
+			m_RenderPassList.push_back(std::make_pair(_uuid, m_GraphicsEngine->GetRenderPass(_uuid)));
+
+			//_uuid = TEXT("Deferred_Light Pass");
+			//m_RenderPassList.push_back(std::make_pair(_uuid, m_GraphicsEngine->GetRenderPass(_uuid)));
+			//
+			//_uuid = TEXT("Skybox Pass");
+			//m_RenderPassList.push_back(std::make_pair(_uuid, m_GraphicsEngine->GetRenderPass(_uuid)));
+			//
+			//_uuid = TEXT("MRT Debug Pass");
+			//m_RenderPassList.push_back(std::make_pair(_uuid, m_GraphicsEngine->GetRenderPass(_uuid)));
+
+
+			//m_RenderPassList.push_back(std::make_pair(_uuid, m_GraphicsEngine->GetRenderPass(_uuid)));
+			//m_RenderPassList.push_back(std::make_pair(_uuid, m_GraphicsEngine->GetRenderPass(_uuid)));
+			//m_RenderPassList.push_back(std::make_pair(_uuid, m_GraphicsEngine->GetRenderPass(_uuid)));
+			//m_RenderPassList.push_back(std::make_pair(_uuid, m_GraphicsEngine->GetRenderPass(_uuid)));
+			//m_RenderPassList.push_back(std::make_pair(_uuid, m_GraphicsEngine->GetRenderPass(_uuid)));
+			//m_RenderPassList.push_back(std::make_pair(_uuid, m_GraphicsEngine->GetRenderPass(_uuid)));
 		}
 
 		void GraphicsSystem::FreeGraphicsEngineDll()

@@ -15,6 +15,8 @@
 
 HINSTANCE m_GraphicsModule;
 
+float g_roughness = 0.0f;
+
 namespace Graphics
 {
 	GraphicsEngine::GraphicsEngine(const GraphicsEngineDesc& desc)
@@ -62,6 +64,10 @@ namespace Graphics
 		InitSkyBoxPass();
 
 		InitDebugPass();
+
+		InitIBL();
+
+		CreatePreFiltered();
 	}
 
 	void GraphicsEngine::InitMeshPass()
@@ -139,46 +145,36 @@ namespace Graphics
 
 		std::vector<Math::Vector3> _data =
 		{
-			{ -1.f, -1.f, -1.f },
-			{ -1.f, +1.f, -1.f },
-			{ +1.f, +1.f, -1.f },
-			{ +1.f, -1.f, -1.f },
-			{ -1.f, -1.f, +1.f },
-			{ +1.f, -1.f, +1.f },
-			{ +1.f, +1.f, +1.f },
-			{ -1.f, +1.f, +1.f },
-			{ -1.f, +1.f, -1.f },
-			{ -1.f, +1.f, +1.f },
-			{ +1.f, +1.f, +1.f },
-			{ +1.f, +1.f, -1.f },
-			{ -1.f, -1.f, -1.f },
-			{ +1.f, -1.f, -1.f },
-			{ +1.f, -1.f, +1.f },
-			{ -1.f, -1.f, +1.f },
-			{ -1.f, -1.f, +1.f },
-			{ -1.f, +1.f, +1.f },
-			{ -1.f, +1.f, -1.f },
-			{ -1.f, -1.f, -1.f },
-			{ +1.f, -1.f, -1.f },
-			{ +1.f, +1.f, -1.f },
-			{ +1.f, +1.f, +1.f },
-			{ +1.f, -1.f, +1.f }
+			{ -1.0f, +1.0f, -1.0f },
+			{ +1.0f, +1.0f, -1.0f },
+			{ +1.0f, +1.0f, +1.0f },
+			{ -1.0f, +1.0f, +1.0f },
+			{ -1.0f, -1.0f, -1.0f },
+			{ +1.0f, -1.0f, -1.0f },
+			{ +1.0f, -1.0f, +1.0f },
+			{ -1.0f, -1.0f, +1.0f }
 		};
 
 		std::vector<uint32> triangles =
 		{
-			0, 2, 1,
-			0, 3, 2,
+			// +x
+			1, 5, 2,
+			2, 5, 6,
+			// -x
+			0, 3, 7,
+			0, 7, 4,
+			// +y
+			0, 2, 3,
+			0, 1, 2,
+			// -y
 			4, 6, 5,
 			4, 7, 6,
-			8, 10, 9,
-			8, 11, 10,
-			12, 14, 13,
-			12, 15, 14,
-			16, 18, 17,
-			16, 19, 18,
-			20, 22, 21,
-			20, 23, 22
+			// +z
+			2, 7, 3,
+			2, 6, 7,
+			// -z
+			0, 4, 1,
+			1, 4, 5
 		};
 
 		uint32 _size = static_cast<uint32>(sizeof(Math::Vector3) * _data.size());
@@ -197,7 +193,7 @@ namespace Graphics
 
 		m_SkyBox_Pass = m_ResourceManager->GetRenderPass(TEXT("Skybox Pass"));
 		m_SkyBox_Pass->SetRenderTarget(m_SwapChain);
-		m_SkyBox_Pass->SetAttachmentClears(_attachmentClears);
+		//m_SkyBox_Pass->SetAttachmentClears(_attachmentClears);
 
 		RenderObject _skyBoxObject;
 		_skyBoxObject.m_MeshBuffer = m_SkyBox_Mesh;
@@ -262,6 +258,98 @@ namespace Graphics
 
 			m_Debug_Pass->RegistRenderObject(m_DebugRenderObject[i]);
 		}
+	}
+
+	void GraphicsEngine::InitIBL()
+	{
+		m_PreFiltered_Pass = m_ResourceManager->GetRenderPass(TEXT("Pre_Filtered Pass"));
+		m_Irradiance_Pass = m_ResourceManager->GetRenderPass(TEXT("Irradiance Pass"));
+
+		std::vector<AttachmentClear> _attachmentClears =
+		{
+			{ { 0, 0, 0, 0 }, 0 },
+			//{ { 0, 0, 0, 0 }, 1 },
+			//{ { 0, 0, 0, 0 }, 2 },
+			//{ { 0, 0, 0, 0 }, 3 },
+			//{ { 0, 0, 0, 0 }, 4 },
+			//{ { 0, 0, 0, 0 }, 5 },
+			//{ 1, 0 }
+		};
+
+		m_PreFiltered_Pass->SetAttachmentClears(_attachmentClears);
+		
+		Math::Vector3 _eye = { 0.0f, 0.0f, 0.0f };
+		
+		Math::Vector3 _look, _up;
+
+		// +X
+		_look = { 1.0f, 0.0f, 0.0f };
+		_up = { 0.0f, 1.0f, 0.0f };
+		m_CubeMapMatrix._view[0] = Math::Matrix::CreateLookAt(_eye, _look, _up);
+
+		// -X
+		_look = { -1.0f, 0.0f, 0.0f };
+		_up = { 0.0f, 1.0f, 0.0f };
+		m_CubeMapMatrix._view[1] = Math::Matrix::CreateLookAt(_eye, _look, _up);
+
+		// +Y
+		_look = { 0.0f, 1.0f, 0.0f };
+		_up = { 0.0f, 0.0f, -1.0f };
+		m_CubeMapMatrix._view[2] = Math::Matrix::CreateLookAt(_eye, _look, _up);
+
+		// -Y
+		_look = { 0.0f, -1.0f, 0.0f };
+		_up = { 0.0f, 0.0f, 1.0f };
+		m_CubeMapMatrix._view[3] = Math::Matrix::CreateLookAt(_eye, _look, _up);
+
+		// +Z
+		_look = { 0.0f, 0.0f, 1.0f };
+		_up = { 0.0f, 1.0f, 0.0f };
+		m_CubeMapMatrix._view[4] = Math::Matrix::CreateLookAt(_eye, _look, _up);
+
+		// -Z
+		_look = { 0.0f, 0.0f, -1.0f };
+		_up = { 0.0f, 1.0f, 0.0f };
+		m_CubeMapMatrix._view[5] = Math::Matrix::CreateLookAt(_eye, _look, _up);
+
+		m_CubeMapMatrix._proj = Math::Matrix::CreatePerspectiveFieldOfView(90.f * Math::Deg2Rad, 1.0, 1.0f, 100.f);
+		{
+			RenderObject _renderObject;
+
+			_renderObject.m_MeshBuffer = m_SkyBox_Mesh;
+			_renderObject.m_MaterialBuffer = m_SkyBox_Material;
+
+			UpdateResourceData _resourceD{ eUpdateTime::PerObject, 2, ResourceType::Buffer, &m_CubeMapMatrix, sizeof(CubeMapMatrix) };
+			_renderObject.m_UpdateResourcePerObjects.push_back(_resourceD);
+
+			UpdateResourceData MipRoughenss{ eUpdateTime::PerObject, 2, ResourceType::Buffer, &g_roughness, sizeof(float) };
+			_renderObject.m_UpdateResourcePerObjects.push_back(MipRoughenss);
+
+			m_PreFiltered_Pass->RegistRenderObject(_renderObject);
+
+		}
+
+		{
+			RenderObject _renderObject;
+
+			_renderObject.m_MeshBuffer = m_SkyBox_Mesh;
+			_renderObject.m_MaterialBuffer = m_SkyBox_Material;
+
+			UpdateResourceData _resourceD{ eUpdateTime::PerObject, 2, ResourceType::Buffer, &m_CubeMapMatrix, sizeof(CubeMapMatrix) };
+			_renderObject.m_UpdateResourcePerObjects.push_back(_resourceD);
+
+			m_Irradiance_Pass->RegistRenderObject(_renderObject);
+		}
+	}
+
+	void GraphicsEngine::CreatePreFiltered()
+	{
+		ExcuteRenderPass(m_PreFiltered_Pass.get());
+	}
+
+	void GraphicsEngine::CreateIrradiance()
+	{
+		ExcuteRenderPass(m_Irradiance_Pass.get());
 	}
 
 	Graphics::MeshBuffer* GraphicsEngine::CreateMeshBuffer(uuid uuid, std::vector<Common::VertexAttribute>& vertices, std::vector<std::vector<uint32>> subMeshs)
@@ -334,6 +422,8 @@ namespace Graphics
 
 		m_Deferred_Light_Pass->RegistRenderObject(_deferredMergeRenderObject);
 
+		CreatePreFiltered();
+		CreateIrradiance();
 		{
 			m_Deferred_Mesh_Pass->BeginExcute(m_CommandBuffer, nullptr);
 
@@ -407,6 +497,27 @@ namespace Graphics
 		}
 
 		m_SwapChain->Present();
+	}
+
+	void GraphicsEngine::ExcuteRenderPass(Graphics::RenderPass* renderPass)
+	{
+		renderPass->BeginExcute(m_CommandBuffer, nullptr);
+
+		renderPass->Excute(m_CommandBuffer);
+
+		renderPass->EndExcute(m_CommandBuffer);
+	}
+
+	void GraphicsEngine::Present()
+	{
+		
+	}
+
+	Graphics::RenderPass* GraphicsEngine::GetRenderPass(uuid uuid)
+	{
+		auto* _renderPass = m_ResourceManager->GetRenderPass(uuid).get();
+
+		return _renderPass;
 	}
 
 	void GraphicsEngine::GetLightingData(Lighting& perLightFrame)

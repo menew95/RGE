@@ -29,6 +29,25 @@ namespace Graphics
 
 		void DX11SwapChain::Present()
 		{
+			auto _error = m_Device->GetDeviceRemovedReason();
+			
+			switch (_error)
+			{
+				case S_OK:
+					break;
+				case DXGI_ERROR_DEVICE_HUNG:
+				case DXGI_ERROR_DEVICE_RESET:
+					assert(false);
+					break;
+				case DXGI_ERROR_DEVICE_REMOVED:
+				case DXGI_ERROR_DRIVER_INTERNAL_ERROR:
+				case DXGI_ERROR_INVALID_CALL:
+					assert(false);
+					break;
+				default:
+					break;
+			}
+
 			HR(m_Underlying->Present(0, 0), "SwapChain present failed");
 		}
 
