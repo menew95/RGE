@@ -11,6 +11,8 @@ namespace Graphics
 		CreateCubeMapMatrix();
 
 		SetResources(resourceManager);
+
+		CreateIntegrateBRDFMap();
 	}
 
 	IBL::~IBL()
@@ -43,6 +45,23 @@ namespace Graphics
 		m_Irradiance_Pass->Excute(m_CommandBuffer);
 
 		m_Irradiance_Pass->EndExcute(m_CommandBuffer);
+	}
+
+	void IBL::CreateIntegrateBRDFMap()
+	{
+		RenderObject _renderObject;
+		_renderObject.m_MeshBuffer = m_Screen_Mesh;
+		_renderObject.m_MaterialBuffer = nullptr;
+
+		m_IntegrateBRDF_Pass->RegistRenderObject(_renderObject);
+
+		m_IntegrateBRDF_Pass->BeginExcute(m_CommandBuffer, nullptr);
+
+		m_IntegrateBRDF_Pass->Excute(m_CommandBuffer);
+
+		m_IntegrateBRDF_Pass->EndExcute(m_CommandBuffer);
+
+		m_IntegrateBRDF_Pass->ClearRenderObject();
 	}
 
 	void IBL::CreatePreFilteredMip(uint32 mipLevel)
@@ -80,6 +99,7 @@ namespace Graphics
 	{
 		m_Cube_Material = resourceManager->CreateMaterialBuffer(TEXT("PreFilteredMaterial"));
 		m_Cube_Mesh = resourceManager->GetMeshBuffer(TEXT("Cube_Mesh"));
+		m_Screen_Mesh = resourceManager->GetMeshBuffer(TEXT("Screen_Mesh"));
 
 		m_MipRenderTarget[0] = resourceManager->GetRenderTarget(TEXT("Pre_Filtered0"));
 		m_MipRenderTarget[1] = resourceManager->GetRenderTarget(TEXT("Pre_Filtered1"));
@@ -89,6 +109,7 @@ namespace Graphics
 
 		m_PreFiltered_Pass = resourceManager->GetRenderPass(TEXT("Pre_Filtered Pass"));
 		m_Irradiance_Pass = resourceManager->GetRenderPass(TEXT("Irradiance Pass"));
+		m_IntegrateBRDF_Pass = resourceManager->GetRenderPass(TEXT("IntegrateBRDF Pass"));
 	}
 
 	void IBL::CreateCubeMapMatrix()

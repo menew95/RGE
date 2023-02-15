@@ -261,6 +261,8 @@ namespace Graphics
 	void GraphicsEngine::InitIBL()
 	{
 		m_IBL = std::make_shared<IBL>(m_CommandBuffer, m_ResourceManager);
+
+		CreateIBL();
 	}
 
 	void GraphicsEngine::CreateIBL()
@@ -330,8 +332,6 @@ namespace Graphics
 		_deferredMergeRenderObject.m_UpdateResourcePerObjects.push_back(_perDraw);
 
 		m_Deferred_Light_Pass->RegistRenderObject(_deferredMergeRenderObject);
-
-		CreateIBL();
 
 		{
 			m_Deferred_Mesh_Pass->BeginExcute(m_CommandBuffer, nullptr);

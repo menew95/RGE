@@ -26,6 +26,7 @@ namespace Graphics
 		void CreatePreFilteredMap();
 		void CreateIrradianceMap();
 
+		void CreateIntegrateBRDFMap();
 	private:
 		void CreatePreFilteredMip(uint32 mipLevel);
 
@@ -39,10 +40,12 @@ namespace Graphics
 
 		MaterialBuffer* m_Cube_Material;
 		MeshBuffer* m_Cube_Mesh;
+		MeshBuffer* m_Screen_Mesh;
 
 		RenderTarget* m_MipRenderTarget[MAXMIPMAP];
 
 		std::shared_ptr<RenderPass> m_PreFiltered_Pass;
 		std::shared_ptr<RenderPass> m_Irradiance_Pass;
+		std::shared_ptr<RenderPass> m_IntegrateBRDF_Pass;
 	};
 }

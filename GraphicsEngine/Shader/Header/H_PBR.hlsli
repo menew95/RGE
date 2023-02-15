@@ -77,6 +77,11 @@ float3 Disney_Diffuse(in float roughnessPercent, in float3 diffuseColor, in floa
 	return diffuseColor * lightScatter * viewScatter * energyFactor / PI;
 }
 
+float3 FresnelSchlickRoughness(float cosTheta, float3 F0, float roughness)
+{
+	return F0 + (max((1.0 - roughness), F0) - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
+}
+
 float3 FresnelSchlick(float3 f0, float cosTheta)
 {
 	// Schlick
@@ -257,6 +262,97 @@ float3 CookTorrance_GGX(in float roughness2
 	float3 diffK = Diffuse_Lambert(kD * diffColor);
 
 	return (diffK + specK) * NoL;
+}
+
+float GeometrySchlickGGX(float NdotV, float roughness)
+{
+	float a = roughness;
+	float k = (a * a) / 2.0;
+
+	float nom = NdotV;
+	float denom = NdotV * (1.0 - k) + k;
+
+	return nom / denom;
+}
+
+// ----------------------------------------------------------------------------
+float GeometrySmith(float3 N, float3 V, float3 L, float roughness)
+{
+	float NdotV = max(dot(N, V), 0.0);
+	float NdotL = max(dot(N, L), 0.0);
+	float ggx2 = GeometrySchlickGGX(NdotV, roughness);
+	float ggx1 = GeometrySchlickGGX(NdotL, roughness);
+
+	return ggx1 * ggx2;
+}
+
+float RadicalInverse_VdC(uint bits)
+{
+	bits = (bits << 16u) | (bits >> 16u);
+	bits = ((bits & 0x55555555u) << 1u) | ((bits & 0xAAAAAAAAu) >> 1u);
+	bits = ((bits & 0x33333333u) << 2u) | ((bits & 0xCCCCCCCCu) >> 2u);
+	bits = ((bits & 0x0F0F0F0Fu) << 4u) | ((bits & 0xF0F0F0F0u) >> 4u);
+	bits = ((bits & 0x00FF00FFu) << 8u) | ((bits & 0xFF00FF00u) >> 8u);
+	return float(bits) * 2.3283064365386963e-10; // / 0x100000000
+}
+
+// ----------------------------------------------------------------------------
+float2 Hammersley(uint i, uint N)
+{
+	return float2(float(i) / float(N), RadicalInverse_VdC(i));
+}
+
+float mod(float x, float y)
+{
+	return x - y * floor(x / y);
+}
+
+float VanDerCorput(uint n, uint base)
+{
+	float invBase = 1.0 / float(base);
+	float denom = 1.0;
+	float result = 0.0;
+
+	for (uint i = 0u; i < 32u; ++i)
+	{
+		if (n > 0u)
+		{
+			denom = mod(float(n), 2.0);
+			result += denom * invBase;
+			invBase = invBase / 2.0;
+			n = uint(float(n) / 2.0);
+		}
+	}
+
+	return result;
+}
+// ----------------------------------------------------------------------------
+float2 HammersleyNoBitOps(uint i, uint N)
+{
+	return float2(float(i) / float(N), VanDerCorput(i, 2u));
+}
+
+float3 ImportanceSampleGGX(float2 Xi, float3 N, float roughness)
+{
+	float a = roughness * roughness;
+
+	float phi = 2.0 * PI * Xi.x;
+	float cosTheta = sqrt((1.0 - Xi.y) / (1.0 + (a * a - 1.0) * Xi.y));
+	float sinTheta = sqrt(1.0 - cosTheta * cosTheta);
+
+	// from spherical coordinates to cartesian coordinates
+	float3 H;
+	H.x = cos(phi) * sinTheta;
+	H.y = sin(phi) * sinTheta;
+	H.z = cosTheta;
+
+	// from tangent-space vector to world-space sample vector
+	float3 up = abs(N.z) < 0.999 ? float3(0.0, 0.0, 1.0) : float3(1.0, 0.0, 0.0);
+	float3 tangent = normalize(cross(up, N));
+	float3 bitangent = cross(N, tangent);
+
+	float3 sampleVec = tangent * H.x + bitangent * H.y + N * H.z;
+	return normalize(sampleVec);
 }
 
 #endif // H_PBR

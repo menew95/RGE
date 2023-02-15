@@ -75,7 +75,7 @@ PSOut main(VSOutput input)
 
 	_out.Depth = float4(input.posH.z, input.posH.z, input.posH.z, _ao);
 
-	_out.World = float4(input.posW.xyz, 1.0f);
+	_out.World = float4(input.posW.xyz, _ao);
 
 	_out.Emissive = float4(float3(material._emissive.rgb), input.posV.z);
 

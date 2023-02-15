@@ -8,11 +8,34 @@ Texture2D gDepth	: register(t2);
 Texture2D gWorldPos	: register(t3);
 Texture2D gEmissive	: register(t4);
 
-TextureCube gPreFilteredMap : register(t5)
-TextureCube gIrradianceMap : register(t5)
-TextureCube gBRDFMap : register(t5)
+TextureCube gPreFilteredMap : register(t5);
+TextureCube gIrradianceMap : register(t6);
+Texture2D gIntegrateBRDFMap : register(t7);
 
 SamplerState samWrapLinear	: register(s0);
+
+float3 CalcIBL(float3 V, float3 N, float3 albedo, float3 F0, float roughness, float metallic, float ao)
+{
+	float3 R = reflect(-V, N);
+
+	const float MAX_REFLECTION_LOD = 5.0;
+	float3 prefilteredColor = gPreFilteredMap.SampleLevel(samWrapLinear, R, roughness * 5).rgb;
+
+	float3 F = FresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness);
+	float3 kS = F;
+	float3 kD = 1.0 - kS;
+	kD *= 1.0 - metallic;
+
+	float3 irradiance = gIrradianceMap.Sample(samWrapLinear, N).rgb;
+	float3 diffuse = irradiance * albedo;
+
+	float2 envBRDF = gIntegrateBRDFMap.Sample(samWrapLinear, float2(max(dot(N, V), 0.0), roughness)).rg;
+	float3 specular = prefilteredColor * (F * envBRDF.x + envBRDF.y);
+
+	float3 ambient = (kD * diffuse + specular) * ao;
+
+	return ambient;
+}
 
 float4 main(VSOutput input) : SV_TARGET
 {
@@ -29,6 +52,9 @@ float4 main(VSOutput input) : SV_TARGET
 
 	float _roughness = lerp(0.04f, 1.0f, _normal.w);
 	float _metallic = lerp(0.04f, 1.0f, _albedo.w);
+	float _ao = _worldPos.a;
+
+	_worldPos.a = 1.0f;
 
 	_albedo.w = 1.0f;
 	_albedo = pow(_albedo, 2.2);
@@ -46,11 +72,19 @@ float4 main(VSOutput input) : SV_TARGET
 	float3 _specularColor = lerp(kSpecularCoefficient, _albedo.xyz, _metallic);
 	float3 _diffuseColor = lerp(_albedo.xyz, float3(0, 0, 0), _metallic);
 
+	float3 _lightColor = float3(0.0f, 0.0f, 0.0f);
+
 	//[unroll]
 	for (uint _lightIdx = 0; _lightIdx < LightCount; _lightIdx++)
 	{
-		_finColor += CalLight(LightInfo[_lightIdx], _specularColor, _diffuseColor, _worldPos.xyz, _normal.xyz, _toEye, _roughness, _metallic);
+		_lightColor += CalLight(LightInfo[_lightIdx], _specularColor, _diffuseColor, _worldPos.xyz, _normal.xyz, _toEye, _roughness, _metallic);
 	}
+
+	float3 _ambient = CalcIBL(_toEye, _normal.xyz, _albedo.rgb, _specularColor, _roughness, _metallic, _ao);
+
+	_finColor = _ambient + _lightColor;
+
+	_finColor = pow(_finColor, 1 / 2.2);
 
 	return float4(_finColor, 1.0f);
 }

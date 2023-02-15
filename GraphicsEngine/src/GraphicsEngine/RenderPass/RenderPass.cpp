@@ -117,7 +117,8 @@ namespace Graphics
 
 				commandBuffer->SetIndexBuffer(*_subMeshBuffer.m_IndexBuffer);
 
-				commandBuffer->SetResources(*m_PipelineLayout);
+				if(m_PipelineLayout != nullptr)
+					commandBuffer->SetResources(*m_PipelineLayout);
 
 				commandBuffer->DrawIndexed(_subMeshBuffer.m_IndexCount, 0, 0);
 			}
@@ -147,6 +148,8 @@ namespace Graphics
 
 		for (size_t i = 0; i < _sources.size(); i++)
 		{
+			assert(m_PipelineLayout != nullptr);
+
 			switch (_sources[i]._resourceType)
 			{
 				case ResourceType::Buffer:
@@ -178,6 +181,8 @@ namespace Graphics
 
 		for (size_t i = 0; i < _sources.size(); i++)
 		{
+			assert(m_PipelineLayout != nullptr);
+
 			switch (_sources[i]._resourceType)
 			{
 				case ResourceType::Buffer:
