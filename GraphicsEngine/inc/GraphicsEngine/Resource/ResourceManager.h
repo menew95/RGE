@@ -22,7 +22,7 @@ namespace Graphics
 
 		MeshBuffer*						CreateMeshBuffer(uuid uuid);
 		MeshBuffer*						CreateMeshBuffer(uuid uuid, std::vector<Common::VertexAttribute>& vertices, std::vector<std::vector<uint32>> subMeshs);
-		MaterialBuffer*					CreateMaterialBuffer(uuid uuid, Graphics::PipelineLayout* pipelineLayout);
+		MaterialBuffer*					CreateMaterialBuffer(uuid uuid);
 		CameraBuffer*					CreateCameraBuffer();
 
 		MeshBuffer*						GetMeshBuffer(uuid uuid);

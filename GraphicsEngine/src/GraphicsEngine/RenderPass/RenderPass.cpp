@@ -106,7 +106,7 @@ namespace Graphics
 			
 			if (m_RenderObjects[_index].IsHasViewport())
 			{
-				commandBuffer->SetViewport(m_RenderObjects[_index].GetViewport());
+				commandBuffer->SetViewports(static_cast<uint32>(m_RenderObjects[_index].GetViewports().size()), m_RenderObjects[_index].GetViewports().data());
 			}
 
 			for (uint32 _subMeshCnt = 0; _subMeshCnt < m_RenderObjects[_index].GetMeshBuffer()->GetSubMeshCount(); _subMeshCnt++)

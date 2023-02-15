@@ -70,7 +70,7 @@ namespace Graphics
 		return _newMeshBuffer;
 	}
 
-	Graphics::MaterialBuffer* ResourceManager::CreateMaterialBuffer(uuid uuid, Graphics::PipelineLayout* pipelineLayout)
+	Graphics::MaterialBuffer* ResourceManager::CreateMaterialBuffer(uuid uuid)
 	{
 		auto _find = std::find_if(std::begin(m_MaterialBufferMap),
 			std::end(m_MaterialBufferMap),
@@ -83,7 +83,7 @@ namespace Graphics
 			return nullptr;
 		}
 
-		auto* _newMaterialBuffer = new MaterialBuffer(m_RenderSystem, pipelineLayout);
+		auto* _newMaterialBuffer = new MaterialBuffer(m_RenderSystem);
 
 		m_MaterialBufferMap.insert(std::make_pair(uuid, _newMaterialBuffer));
 

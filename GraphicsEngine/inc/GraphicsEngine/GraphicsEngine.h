@@ -18,6 +18,8 @@ namespace Graphics
 
 	class ResourceManager;
 
+	class IBL;
+
 	class GRAPHICSENGINE_DLL_DECLSPEC GraphicsEngine
 	{
 	public:
@@ -32,12 +34,10 @@ namespace Graphics
 		void InitDebugPass();
 
 		void InitIBL();
-		void CreatePreFiltered();
-		void CreateIrradiance();
+		void CreateIBL();
 
 		MeshBuffer* CreateMeshBuffer(uuid uuid, std::vector<Common::VertexAttribute>& vertices, std::vector<std::vector<uint32>> subMeshs);
-		MaterialBuffer* CreateMaterialBuffer(uuid uuid, PipelineLayout* pipelineLayout);
-		MaterialBuffer* CreateMaterialBuffer(uuid uuid, const tstring& pipelineLayout);
+		MaterialBuffer* CreateMaterialBuffer(uuid uuid);
 		CameraBuffer* CreateCameraBuffer();
 		LightBuffer* CreateLightBuffer();
 
@@ -74,9 +74,6 @@ namespace Graphics
 
 		ResourceManager* m_ResourceManager;
 
-		std::shared_ptr<Graphics::RenderPass> m_PreFiltered_Pass;
-		std::shared_ptr<Graphics::RenderPass> m_Irradiance_Pass;
-
 		CameraBuffer* m_MainCameraBuffer;
 		std::shared_ptr<Graphics::RenderPass> m_Deferred_Mesh_Pass;
 		std::shared_ptr<Graphics::RenderPass> m_Deferred_Mesh_Bump_Pass;
@@ -106,11 +103,7 @@ namespace Graphics
 
 		std::vector<RenderObject> m_DebugRenderObject;
 
-		struct CubeMapMatrix
-		{
-			Math::Matrix _view[6];
-			Math::Matrix _proj;
-		} m_CubeMapMatrix;
+		std::shared_ptr<IBL> m_IBL;
 	};
 
 	extern "C"

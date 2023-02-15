@@ -13,9 +13,9 @@
 
 #include "GraphicsEngine/Json/JsonTable.h"
 
-HINSTANCE m_GraphicsModule;
+#include "GraphicsEngine/RenderPass/IBL.h"
 
-float g_roughness = 0.0f;
+HINSTANCE m_GraphicsModule;
 
 namespace Graphics
 {
@@ -66,8 +66,6 @@ namespace Graphics
 		InitDebugPass();
 
 		InitIBL();
-
-		CreatePreFiltered();
 	}
 
 	void GraphicsEngine::InitMeshPass()
@@ -99,7 +97,7 @@ namespace Graphics
 
 	void GraphicsEngine::InitLightPass()
 	{
-		m_Deferred_Light_Material = m_ResourceManager->CreateMaterialBuffer(TEXT("Light"), m_ResourceManager->GetPipelineLayout(TEXT("Deferred_Light_Layout")));
+		m_Deferred_Light_Material = m_ResourceManager->CreateMaterialBuffer(TEXT("Light"));
 
 		m_Screen_Mesh = m_ResourceManager->CreateMeshBuffer(TEXT("Screen_Mesh"));
 
@@ -139,9 +137,9 @@ namespace Graphics
 
 	void GraphicsEngine::InitSkyBoxPass()
 	{
-		m_SkyBox_Material = m_ResourceManager->CreateMaterialBuffer(TEXT("SkyBox"), m_ResourceManager->GetPipelineLayout(TEXT("SkyBox_Layout")));
+		m_SkyBox_Material = m_ResourceManager->CreateMaterialBuffer(TEXT("SkyBox"));
 
-		m_SkyBox_Mesh = m_ResourceManager->CreateMeshBuffer(TEXT("SkyBox_Mesh"));
+		m_SkyBox_Mesh = m_ResourceManager->CreateMeshBuffer(TEXT("Cube_Mesh"));
 
 		std::vector<Math::Vector3> _data =
 		{
@@ -179,8 +177,8 @@ namespace Graphics
 
 		uint32 _size = static_cast<uint32>(sizeof(Math::Vector3) * _data.size());
 
-		m_SkyBox_Mesh->CreateVertexBuffer(TEXT("SkyBox_Mesh"), _data.data(), _size, sizeof(Math::Vector3));
-		m_SkyBox_Mesh->CreateSubMesh(TEXT("SkyBox_Mesh"), triangles);
+		m_SkyBox_Mesh->CreateVertexBuffer(TEXT("Cube_Mesh"), _data.data(), _size, sizeof(Math::Vector3));
+		m_SkyBox_Mesh->CreateSubMesh(TEXT("Cube_Mesh"), triangles);
 
 		auto* _state = m_ResourceManager->GetPipelineState(TEXT("SkyBox"));
 		auto* _layout = m_ResourceManager->GetPipelineLayout(TEXT("SkyBox_Layout"));
@@ -204,7 +202,7 @@ namespace Graphics
 
 	void GraphicsEngine::InitDebugPass()
 	{
-		m_Debug_Material = m_ResourceManager->CreateMaterialBuffer(TEXT("MRT_Debug"), m_ResourceManager->GetPipelineLayout(TEXT("MRT_Debug")));
+		m_Debug_Material = m_ResourceManager->CreateMaterialBuffer(TEXT("MRT_Debug"));
 
 		m_Albedo = m_ResourceManager->GetTexture(TEXT("Albedo"));
 		m_Normal = m_ResourceManager->GetTexture(TEXT("Normal"));
@@ -254,7 +252,7 @@ namespace Graphics
 			Math::Viewport _viewport{ 256.f * i, 0.f, 256.f, 144.f };
 			//Math::Viewport _viewport{ 128.f, 0.f, 128.f, 72.f  };
 
-			m_DebugRenderObject[i].SetViewport(_viewport);
+			m_DebugRenderObject[i].AddViewport(_viewport);
 
 			m_Debug_Pass->RegistRenderObject(m_DebugRenderObject[i]);
 		}
@@ -262,94 +260,13 @@ namespace Graphics
 
 	void GraphicsEngine::InitIBL()
 	{
-		m_PreFiltered_Pass = m_ResourceManager->GetRenderPass(TEXT("Pre_Filtered Pass"));
-		m_Irradiance_Pass = m_ResourceManager->GetRenderPass(TEXT("Irradiance Pass"));
-
-		std::vector<AttachmentClear> _attachmentClears =
-		{
-			{ { 0, 0, 0, 0 }, 0 },
-			//{ { 0, 0, 0, 0 }, 1 },
-			//{ { 0, 0, 0, 0 }, 2 },
-			//{ { 0, 0, 0, 0 }, 3 },
-			//{ { 0, 0, 0, 0 }, 4 },
-			//{ { 0, 0, 0, 0 }, 5 },
-			//{ 1, 0 }
-		};
-
-		m_PreFiltered_Pass->SetAttachmentClears(_attachmentClears);
-		
-		Math::Vector3 _eye = { 0.0f, 0.0f, 0.0f };
-		
-		Math::Vector3 _look, _up;
-
-		// +X
-		_look = { 1.0f, 0.0f, 0.0f };
-		_up = { 0.0f, 1.0f, 0.0f };
-		m_CubeMapMatrix._view[0] = Math::Matrix::CreateLookAt(_eye, _look, _up);
-
-		// -X
-		_look = { -1.0f, 0.0f, 0.0f };
-		_up = { 0.0f, 1.0f, 0.0f };
-		m_CubeMapMatrix._view[1] = Math::Matrix::CreateLookAt(_eye, _look, _up);
-
-		// +Y
-		_look = { 0.0f, 1.0f, 0.0f };
-		_up = { 0.0f, 0.0f, -1.0f };
-		m_CubeMapMatrix._view[2] = Math::Matrix::CreateLookAt(_eye, _look, _up);
-
-		// -Y
-		_look = { 0.0f, -1.0f, 0.0f };
-		_up = { 0.0f, 0.0f, 1.0f };
-		m_CubeMapMatrix._view[3] = Math::Matrix::CreateLookAt(_eye, _look, _up);
-
-		// +Z
-		_look = { 0.0f, 0.0f, 1.0f };
-		_up = { 0.0f, 1.0f, 0.0f };
-		m_CubeMapMatrix._view[4] = Math::Matrix::CreateLookAt(_eye, _look, _up);
-
-		// -Z
-		_look = { 0.0f, 0.0f, -1.0f };
-		_up = { 0.0f, 1.0f, 0.0f };
-		m_CubeMapMatrix._view[5] = Math::Matrix::CreateLookAt(_eye, _look, _up);
-
-		m_CubeMapMatrix._proj = Math::Matrix::CreatePerspectiveFieldOfView(90.f * Math::Deg2Rad, 1.0, 1.0f, 100.f);
-		{
-			RenderObject _renderObject;
-
-			_renderObject.m_MeshBuffer = m_SkyBox_Mesh;
-			_renderObject.m_MaterialBuffer = m_SkyBox_Material;
-
-			UpdateResourceData _resourceD{ eUpdateTime::PerObject, 2, ResourceType::Buffer, &m_CubeMapMatrix, sizeof(CubeMapMatrix) };
-			_renderObject.m_UpdateResourcePerObjects.push_back(_resourceD);
-
-			UpdateResourceData MipRoughenss{ eUpdateTime::PerObject, 2, ResourceType::Buffer, &g_roughness, sizeof(float) };
-			_renderObject.m_UpdateResourcePerObjects.push_back(MipRoughenss);
-
-			m_PreFiltered_Pass->RegistRenderObject(_renderObject);
-
-		}
-
-		{
-			RenderObject _renderObject;
-
-			_renderObject.m_MeshBuffer = m_SkyBox_Mesh;
-			_renderObject.m_MaterialBuffer = m_SkyBox_Material;
-
-			UpdateResourceData _resourceD{ eUpdateTime::PerObject, 2, ResourceType::Buffer, &m_CubeMapMatrix, sizeof(CubeMapMatrix) };
-			_renderObject.m_UpdateResourcePerObjects.push_back(_resourceD);
-
-			m_Irradiance_Pass->RegistRenderObject(_renderObject);
-		}
+		m_IBL = std::make_shared<IBL>(m_CommandBuffer, m_ResourceManager);
 	}
 
-	void GraphicsEngine::CreatePreFiltered()
+	void GraphicsEngine::CreateIBL()
 	{
-		ExcuteRenderPass(m_PreFiltered_Pass.get());
-	}
-
-	void GraphicsEngine::CreateIrradiance()
-	{
-		ExcuteRenderPass(m_Irradiance_Pass.get());
+		// 나중엔 텍스처(로드한 스카이 박스 혹은 동적으로 캡처된 큐브맵)를 변수로 받아 생성
+		m_IBL->CreateIBLResource();
 	}
 
 	Graphics::MeshBuffer* GraphicsEngine::CreateMeshBuffer(uuid uuid, std::vector<Common::VertexAttribute>& vertices, std::vector<std::vector<uint32>> subMeshs)
@@ -357,17 +274,9 @@ namespace Graphics
 		return m_ResourceManager->CreateMeshBuffer(uuid, vertices, subMeshs);
 	}
 
-	Graphics::MaterialBuffer* GraphicsEngine::CreateMaterialBuffer(uuid uuid, PipelineLayout* pipelineLayout)
+	Graphics::MaterialBuffer* GraphicsEngine::CreateMaterialBuffer(uuid uuid)
 	{
-		return m_ResourceManager->CreateMaterialBuffer(uuid, pipelineLayout);
-	}
-
-	Graphics::MaterialBuffer* GraphicsEngine::CreateMaterialBuffer(uuid uuid, const tstring& pipelineLayout)
-	{
-		auto _pipelineLayout = m_ResourceManager->GetPipelineLayout(pipelineLayout);
-		auto _newMatBuffer = m_ResourceManager->CreateMaterialBuffer(uuid, _pipelineLayout);
-
-		return _newMatBuffer;
+		return m_ResourceManager->CreateMaterialBuffer(uuid);
 	}
 
 	Graphics::CameraBuffer* GraphicsEngine::CreateCameraBuffer()
@@ -422,8 +331,8 @@ namespace Graphics
 
 		m_Deferred_Light_Pass->RegistRenderObject(_deferredMergeRenderObject);
 
-		CreatePreFiltered();
-		CreateIrradiance();
+		CreateIBL();
+
 		{
 			m_Deferred_Mesh_Pass->BeginExcute(m_CommandBuffer, nullptr);
 

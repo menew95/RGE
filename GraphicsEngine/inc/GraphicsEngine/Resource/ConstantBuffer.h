@@ -61,4 +61,15 @@ namespace Graphics
 		
 		PerLight _perLights[20];
 	};
+
+	struct alignas(16) PerPreFiltered
+	{
+		float _roughness;
+	};
+
+	struct alignas(16) PerCubeMapMatrix
+	{
+		Math::Matrix _view[6];
+		Math::Matrix _proj;
+	};
 }

@@ -8,6 +8,10 @@ Texture2D gDepth	: register(t2);
 Texture2D gWorldPos	: register(t3);
 Texture2D gEmissive	: register(t4);
 
+TextureCube gPreFilteredMap : register(t5)
+TextureCube gIrradianceMap : register(t5)
+TextureCube gBRDFMap : register(t5)
+
 SamplerState samWrapLinear	: register(s0);
 
 float4 main(VSOutput input) : SV_TARGET

@@ -31,16 +31,16 @@ namespace Graphics
 	{
 		viewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE1DARRAY;
 		viewDesc.Texture1DArray.MipSlice = attachmentDesc._mipLevel;
-		viewDesc.Texture1DArray.FirstArraySlice = attachmentDesc._arrayLayer;
-		viewDesc.Texture1DArray.ArraySize = 1;
+		viewDesc.Texture1DArray.FirstArraySlice = 0;
+		viewDesc.Texture1DArray.ArraySize = attachmentDesc._arrayLayer;
 	}
 
 	static void FillViewDescForTexture2DArray(const AttachmentDesc& attachmentDesc, D3D11_RENDER_TARGET_VIEW_DESC& viewDesc)
 	{
 		viewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2DARRAY;
 		viewDesc.Texture2DArray.MipSlice = attachmentDesc._mipLevel;
-		viewDesc.Texture2DArray.FirstArraySlice = 0;// attachmentDesc._arrayLayer;
-		viewDesc.Texture2DArray.ArraySize = 6;
+		viewDesc.Texture2DArray.FirstArraySlice = 0;
+		viewDesc.Texture2DArray.ArraySize = attachmentDesc._arrayLayer;
 	}
 
 	static void FillViewDescForTexture2DMS(const AttachmentDesc& attachmentDesc, D3D11_RENDER_TARGET_VIEW_DESC& viewDesc)

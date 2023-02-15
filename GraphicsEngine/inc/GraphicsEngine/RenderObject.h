@@ -106,15 +106,21 @@ namespace Graphics
 			return m_UseViewport;
 		}
 
-		inline void SetViewport(Math::Viewport viewport)
+		inline void SetViewport(std::vector<Math::Viewport> viewports)
 		{
 			m_UseViewport = true;
-			m_Viewport = viewport;
+			m_Viewports = viewports;
 		}
 
-		inline Math::Viewport& GetViewport()
+		inline void AddViewport(Math::Viewport viewport)
 		{
-			return m_Viewport;
+			m_UseViewport = true;
+			m_Viewports.push_back(viewport);
+		}
+
+		inline std::vector<Math::Viewport>& GetViewports()
+		{
+			return m_Viewports;
 		}
 	//private:
 		MeshBuffer* m_MeshBuffer;
@@ -130,7 +136,7 @@ namespace Graphics
 
 		bool m_UseViewport = false;
 
-		Math::Viewport m_Viewport;
+		std::vector<Math::Viewport> m_Viewports;
 	};
 }
 

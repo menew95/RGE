@@ -56,7 +56,7 @@ namespace GameEngine
 		{
 			uuid _uuid = material->GetName();
 
-			material->m_MaterialBuffer = m_GraphicsEngine->CreateMaterialBuffer(_uuid, TEXT("Deferred_Mesh_Layout"));
+			material->m_MaterialBuffer = m_GraphicsEngine->CreateMaterialBuffer(_uuid);
 		}
 
 		Graphics::CameraBuffer* GraphicsSystem::CreateCameraBuffer()

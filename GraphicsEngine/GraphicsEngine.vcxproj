@@ -223,6 +223,7 @@ xcopy /E /S /Y /R "$(ProjectDir)Shader\*" "$(OutputPath)..\Client\Asset\Shader\*
     <ClInclude Include="inc\GraphicsEngine\Export.h" />
     <ClInclude Include="inc\GraphicsEngine\GraphicsEngine.h" />
     <ClInclude Include="inc\GraphicsEngine\GraphicsEngineFlags.h" />
+    <ClInclude Include="inc\GraphicsEngine\RenderPass\IBL.h" />
     <ClInclude Include="inc\GraphicsEngine\RenderPass\RenderPass.h" />
     <ClInclude Include="inc\GraphicsEngine\RenderObject.h" />
     <ClInclude Include="inc\GraphicsEngine\RenderPass\RenderPassFlags.h" />
@@ -240,6 +241,7 @@ xcopy /E /S /Y /R "$(ProjectDir)Shader\*" "$(OutputPath)..\Client\Asset\Shader\*
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\GraphicsEngine\Json\JsonTable.cpp" />
+    <ClCompile Include="src\GraphicsEngine\RenderPass\IBL.cpp" />
     <ClCompile Include="src\GraphicsEngine\Resource\CameraBuffer.cpp" />
     <ClCompile Include="src\GraphicsEngine\Resource\LightBuffer.cpp" />
     <ClCompile Include="src\GraphicsEngine\Resource\MaterialBuffer.cpp" />
