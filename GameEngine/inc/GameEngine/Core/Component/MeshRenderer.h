@@ -57,6 +57,8 @@ namespace GameEngine
 
 			std::weak_ptr<MeshFilter> m_MeshFilter;
 
+			bool m_ShadowCasting = true;
+
 			RTTR_ENABLE(Renderer)
 
 			RTTR_REGISTRATION_FRIEND

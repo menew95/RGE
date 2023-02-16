@@ -133,5 +133,7 @@
     <FxCompile Include="Shader\VS_IBL.hlsl" />
     <FxCompile Include="Shader\PS_Irradiance.hlsl" />
     <FxCompile Include="Shader\PS_IntegrateBRDF.hlsl" />
+    <FxCompile Include="Shader\GS_Cascaded.hlsl" />
+    <FxCompile Include="Shader\VS_Shadow.hlsl" />
   </ItemGroup>
 </Project>

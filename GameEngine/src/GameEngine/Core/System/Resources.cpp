@@ -28,7 +28,7 @@ void ReconstructionFileName(tstring& name)
 {
 	if (name.find(L"/") != tstring::npos)
 	{
-		int idx = name.find(L"/") + 1;
+		size_t idx = name.find(L"/") + 1;
 
 		name.erase(0, idx);
 
@@ -38,7 +38,7 @@ void ReconstructionFileName(tstring& name)
 
 void RemoveExtension(tstring& name)
 {
-	int idx = name.find(L".") + 1;
+	size_t idx = name.find(L".") + 1;
 
 	size_t dot_pos = name.find_last_of(L".");
 	if (dot_pos != std::wstring::npos)

@@ -66,6 +66,8 @@ namespace Graphics
 		InitDebugPass();
 
 		InitIBL();
+
+		InitCascadedShadow();
 	}
 
 	void GraphicsEngine::InitMeshPass()
@@ -271,6 +273,19 @@ namespace Graphics
 		m_IBL->CreateIBLResource();
 	}
 
+	void GraphicsEngine::InitCascadedShadow()
+	{
+		m_CascadedShadow_Pass = m_ResourceManager->GetRenderPass(TEXT("CascadedShadow Pass"));
+		m_CascadedShadow_Skinned_Pass = m_ResourceManager->GetRenderPass(TEXT("CascadedShadow_Skinned Pass"));
+
+		std::vector<AttachmentClear> _attachmentClears =
+		{
+			{ 1, 0 }
+		};
+
+		m_CascadedShadow_Pass->SetAttachmentClears(_attachmentClears);
+	}
+
 	Graphics::MeshBuffer* GraphicsEngine::CreateMeshBuffer(uuid uuid, std::vector<Common::VertexAttribute>& vertices, std::vector<std::vector<uint32>> subMeshs)
 	{
 		return m_ResourceManager->CreateMeshBuffer(uuid, vertices, subMeshs);
@@ -318,7 +333,6 @@ namespace Graphics
 
 		m_Deferred_Mesh_Pass->UpdatePerFrame(m_CommandBuffer, &_perFrame, sizeof(_perFrame));
 
-
 		RenderObject _deferredMergeRenderObject;
 		_deferredMergeRenderObject.m_MeshBuffer = m_Screen_Mesh;
 		_deferredMergeRenderObject.m_MaterialBuffer = m_Deferred_Light_Material;
@@ -332,6 +346,27 @@ namespace Graphics
 		_deferredMergeRenderObject.m_UpdateResourcePerObjects.push_back(_perDraw);
 
 		m_Deferred_Light_Pass->RegistRenderObject(_deferredMergeRenderObject);
+
+		m_MainCameraBuffer->UpdateCascadeShadow(_perLighting._perLights[0]._direction, _perLighting._cascadedLightInfo);
+
+		m_CascadedShadow_Pass->UpdatePerFrame(m_CommandBuffer, &_perLighting._cascadedLightInfo, sizeof(_perLighting._cascadedLightInfo));
+		//m_CascadedShadow_Skinned_Pass->UpdatePerFrame(m_CommandBuffer, &_perLighting._cascadedLightInfo, sizeof(_perLighting._cascadedLightInfo));
+
+		{
+			m_CascadedShadow_Pass->BeginExcute(m_CommandBuffer, nullptr);
+
+			m_CascadedShadow_Pass->Excute(m_CommandBuffer);
+
+			m_CascadedShadow_Pass->EndExcute(m_CommandBuffer);
+		}
+
+		{
+			m_CascadedShadow_Skinned_Pass->BeginExcute(m_CommandBuffer, nullptr);
+
+			m_CascadedShadow_Skinned_Pass->Excute(m_CommandBuffer);
+
+			m_CascadedShadow_Skinned_Pass->EndExcute(m_CommandBuffer);
+		}
 
 		{
 			m_Deferred_Mesh_Pass->BeginExcute(m_CommandBuffer, nullptr);
@@ -428,6 +463,7 @@ namespace Graphics
 
 		return _renderPass;
 	}
+
 
 	void GraphicsEngine::GetLightingData(Lighting& perLightFrame)
 	{

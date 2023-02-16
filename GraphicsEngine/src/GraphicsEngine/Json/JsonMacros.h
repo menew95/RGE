@@ -31,7 +31,8 @@ JSON_SERIALIZE_ENUM(Graphics::Format,
 	{
 	{Graphics::Format::R8G8B8A8_UNORM, _T("R8G8B8A8_UNORM")},
 	{Graphics::Format::R32G32B32A32_FLOAT, _T("R32G32B32A32_FLOAT")},
-	{Graphics::Format::R24G8_TYPELESS, _T("R24G8_TYPELESS")}
+	{Graphics::Format::R24G8_TYPELESS, _T("R24G8_TYPELESS")},
+	{Graphics::Format::R32_TYPELESS, _T("R32_TYPELESS")}
 	});
 
 
@@ -258,7 +259,7 @@ JSON_SERIALIZE_ENUM(Graphics::Filter,
 JSON_SERIALIZE_ENUM(Graphics::SamplerAddressMode,
 	{
 	{Graphics::SamplerAddressMode::Wrap, _T("Wrap")},
-	{Graphics::SamplerAddressMode::Mirror, _T("Mirror,")},
+	{Graphics::SamplerAddressMode::Mirror, _T("Mirror")},
 	{Graphics::SamplerAddressMode::Clamp, _T("Clamp")},
 	{Graphics::SamplerAddressMode::Border, _T("Border")},
 	{Graphics::SamplerAddressMode::MirrorOnce, _T("MirrorOnce")},

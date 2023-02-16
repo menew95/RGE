@@ -4,9 +4,13 @@
 
 #include "Math/Math.h"
 
+#define NUM_FRUSTUM_CORNERS 8
+#define NUM_CASCADES 4
+
 namespace Graphics
 {
 	struct Camera;
+	struct CascadedLight;
 
 	class GRAPHICSENGINE_DLL_DECLSPEC CameraBuffer : public ResourceBuffer
 	{
@@ -21,6 +25,9 @@ namespace Graphics
 		void UpdateProjMatrix();
 
 		void UpdateCamera(Camera& camera);
+
+		void UpdateCascadeShadow(Math::Vector3 directionalLightDir, CascadedLight& cascadedLight);
+
 	public:
 		Math::Vector3 m_CameraPosition = { 0, 0, 0 };
 		Math::Vector3 m_Right = { 1, 0, 0 };
@@ -38,5 +45,18 @@ namespace Graphics
 
 		Math::Matrix m_View;
 		Math::Matrix m_Proj;
+
+		float m_cascadeEnd[NUM_CASCADES + 1];
+		struct ShadowOrthoProjInfo
+		{
+			float _right;
+			float _left;
+			float _bottum;
+			float _top;
+			float _far;
+			float _near;
+		};
+
+		ShadowOrthoProjInfo m_ShadowOrthoProjInfo[NUM_CASCADES];
 	};
 }

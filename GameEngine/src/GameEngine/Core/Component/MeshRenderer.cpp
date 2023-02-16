@@ -27,6 +27,10 @@ RTTR_REGISTRATION
 		metadata(GameEngine::Core::MetaData::ObjectType, GameEngine::Core::ObjectType::Resource),
 		metadata(GameEngine::Core::ObjectType::Resource, GameEngine::Core::ResourceType::Material)
 	)
+	.property("m_ShadowCasting", &GameEngine::Core::MeshRenderer::m_ShadowCasting)
+	(
+		metadata(GameEngine::Core::MetaData::Serializable, GameEngine::Core::MetaDataType::BOOL)
+	)
 	.method("GetName", &GameEngine::Core::Material::GetName)
 	.method("CheckVaild", &GameEngine::Core::MeshRenderer::CheckVaild);
 }
@@ -134,6 +138,16 @@ namespace GameEngine
 						// Todo : 임시 나중에 그래픽스 시스템이 랜더 패스 소유하고 리스트를 순회 할 때 바꿀것
 						GraphicsSystem::GetInstance()->RegistRenderObject(_idx, _renderObject);
 
+						if (m_ShadowCasting)
+						{
+							Graphics::RenderObject _shadow;
+							_shadow.m_MeshBuffer = _sharedMesh->GetMeshBuffer();
+							_shadow.m_MaterialBuffer = _materialBuffer;
+
+							_shadow.m_UpdateResourcePerObjects.push_back(_perObjectResource);
+
+							GraphicsSystem::GetInstance()->RegistRenderObject(6, _shadow);
+						}
 						//_materialBuffer->RegistRenderObject(_renderObject);
 					}
 				}

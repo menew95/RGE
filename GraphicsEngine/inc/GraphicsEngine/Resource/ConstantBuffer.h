@@ -53,12 +53,20 @@ namespace Graphics
 		Math::Matrix _shadowTransform;
 	};
 
+	struct alignas(16)  CascadedLight
+	{
+		Math::Matrix _lightTransform[4];
+		Math::Vector4 _cascadeEndClipSpace[4];
+	};
+
 	struct alignas(16) Lighting
 	{
 		uint32 _lightCount;
-		float _iblFactor;
-		float _pad[2];
-		
+		Math::Vector3 _pad;
+
+		// cascaded shadow map Info
+		CascadedLight _cascadedLightInfo;
+
 		PerLight _perLights[20];
 	};
 

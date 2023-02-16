@@ -36,6 +36,8 @@ namespace Graphics
 		void InitIBL();
 		void CreateIBL();
 
+		void InitCascadedShadow();
+
 		MeshBuffer* CreateMeshBuffer(uuid uuid, std::vector<Common::VertexAttribute>& vertices, std::vector<std::vector<uint32>> subMeshs);
 		MaterialBuffer* CreateMaterialBuffer(uuid uuid);
 		CameraBuffer* CreateCameraBuffer();
@@ -56,7 +58,7 @@ namespace Graphics
 		Graphics::RenderPass* GetSkinnedMeshPass() { return m_Deferred_Mesh_Skinned_Pass.get(); }
 		Graphics::RenderPass* GetSkinnedMeshBumpPass() { return m_Deferred_Mesh_Skinned_Bump_Pass.get(); }
 		Graphics::RenderPass* GetSkinnedMeshBumpMRAPass() { return m_Deferred_Mesh_Skinned_Bump_MRA_Pass.get(); }
-
+		
 		Graphics::RenderPass* GetRenderPass(uuid uuid);
 
 	private:
@@ -81,6 +83,9 @@ namespace Graphics
 		std::shared_ptr<Graphics::RenderPass> m_Deferred_Mesh_Skinned_Pass;
 		std::shared_ptr<Graphics::RenderPass> m_Deferred_Mesh_Skinned_Bump_Pass;
 		std::shared_ptr<Graphics::RenderPass> m_Deferred_Mesh_Skinned_Bump_MRA_Pass;
+
+		std::shared_ptr<Graphics::RenderPass> m_CascadedShadow_Pass;
+		std::shared_ptr<Graphics::RenderPass> m_CascadedShadow_Skinned_Pass;
 
 		MaterialBuffer* m_Deferred_Light_Material;
 		MeshBuffer* m_Screen_Mesh;

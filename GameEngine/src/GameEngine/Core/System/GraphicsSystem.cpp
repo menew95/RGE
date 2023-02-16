@@ -184,6 +184,12 @@ namespace GameEngine
 			_uuid = TEXT("Deferred_Mesh_Skin_Bump_MRA Pass");
 			m_RenderPassList.push_back(std::make_pair(_uuid, m_GraphicsEngine->GetRenderPass(_uuid)));
 
+			_uuid = TEXT("CascadedShadow Pass");
+			m_RenderPassList.push_back(std::make_pair(_uuid, m_GraphicsEngine->GetRenderPass(_uuid)));
+
+			_uuid = TEXT("CascadedShadow_Skinned Pass");
+			m_RenderPassList.push_back(std::make_pair(_uuid, m_GraphicsEngine->GetRenderPass(_uuid)));
+
 			//_uuid = TEXT("Deferred_Light Pass");
 			//m_RenderPassList.push_back(std::make_pair(_uuid, m_GraphicsEngine->GetRenderPass(_uuid)));
 			//

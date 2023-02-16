@@ -56,4 +56,9 @@ struct Light
 
 };
 
+struct CascadedInfo
+{
+	matrix _cascadedLightTM[4];
+	float _cascadeEndClipSpace[4];
+};
 #endif // H_STRUCT

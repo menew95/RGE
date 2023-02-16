@@ -25,8 +25,10 @@ cbuffer Transform : register(b1)
 cbuffer Lighting : register(b1)
 {
 	uint LightCount;
-	float IBLFactor;
-	float2 pad;
+	float3 _pad;
+
+	// cascaded shadow map Info
+	CascadedInfo _cascadedInfo;
 
 	Light LightInfo[MAX_LIGHT_COUNT];
 }

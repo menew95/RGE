@@ -30,28 +30,30 @@ float CalcShadowFactor(SamplerComparisonState samShadow,
 	return percentLit /= 9.0f;
 }
 
-float CalcShadowFactor2(SamplerState samShadow,
-	Texture2D shadowMap,
-	float3 shadowPosH)
+float CalcCascadeShadowFactor(int cascadeIndex, float4 lightspacepos, Texture2DArray cascadeShadowMap, SamplerComparisonState cascadeShadowSampler)
 {
-	// Depth in NDC space.
-	float depth = shadowPosH.z - 0.001;
+	float3 projCoords = lightspacepos.xyz / lightspacepos.w;
+	projCoords.x = projCoords.x * 0.5 + 0.5f;
+	projCoords.y = -projCoords.y * 0.5 + 0.5f;
+	if (projCoords.z > 1.0)
+		return 0.0f;
 
-	float percentLit = 0.0f;
+	float currentDepth = projCoords.z;
+	float bias = 0.01f;
+	float shadow = 0.0;
 
-	for (int i = 0; i < 9; ++i)
+	float3 samplePos = projCoords;
+	samplePos.z = cascadeIndex;
+	[unroll]
+	for (int x = -1; x <= 1; ++x)
 	{
-		float temp = shadowMap.Sample(samShadow, shadowPosH.xy, offset[i]).r;
-
-		if (depth <= temp)
+		for (int y = -1; y <= 1; ++y)
 		{
-			percentLit += 1;
+			shadow += cascadeShadowMap.SampleCmpLevelZero(cascadeShadowSampler, samplePos, currentDepth - bias, int2(x, y));
 		}
-		/*percentLit += shadowMap.SampleCmpLevelZero(samShadow,
-			shadowPosH.xy, depth, offset[i]).r;*/
 	}
-
-	return percentLit /= 9.0f;
+	shadow /= 9.0f;
+	return shadow;
 }
 
 #endif // H_SHADOW

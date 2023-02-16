@@ -91,6 +91,8 @@ namespace GameEngine
 			std::vector<std::weak_ptr<Transform>> m_BoneTransformList;
 			std::vector<Math::Matrix> m_BoneOffset;
 
+			bool m_ShadowCasting = true;
+
 			RTTR_ENABLE(Renderer)
 
 			RTTR_REGISTRATION_FRIEND

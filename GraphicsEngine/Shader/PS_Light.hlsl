@@ -1,6 +1,7 @@
 #include "Header/H_ConstBuffer.hlsli"
 #include "Header/H_Input.hlsli"
 #include "Header/H_Light.hlsli"
+#include "Header/H_Shadow.hlsli"
 
 Texture2D gAlbedo	: register(t0);
 Texture2D gNormal	: register(t1);
@@ -12,7 +13,11 @@ TextureCube gPreFilteredMap : register(t5);
 TextureCube gIrradianceMap : register(t6);
 Texture2D gIntegrateBRDFMap : register(t7);
 
+Texture2DArray gCascadedShadowMap : register(t8);
+
 SamplerState samWrapLinear	: register(s0);
+
+SamplerComparisonState samCascaded : register(s1);
 
 float3 CalcIBL(float3 V, float3 N, float3 albedo, float3 F0, float roughness, float metallic, float ao)
 {
@@ -74,6 +79,28 @@ float4 main(VSOutput input) : SV_TARGET
 
 	float3 _lightColor = float3(0.0f, 0.0f, 0.0f);
 
+	float _shadowFactor = 1.0f;
+	int idex = 0;
+	float4 cascadeLightPos[4];
+	float _clipZ = _emissive.a;
+
+	[unroll]
+	for (int i = 0; i < 4; ++i)
+	{
+		cascadeLightPos[i] = mul(_worldPos, _cascadedInfo._cascadedLightTM[i]);
+	}
+
+	[unroll]
+	for (int j = 0; j < 4; ++j)
+	{
+		if (_clipZ <= _cascadedInfo._cascadeEndClipSpace[j])
+		{
+			_shadowFactor = CalcCascadeShadowFactor(j, cascadeLightPos[j], gCascadedShadowMap, samCascaded);
+			idex = j;
+			break;
+		}
+	}
+
 	//[unroll]
 	for (uint _lightIdx = 0; _lightIdx < LightCount; _lightIdx++)
 	{
@@ -82,7 +109,7 @@ float4 main(VSOutput input) : SV_TARGET
 
 	float3 _ambient = CalcIBL(_toEye, _normal.xyz, _albedo.rgb, _specularColor, _roughness, _metallic, _ao);
 
-	_finColor = _ambient + _lightColor;
+	_finColor = _ambient + _lightColor * _shadowFactor;
 
 	_finColor = pow(_finColor, 1 / 2.2);
 

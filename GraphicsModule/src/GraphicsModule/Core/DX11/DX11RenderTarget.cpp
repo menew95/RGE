@@ -175,8 +175,8 @@ namespace Graphics
 			case TextureType::TextureCubeArray:
 				_dsvDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DARRAY;
 				_dsvDesc.Texture2DArray.MipSlice = desc._mipLevel;
-				_dsvDesc.Texture2DArray.FirstArraySlice = desc._arrayLayer;
-				_dsvDesc.Texture2DArray.ArraySize = 1;
+				_dsvDesc.Texture2DArray.FirstArraySlice = 0;
+				_dsvDesc.Texture2DArray.ArraySize = desc._arrayLayer;
 				break;
 
 			case TextureType::Texture2DMS:

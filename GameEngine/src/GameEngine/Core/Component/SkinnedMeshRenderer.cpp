@@ -36,6 +36,10 @@ RTTR_REGISTRATION
 		metadata(GameEngine::Core::MetaData::ObjectType, GameEngine::Core::ObjectType::Component),
 		metadata(GameEngine::Core::ObjectType::Component, "Transform")
 	)
+	.property("m_ShadowCasting", &GameEngine::Core::SkinnedMeshRenderer::m_ShadowCasting)
+	(
+		metadata(GameEngine::Core::MetaData::Serializable, GameEngine::Core::MetaDataType::BOOL)
+	)
 	.method("GetName", &GameEngine::Core::Material::GetName)
 	.method("CheckVaild", &GameEngine::Core::SkinnedMeshRenderer::CheckVaild)
 	.method("CheckRootVaild", &GameEngine::Core::SkinnedMeshRenderer::CheckRootVaild);
@@ -180,6 +184,19 @@ namespace GameEngine
 						GraphicsSystem::GetInstance()->RegistRenderObject(_idx, _renderObject);
 
 						//_materialBuffer->RegistRenderObject(_renderObject);
+
+						if (m_ShadowCasting)
+						{
+							Graphics::RenderObject _shadow;
+							_shadow.m_MeshBuffer = _sharedMesh->GetMeshBuffer();
+							_shadow.m_MaterialBuffer = _materialBuffer;
+
+							_shadow.m_UpdateResourcePerObjects.push_back(_perObjectResource);
+
+							_shadow.m_UpdateResourcePerObjects.push_back(_perSkinnedObjectResource);
+
+							GraphicsSystem::GetInstance()->RegistRenderObject(7, _shadow);
+						}
 					}
 				}
 			}
