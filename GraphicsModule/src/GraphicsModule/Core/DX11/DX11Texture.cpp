@@ -183,7 +183,7 @@ namespace Graphics
 					_desc.TextureCubeArray.MostDetailedMip = baseMipLevel;
 					_desc.TextureCubeArray.MipLevels = numMipLevels;
 					_desc.TextureCubeArray.First2DArrayFace = baseArrayLayer;
-					_desc.TextureCubeArray.NumCubes = numArrayLayers;
+					_desc.TextureCubeArray.NumCubes = numArrayLayers / 3;
 					break;
 
 				case TextureType::Texture2DMS:

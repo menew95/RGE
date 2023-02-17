@@ -24,13 +24,16 @@ cbuffer Transform : register(b1)
 
 cbuffer Lighting : register(b1)
 {
-	uint LightCount;
-	float3 _pad;
+	// x dir y point z spot
+	uint4 _lightCount;
 
-	// cascaded shadow map Info
-	CascadedInfo _cascadedInfo;
+	CascadedLight _cascadedLight;
 
-	Light LightInfo[MAX_LIGHT_COUNT];
+	DirectionLight _directionLight[MAX_LIGHT_COUNT];
+
+	SpotLight _spotLight[MAX_LIGHT_COUNT];
+
+	PointLight _pointLight[MAX_LIGHT_COUNT];
 }
 
 #if defined(_SKIN) && defined(BONECNT)

@@ -56,6 +56,57 @@ struct Light
 
 };
 
+struct CascadedLight
+{
+	float3 _direction;
+	float3 _color;
+	float _power;
+
+	matrix _lightTransform[4];
+	float _cascadeEndClipSpace[4];
+};
+
+struct DirectionLight
+{
+	float3 _direction;
+	float3 _color;
+	float _power;
+
+	matrix _lightTransform;
+};
+
+struct PointLight
+{
+	float3 _position;
+
+	float _range;
+
+	float3 _color;
+
+	float _fallOff;
+
+	float _power;
+
+	matrix _lightTransform[6];
+};
+
+struct SpotLight
+{
+	float _range;
+	float _fallOff;
+
+	float3 _position;
+	float _spotAngle;
+
+	float3 _direction;
+	float _fallOffAngle;
+
+	float3 _color;
+	float _power;
+
+	matrix _lightTransform;
+};
+
 struct CascadedInfo
 {
 	matrix _cascadedLightTM[4];

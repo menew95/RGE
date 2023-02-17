@@ -10,22 +10,22 @@ struct GSInput
 	float4 posW : SV_POSITION;
 };
 
-struct GSOutput
+struct StreamOutput
 {
 	float4 posH : SV_POSITION;
 	uint RTIndex : SV_RenderTargetArrayIndex;
 };
 
 [maxvertexcount(12)]
-void main(triangle GSInput input[3], inout TriangleStream <GSOutput> output)
+void main(triangle GSInput input[3], inout TriangleStream <StreamOutput> output)
 {
 	for (int face = 0; face < 4; ++face)
 	{
-		GSOutput element;
-		element.RTIndex = face;
+		StreamOutput _output;
+		_output.RTIndex = face;
 		for (int i = 0; i < 3; ++i)
 		{
-			element.posH = mul(input[i].posW, _cascadedInfo._cascadedLightTM[face]);
+			_output.posH = mul(input[i].posW, _cascadedInfo._cascadedLightTM[face]);
 			output.Append(element);
 		}
 		output.RestartStrip();

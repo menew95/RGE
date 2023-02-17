@@ -15,6 +15,10 @@ Texture2D gIntegrateBRDFMap : register(t7);
 
 Texture2DArray gCascadedShadowMap : register(t8);
 
+Texture2DArray gSpotShadowMap : register(t9);
+
+TextureCubeArray gPointShadowMap : register(t10);
+
 SamplerState samWrapLinear	: register(s0);
 
 SamplerComparisonState samCascaded : register(s1);
@@ -64,12 +68,10 @@ float4 main(VSOutput input) : SV_TARGET
 	_albedo.w = 1.0f;
 	_albedo = pow(_albedo, 2.2);
 
-	_normal.w = 1.0f;
-	_normal = (_normal - 0.5f) * 2.0f;
-
-	float3 _toEye = normalize(camera._camWorld.xyz - _worldPos.xyz);
-
-	float _roughness2 = max(0.001, _roughness * _roughness);
+	/*_normal.w = 1.0f;
+	_normal = (_normal - 0.5f) * 2.0f;*/
+	float3 N = ((_normal - 0.5f) * 2.0f).xyz;
+	float3 V = normalize(camera._camWorld.xyz - _worldPos.xyz);
 
 	// Specular coefficiant - fixed reflectance value for non-metals
 	static const float kSpecularCoefficient = 0.04;
@@ -79,37 +81,53 @@ float4 main(VSOutput input) : SV_TARGET
 
 	float3 _lightColor = float3(0.0f, 0.0f, 0.0f);
 
-	float _shadowFactor = 1.0f;
-	int idex = 0;
-	float4 cascadeLightPos[4];
-	float _clipZ = _emissive.a;
 
-	[unroll]
-	for (int i = 0; i < 4; ++i)
+	for (uint _dirIdx = 0; _dirIdx < _lightCount.x; _dirIdx++)
 	{
-		cascadeLightPos[i] = mul(_worldPos, _cascadedInfo._cascadedLightTM[i]);
-	}
+		float _shadowFactor = 1.0f;
+		int idex = 0;
+		float4 cascadeLightPos[4];
+		float _clipZ = _emissive.a;
 
-	[unroll]
-	for (int j = 0; j < 4; ++j)
-	{
-		if (_clipZ <= _cascadedInfo._cascadeEndClipSpace[j])
+		[unroll]
+		for (int i = 0; i < 4; ++i)
 		{
-			_shadowFactor = CalcCascadeShadowFactor(j, cascadeLightPos[j], gCascadedShadowMap, samCascaded);
-			idex = j;
-			break;
+			cascadeLightPos[i] = mul(_worldPos, _cascadedLight._lightTransform[i]);
 		}
+
+		[unroll]
+		for (int j = 0; j < 4; ++j)
+		{
+			if (_clipZ <= _cascadedLight._cascadeEndClipSpace[j])
+			{
+				_shadowFactor = CalcCascadeShadowFactor(j, cascadeLightPos[j], gCascadedShadowMap, samCascaded);
+				idex = j;
+				break;
+			}
+		}
+
+		_lightColor += CalcDirectionalLight(_directionLight[_dirIdx], _roughness, _metallic, _specularColor, _diffuseColor, N, V) * _shadowFactor;
 	}
 
-	//[unroll]
-	for (uint _lightIdx = 0; _lightIdx < LightCount; _lightIdx++)
+	for (uint _spotIdx = 0; _spotIdx < _lightCount.y; _spotIdx++)
 	{
-		_lightColor += CalLight(LightInfo[_lightIdx], _specularColor, _diffuseColor, _worldPos.xyz, _normal.xyz, _toEye, _roughness, _metallic);
+		_lightColor += CalcSpotLight(_spotLight[_spotIdx], _roughness, _metallic, _specularColor, _diffuseColor, N, V, _worldPos.xyz);
 	}
 
-	float3 _ambient = CalcIBL(_toEye, _normal.xyz, _albedo.rgb, _specularColor, _roughness, _metallic, _ao);
+	for (uint _pointIdx = 0; _pointIdx < _lightCount.z; _pointIdx++)
+	{
+		_lightColor += CalcPointLight(_pointLight[_pointIdx], _roughness, _metallic, _specularColor, _diffuseColor, N, V, _worldPos.xyz);
+	}
 
-	_finColor = _ambient + _lightColor * _shadowFactor;
+	////[unroll]
+	//for (uint _lightIdx = 0; _lightIdx < LightCount; _lightIdx++)
+	//{
+	//	_lightColor += CalLight(LightInfo[_lightIdx], _specularColor, _diffuseColor, _worldPos.xyz, _normal.xyz, V, _roughness, _metallic);
+	//}
+
+	float3 _ambient = CalcIBL(V, N, _albedo.rgb, _specularColor, _roughness, _metallic, _ao);
+
+	_finColor = _ambient + _lightColor;
 
 	_finColor = pow(_finColor, 1 / 2.2);
 
