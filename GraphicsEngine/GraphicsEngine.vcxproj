@@ -224,6 +224,7 @@ xcopy /E /S /Y /R "$(ProjectDir)Shader\*" "$(OutputPath)..\Client\Asset\Shader\*
     <ClInclude Include="inc\GraphicsEngine\GraphicsEngine.h" />
     <ClInclude Include="inc\GraphicsEngine\GraphicsEngineFlags.h" />
     <ClInclude Include="inc\GraphicsEngine\RenderPass\IBL.h" />
+    <ClInclude Include="inc\GraphicsEngine\RenderPass\Light.h" />
     <ClInclude Include="inc\GraphicsEngine\RenderPass\RenderPass.h" />
     <ClInclude Include="inc\GraphicsEngine\RenderObject.h" />
     <ClInclude Include="inc\GraphicsEngine\RenderPass\RenderPassFlags.h" />
@@ -248,6 +249,7 @@ xcopy /E /S /Y /R "$(ProjectDir)Shader\*" "$(OutputPath)..\Client\Asset\Shader\*
     </FxCompile>
     <ClCompile Include="src\GraphicsEngine\Json\JsonTable.cpp" />
     <ClCompile Include="src\GraphicsEngine\RenderPass\IBL.cpp" />
+    <ClCompile Include="src\GraphicsEngine\RenderPass\Light.cpp" />
     <ClCompile Include="src\GraphicsEngine\Resource\CameraBuffer.cpp" />
     <ClCompile Include="src\GraphicsEngine\Resource\LightBuffer.cpp" />
     <ClCompile Include="src\GraphicsEngine\Resource\MaterialBuffer.cpp" />
@@ -266,6 +268,9 @@ xcopy /E /S /Y /R "$(ProjectDir)Shader\*" "$(OutputPath)..\Client\Asset\Shader\*
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Common\Common.vcxproj">
+      <Project>{c6542150-c84d-4e5f-910b-dfedc663bae2}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\GraphicsModule\GraphicsModule.vcxproj">
       <Project>{207ef073-c5c8-4566-8bd0-928e60be3167}</Project>
     </ProjectReference>

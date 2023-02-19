@@ -59,7 +59,9 @@ namespace Graphics
 
 		inline RenderTarget* GetRenderTarget() { return m_RenderTarget; }
 
-		void UpdateShadowTransform();
+		void GetSpotLightTransform(Math::Matrix& lightTM);
+		void GetDirectionLightTransform(Math::Matrix& lightTM);
+		void GetPointLightTransform(Math::Matrix* lightTMs);
 
 	private:
 

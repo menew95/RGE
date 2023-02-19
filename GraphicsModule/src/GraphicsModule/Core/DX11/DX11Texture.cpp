@@ -53,6 +53,8 @@ namespace Graphics
 			_desc.MiscFlags = GetTextureMiscFlags(desc);
 
 			m_NativeTexture._tex1D = DXCreateTexture1D(device, _desc, initialData);
+
+			SetResourceParams(_desc.Format, Extent3D{ _desc.Width, 1u, 1u }, _desc.MipLevels, _desc.ArraySize);
 		}
 
 		void DX11Texture::CreateTexture2D(ID3D11Device* device, const TextureDesc& desc, const D3D11_SUBRESOURCE_DATA* initialData /*= nullptr*/)
@@ -72,6 +74,8 @@ namespace Graphics
 			_desc.MiscFlags = GetTextureMiscFlags(desc);
 
 			m_NativeTexture._tex2D = DXCreateTexture2D(device, _desc, initialData);
+
+			SetResourceParams(_desc.Format, Extent3D{ _desc.Width, _desc.Height, 1u }, _desc.MipLevels, _desc.ArraySize);
 		}
 
 		void DX11Texture::CreateTexture3D(ID3D11Device* device, const TextureDesc& desc, const D3D11_SUBRESOURCE_DATA* initialData /*= nullptr*/)
@@ -89,16 +93,39 @@ namespace Graphics
 			_desc.MiscFlags = GetTextureMiscFlags(desc);
 
 			m_NativeTexture._tex3D = DXCreateTexture3D(device, _desc, initialData);
+
+			SetResourceParams(_desc.Format, Extent3D{ _desc.Width, _desc.Height, _desc.Depth }, _desc.MipLevels, 1);
 		}
 
 		void DX11Texture::UpdateSubresource(ID3D11DeviceContext* context, UINT mipLevel, UINT arrayLayer, const D3D11_BOX& region, const ImageDesc& imageDesc)
 		{
+			/* Check if source image must be converted */
+			auto format = UnmapFormat(m_Format);
 
+
+			const void* initialData = imageDesc._data;
+
+			/* Update subresource with specified image data */
+			context->UpdateSubresource(
+				m_NativeTexture._resource.Get(),
+				0,
+				&region,
+				initialData,
+				0,
+				0
+			);
 		}
 
 		void DX11Texture::CreateSubresourceCopyWithCPUAccess(ID3D11Device* device, ID3D11DeviceContext* context, DX11NativeTexture& textureOutput, UINT cpuAccessFlags, const TextureRegion& region)
 		{
 
+		}
+
+		void DX11Texture::SetResourceParams(DXGI_FORMAT format, const Extent3D& extent, UINT mipLevels, UINT arraySize)
+		{
+			m_Format = format;
+			m_NumMipLevels = (mipLevels == 0 ? NumMipLevels(extent._width, extent._height, extent._depth) : mipLevels);
+			m_NumArrayLayers = arraySize;
 		}
 
 		Graphics::ComPtr<ID3D11Texture1D> DX11Texture::DXCreateTexture1D(ID3D11Device* device, const D3D11_TEXTURE1D_DESC& desc, const D3D11_SUBRESOURCE_DATA* initialData /*= nullptr*/)
@@ -183,7 +210,7 @@ namespace Graphics
 					_desc.TextureCubeArray.MostDetailedMip = baseMipLevel;
 					_desc.TextureCubeArray.MipLevels = numMipLevels;
 					_desc.TextureCubeArray.First2DArrayFace = baseArrayLayer;
-					_desc.TextureCubeArray.NumCubes = numArrayLayers / 3;
+					_desc.TextureCubeArray.NumCubes = numArrayLayers / 6;
 					break;
 
 				case TextureType::Texture2DMS:

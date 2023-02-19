@@ -76,6 +76,8 @@ namespace Graphics
 			void CreateShaderResourceView(ID3D11Device* device, uint32 baseMipLevel, uint32 numMipLevels, uint32 baseArrayLayer, uint32 numArrayLayers);
 			void CreateTextureFromFile(ID3D11Device* device, const ImageDesc& srcDesc);
 		private:
+			void SetResourceParams(DXGI_FORMAT format, const Extent3D& extent, UINT mipLevels, UINT arraySize);
+
 			uint32 GetTextureMiscFlags(const TextureDesc& desc);
 
 
@@ -91,6 +93,9 @@ namespace Graphics
 			ComPtr<ID3D11UnorderedAccessView> m_UnorderedAccessView;
 
 			TextureDesc m_TextureDesc;
+			DXGI_FORMAT m_Format;
+			uint32      m_NumMipLevels = 0;
+			uint32      m_NumArrayLayers = 0;
 		};
 	}
 }

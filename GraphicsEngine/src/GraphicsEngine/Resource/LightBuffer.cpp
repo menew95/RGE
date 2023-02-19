@@ -55,9 +55,74 @@ namespace Graphics
 
 	}
 
-	void LightBuffer::UpdateShadowTransform()
+	void LightBuffer::GetSpotLightTransform(Math::Matrix& lightTM)
 	{
+		lightTM =
+			Math::Matrix::CreateLookAt(
+				m_PerLight._lightPosition,
+				m_PerLight._lightPosition + m_PerLight._direction,
+				Math::Vector3::Up) *
+			Math::Matrix::CreatePerspectiveFieldOfView(
+				m_PerLight._spotAngle * Math::Deg2Rad
+				, 1.0f, 0.1f, m_PerLight._range);
+	}
 
+	void LightBuffer::GetDirectionLightTransform(Math::Matrix& lightTM)
+	{
+		/*lightTM =
+			Math::Matrix::CreateLookAt(
+				m_PerLight._lightPosition,
+				m_PerLight._lightPosition + m_PerLight._direction,
+				Math::Vector3::Up) *
+			Math::Matrix::CreateOrthographicOffCenter(
+			);*/
+	}
+
+	void LightBuffer::GetPointLightTransform(Math::Matrix* lightTMs)
+	{
+		Math::Vector3 _eye = { 0.0f, 0.0f, 0.0f };
+
+		Math::Vector3 _look, _up;
+
+		Math::Matrix _views[6], _proj;
+		// +X
+		_look = Math::Vector3::Right + m_PerLight._lightPosition;
+		_up = { 0.0f, 1.0f, 0.0f };
+		_views[0] = Math::Matrix::CreateLookAt(_eye, _look, _up);
+
+		// -X
+		_look = Math::Vector3::Left + m_PerLight._lightPosition;
+		_up = { 0.0f, 1.0f, 0.0f };
+		_views[1] = Math::Matrix::CreateLookAt(_eye, _look, _up);
+
+		// +Y
+		_look = Math::Vector3::Up + m_PerLight._lightPosition;
+		_up = { 0.0f, 0.0f, -1.0f };
+		_views[2] = Math::Matrix::CreateLookAt(_eye, _look, _up);
+
+		// -Y
+		_look = Math::Vector3::Down + m_PerLight._lightPosition;
+		_up = { 0.0f, 0.0f, 1.0f };
+		_views[3] = Math::Matrix::CreateLookAt(_eye, _look, _up);
+
+		// +Z
+		_look = Math::Vector3::Forward + m_PerLight._lightPosition;
+		_up = { 0.0f, 1.0f, 0.0f };
+		_views[4] = Math::Matrix::CreateLookAt(_eye, _look, _up);
+
+		// -Z
+		_look = Math::Vector3::Backward + m_PerLight._lightPosition;
+		_up = { 0.0f, 1.0f, 0.0f };
+		_views[5] = Math::Matrix::CreateLookAt(_eye, _look, _up);
+
+		_proj = Math::Matrix::CreatePerspectiveFieldOfView(90.f * Math::Deg2Rad, 1.0, 1.0f, 100.f);
+
+		lightTMs[0] = _views[0] * _proj;
+		lightTMs[1] = _views[1] * _proj;
+		lightTMs[2] = _views[2] * _proj;
+		lightTMs[3] = _views[3] * _proj;
+		lightTMs[4] = _views[4] * _proj;
+		lightTMs[5] = _views[5] * _proj;
 	}
 
 	void LightBuffer::CreateRenderTarget()

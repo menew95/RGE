@@ -118,4 +118,5 @@ namespace Graphics
 	GRAPHICS_DLL_DECLSPEC bool IsCubeTexture(const TextureType& type);
 	GRAPHICS_DLL_DECLSPEC bool IsMultiSampleTexture(const TextureType& desc);
 	GRAPHICS_DLL_DECLSPEC bool IsMipMappedTexture(const TextureDesc& desc);
+	GRAPHICS_DLL_DECLSPEC uint32 NumMipLevels(std::uint32_t width, std::uint32_t height, std::uint32_t depth);
 }

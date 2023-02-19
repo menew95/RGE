@@ -2,7 +2,7 @@
 
 cbuffer CascadedLight : register(b0)
 {
-	CascadedInfo _cascadedInfo;
+	CascadedLight _cascadedLight;
 }
 
 struct GSInput
@@ -25,8 +25,8 @@ void main(triangle GSInput input[3], inout TriangleStream <StreamOutput> output)
 		_output.RTIndex = face;
 		for (int i = 0; i < 3; ++i)
 		{
-			_output.posH = mul(input[i].posW, _cascadedInfo._cascadedLightTM[face]);
-			output.Append(element);
+			_output.posH = mul(input[i].posW, _cascadedLight._lightTransform[face]);
+			output.Append(_output);
 		}
 		output.RestartStrip();
 	}

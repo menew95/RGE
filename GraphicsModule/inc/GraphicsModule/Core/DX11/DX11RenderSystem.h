@@ -43,7 +43,7 @@ namespace Graphics
 			Texture* CreateTexture(uuid uuid, const TextureDesc& desc, const struct ImageDesc* imageDesc = nullptr) override;
 			void Release(Texture& texture) override;
 
-			void WriteTexture(Texture& texture) override;
+			void WriteTexture(Texture& texture, const TextureRegion& textureRegion, const ImageDesc& imageDesc) override;
 			void ReadTexture(Texture& texture) override;
 
 			/* ----- Samplers ---- */

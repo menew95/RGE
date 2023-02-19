@@ -34,7 +34,7 @@ struct Material
 	float2 _tiling;
 };
 
-#define MAX_LIGHT_COUNT 20
+#define MAX_LIGHT_COUNT 10
 
 struct Light
 {

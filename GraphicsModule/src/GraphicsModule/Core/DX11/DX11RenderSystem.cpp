@@ -79,9 +79,71 @@ namespace Graphics
 			_castBuffer.Unmap(m_Context.Get());
 		}
 
-		void DX11RenderSystem::WriteTexture(Texture& texture)
+		void DX11RenderSystem::WriteTexture(Texture& texture, const TextureRegion& textureRegion, const ImageDesc& imageDesc)
 		{
-			assert(false);
+			auto& textureD3D = reinterpret_cast<DX11Texture&>(texture);
+
+			switch (texture.GetType())
+			{
+				case TextureType::Texture1D:
+				case TextureType::Texture1DArray:
+					textureD3D.UpdateSubresource(
+						m_Context.Get(),
+						textureRegion.subresource.baseMipLevel,
+						textureRegion.subresource.baseArrayLayer,
+						CD3D11_BOX(
+							textureRegion.offset.x,
+							0,
+							0,
+							textureRegion.offset.x + static_cast<LONG>(textureRegion.extent._width),
+							static_cast<LONG>(textureRegion.subresource.numArrayLayers),
+							1
+						),
+						imageDesc
+					);
+					break;
+
+				case TextureType::Texture2D:
+				case TextureType::TextureCube:
+				case TextureType::Texture2DArray:
+				case TextureType::TextureCubeArray:
+					textureD3D.UpdateSubresource(
+						m_Context.Get(),
+						textureRegion.subresource.baseMipLevel,
+						textureRegion.subresource.baseArrayLayer,
+						CD3D11_BOX(
+							textureRegion.offset.x,
+							textureRegion.offset.y,
+							0,
+							textureRegion.offset.x + static_cast<LONG>(textureRegion.extent._width),
+							textureRegion.offset.y + static_cast<LONG>(textureRegion.extent._height),
+							static_cast<LONG>(textureRegion.subresource.numArrayLayers)
+						),
+						imageDesc
+					);
+					break;
+
+				case TextureType::Texture2DMS:
+				case TextureType::Texture2DMSArray:
+					break;
+
+				case TextureType::Texture3D:
+					textureD3D.UpdateSubresource(
+						m_Context.Get(),
+						textureRegion.subresource.baseMipLevel,
+						0,
+						CD3D11_BOX(
+							textureRegion.offset.x,
+							textureRegion.offset.y,
+							textureRegion.offset.z,
+							textureRegion.offset.x + static_cast<LONG>(textureRegion.extent._width),
+							textureRegion.offset.y + static_cast<LONG>(textureRegion.extent._height),
+							textureRegion.offset.z + static_cast<LONG>(textureRegion.extent._depth)
+						),
+						imageDesc
+					);
+					break;
+			}
 		}
 
 		void DX11RenderSystem::ReadTexture(Texture& texture)

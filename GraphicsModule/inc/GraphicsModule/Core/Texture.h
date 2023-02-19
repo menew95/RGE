@@ -12,6 +12,7 @@ namespace Graphics
 
 		ResourceType GetResourceType() const override;
 
+		TextureType GetType() { return m_TextureType; }
 	protected:
 		Texture(const TextureType& type, uint32 bindFlags);
 

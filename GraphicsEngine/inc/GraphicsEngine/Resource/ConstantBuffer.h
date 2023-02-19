@@ -2,6 +2,8 @@
 
 #include "Math/Math.h"
 
+#define MAX_LIGHT_COUNT 10
+
 namespace Graphics
 {
 	struct alignas(16) Camera
@@ -34,8 +36,64 @@ namespace Graphics
 
 	};
 
+	struct CascadedLight
+	{
+		Math::Vector3 _direction;
+		float _pad;
+		Math::Vector3 _color;
+		float _power;
+
+		Math::Matrix _lightTransform[4];
+		Math::Vector4 _cascadeEndClipSpace[4];
+	};
+
+	struct alignas(16) DirectionLight
+	{
+		Math::Vector3 _direction;
+		float _pad;
+
+		Math::Vector3 _color;
+		float _power;
+
+		Math::Matrix _lightTransform;
+	};
+
+	struct alignas(16) PointLight
+	{
+		Math::Vector3 _position;
+
+		float _range;
+
+		Math::Vector3 _color;
+
+		float _fallOff;
+
+		float _power;
+
+		Math::Matrix _lightTransform[6];
+	};
+
+	struct alignas(16) SpotLight
+	{
+		float _range;
+		float _fallOff;
+		float _pad[2];
+
+		Math::Vector3 _position;
+		float _spotAngle;
+
+		Math::Vector3 _direction;
+		float _fallOffAngle;
+
+		Math::Vector3 _color;
+		float _power;
+
+		Math::Matrix _lightTransform;
+	};
+
 	struct alignas(16) PerLight
 	{
+		// 0 : spot 1 : dir 2 : point
 		uint32 _type;
 		float _range;
 		float _fallOff;
@@ -53,21 +111,21 @@ namespace Graphics
 		Math::Matrix _shadowTransform;
 	};
 
-	struct alignas(16)  CascadedLight
-	{
-		Math::Matrix _lightTransform[4];
-		Math::Vector4 _cascadeEndClipSpace[4];
-	};
-
 	struct alignas(16) Lighting
 	{
-		uint32 _lightCount;
-		Math::Vector3 _pad;
+		// x dir y point z spot
+		uint32 _dirLightCount;
+		uint32 _pointLightCount;
+		uint32 _spotLightCount;
+		uint32 _pad;
 
-		// cascaded shadow map Info
-		CascadedLight _cascadedLightInfo;
+		CascadedLight _cascadedLight;
 
-		PerLight _perLights[20];
+		DirectionLight _directionLight[MAX_LIGHT_COUNT];
+
+		SpotLight _spotLight[MAX_LIGHT_COUNT];
+
+		PointLight _pointLight[MAX_LIGHT_COUNT];
 	};
 
 	struct alignas(16) PerPreFiltered

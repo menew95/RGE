@@ -53,7 +53,7 @@ namespace Graphics
 		virtual Texture* CreateTexture(uuid uuid, const TextureDesc& desc, const struct ImageDesc* imageDesc = nullptr) abstract;
 		virtual void Release(Texture& texture) abstract;
 
-		virtual void WriteTexture(Texture& texture) abstract;
+		virtual void WriteTexture(Texture& texture, const TextureRegion& textureRegion, const ImageDesc& imageDesc) abstract;
 		virtual void ReadTexture(Texture& texture) abstract;
 
 		/* ----- Samplers ---- */
