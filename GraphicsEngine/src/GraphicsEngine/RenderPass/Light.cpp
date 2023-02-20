@@ -18,13 +18,13 @@ namespace Graphics
 
 	}
 
-	std::shared_ptr<Graphics::LightBuffer> Light::AddLight()
+	LightBuffer* Light::AddLight()
 	{
 		std::shared_ptr<LightBuffer> _newLight = std::make_shared<LightBuffer>(m_RenderSystem);
 
 		m_LightBuffers.push_back(_newLight);
 
-		return _newLight;
+		return _newLight.get();
 	}
 
 	void Light::GetLightingData(struct Lighting& perLightFrame)
@@ -32,6 +32,7 @@ namespace Graphics
 		perLightFrame._dirLightCount = 0;
 		perLightFrame._pointLightCount = 0;
 		perLightFrame._spotLightCount = 0;
+
 		for (uint32 i = 0; i < m_LightBuffers.size(); i++)
 		{
 			if (m_LightBuffers[i]->GetEnable())
@@ -114,7 +115,15 @@ namespace Graphics
 	{
 		ImageDesc _imgDesc;
 		TextureRegion _region;
+
+
+
 		m_RenderSystem->WriteTexture(*m_LightTexture, _region, _imgDesc);
+	}
+
+	void Light::ExcutePass()
+	{
+
 	}
 
 	void Light::Init()

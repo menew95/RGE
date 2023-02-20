@@ -147,6 +147,7 @@ namespace GameEngine
 							_shadow.m_UpdateResourcePerObjects.push_back(_perObjectResource);
 
 							GraphicsSystem::GetInstance()->RegistRenderObject(6, _shadow);
+							GraphicsSystem::GetInstance()->RegistRenderObject(8, _shadow);
 						}
 						//_materialBuffer->RegistRenderObject(_renderObject);
 					}

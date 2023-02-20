@@ -94,18 +94,20 @@ namespace GameEngine
 
 		void Light::SetLightType(uint32 value)
 		{
+			
+			m_LightType = static_cast<LightType>(value);
 			if (m_LightBuffer)
 			{
-				m_LightType = static_cast<LightType>(value);
 				m_LightBuffer->SetLightType(value);
 			}
 		}
 
 		void Light::SetLightColor(Math::Color& value)
 		{
+			m_LightColor = value;
+
 			if (m_LightBuffer)
 			{
-				m_LightColor = value;
 				Math::Vector3 _color = { m_LightColor.x, m_LightColor.y, m_LightColor.z };
 				m_LightBuffer->SetColor(_color);
 			}
@@ -113,36 +115,40 @@ namespace GameEngine
 
 		void Light::SetIntensity(float value)
 		{
+			m_Intensity = value;
+
 			if (m_LightBuffer)
 			{
-				m_Intensity = value;
 				m_LightBuffer->SetIntensity(m_Intensity);
 			}
 		}
 
 		void Light::SetRange(float value)
 		{
+			m_Range = value;
+
 			if (m_LightBuffer)
 			{
-				m_Range = value;
 				m_LightBuffer->SetRange(m_Range);
 			}
 		}
 
 		void Light::SetSpotAnlge(float value)
 		{
+			m_SpotAngle = value;
+
 			if (m_LightBuffer)
 			{
-				m_SpotAngle = value;
 				m_LightBuffer->SetSpotAngle(m_SpotAngle);
 			}
 		}
 
 		void Light::SetInnerSpotAngle(float value)
 		{
+			m_InnerSpotAngle = value;
+
 			if (m_LightBuffer)
 			{
-				m_InnerSpotAngle = value;
 				m_LightBuffer->SetFalloffAngle(value);
 			}
 		}

@@ -710,7 +710,9 @@ namespace Utility
 		{
 			int _uvIndex = 0;
 
-			FbxGeometryElementUV* _fxbUV = mesh->GetLayer(0)->GetUVs();
+			FbxGeometryElementUV* _fxbUV2 = mesh->GetLayer(0)->GetUVs();
+			FbxGeometryElementUV* _fxbUV = mesh->GetElementUV(0);
+
 
 			if (_fxbUV->GetMappingMode() == FbxGeometryElement::eByPolygonVertex)
 			{

@@ -19,6 +19,7 @@ namespace Graphics
 	class ResourceManager;
 
 	class IBL;
+	class Light;
 
 	class GRAPHICSENGINE_DLL_DECLSPEC GraphicsEngine
 	{
@@ -36,6 +37,7 @@ namespace Graphics
 		void InitIBL();
 		void CreateIBL();
 
+		void InitLight();
 		void InitCascadedShadow();
 
 		MeshBuffer* CreateMeshBuffer(uuid uuid, std::vector<Common::VertexAttribute>& vertices, std::vector<std::vector<uint32>> subMeshs);
@@ -87,6 +89,9 @@ namespace Graphics
 		std::shared_ptr<Graphics::RenderPass> m_CascadedShadow_Pass;
 		std::shared_ptr<Graphics::RenderPass> m_CascadedShadow_Skinned_Pass;
 
+		std::shared_ptr<Graphics::RenderPass> m_PointShadow_Pass;
+		std::shared_ptr<Graphics::RenderPass> m_PointShadow_Skinned_Pass;
+
 		MaterialBuffer* m_Deferred_Light_Material;
 		MeshBuffer* m_Screen_Mesh;
 		std::shared_ptr<Graphics::RenderPass> m_Deferred_Light_Pass;
@@ -109,6 +114,7 @@ namespace Graphics
 		std::vector<RenderObject> m_DebugRenderObject;
 
 		std::shared_ptr<IBL> m_IBL;
+		std::shared_ptr<Light> m_Light;
 	};
 
 	extern "C"

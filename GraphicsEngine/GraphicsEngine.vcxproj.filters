@@ -143,5 +143,6 @@
     <FxCompile Include="Shader\GS_PointShadow.hlsl">
       <Filter>소스 파일</Filter>
     </FxCompile>
+    <FxCompile Include="Shader\GS_SpotShadow.hlsl" />
   </ItemGroup>
 </Project>

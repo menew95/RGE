@@ -14,6 +14,7 @@
 #include "GraphicsEngine/Json/JsonTable.h"
 
 #include "GraphicsEngine/RenderPass/IBL.h"
+#include "GraphicsEngine/RenderPass/Light.h"
 
 HINSTANCE m_GraphicsModule;
 
@@ -68,6 +69,8 @@ namespace Graphics
 		InitIBL();
 
 		InitCascadedShadow();
+
+		InitLight();
 	}
 
 	void GraphicsEngine::InitMeshPass()
@@ -273,6 +276,13 @@ namespace Graphics
 		m_IBL->CreateIBLResource();
 	}
 
+	void GraphicsEngine::InitLight()
+	{
+		m_Light = std::make_shared<Light>(m_RenderSystem, m_ResourceManager);
+
+
+	}
+
 	void GraphicsEngine::InitCascadedShadow()
 	{
 		m_CascadedShadow_Pass = m_ResourceManager->GetRenderPass(TEXT("CascadedShadow Pass"));
@@ -284,6 +294,11 @@ namespace Graphics
 		};
 
 		m_CascadedShadow_Pass->SetAttachmentClears(_attachmentClears);
+
+		m_PointShadow_Pass = m_ResourceManager->GetRenderPass(TEXT("PointLightShadow Pass"));
+		m_PointShadow_Skinned_Pass = m_ResourceManager->GetRenderPass(TEXT("PointLightShadow_Skinned Pass"));
+
+		m_PointShadow_Pass->SetAttachmentClears(_attachmentClears);
 	}
 
 	Graphics::MeshBuffer* GraphicsEngine::CreateMeshBuffer(uuid uuid, std::vector<Common::VertexAttribute>& vertices, std::vector<std::vector<uint32>> subMeshs)
@@ -305,9 +320,7 @@ namespace Graphics
 
 	Graphics::LightBuffer* GraphicsEngine::CreateLightBuffer()
 	{
-		m_LightBuffers.push_back(std::make_shared<LightBuffer>(m_RenderSystem));
-
-		return m_LightBuffers.back().get();
+		return m_Light->AddLight();
 	}
 
 	Graphics::Texture* GraphicsEngine::LoadTexture(uuid uuid, ImageDesc* imageDesc)
@@ -339,19 +352,20 @@ namespace Graphics
 
 		// Update Per Object Buffer(Lighting)
 		Lighting _perLighting;
-		GetLightingData(_perLighting);
+		m_Light->GetLightingData(_perLighting);
 
 		UpdateResourceData _perDraw{ eUpdateTime::PerObject, 1, ResourceType::Buffer, &_perLighting, sizeof(Lighting) };
-		int a = 0;
 		_deferredMergeRenderObject.m_UpdateResourcePerObjects.push_back(_perDraw);
 
 		m_Deferred_Light_Pass->RegistRenderObject(_deferredMergeRenderObject);
 
+
 		m_MainCameraBuffer->UpdateCascadeShadow(_perLighting._directionLight[0]._direction, _perLighting._cascadedLight);
 
 		m_CascadedShadow_Pass->UpdatePerFrame(m_CommandBuffer, &_perLighting._cascadedLight, sizeof(_perLighting._cascadedLight));
-		//m_CascadedShadow_Skinned_Pass->UpdatePerFrame(m_CommandBuffer, &_perLighting._cascadedLightInfo, sizeof(_perLighting._cascadedLightInfo));
 
+		m_Deferred_Light_Pass->UpdatePerFrame(m_CommandBuffer, &_perLighting, sizeof(Lighting));
+		
 		{
 			m_CascadedShadow_Pass->BeginExcute(m_CommandBuffer, nullptr);
 
@@ -366,6 +380,22 @@ namespace Graphics
 			m_CascadedShadow_Skinned_Pass->Excute(m_CommandBuffer);
 
 			m_CascadedShadow_Skinned_Pass->EndExcute(m_CommandBuffer);
+		}
+
+		{
+			m_PointShadow_Pass->BeginExcute(m_CommandBuffer, nullptr);
+
+			m_PointShadow_Pass->Excute(m_CommandBuffer);
+
+			m_PointShadow_Pass->EndExcute(m_CommandBuffer);
+		}
+
+		{
+			m_PointShadow_Skinned_Pass->BeginExcute(m_CommandBuffer, nullptr);
+
+			m_PointShadow_Skinned_Pass->Excute(m_CommandBuffer);
+
+			m_PointShadow_Skinned_Pass->EndExcute(m_CommandBuffer);
 		}
 
 		{

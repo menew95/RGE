@@ -112,6 +112,7 @@ namespace GameEngine
 			//LoadFBX(TEXT("Asset/FBX/Joy.fbx"));
 			//LoadFBX(TEXT("Asset/FBX/Wooden_Crate.fbx"));
 			//LoadFBX(TEXT("Asset/FBX/Wooden_Crate_Normal_MRA.fbx"));
+			//LoadFBX(TEXT("Asset/FBX/lab_12.fbx"));
 		}
 
 		void* Resources::Load(const tstring& filePath)

@@ -69,6 +69,7 @@ namespace Graphics
 		float _fallOff;
 
 		float _power;
+		Math::Vector3 _pad;
 
 		Math::Matrix _lightTransform[6];
 	};

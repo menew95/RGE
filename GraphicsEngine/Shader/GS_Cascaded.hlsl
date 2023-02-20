@@ -1,5 +1,4 @@
 #include "Header/H_Struct.hlsli"
-
 cbuffer CascadedLight : register(b0)
 {
 	CascadedLight _cascadedLight;

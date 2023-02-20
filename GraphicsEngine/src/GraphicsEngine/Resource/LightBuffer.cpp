@@ -115,7 +115,7 @@ namespace Graphics
 		_up = { 0.0f, 1.0f, 0.0f };
 		_views[5] = Math::Matrix::CreateLookAt(_eye, _look, _up);
 
-		_proj = Math::Matrix::CreatePerspectiveFieldOfView(90.f * Math::Deg2Rad, 1.0, 1.0f, 100.f);
+		_proj = Math::Matrix::CreatePerspectiveFieldOfView(90.f * Math::Deg2Rad, 1.0, 0.1f,100.f);
 
 		lightTMs[0] = _views[0] * _proj;
 		lightTMs[1] = _views[1] * _proj;

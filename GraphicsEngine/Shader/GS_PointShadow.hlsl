@@ -1,11 +1,6 @@
 #define _MAX_LIGHT_COUNT 3
 
 #include "Header/H_ConstBuffer.hlsli"
-//cbuffer PointLight : register (b0)
-//{
-//	uint4 _lightCount;
-//	matrix _lightTM[_MAX_LIGHT_COUNT * 6];
-//}
 
 struct GSInput
 {
@@ -36,8 +31,7 @@ void main(triangle GSInput input[3], inout TriangleStream<StreamOutput> output)
 				_output.posH = mul(input[ver].posW, _pointLight[cnt]._lightTransform[view]);
 				output.Append(_output);
 			}
+			output.RestartStrip();
 		}
-
-		output.RestartStrip();
 	}
 }

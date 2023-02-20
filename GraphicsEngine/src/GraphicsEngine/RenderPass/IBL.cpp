@@ -149,6 +149,13 @@ namespace Graphics
 		m_PerCubeMapMatrix._view[5] = Math::Matrix::CreateLookAt(_eye, _look, _up);
 
 		m_PerCubeMapMatrix._proj = Math::Matrix::CreatePerspectiveFieldOfView(90.f * Math::Deg2Rad, 1.0, 1.0f, 100.f);
+
+		auto mat1 = m_PerCubeMapMatrix._view[0] * m_PerCubeMapMatrix._proj;
+		auto mat2 = m_PerCubeMapMatrix._view[1] * m_PerCubeMapMatrix._proj;
+		auto mat3 = m_PerCubeMapMatrix._view[2] * m_PerCubeMapMatrix._proj;
+		auto mat4 = m_PerCubeMapMatrix._view[3] * m_PerCubeMapMatrix._proj;
+		auto mat5 = m_PerCubeMapMatrix._view[4] * m_PerCubeMapMatrix._proj;
+		auto mat6 = m_PerCubeMapMatrix._view[5] * m_PerCubeMapMatrix._proj;
 	}
 
 	void IBL::CreateIBLResource()

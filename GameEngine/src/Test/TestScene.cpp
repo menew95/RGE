@@ -24,11 +24,15 @@ TestScene::TestScene()
 
 	AddGameObjects(_wooden_CrateObject_Base);
 
+	Vector3 _move = { 0, 0, 10 };
+
+	_wooden_CrateObject_Base->GetTransform()->Translate(_move);
+
 	std::shared_ptr<GameObject> _wooden_CrateObject_Bump_MRA = Resources::GetInstance()->GetResource<Prefab>(TEXT("Wooden_Crate_Normal_MRA"))->GetRootGameObject();
 
 	AddGameObjects(_wooden_CrateObject_Bump_MRA);
 
-	Vector3 _move = { -10, 0, 0 };
+	_move = { -10, 0, 0 };
 
 	_wooden_CrateObject_Bump_MRA->GetTransform()->Translate(_move);
 
@@ -51,4 +55,18 @@ TestScene::TestScene()
 	auto _lightCom = _dirLight->AddComponent<Light>();
 
 	AddGameObject(_dirLight);
+
+	{
+		std::shared_ptr<GameObject> _pointLight = GameObject::Instantiate();
+
+		_pointLight->SetName(TEXT("Point Light"));
+
+		auto _lightCom = _pointLight->AddComponent<Light>();
+
+		_lightCom->SetLightType(2);
+
+		_lightCom->SetRange(30.0f);
+
+		AddGameObject(_pointLight);
+	}
 }

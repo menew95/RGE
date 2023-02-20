@@ -26,11 +26,13 @@ namespace Graphics
 		Light(RenderSystem* renderSystem, ResourceManager* resourceManager);
 		~Light();
 
-		std::shared_ptr<LightBuffer> AddLight();
+		LightBuffer* AddLight();
 
 		void GetLightingData(struct Lighting& perLightFrame);
 
 		void UpdateLightTexture();
+
+		void ExcutePass();
 
 	private:
 		void Init();
