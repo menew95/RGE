@@ -32,6 +32,8 @@ void NormalSampleToWorldSpace(out float3 bumpedNormalW, in float3 normalMapSampl
 
 	// Transform from tangent space to world space.
 	bumpedNormalW = mul(normalT, TBN);
+
+	normalize(bumpedNormalW);
 }
 
 PSOut main(VSOutput input)
@@ -69,7 +71,11 @@ PSOut main(VSOutput input)
 	float _ao = _MRA.b;
 #endif
 
+#if !defined(_ALBEDO_MAP)
+	_out.Albedo = material._albedo;
+#else
 	_out.Albedo = float4(gAlbedoMap.Sample(samWrapLinear, input.uv).xyz, _metallic);
+#endif
 
 	_out.Normal = float4((_normal * 0.5 + 0.5), _roughness);
 

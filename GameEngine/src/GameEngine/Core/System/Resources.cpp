@@ -162,6 +162,9 @@ namespace GameEngine
 				if(_pair.second._normalMapTexture.length() > 0) _newMaterial->SetNormalTexture(GraphicsSystem::GetInstance()->LoadTexture(_pair.second._normalMapTexture));
 				if(_pair.second._metalicRoughnessMapTexture.length() > 0) _newMaterial->SetMRATexture(GraphicsSystem::GetInstance()->LoadTexture(_pair.second._metalicRoughnessMapTexture));
 
+				_newMaterial->SetRoughness(_pair.second._roughness);
+				_newMaterial->SetMetallic(_pair.second._metallic);
+
 				m_MaterialMap.insert(std::make_pair(_pair.first, _newMaterial));
 			}
 
@@ -560,6 +563,9 @@ namespace GameEngine
 
 			if (_matData._metalicRoughnessMapTexture.length() > 0)
 				_newMaterial->SetMRATexture(GraphicsSystem::GetInstance()->LoadTexture(_matData._metalicRoughnessMapTexture));
+
+			_newMaterial->SetRoughness(_matData._roughness);
+			_newMaterial->SetMetallic(_matData._metallic);
 
 			m_MaterialMap.insert(std::make_pair(uuid, _newMaterial));
 

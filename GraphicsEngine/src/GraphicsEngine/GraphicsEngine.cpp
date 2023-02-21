@@ -71,6 +71,8 @@ namespace Graphics
 		InitCascadedShadow();
 
 		InitLight();
+
+		InitSSR();
 	}
 
 	void GraphicsEngine::InitMeshPass()
@@ -88,16 +90,19 @@ namespace Graphics
 		m_Deferred_Mesh_Pass = m_ResourceManager->GetRenderPass(TEXT("Deferred_Mesh Pass"));
 		m_Deferred_Mesh_Pass->SetAttachmentClears(_attachmentClears);
 
-		m_Deferred_Mesh_Bump_Pass = m_ResourceManager->GetRenderPass(TEXT("Deferred_Mesh_Bump Pass"));
+		m_Deferred_Mesh_Albedo_Pass = m_ResourceManager->GetRenderPass(TEXT("Deferred_Mesh_Albedo Pass"));
 
-		m_Deferred_Mesh_Bump_MRA_Pass = m_ResourceManager->GetRenderPass(TEXT("Deferred_Mesh_Bump_MRA Pass"));
+		m_Deferred_Mesh_Albedo_Bump_Pass = m_ResourceManager->GetRenderPass(TEXT("Deferred_Mesh_Albedo_Bump Pass"));
+
+		m_Deferred_Mesh_Albedo_Bump_MRA_Pass = m_ResourceManager->GetRenderPass(TEXT("Deferred_Mesh_Albedo_Bump_MRA Pass"));
 
 		m_Deferred_Mesh_Skinned_Pass = m_ResourceManager->GetRenderPass(TEXT("Deferred_Mesh_Skin Pass"));
 
+		m_Deferred_Mesh_Skinned_Albedo_Pass = m_ResourceManager->GetRenderPass(TEXT("Deferred_Mesh_Skin_Albedo Pass"));
 
-		m_Deferred_Mesh_Skinned_Bump_Pass = m_ResourceManager->GetRenderPass(TEXT("Deferred_Mesh_Skin_Bump Pass"));
+		m_Deferred_Mesh_Skinned_Albedo_Bump_Pass = m_ResourceManager->GetRenderPass(TEXT("Deferred_Mesh_Skin_Albedo_Bump Pass"));
 
-		m_Deferred_Mesh_Skinned_Bump_MRA_Pass = m_ResourceManager->GetRenderPass(TEXT("Deferred_Mesh_Skin_Bump_MRA Pass"));
+		m_Deferred_Mesh_Skinned_Albedo_Bump_MRA_Pass = m_ResourceManager->GetRenderPass(TEXT("Deferred_Mesh_Skin_Albedo_Bump_MRA Pass"));
 	}
 
 	void GraphicsEngine::InitLightPass()
@@ -114,10 +119,10 @@ namespace Graphics
 
 		std::vector<ScreenVertex> _data =
 		{
-			{ { -1.f, -1.f, 0.0f }, { 0, 1 } },
-			{ { -1.f, +1.f, 0.0f }, { 0, 0 } },
-			{ { +1.f, -1.f, 0.0f }, { 1, 1 } },
-			{ { +1.f, +1.f, 0.0f }, { 1, 0 } }
+			{ { -1.f, -1.f, 1.0f }, { 0, 1 } },
+			{ { -1.f, +1.f, 1.0f }, { 0, 0 } },
+			{ { +1.f, -1.f, 1.0f }, { 1, 1 } },
+			{ { +1.f, +1.f, 1.0f }, { 1, 0 } }
 		};
 
 		std::vector<uint32> triangles =
@@ -301,6 +306,37 @@ namespace Graphics
 		m_PointShadow_Pass->SetAttachmentClears(_attachmentClears);
 	}
 
+	void GraphicsEngine::InitSSR()
+	{
+		std::vector<AttachmentClear> _attachmentClears =
+		{
+			{ { 0, 0, 0, 0 }, 0 },
+		};
+
+		m_SSR_Pass = m_ResourceManager->GetRenderPass(TEXT("SSReflect Pass"));
+		m_SSR_Pass->SetAttachmentClears(_attachmentClears);
+
+		RenderObject _ssrObject;
+
+		_ssrObject.m_MeshBuffer = m_Screen_Mesh;
+		_ssrObject.m_MaterialBuffer = m_Deferred_Light_Material;
+
+		static SSLR _sslr;
+		_sslr.cb_depthBufferSize = { 1280, 720 };
+		_sslr.cb_zThickness = 0.1f;
+
+		_sslr.cb_nearPlaneZ = 0.1f;
+		_sslr.cb_maxSteps = 1.f;
+		_sslr.cb_maxDistance = 100.f;
+		_sslr.cb_strideZCutoff = 1.f;
+		_sslr.cb_stride = 1.f;
+
+		UpdateResourceData _perDraw{ eUpdateTime::PerObject, 1, ResourceType::Buffer, &_sslr, sizeof(SSLR) };
+		_ssrObject.m_UpdateResourcePerObjects.push_back(_perDraw);
+
+		m_SSR_Pass->RegistRenderObject(_ssrObject);
+	}
+
 	Graphics::MeshBuffer* GraphicsEngine::CreateMeshBuffer(uuid uuid, std::vector<Common::VertexAttribute>& vertices, std::vector<std::vector<uint32>> subMeshs)
 	{
 		return m_ResourceManager->CreateMeshBuffer(uuid, vertices, subMeshs);
@@ -407,19 +443,27 @@ namespace Graphics
 		}
 
 		{
-			m_Deferred_Mesh_Bump_Pass->BeginExcute(m_CommandBuffer, nullptr);
+			m_Deferred_Mesh_Albedo_Pass->BeginExcute(m_CommandBuffer, nullptr);
 
-			m_Deferred_Mesh_Bump_Pass->Excute(m_CommandBuffer);
+			m_Deferred_Mesh_Albedo_Pass->Excute(m_CommandBuffer);
 
-			m_Deferred_Mesh_Bump_Pass->EndExcute(m_CommandBuffer);
+			m_Deferred_Mesh_Albedo_Pass->EndExcute(m_CommandBuffer);
 		}
 
 		{
-			m_Deferred_Mesh_Bump_MRA_Pass->BeginExcute(m_CommandBuffer, nullptr);
+			m_Deferred_Mesh_Albedo_Bump_Pass->BeginExcute(m_CommandBuffer, nullptr);
 
-			m_Deferred_Mesh_Bump_MRA_Pass->Excute(m_CommandBuffer);
+			m_Deferred_Mesh_Albedo_Bump_Pass->Excute(m_CommandBuffer);
 
-			m_Deferred_Mesh_Bump_MRA_Pass->EndExcute(m_CommandBuffer);
+			m_Deferred_Mesh_Albedo_Bump_Pass->EndExcute(m_CommandBuffer);
+		}
+
+		{
+			m_Deferred_Mesh_Albedo_Bump_MRA_Pass->BeginExcute(m_CommandBuffer, nullptr);
+
+			m_Deferred_Mesh_Albedo_Bump_MRA_Pass->Excute(m_CommandBuffer);
+
+			m_Deferred_Mesh_Albedo_Bump_MRA_Pass->EndExcute(m_CommandBuffer);
 		}
 
 		{
@@ -431,19 +475,35 @@ namespace Graphics
 		}
 
 		{
-			m_Deferred_Mesh_Skinned_Bump_Pass->BeginExcute(m_CommandBuffer, nullptr);
+			m_Deferred_Mesh_Skinned_Albedo_Pass->BeginExcute(m_CommandBuffer, nullptr);
 
-			m_Deferred_Mesh_Skinned_Bump_Pass->Excute(m_CommandBuffer);
+			m_Deferred_Mesh_Skinned_Albedo_Pass->Excute(m_CommandBuffer);
 
-			m_Deferred_Mesh_Skinned_Bump_Pass->EndExcute(m_CommandBuffer);
+			m_Deferred_Mesh_Skinned_Albedo_Pass->EndExcute(m_CommandBuffer);
 		}
 
 		{
-			m_Deferred_Mesh_Skinned_Bump_MRA_Pass->BeginExcute(m_CommandBuffer, nullptr);
+			m_Deferred_Mesh_Skinned_Albedo_Bump_Pass->BeginExcute(m_CommandBuffer, nullptr);
 
-			m_Deferred_Mesh_Skinned_Bump_MRA_Pass->Excute(m_CommandBuffer);
+			m_Deferred_Mesh_Skinned_Albedo_Bump_Pass->Excute(m_CommandBuffer);
 
-			m_Deferred_Mesh_Skinned_Bump_MRA_Pass->EndExcute(m_CommandBuffer);
+			m_Deferred_Mesh_Skinned_Albedo_Bump_Pass->EndExcute(m_CommandBuffer);
+		}
+
+		{
+			m_Deferred_Mesh_Skinned_Albedo_Bump_MRA_Pass->BeginExcute(m_CommandBuffer, nullptr);
+
+			m_Deferred_Mesh_Skinned_Albedo_Bump_MRA_Pass->Excute(m_CommandBuffer);
+
+			m_Deferred_Mesh_Skinned_Albedo_Bump_MRA_Pass->EndExcute(m_CommandBuffer);
+		}
+
+		{
+			m_SSR_Pass->BeginExcute(m_CommandBuffer, nullptr);
+
+			m_SSR_Pass->Excute(m_CommandBuffer);
+
+			m_SSR_Pass->EndExcute(m_CommandBuffer);
 		}
 
 		{

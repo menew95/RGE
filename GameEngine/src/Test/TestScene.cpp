@@ -20,41 +20,59 @@ TestScene::TestScene()
 
 	camera->AddComponent<CameraController>();
 
-	std::shared_ptr<GameObject> _wooden_CrateObject_Base = Resources::GetInstance()->GetResource<Prefab>(TEXT("Wooden_Crate"))->GetRootGameObject();
+	{
+		std::shared_ptr<GameObject> _wooden_CrateObject_Base = Resources::GetInstance()->GetResource<Prefab>(TEXT("Wooden_Crate"))->GetRootGameObject();
 
-	AddGameObjects(_wooden_CrateObject_Base);
+		//AddGameObjects(_wooden_CrateObject_Base);
 
-	Vector3 _move = { 0, 0, 10 };
+		Vector3 _move = { 0, 0, 10 };
 
-	_wooden_CrateObject_Base->GetTransform()->Translate(_move);
+		_wooden_CrateObject_Base->GetTransform()->Translate(_move);
+	}
 
-	std::shared_ptr<GameObject> _wooden_CrateObject_Bump_MRA = Resources::GetInstance()->GetResource<Prefab>(TEXT("Wooden_Crate_Normal_MRA"))->GetRootGameObject();
+	{
+		std::shared_ptr<GameObject> _wooden_CrateObject_Bump_MRA = Resources::GetInstance()->GetResource<Prefab>(TEXT("Wooden_Crate_Normal_MRA"))->GetRootGameObject();
 
-	AddGameObjects(_wooden_CrateObject_Bump_MRA);
+		//AddGameObjects(_wooden_CrateObject_Bump_MRA);
 
-	_move = { -10, 0, 0 };
+		Vector3 _move = { -10, 0, 0 };
 
-	_wooden_CrateObject_Bump_MRA->GetTransform()->Translate(_move);
+		_wooden_CrateObject_Bump_MRA->GetTransform()->Translate(_move);
+	}
 
-	std::shared_ptr<GameObject> _joyObject = Resources::GetInstance()->GetResource<Prefab>(TEXT("Joy"))->GetRootGameObject();
+	{
+		std::shared_ptr<GameObject> _joyObject = Resources::GetInstance()->GetResource<Prefab>(TEXT("Joy"))->GetRootGameObject();
 
-	AddGameObjects(_joyObject);
+		//AddGameObjects(_joyObject);
 
-	_move = { 10, 0, 0 };
+		Vector3 _move = { 10, 0, 0 };
 
-	_joyObject->GetTransform()->Translate(_move);
+		_joyObject->GetTransform()->Translate(_move);
+	}
 
-	std::shared_ptr<GameObject> _dirLight = GameObject::Instantiate();
+	{
+		std::shared_ptr<GameObject> _labObject = Resources::GetInstance()->GetResource<Prefab>(TEXT("lab_12"))->GetRootGameObject();
 
-	_dirLight->SetName(TEXT("Directional Light"));
+		AddGameObjects(_labObject);
 
-	Math::Vector3 _eular = { 45, 45, 0};
+		Vector3 _move = { -3, -2, -2 };
 
-	_dirLight->GetComponent<Transform>()->Rotate(_eular);
+		_labObject->GetTransform()->Translate(_move);
+	}
 
-	auto _lightCom = _dirLight->AddComponent<Light>();
+	{
+		std::shared_ptr<GameObject> _dirLight = GameObject::Instantiate();
 
-	AddGameObject(_dirLight);
+		_dirLight->SetName(TEXT("Directional Light"));
+
+		Math::Vector3 _eular = { 45, 45, 0 };
+
+		_dirLight->GetComponent<Transform>()->Rotate(_eular);
+
+		auto _lightCom = _dirLight->AddComponent<Light>();
+
+		AddGameObject(_dirLight);
+	}
 
 	{
 		std::shared_ptr<GameObject> _pointLight = GameObject::Instantiate();

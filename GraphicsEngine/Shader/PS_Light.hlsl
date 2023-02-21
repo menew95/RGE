@@ -21,7 +21,7 @@ TextureCubeArray gPointShadowMap : register(t10);
 
 SamplerState samWrapLinear	: register(s0);
 
-SamplerComparisonState samCascaded : register(s1);
+SamplerComparisonState samShadowSampler : register(s1);
 SamplerState samPointLight : register(s2);
 
 float3 CalcIBL(float3 V, float3 N, float3 albedo, float3 F0, float roughness, float metallic, float ao)
@@ -86,7 +86,6 @@ float4 main(VSOutput input) : SV_TARGET
 	for (uint _dirIdx = 0; _dirIdx < _lightCount.x; _dirIdx++)
 	{
 		float _shadowFactor = 1.0f;
-		int idex = 0;
 		float4 cascadeLightPos[4];
 		float _clipZ = _emissive.a;
 
@@ -101,46 +100,43 @@ float4 main(VSOutput input) : SV_TARGET
 		{
 			if (_clipZ <= _cascadedLight._cascadeEndClipSpace[j])
 			{
-				_shadowFactor = CalcCascadeShadowFactor(j, cascadeLightPos[j], gCascadedShadowMap, samCascaded);
-				idex = j;
+				_shadowFactor = CalcCascadeShadowFactor(j, cascadeLightPos[j], gCascadedShadowMap, samShadowSampler);
 				break;
 			}
 		}
 
-		//_lightColor += CalcDirectionalLight(_directionLight[_dirIdx], _roughness, _metallic, _specularColor, _diffuseColor, N, V) * _shadowFactor;
+		_lightColor += CalcDirectionalLight(_directionLight[_dirIdx], _roughness, _metallic, _specularColor, _diffuseColor, N, V) * _shadowFactor;
 	}
 
 	for (uint _pointIdx = 0; _pointIdx < _lightCount.y; _pointIdx++)
 	{
 		float _shadowFactor = 1.0f;
-		int idex = 0;
-		float4 cascadeLightPos[4];
-		float _clipZ = _emissive.a;
 
 		uint _view = SelectView(_worldPos.xyz, _pointLight[_pointIdx]._position);
 
-		float4 _lightspacepos = mul(_worldPos, _pointLight[_pointIdx]._lightTransform[_view]);
+		float4 _lightSpacePos = mul(_worldPos, _pointLight[_pointIdx]._lightTransform[_view]);
 
 		float3 _posToLight = _worldPos.xyz - _pointLight[_pointIdx]._position;
 		
-		_shadowFactor = PointShadowFactor(_pointIdx, _lightspacepos, _posToLight, _pointLight[_pointIdx]._range, gPointShadowMap, /*samPointLight*/ samCascaded);
+		_shadowFactor = CalcPointShadowFactor(_pointIdx, _lightSpacePos, _posToLight, _pointLight[_pointIdx]._range, gPointShadowMap, samShadowSampler);
 
 		_lightColor += CalcPointLight(_pointLight[_pointIdx], _roughness, _metallic, _specularColor, _diffuseColor, N, V, _worldPos.xyz) * _shadowFactor;
 	}
 	
 	for (uint _spotIdx = 0; _spotIdx < _lightCount.z; _spotIdx++)
 	{
-		_lightColor += CalcSpotLight(_spotLight[_spotIdx], _roughness, _metallic, _specularColor, _diffuseColor, N, V, _worldPos.xyz);
-	}
-	////[unroll]
-	//for (uint _lightIdx = 0; _lightIdx < LightCount; _lightIdx++)
-	//{
-	//	_lightColor += CalLight(LightInfo[_lightIdx], _specularColor, _diffuseColor, _worldPos.xyz, _normal.xyz, V, _roughness, _metallic);
-	//}
+		float _shadowFactor = 1.0f;
 
+		float4 _lightSpacePos = mul(_worldPos, _spotLight[_spotIdx]._lightTransform);
+
+		_shadowFactor = CalcSpotShadowFactor(_spotIdx, _lightSpacePos, gSpotShadowMap, samShadowSampler);
+
+		_lightColor += CalcSpotLight(_spotLight[_spotIdx], _roughness, _metallic, _specularColor, _diffuseColor, N, V, _worldPos.xyz) * _shadowFactor;
+	}
+	
 	float3 _ambient = CalcIBL(V, N, _albedo.rgb, _specularColor, _roughness, _metallic, _ao);
 
-	_finColor = _ambient + _lightColor;
+	_finColor = _ambient * 0.1f + _lightColor;
 
 	_finColor = pow(_finColor, 1 / 2.2);
 

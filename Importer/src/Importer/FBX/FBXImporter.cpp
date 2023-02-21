@@ -99,7 +99,7 @@ namespace Utility
 	{
 		if (name.find(c) != tstring::npos)
 		{
-			int idx = name.find(c) + 1;
+			size_t idx = name.find(c) + 1;
 
 			name.erase(0, idx);
 
@@ -109,7 +109,7 @@ namespace Utility
 
 	void RemoveExtension(tstring& name)
 	{
-		int idx = name.find(L".") + 1;
+		size_t idx = name.find(L".") + 1;
 
 		size_t dot_pos = name.find_last_of(L".");
 		if (dot_pos != std::wstring::npos)
@@ -428,6 +428,7 @@ namespace Utility
 
 	void FBXImporter::LoadMesh(PrefabData& prefabData, fbxsdk::FbxMesh* meshNode, MeshData& meshData, int subMeshCnt)
 	{
+		static int num = 0;
 		meshData._meshName = StringHelper::StringToWString(meshNode->GetName());
 
 		uint32 _vertexCount = meshNode->GetControlPointsCount();
@@ -710,6 +711,10 @@ namespace Utility
 		{
 			int _uvIndex = 0;
 
+			if (mesh->GetElementUVCount() != 1)
+				int a = 0;
+
+			// Texture channel 이 여러개인 경우가 있다고 한다.
 			FbxGeometryElementUV* _fxbUV2 = mesh->GetLayer(0)->GetUVs();
 			FbxGeometryElementUV* _fxbUV = mesh->GetElementUV(0);
 
@@ -881,9 +886,22 @@ namespace Utility
 			{
 				fbxsdk::FbxMesh* _meshNode = static_cast<fbxsdk::FbxMesh*>(node->GetNodeAttributeByIndex(_meshCnt));
 
-				_objectData._mesh = StringHelper::StringToWString(_meshNode->GetName());
-
 				LoadMesh(prefabData, _meshNode, _newMeshData, _meshCnt);
+
+				std::string _meshName = _meshNode->GetName();
+
+				if (_meshName == "")
+				{
+					ReconstructionName(_objectData._gameObjectName, L":");
+
+					_objectData._mesh = _objectData._gameObjectName;
+					_newMeshData._meshName = _objectData._gameObjectName;
+
+				}
+				else
+				{
+					_objectData._mesh = StringHelper::StringToWString(_meshNode->GetName());
+				}
 
 				fbxsdk::FbxLayerElementMaterial* _findMatIndex = _meshNode->GetElementMaterial(0);
 

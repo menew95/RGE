@@ -13,10 +13,10 @@ struct StreamOutput
 	uint rtID : SV_RenderTargetArrayIndex;
 };
 
-[maxvertexcount(_MAX_LIGHT_COUNT * 18)]
+[maxvertexcount(18)]
 void main(triangle GSInput input[3], inout TriangleStream<StreamOutput> output)
 {
-	for (uint cnt = 0; cnt < _lightCount.y; cnt++)
+	for (uint cnt = 0; cnt < 1; cnt++)
 	{
 		for (uint view = 0; view < 6; view++)
 		{

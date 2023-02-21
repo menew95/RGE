@@ -11,6 +11,10 @@ struct Camera
 	matrix _projInv;
 	matrix _viewToTexSpace;
 	matrix _worldViewProj;
+	matrix _viewToTextureSpaceMatrix;
+	float _near;
+	float _far;
+	float2 _pad2;
 	//matrix _viewProj;
 };
 
@@ -27,7 +31,7 @@ struct SSAOInfo
 
 struct Material
 {
-	float4 _diffuse;
+	float4 _albedo;
 	float4 _emissive;
 	float _roughness;
 	float _metallic;

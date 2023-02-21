@@ -144,5 +144,7 @@
       <Filter>소스 파일</Filter>
     </FxCompile>
     <FxCompile Include="Shader\GS_SpotShadow.hlsl" />
+    <FxCompile Include="Shader\PS_SSR.hlsl" />
+    <FxCompile Include="Shader\VS_SSR.hlsl" />
   </ItemGroup>
 </Project>

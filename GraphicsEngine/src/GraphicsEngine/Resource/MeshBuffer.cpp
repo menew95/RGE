@@ -27,7 +27,7 @@ namespace Graphics
 	{
 		BufferDesc _bufferDesc;
 		_bufferDesc._bindFlags = BindFlags::VertexBuffer;
-		_bufferDesc._miscFlags = MiscFlags::DynamicUsage;
+		//_bufferDesc._miscFlags = MiscFlags::DynamicUsage;
 		_bufferDesc._size = size;
 		_bufferDesc._stride = stride;
 
@@ -40,7 +40,7 @@ namespace Graphics
 	{
 		BufferDesc _bufferDesc;
 		_bufferDesc._bindFlags = BindFlags::VertexBuffer;
-		_bufferDesc._miscFlags = MiscFlags::DynamicUsage;
+		//_bufferDesc._miscFlags = MiscFlags::DynamicUsage;
 		_bufferDesc._size = static_cast<uint32>(sizeof(Common::VertexAttribute) * vertices.size());
 		_bufferDesc._stride = static_cast<uint32>(sizeof(Common::VertexAttribute));
 
@@ -55,7 +55,7 @@ namespace Graphics
 
 		BufferDesc _bufferDesc;
 		_bufferDesc._bindFlags = BindFlags::IndexBuffer;
-		_bufferDesc._miscFlags = MiscFlags::DynamicUsage;
+		//_bufferDesc._miscFlags = MiscFlags::DynamicUsage;
 		_bufferDesc._size = static_cast<uint32>(sizeof(uint32) * indices.size());
 		_bufferDesc._format = Format::R32_UINT;
 

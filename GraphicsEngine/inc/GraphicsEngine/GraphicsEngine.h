@@ -40,6 +40,8 @@ namespace Graphics
 		void InitLight();
 		void InitCascadedShadow();
 
+		void InitSSR();
+
 		MeshBuffer* CreateMeshBuffer(uuid uuid, std::vector<Common::VertexAttribute>& vertices, std::vector<std::vector<uint32>> subMeshs);
 		MaterialBuffer* CreateMaterialBuffer(uuid uuid);
 		CameraBuffer* CreateCameraBuffer();
@@ -54,12 +56,14 @@ namespace Graphics
 		void Excute();
 		void ExcuteRenderPass(Graphics::RenderPass* renderPass);
 		void Present();
-		Graphics::RenderPass* GetMeshPass() { return m_Deferred_Mesh_Pass.get(); }
-		Graphics::RenderPass* GetMeshBumpPass() { return m_Deferred_Mesh_Bump_Pass.get(); }
-		Graphics::RenderPass* GetMeshBumpMRAPass() { return m_Deferred_Mesh_Bump_MRA_Pass.get(); }
+		/*Graphics::RenderPass* GetMeshPass() { return m_Deferred_Mesh_Pass.get(); }
+		Graphics::RenderPass* GetMeshPass() { return m_Deferred_Mesh_Albedo_Pass.get(); }
+		Graphics::RenderPass* GetMeshBumpPass() { return m_Deferred_Mesh_Albedo_Bump_Pass.get(); }
+		Graphics::RenderPass* GetMeshBumpMRAPass() { return m_Deferred_Mesh_Albedo_Bump_MRA_Pass.get(); }
 		Graphics::RenderPass* GetSkinnedMeshPass() { return m_Deferred_Mesh_Skinned_Pass.get(); }
-		Graphics::RenderPass* GetSkinnedMeshBumpPass() { return m_Deferred_Mesh_Skinned_Bump_Pass.get(); }
-		Graphics::RenderPass* GetSkinnedMeshBumpMRAPass() { return m_Deferred_Mesh_Skinned_Bump_MRA_Pass.get(); }
+		Graphics::RenderPass* GetSkinnedMeshPass() { return m_Deferred_Mesh_Skinned_Albedo_Pass.get(); }
+		Graphics::RenderPass* GetSkinnedMeshBumpPass() { return m_Deferred_Mesh_Skinned_Albedo_Bump_Pass.get(); }
+		Graphics::RenderPass* GetSkinnedMeshBumpMRAPass() { return m_Deferred_Mesh_Skinned_Albedo_Bump_MRA_Pass.get(); }*/
 		
 		Graphics::RenderPass* GetRenderPass(uuid uuid);
 
@@ -80,17 +84,21 @@ namespace Graphics
 
 		CameraBuffer* m_MainCameraBuffer;
 		std::shared_ptr<Graphics::RenderPass> m_Deferred_Mesh_Pass;
-		std::shared_ptr<Graphics::RenderPass> m_Deferred_Mesh_Bump_Pass;
-		std::shared_ptr<Graphics::RenderPass> m_Deferred_Mesh_Bump_MRA_Pass;
+		std::shared_ptr<Graphics::RenderPass> m_Deferred_Mesh_Albedo_Pass;
+		std::shared_ptr<Graphics::RenderPass> m_Deferred_Mesh_Albedo_Bump_Pass;
+		std::shared_ptr<Graphics::RenderPass> m_Deferred_Mesh_Albedo_Bump_MRA_Pass;
 		std::shared_ptr<Graphics::RenderPass> m_Deferred_Mesh_Skinned_Pass;
-		std::shared_ptr<Graphics::RenderPass> m_Deferred_Mesh_Skinned_Bump_Pass;
-		std::shared_ptr<Graphics::RenderPass> m_Deferred_Mesh_Skinned_Bump_MRA_Pass;
+		std::shared_ptr<Graphics::RenderPass> m_Deferred_Mesh_Skinned_Albedo_Pass;
+		std::shared_ptr<Graphics::RenderPass> m_Deferred_Mesh_Skinned_Albedo_Bump_Pass;
+		std::shared_ptr<Graphics::RenderPass> m_Deferred_Mesh_Skinned_Albedo_Bump_MRA_Pass;
 
 		std::shared_ptr<Graphics::RenderPass> m_CascadedShadow_Pass;
 		std::shared_ptr<Graphics::RenderPass> m_CascadedShadow_Skinned_Pass;
 
 		std::shared_ptr<Graphics::RenderPass> m_PointShadow_Pass;
 		std::shared_ptr<Graphics::RenderPass> m_PointShadow_Skinned_Pass;
+
+		std::shared_ptr<Graphics::RenderPass> m_SSR_Pass;
 
 		MaterialBuffer* m_Deferred_Light_Material;
 		MeshBuffer* m_Screen_Mesh;

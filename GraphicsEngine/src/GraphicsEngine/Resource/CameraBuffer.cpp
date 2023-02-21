@@ -52,7 +52,7 @@ namespace Graphics
 		camera._camWorld = m_CameraPosition;
 		camera._view = m_View;
 		camera._proj = m_Proj;
-		camera._projInv = m_Proj.Invert().Transpose();
+		camera._projInv = m_Proj.Invert();
 
 		camera._viewToTexSpace =
 		{
@@ -62,17 +62,22 @@ namespace Graphics
 			0.5f, 0.5f, 0.0f, 1.0f
 		};
 
+		camera._viewToTextureSpaceMatrix = m_Proj * camera._viewToTexSpace;
+
 		Math::Matrix _camWorldMatrix = Math::Matrix::CreateTranslation(m_CameraPosition);
 
 		camera._worldViewProj = _camWorldMatrix * m_View * m_Proj;
+
+		camera._near = m_Near;
+		camera._far = m_Far;
 	}
 
 	void CameraBuffer::UpdateCascadeShadow(Math::Vector3 directionalLightDir, CascadedLight& cascadedLight)
 	{
 		m_cascadeEnd[0] = m_Near;
-		m_cascadeEnd[1] = 5.0f,
-		m_cascadeEnd[2] = 10.0f,
-		m_cascadeEnd[3] = 20.f;
+		m_cascadeEnd[1] = 10.0f,
+		m_cascadeEnd[2] = 20.0f,
+		m_cascadeEnd[3] = 40.f;
 		//Todo 너무 크다
 		m_cascadeEnd[4] = 100.f;
 		
@@ -142,7 +147,14 @@ namespace Graphics
 			m_ShadowOrthoProjInfo[i]._far = maxZ;
 			m_ShadowOrthoProjInfo[i]._near = minZ;
 
-
+			auto _ortho = Math::Matrix::CreateOrthographicOffCenter(
+				m_ShadowOrthoProjInfo[i]._left,
+				m_ShadowOrthoProjInfo[i]._right,
+				m_ShadowOrthoProjInfo[i]._bottum,
+				m_ShadowOrthoProjInfo[i]._top,
+				m_ShadowOrthoProjInfo[i]._near,
+				m_ShadowOrthoProjInfo[i]._far
+			);
 			cascadedLight._lightTransform[i] = LightM * Math::Matrix::CreateOrthographicOffCenter(
 				m_ShadowOrthoProjInfo[i]._left,
 				m_ShadowOrthoProjInfo[i]._right,

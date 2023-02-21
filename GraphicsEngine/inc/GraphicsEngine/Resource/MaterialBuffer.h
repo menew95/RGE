@@ -18,6 +18,18 @@ namespace Graphics
 		}
 
 	private:
+
+		struct Standard
+		{
+			Math::Color _albedo = Math::Color::White;
+			Math::Color _emissvie = Math::Color::White;
+			float _roughness = 0.0f;
+			float _metallic = 0.0f;
+			Math::Vector2 _tile = Math::Vector2::One;
+		};
+		
+
+
 		std::vector<UpdateResourceData> m_UpdateResources;
 	};
 }

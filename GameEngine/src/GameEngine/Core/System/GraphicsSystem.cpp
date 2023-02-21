@@ -169,19 +169,25 @@ namespace GameEngine
 			uuid _uuid = TEXT("Deferred_Mesh Pass");
 			m_RenderPassList.push_back(std::make_pair(_uuid, m_GraphicsEngine->GetRenderPass(_uuid)));
 
-			_uuid = TEXT("Deferred_Mesh_Bump Pass");
+			_uuid = TEXT("Deferred_Mesh_Albedo Pass");
 			m_RenderPassList.push_back(std::make_pair(_uuid, m_GraphicsEngine->GetRenderPass(_uuid)));
 
-			_uuid = TEXT("Deferred_Mesh_Bump_MRA Pass");
+			_uuid = TEXT("Deferred_Mesh_Albedo_Bump Pass");
+			m_RenderPassList.push_back(std::make_pair(_uuid, m_GraphicsEngine->GetRenderPass(_uuid)));
+
+			_uuid = TEXT("Deferred_Mesh_Albedo_Bump_MRA Pass");
 			m_RenderPassList.push_back(std::make_pair(_uuid, m_GraphicsEngine->GetRenderPass(_uuid)));
 
 			_uuid = TEXT("Deferred_Mesh_Skin Pass");
 			m_RenderPassList.push_back(std::make_pair(_uuid, m_GraphicsEngine->GetRenderPass(_uuid)));
 
-			_uuid = TEXT("Deferred_Mesh_Skin_Bump Pass");
+			_uuid = TEXT("Deferred_Mesh_Skin_Albedo Pass");
 			m_RenderPassList.push_back(std::make_pair(_uuid, m_GraphicsEngine->GetRenderPass(_uuid)));
 
-			_uuid = TEXT("Deferred_Mesh_Skin_Bump_MRA Pass");
+			_uuid = TEXT("Deferred_Mesh_Skin_Albedo_Bump Pass");
+			m_RenderPassList.push_back(std::make_pair(_uuid, m_GraphicsEngine->GetRenderPass(_uuid)));
+
+			_uuid = TEXT("Deferred_Mesh_Skin_Albedo_Bump_MRA Pass");
 			m_RenderPassList.push_back(std::make_pair(_uuid, m_GraphicsEngine->GetRenderPass(_uuid)));
 
 			_uuid = TEXT("CascadedShadow Pass");

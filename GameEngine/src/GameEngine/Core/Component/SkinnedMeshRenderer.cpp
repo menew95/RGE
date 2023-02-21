@@ -135,7 +135,7 @@ namespace GameEngine
 
 						_renderObject.m_UpdateResourcePerObjects.push_back(_perSkinnedObjectResource);
 
-						uint32 _idx = 3;
+						uint32 _idx = 4;
 
 						if (m_Materials[i]->GetAlbedoTexture() != nullptr)
 						{
@@ -148,6 +148,8 @@ namespace GameEngine
 							_data._dataSrc = reinterpret_cast<void*>(m_Materials[i]->GetAlbedoTexture());
 
 							_renderObject.m_UpdateResources.push_back(_data);
+
+							_idx++;
 						}
 
 						if (m_Materials[i]->GetNormalTexture() != nullptr)
@@ -180,10 +182,19 @@ namespace GameEngine
 							_idx++;
 						}
 
+						//Graphics::UpdateResourceData _perMaterialResource
+						//{
+						//	_perMaterialResource._updateTime = Graphics::eUpdateTime::PerMaterial,
+						//	_perMaterialResource._index = 2,
+						//	_perMaterialResource._resourceType = Graphics::ResourceType::Buffer,
+						//	_perMaterialResource._dataSrc = m_Materials[i]->GetStandardResource(),
+						//	_perMaterialResource._datasize = 48 // Todo : 나중에 바꾸자
+						//};
+
+						//_renderObject.m_UpdateResources.push_back(_perMaterialResource);
+
 						// Todo : 임시 나중에 그래픽스 시스템이 랜더 패스 소유하고 리스트를 순회 할 때 바꿀것
 						GraphicsSystem::GetInstance()->RegistRenderObject(_idx, _renderObject);
-
-						//_materialBuffer->RegistRenderObject(_renderObject);
 
 						if (m_ShadowCasting)
 						{
@@ -195,8 +206,8 @@ namespace GameEngine
 
 							_shadow.m_UpdateResourcePerObjects.push_back(_perSkinnedObjectResource);
 
-							GraphicsSystem::GetInstance()->RegistRenderObject(7, _shadow);
 							GraphicsSystem::GetInstance()->RegistRenderObject(9, _shadow);
+							//GraphicsSystem::GetInstance()->RegistRenderObject(11, _shadow);
 						}
 					}
 				}

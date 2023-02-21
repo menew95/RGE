@@ -1,4 +1,4 @@
-SamplerState samWrapLinear : register(s0);
+SamplerState samWrapLinearMipPoint : register(s0);
 
 TextureCube g_SkyBox : register(t0);
 
@@ -10,5 +10,5 @@ struct VSOutput
 
 float4 main(VSOutput input) : SV_Target
 {
-	return g_SkyBox.Sample(samWrapLinear, input.worldPos.xyz);
+	return g_SkyBox.Sample(samWrapLinearMipPoint, input.worldPos.xyz);
 }

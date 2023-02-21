@@ -19,7 +19,6 @@ namespace GameEngine
 {
 	namespace Core
 	{
-
 		Material::Material(const tstring& _typeName /*= TEXT("Material")*/)
 			: Resource(_typeName)
 		{
