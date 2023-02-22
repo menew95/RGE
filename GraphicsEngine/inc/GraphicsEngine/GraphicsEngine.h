@@ -118,6 +118,7 @@ namespace Graphics
 		Texture* m_Normal;
 		Texture* m_Depth;
 		Texture* m_World;
+		Texture* m_Reflect;
 
 		std::vector<RenderObject> m_DebugRenderObject;
 

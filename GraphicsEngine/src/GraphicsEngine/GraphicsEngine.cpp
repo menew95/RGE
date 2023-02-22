@@ -218,6 +218,7 @@ namespace Graphics
 		m_Normal = m_ResourceManager->GetTexture(TEXT("Normal"));
 		m_Depth = m_ResourceManager->GetTexture(TEXT("Depth"));
 		m_World = m_ResourceManager->GetTexture(TEXT("WorldPosition"));
+		m_Reflect = m_ResourceManager->GetTexture(TEXT("SSReflect"));
 
 		RenderObject _albedoObject;
 		_albedoObject.m_MeshBuffer = m_Screen_Mesh;
@@ -247,10 +248,18 @@ namespace Graphics
 		UpdateResourceData _resourceW{ 1,  m_World };
 		_worldPosObject.m_UpdateResources.push_back(_resourceW);
 
+		RenderObject _reflectObject;
+		_reflectObject.m_MeshBuffer = m_Screen_Mesh;
+		_reflectObject.m_MaterialBuffer = m_Debug_Material;
+
+		UpdateResourceData _resourceR{ 1,  m_Reflect };
+		_reflectObject.m_UpdateResources.push_back(_resourceR);
+
 		m_DebugRenderObject.push_back(_albedoObject);
 		m_DebugRenderObject.push_back(_normalObject);
 		m_DebugRenderObject.push_back(_depthObject);
 		m_DebugRenderObject.push_back(_worldPosObject);
+		m_DebugRenderObject.push_back(_reflectObject);
 
 		m_Debug_Pass = m_ResourceManager->GetRenderPass(TEXT("MRT Debug Pass"));
 
@@ -326,7 +335,7 @@ namespace Graphics
 		_sslr.cb_zThickness = 0.1f;
 
 		_sslr.cb_nearPlaneZ = 0.1f;
-		_sslr.cb_maxSteps = 1.f;
+		_sslr.cb_maxSteps = 300.f;
 		_sslr.cb_maxDistance = 100.f;
 		_sslr.cb_strideZCutoff = 1.f;
 		_sslr.cb_stride = 1.f;

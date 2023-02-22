@@ -19,10 +19,15 @@ Texture2DArray gSpotShadowMap : register(t9);
 
 TextureCubeArray gPointShadowMap : register(t10);
 
+Texture2D gReflect : register(t11);
+
 SamplerState samWrapLinear	: register(s0);
 
 SamplerComparisonState samShadowSampler : register(s1);
+
 SamplerState samPointLight : register(s2);
+
+SamplerState samPoint : register(s3);
 
 float3 CalcIBL(float3 V, float3 N, float3 albedo, float3 F0, float roughness, float metallic, float ao)
 {
@@ -134,9 +139,13 @@ float4 main(VSOutput input) : SV_TARGET
 		_lightColor += CalcSpotLight(_spotLight[_spotIdx], _roughness, _metallic, _specularColor, _diffuseColor, N, V, _worldPos.xyz) * _shadowFactor;
 	}
 	
-	float3 _ambient = CalcIBL(V, N, _albedo.rgb, _specularColor, _roughness, _metallic, _ao);
+	//float3 _ambient = CalcIBL(V, N, _albedo.rgb, _specularColor, _roughness, _metallic, _ao);
+	float4 _reflect = gReflect.Sample(samPoint, input.uv);
+	int a = 0;
 
-	_finColor = _ambient * 0.1f + _lightColor;
+	float3 _ambient = gAlbedo.Sample(samPoint, _reflect.xy);
+
+	_finColor = _ambient * _reflect.w;// +_lightColor;
 
 	_finColor = pow(_finColor, 1 / 2.2);
 

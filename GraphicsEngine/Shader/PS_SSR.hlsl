@@ -24,12 +24,15 @@ cbuffer cbSSLR : register(b1)
 Texture2D depthBuffer : register(t0);
 Texture2D normalBuffer: register(t1);
 
+// MIN_MAG_MIP_POINT
+SamplerState samPoint : register(s0);
+
 struct VertexOut
 {
-    float4 pos : SV_POSITION;
-    float2 posH : POSITION;
+    float4 posH : SV_POSITION;
+    //float2 posH : POSITION;
     float3 viewRay : VIEWRAY;
-    float2 tex : TEXCOORD;
+    float2 uv : TEXCOORD;
 };
 
 float distanceSquared(float2 a, float2 b)
@@ -66,15 +69,21 @@ void swap(inout float a, inout float b)
     b = t;
 }
 
+
 float linearizeDepth(float depth)
 {
     //float z = depth * 2.0 - 1.0; // back to NDC 
     //return (2.0 * camera._near * camera._far) / (camera._far + camera._near - depth * (camera._far - camera._near));
 
-    float A = camera._far / (camera._far - camera._near);
+   /* float A = camera._far / (camera._far - camera._near);
     float B = (-camera._far * camera._near) / (camera._far - camera._near);
 
-    return B / (depth - A);
+    return B / (depth - A);*/
+
+    // A = f / (f - n);
+    // B = -f * n / (f - n)
+    // B / (d - A) = f * n / (f - d * (f - n)) = f * n / (f + d * (n - f))
+    return camera._near * camera._far / (camera._far + depth * (camera._near - camera._far));
 }
 
 float linearDepthTexelFetch(int2 hitPixel)
@@ -196,40 +205,54 @@ bool traceScreenSpaceRay(
     return intersectsDepthBuffer(sceneZMax, rayZMin, rayZMax);
 }
 
-float4 main(VertexOut pIn) : SV_TARGET
+float4 main(VertexOut input) : SV_TARGET
 {
-    int3 loadIndices = int3(pIn.posH.xy, 0);
+    // 해당 픽셀의 세계 공간 노말값
+    float3 normal = normalBuffer.Sample(samPoint, input.uv).xyz;
 
-    float3 normalVS = normalBuffer.Load(loadIndices).xyz;
+    if (!any(normal))
+    {
+        return 0.0f;
+    }
 
-    normalVS = normalVS * 2.0f - 1.0f;
+    normal = normal * 2.0f - 1.0f;
+
+    // 시야 공간의 노말값
+    float3 normalVS = mul(float4(normal, 0.0f), camera._view).xyz;
 
     if(!any(normalVS))
     {
         return 0.0f;
     }
 
-    float depth = depthBuffer.Load(loadIndices).r;
+    // 해당 픽셀의 깊이값
+    float depth = depthBuffer.Sample(samPoint, input.uv).r;
 
-    // 카메라에서 쏜 레이 worldPos - camPos인가?
-    float3 rayOriginVS = pIn.viewRay;// *linearizeDepth(depth);
+    // 카메라에서 쏜 레이 uv 좌표를 프로젝션 인버스를 곱해서 카메라 공간으로 옮긴 시야 공간의 광선
+    float3 rayOriginVS = input.viewRay * linearizeDepth(depth);
 
     /*
      * Since position is reconstructed in view space, just normalize it to get the
      * vector from the eye to the position and then reflect that around the normal to
      * get the ray direction to trace.
      */
+    
+     // 정규화된 시야 공간 광선
     float3 toPositionVS = normalize(rayOriginVS);
-    float3 rayDirectionVS = normalize(reflect(toPositionVS, normalVS));
+    // 시야 공간 광선을 시야 공간 노말 값에 반사 시켜 구한 시야 공간 반사 광선 방향
+    float3 rayDirectionVS = normalize(reflect(toPositionVS, normalVS)); 
 
     // output rDotV to the alpha channel for use in determining how much to fade the ray
+    // 시야 공간 반사광선의 방향과 시야 공간의 광선의 내적
     float rDotV = dot(rayDirectionVS, toPositionVS);
 
     // out parameters
     float2 hitPixel = float2(0.0f, 0.0f);
     float3 hitPoint = float3(0.0f, 0.0f, 0.0f);
 
-    float jitter = cb_stride > 1.0f ? float(int(pIn.posH.x + pIn.posH.y) & 1) * 0.5f : 0.0f;
+    // 
+    //float jitter = cb_stride > 1.0f ? float(int(input.posH.x + input.posH.y) & 1) * 0.5f : 0.0f;
+    float jitter = cb_stride > 1.0f ? float(int(input.viewRay.x + input.viewRay.y) & 1) * 0.5f : 0.0f;
 
     // perform ray tracing - true if hit found, false otherwise
     bool intersection = traceScreenSpaceRay(rayOriginVS, rayDirectionVS, jitter, hitPixel, hitPoint);
