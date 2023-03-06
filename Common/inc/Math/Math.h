@@ -45,7 +45,6 @@ namespace boost
 	{
 		class access;
 	}
-
 }
 
 namespace Math

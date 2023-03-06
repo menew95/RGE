@@ -45,7 +45,24 @@ namespace Graphics
 			return m_SubMeshBuffers[index];
 		}
 
+		//inline void SetBoundingBox(BoundingBox& boundingBox) { m_BoundingBox = boundingBox; }
+		//inline void SetBoundingBox(Vector3& center, Vector3& extents) { m_BoundingBox = { center, extents }; }
+
+		inline void SetBoundingBoxMin(Math::Vector3& min) { m_BoundingBoxMin = min; }
+		inline void SetBoundingBoxMax(Math::Vector3& max) { m_BoundingBoxMax = max; }
+
+		inline const Math::Vector3& GetBoundingBoxMin() const { return m_BoundingBoxMin; }
+		inline const Math::Vector3& GetBoundingBoxMax() const { return m_BoundingBoxMax; }
+
+		//inline const BoundingBox GetBoundingBox() { return m_BoundingBox; }
+
 	private:
+
+		//BoundingBox m_BoundingBox;
+
+		Math::Vector3 m_BoundingBoxMin;
+		Math::Vector3 m_BoundingBoxMax;
+
 		Graphics::Buffer* m_VertexBuffer;
 		std::vector<SubMeshBuffer> m_SubMeshBuffers;
 	};

@@ -2,6 +2,7 @@
 #include "GameEngine\Core\GameObject.h"
 #include "GameEngine\Core\Component\Renderer.h"
 
+
 #include <rttr/registration.h>
 using namespace rttr;
 

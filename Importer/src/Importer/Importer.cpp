@@ -12,7 +12,7 @@ namespace Utility
 	{
 		if (name.find("/") != std::string::npos)
 		{
-			int idx = name.find("/") + 1;
+			size_t idx = name.find("/") + 1;
 
 			name.erase(0, idx);
 
@@ -40,7 +40,7 @@ namespace Utility
 
 		std::string saveBinaryPath = "Asset/BinaryFile/";
 		std::string _fileName = StringHelper::WStringToString(filePath);
-		int idx = filePath.find(L".") + 1;
+		size_t idx = filePath.find(L".") + 1;
 
 		size_t dot_pos = filePath.find_last_of(L".");
 		if (dot_pos != std::string::npos)
@@ -97,6 +97,8 @@ namespace Utility
 		meshData._indexAttributes = _meshData.indices;
 		meshData._isSkin = _meshData._isSkinned;
 		meshData._skinName = StringHelper::StringToWString(_meshData._boneName);
+		meshData._boundingMinBox = meshData._boundingMinBox;
+		meshData._boundingMaxBox = meshData._boundingMaxBox;
 
 		return true;
 	}

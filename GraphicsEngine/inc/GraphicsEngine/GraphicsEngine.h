@@ -20,6 +20,8 @@ namespace Graphics
 
 	class IBL;
 	class Light;
+	class Deferred;
+	class RenderQueue;
 
 	class GRAPHICSENGINE_DLL_DECLSPEC GraphicsEngine
 	{
@@ -52,6 +54,8 @@ namespace Graphics
 		void OnResize(uint32 _width, uint32 _height);
 
 		void RegistRenderObject(RenderObject& renderObject);
+		void RegistRenderMesh(RenderObject& renderObject);
+		void RegistRenderShadow(RenderObject& renderObject);
 
 		void Excute();
 		void ExcuteRenderPass(Graphics::RenderPass* renderPass);
@@ -124,6 +128,8 @@ namespace Graphics
 
 		std::shared_ptr<IBL> m_IBL;
 		std::shared_ptr<Light> m_Light;
+		std::shared_ptr<RenderQueue> m_RenderQueue;
+		std::shared_ptr<Deferred> m_Deferred;
 	};
 
 	extern "C"

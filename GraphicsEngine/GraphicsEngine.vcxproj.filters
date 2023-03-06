@@ -72,6 +72,21 @@
     <ClInclude Include="inc\GraphicsEngine\RenderPass\Light.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="inc\GraphicsEngine\RenderPass\PostProcess.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\GraphicsEngine\RenderPass\Deferred.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\GraphicsEngine\Culling\Frustum.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\GraphicsEngine\Culling\Occlusion.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\GraphicsEngine\RenderQueue\RenderQueue.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\GraphicsEngine_dllmain.cpp">
@@ -116,6 +131,21 @@
     <ClCompile Include="src\GraphicsEngine\RenderPass\Light.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="src\GraphicsEngine\RenderPass\Deferred.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GraphicsEngine\RenderPass\PostProcess.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GraphicsEngine\Culling\Frustum.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GraphicsEngine\Culling\Occlusion.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GraphicsEngine\RenderQueue\RenderQueue.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\Header\H_ConstBuffer.hlsli" />
@@ -146,6 +176,6 @@
     <FxCompile Include="Shader\GS_SpotShadow.hlsl" />
     <FxCompile Include="Shader\PS_SSR.hlsl" />
     <FxCompile Include="Shader\VS_SSR.hlsl" />
-    <FxCompile Include="Shader\PostProcess\PS_ToneMap.hlsl" />
+    <FxCompile Include="Shader\PS_ToneMap.hlsl" />
   </ItemGroup>
 </Project>

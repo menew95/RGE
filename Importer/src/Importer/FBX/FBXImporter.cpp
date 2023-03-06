@@ -428,6 +428,11 @@ namespace Utility
 
 	void FBXImporter::LoadMesh(PrefabData& prefabData, fbxsdk::FbxMesh* meshNode, MeshData& meshData, int subMeshCnt)
 	{
+		meshNode->ComputeBBox();
+
+		meshData._boundingMinBox = Convert(meshNode->BBoxMin);
+		meshData._boundingMaxBox = Convert(meshNode->BBoxMax);
+
 		static int num = 0;
 		meshData._meshName = StringHelper::StringToWString(meshNode->GetName());
 

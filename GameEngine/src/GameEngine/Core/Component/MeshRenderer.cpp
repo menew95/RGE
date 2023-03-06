@@ -149,6 +149,7 @@ namespace GameEngine
 						//_renderObject.m_UpdateResources.push_back(_perMaterialResource);
 
 						// Todo : 임시 나중에 그래픽스 시스템이 랜더 패스 소유하고 리스트를 순회 할 때 바꿀것
+						_renderObject.m_RenderPassIdx = _idx;
 						GraphicsSystem::GetInstance()->RegistRenderObject(_idx, _renderObject);
 
 						if (m_ShadowCasting)
@@ -159,7 +160,10 @@ namespace GameEngine
 
 							_shadow.m_UpdateResourcePerObjects.push_back(_perObjectResource);
 
+							_shadow.m_RenderPassIdx = 8;
 							GraphicsSystem::GetInstance()->RegistRenderObject(8, _shadow);
+
+							_shadow.m_RenderPassIdx = 10;
 							GraphicsSystem::GetInstance()->RegistRenderObject(10, _shadow);
 						}
 					}

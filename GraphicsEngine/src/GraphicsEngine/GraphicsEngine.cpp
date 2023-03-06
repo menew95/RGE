@@ -13,8 +13,11 @@
 
 #include "GraphicsEngine/Json/JsonTable.h"
 
+#include "GraphicsEngine/RenderQueue/RenderQueue.h"
+
 #include "GraphicsEngine/RenderPass/IBL.h"
 #include "GraphicsEngine/RenderPass/Light.h"
+#include "GraphicsEngine/RenderPass/Deferred.h"
 
 HINSTANCE m_GraphicsModule;
 
@@ -73,6 +76,7 @@ namespace Graphics
 		InitLight();
 
 		InitSSR();
+
 	}
 
 	void GraphicsEngine::InitMeshPass()
@@ -103,6 +107,8 @@ namespace Graphics
 		m_Deferred_Mesh_Skinned_Albedo_Bump_Pass = m_ResourceManager->GetRenderPass(TEXT("Deferred_Mesh_Skin_Albedo_Bump Pass"));
 
 		m_Deferred_Mesh_Skinned_Albedo_Bump_MRA_Pass = m_ResourceManager->GetRenderPass(TEXT("Deferred_Mesh_Skin_Albedo_Bump_MRA Pass"));
+
+		m_Deferred = std::make_shared<Deferred>(m_CommandBuffer, m_ResourceManager);
 	}
 
 	void GraphicsEngine::InitLightPass()
@@ -380,7 +386,12 @@ namespace Graphics
 
 	void GraphicsEngine::RegistRenderObject(RenderObject& renderObject)
 	{
-		m_Deferred_Mesh_Pass->RegistRenderObject(renderObject);
+		m_RenderQueue->RegistRenderQueue(renderObject);
+	}
+
+	void GraphicsEngine::RegistRenderMesh(RenderObject& renderObject)
+	{
+		m_Deferred->RegistRenderObject(renderObject);
 	}
 
 	void GraphicsEngine::Excute()

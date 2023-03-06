@@ -220,14 +220,19 @@ xcopy /E /S /Y /R "$(ProjectDir)Shader\*" "$(OutputPath)..\Client\Asset\Shader\*
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="inc\GraphicsEngine\Culling\Frustum.h" />
+    <ClInclude Include="inc\GraphicsEngine\Culling\Occlusion.h" />
     <ClInclude Include="inc\GraphicsEngine\Export.h" />
     <ClInclude Include="inc\GraphicsEngine\GraphicsEngine.h" />
     <ClInclude Include="inc\GraphicsEngine\GraphicsEngineFlags.h" />
+    <ClInclude Include="inc\GraphicsEngine\RenderPass\Deferred.h" />
     <ClInclude Include="inc\GraphicsEngine\RenderPass\IBL.h" />
     <ClInclude Include="inc\GraphicsEngine\RenderPass\Light.h" />
+    <ClInclude Include="inc\GraphicsEngine\RenderPass\PostProcess.h" />
     <ClInclude Include="inc\GraphicsEngine\RenderPass\RenderPass.h" />
     <ClInclude Include="inc\GraphicsEngine\RenderObject.h" />
     <ClInclude Include="inc\GraphicsEngine\RenderPass\RenderPassFlags.h" />
+    <ClInclude Include="inc\GraphicsEngine\RenderQueue\RenderQueue.h" />
     <ClInclude Include="inc\GraphicsEngine\Resource\CameraBuffer.h" />
     <ClInclude Include="inc\GraphicsEngine\Resource\ConstantBuffer.h" />
     <ClInclude Include="inc\GraphicsEngine\Resource\LightBuffer.h" />
@@ -247,9 +252,14 @@ xcopy /E /S /Y /R "$(ProjectDir)Shader\*" "$(OutputPath)..\Client\Asset\Shader\*
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Geometry</ShaderType>
     </FxCompile>
+    <ClCompile Include="src\GraphicsEngine\Culling\Frustum.cpp" />
+    <ClCompile Include="src\GraphicsEngine\Culling\Occlusion.cpp" />
     <ClCompile Include="src\GraphicsEngine\Json\JsonTable.cpp" />
+    <ClCompile Include="src\GraphicsEngine\RenderPass\Deferred.cpp" />
     <ClCompile Include="src\GraphicsEngine\RenderPass\IBL.cpp" />
     <ClCompile Include="src\GraphicsEngine\RenderPass\Light.cpp" />
+    <ClCompile Include="src\GraphicsEngine\RenderPass\PostProcess.cpp" />
+    <ClCompile Include="src\GraphicsEngine\RenderQueue\RenderQueue.cpp" />
     <ClCompile Include="src\GraphicsEngine\Resource\CameraBuffer.cpp" />
     <ClCompile Include="src\GraphicsEngine\Resource\LightBuffer.cpp" />
     <ClCompile Include="src\GraphicsEngine\Resource\MaterialBuffer.cpp" />
@@ -266,7 +276,12 @@ xcopy /E /S /Y /R "$(ProjectDir)Shader\*" "$(OutputPath)..\Client\Asset\Shader\*
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <FxCompile Include="Shader\PostProcess\PS_ToneMap.hlsl" />
+    <FxCompile Include="Shader\PS_ToneMap.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
     <FxCompile Include="Shader\VS_SSR.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>

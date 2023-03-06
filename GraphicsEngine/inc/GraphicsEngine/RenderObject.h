@@ -122,7 +122,13 @@ namespace Graphics
 		{
 			return m_Viewports;
 		}
-	//private:
+
+		// 컬링을 하기위해
+		Math::Matrix m_World;
+		bool m_IsCulling = false;
+
+		uint32 m_RenderPassIdx = 0;
+
 		MeshBuffer* m_MeshBuffer;
 		MaterialBuffer* m_MaterialBuffer;
 

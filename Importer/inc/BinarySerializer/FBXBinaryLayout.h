@@ -101,18 +101,22 @@ namespace BinaryData
 		MeshData() = default;
 
 		MeshData(std::string _meshName, std::vector<Common::VertexAttribute> _meshVertexList
-			, std::vector<std::vector<uint32>> _indices)
+			, std::vector<std::vector<uint32>> _indices, Math::Vector3 boundingMin, Math::Vector3 boundingMax)
 			: meshName(std::move(_meshName))
 			, meshVertexList(std::move(_meshVertexList))
 			, indices(std::move(_indices))
+			, _boundingMinBox(boundingMin)
+			, _boundingMaxBox(boundingMax)
 			, _isSkinned(false)
 		{}
 
 		MeshData(std::string _meshName, std::vector<Common::VertexAttribute> _meshVertexList
-			, std::vector<std::vector<uint32>> _indices, std::string bone)
+			, std::vector<std::vector<uint32>> _indices, Math::Vector3 boundingMin, Math::Vector3 boundingMax, std::string bone)
 			: meshName(std::move(_meshName))
 			, meshVertexList(std::move(_meshVertexList))
 			, indices(std::move(_indices))
+			, _boundingMinBox(boundingMin)
+			, _boundingMaxBox(boundingMax)
 			, _isSkinned(true)
 			, _boneName(std::move(bone))
 		{}
@@ -121,6 +125,9 @@ namespace BinaryData
 		std::string								meshName = "";
 		std::vector<Common::VertexAttribute>	meshVertexList;
 		std::vector<std::vector<uint32>>		indices;
+
+		Math::Vector3 _boundingMinBox;
+		Math::Vector3 _boundingMaxBox;
 
 		bool _isSkinned;
 		std::string _boneName;
@@ -132,6 +139,8 @@ namespace BinaryData
 			ar& meshName;
 			ar& meshVertexList;
 			ar& indices;
+			ar& _boundingMinBox;
+			ar& _boundingMaxBox;
 			ar& _isSkinned;
 			ar& _boneName;
 		}

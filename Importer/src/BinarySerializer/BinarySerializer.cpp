@@ -113,11 +113,11 @@ namespace Utility
 				BinaryData::MeshData meshData;
 				if (prefabData->_boneDatas.size() == 0)
 				{
-					meshData = { _meshName, _meshPair.second._vertexAttributes, _meshPair.second._indexAttributes };
+					meshData = { _meshName, _meshPair.second._vertexAttributes, _meshPair.second._indexAttributes, _meshPair.second._boundingMinBox, _meshPair.second._boundingMaxBox };
 				}
 				else
 				{
-					meshData = { _meshName, _meshPair.second._vertexAttributes, _meshPair.second._indexAttributes, fileName};
+					meshData = { _meshName, _meshPair.second._vertexAttributes, _meshPair.second._indexAttributes, _meshPair.second._boundingMinBox, _meshPair.second._boundingMaxBox, fileName};
 				}
 
 				std::ofstream mesh_ofs(path + meshPathStr + _meshName + ".mesh", std::ios_base::binary);
@@ -198,7 +198,7 @@ namespace Utility
 	{
 		if (name.find("|") != std::string::npos)
 		{
-			int idx = name.find("|") + 1;
+			size_t idx = name.find("|") + 1;
 
 			name.erase(0, idx);
 

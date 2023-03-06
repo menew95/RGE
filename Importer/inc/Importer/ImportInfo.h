@@ -55,6 +55,9 @@ namespace Utility
 	{
 		tstring _meshName;
 
+		Math::Vector3 _boundingMinBox;
+		Math::Vector3 _boundingMaxBox;
+
 		std::vector<Common::VertexAttribute> _vertexAttributes;
 
 		std::vector<std::vector<uint32>> _indexAttributes;

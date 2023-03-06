@@ -114,7 +114,10 @@ namespace GameEngine
 
 		void GraphicsSystem::RegistRenderObject(uint32 passIdx, Graphics::RenderObject& renderObject)
 		{
-			m_RenderPassList[passIdx].second->RegistRenderObject(renderObject);
+			renderObject.m_RenderPassIdx = passIdx;
+
+			m_GraphicsEngine->RegistRenderQueue(renderObject);
+			//m_RenderPassList[passIdx].second->RegistRenderObject(renderObject);
 		}
 
 		void GraphicsSystem::LoadGraphicsEngineDll()

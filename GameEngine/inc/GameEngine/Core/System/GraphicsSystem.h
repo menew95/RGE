@@ -54,6 +54,7 @@ namespace GameEngine
 			void FreeGraphicsEngineDll();
 
 			//std::vector<std::pair<tstring, std::shared_ptr<Graphics::RenderPass>>> m_RenderPassList;
+
 			std::vector<std::pair<tstring, Graphics::RenderPass*>> m_RenderPassList;
 
 			std::unique_ptr<Graphics::GraphicsEngine> m_GraphicsEngine;
