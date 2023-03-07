@@ -352,9 +352,9 @@ namespace Graphics
 		m_SSR_Pass->RegistRenderObject(_ssrObject);
 	}
 
-	Graphics::MeshBuffer* GraphicsEngine::CreateMeshBuffer(uuid uuid, std::vector<Common::VertexAttribute>& vertices, std::vector<std::vector<uint32>> subMeshs)
+	Graphics::MeshBuffer* GraphicsEngine::CreateMeshBuffer(uuid uuid, std::vector<Common::VertexAttribute>& vertices, std::vector<std::vector<uint32>> subMeshs, Math::Vector3 min, Math::Vector3 max)
 	{
-		return m_ResourceManager->CreateMeshBuffer(uuid, vertices, subMeshs);
+		return m_ResourceManager->CreateMeshBuffer(uuid, vertices, subMeshs, min, max);
 	}
 
 	Graphics::MaterialBuffer* GraphicsEngine::CreateMaterialBuffer(uuid uuid)
@@ -394,6 +394,11 @@ namespace Graphics
 		m_Deferred->RegistRenderObject(renderObject);
 	}
 
+	void GraphicsEngine::RegistRenderShadow(RenderObject& renderObject)
+	{
+		m_Light->RegistRenderObject(renderObject);
+	}
+
 	void GraphicsEngine::Excute()
 	{
 		PerFrame _perFrame;
@@ -422,6 +427,10 @@ namespace Graphics
 
 		m_Deferred_Light_Pass->UpdatePerFrame(m_CommandBuffer, &_perLighting, sizeof(Lighting));
 		
+		m_Deferred->SetCameraBuffer(m_MainCameraBuffer);
+
+		m_Deferred->ExcutePass();
+
 		{
 			m_CascadedShadow_Pass->BeginExcute(m_CommandBuffer, nullptr);
 

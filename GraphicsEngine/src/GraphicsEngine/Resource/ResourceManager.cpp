@@ -43,7 +43,7 @@ namespace Graphics
 		return _newMeshBuffer;
 	}
 
-	Graphics::MeshBuffer* ResourceManager::CreateMeshBuffer(uuid uuid, std::vector<Common::VertexAttribute>& vertices, std::vector<std::vector<uint32>> subMeshs)
+	Graphics::MeshBuffer* ResourceManager::CreateMeshBuffer(uuid uuid, std::vector<Common::VertexAttribute>& vertices, std::vector<std::vector<uint32>> subMeshs, Math::Vector3 min, Math::Vector3 max)
 	{
 		auto _find = std::find_if(std::begin(m_MeshBufferMap),
 			std::end(m_MeshBufferMap),
@@ -66,6 +66,9 @@ namespace Graphics
 		{
 			_newMeshBuffer->CreateSubMesh(uuid, _subMesh);
 		}
+
+		_newMeshBuffer->SetBoundingBoxMin(min);
+		_newMeshBuffer->SetBoundingBoxMax(max);
 
 		return _newMeshBuffer;
 	}

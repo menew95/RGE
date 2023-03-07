@@ -137,6 +137,9 @@ namespace GameEngine
 
 				_newMesh->SetName(_pair.first);
 
+				_newMesh->SetBoundingBoxMin(_pair.second._boundingMinBox);
+				_newMesh->SetBoundingBoxMax(_pair.second._boundingMaxBox);
+
 				GraphicsSystem::GetInstance()->CreateMeshBuffer(_newMesh);
 
 				m_MeshMap.insert(std::make_pair(_pair.first, _newMesh));
@@ -497,6 +500,8 @@ namespace GameEngine
 
 			_newMesh->SetName(_meshData._meshName);
 			_newMesh->SetUUID(_meshData._meshName);
+			_newMesh->SetBoundingBoxMin(_meshData._boundingMinBox);
+			_newMesh->SetBoundingBoxMax(_meshData._boundingMaxBox);
 
 			if (_meshData._isSkin)
 			{

@@ -49,7 +49,7 @@ namespace GameEngine
 		{
 			uuid _uuid = mesh->GetName();
 
-			mesh->m_MeshBuffer = m_GraphicsEngine->CreateMeshBuffer(_uuid, mesh->GetVertexAttributes(), mesh->GetIndexAttributes());
+			mesh->m_MeshBuffer = m_GraphicsEngine->CreateMeshBuffer(_uuid, mesh->GetVertexAttributes(), mesh->GetIndexAttributes(), mesh->GetBoundingBoxMin(), mesh->GetBoundingBoxMax());
 		}
 
 		void GraphicsSystem::CreateMaterialBuffer(std::shared_ptr<Material>& material)
@@ -116,8 +116,8 @@ namespace GameEngine
 		{
 			renderObject.m_RenderPassIdx = passIdx;
 
-			m_GraphicsEngine->RegistRenderQueue(renderObject);
-			//m_RenderPassList[passIdx].second->RegistRenderObject(renderObject);
+			if(passIdx < 8)	m_GraphicsEngine->RegistRenderMesh(renderObject);
+			else m_GraphicsEngine->RegistRenderShadow(renderObject);
 		}
 
 		void GraphicsSystem::LoadGraphicsEngineDll()

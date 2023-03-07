@@ -126,6 +126,11 @@ namespace Graphics
 
 	}
 
+	void Light::RegistRenderObject(RenderObject& renderObject)
+	{
+
+	}
+
 	void Light::Init()
 	{
 		m_LightTexture = m_ResourceManager->GetTexture(TEXT("LightTexture"));

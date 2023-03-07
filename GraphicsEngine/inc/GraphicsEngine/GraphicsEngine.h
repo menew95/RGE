@@ -44,7 +44,7 @@ namespace Graphics
 
 		void InitSSR();
 
-		MeshBuffer* CreateMeshBuffer(uuid uuid, std::vector<Common::VertexAttribute>& vertices, std::vector<std::vector<uint32>> subMeshs);
+		MeshBuffer* CreateMeshBuffer(uuid uuid, std::vector<Common::VertexAttribute>& vertices, std::vector<std::vector<uint32>> subMeshs, Math::Vector3 min, Math::Vector3 max);
 		MaterialBuffer* CreateMaterialBuffer(uuid uuid);
 		CameraBuffer* CreateCameraBuffer();
 		LightBuffer* CreateLightBuffer();
@@ -87,6 +87,7 @@ namespace Graphics
 		ResourceManager* m_ResourceManager;
 
 		CameraBuffer* m_MainCameraBuffer;
+
 		std::shared_ptr<Graphics::RenderPass> m_Deferred_Mesh_Pass;
 		std::shared_ptr<Graphics::RenderPass> m_Deferred_Mesh_Albedo_Pass;
 		std::shared_ptr<Graphics::RenderPass> m_Deferred_Mesh_Albedo_Bump_Pass;

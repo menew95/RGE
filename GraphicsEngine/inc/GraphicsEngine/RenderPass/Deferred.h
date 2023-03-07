@@ -10,6 +10,7 @@
 
 namespace Graphics
 {
+	class CameraBuffer;
 	class RenderPass;
 	class CommandBuffer;
 	class ResourceManager;
@@ -24,10 +25,17 @@ namespace Graphics
 
 		void RegistRenderObject(RenderObject& renderObject);
 
+		inline void SetCameraBuffer(CameraBuffer* camera) { m_CameraBuffer = camera; }
+
 	private:
+		void Initialize();
+
 		void Culling();
 		
+		ResourceManager* m_ResourceManager;
 		CommandBuffer* m_CommandBuffer;
+
+		CameraBuffer* m_CameraBuffer;
 
 		std::vector<RenderObject> m_RenderObjectList;
 

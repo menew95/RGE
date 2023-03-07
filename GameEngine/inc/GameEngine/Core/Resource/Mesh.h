@@ -47,10 +47,18 @@ namespace GameEngine
 			inline void SetSkinned(std::shared_ptr<SkinnedData> skin) { m_SkinnedData = skin; }
 			inline std::shared_ptr<SkinnedData>& GetSkinned() { return m_SkinnedData; }
 
+			inline void SetBoundingBoxMin(Math::Vector3 value) { m_BoundingBoxMin = value; }
+			inline void SetBoundingBoxMax(Math::Vector3 value) { m_BoundingBoxMax = value; }
+			inline Math::Vector3 GetBoundingBoxMin() { return m_BoundingBoxMin; }
+			inline Math::Vector3 GetBoundingBoxMax() { return m_BoundingBoxMax; }
+
 		protected:
 			virtual void Release() override;
 
 		private:
+			Math::Vector3 m_BoundingBoxMin;
+			Math::Vector3 m_BoundingBoxMax;
+
 			std::vector<VertexAttribute> m_VertexAttributes;
 			std::vector<std::vector<uint32>> m_IndexAttributers;
 

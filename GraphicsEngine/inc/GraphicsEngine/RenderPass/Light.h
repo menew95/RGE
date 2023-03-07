@@ -19,6 +19,7 @@ namespace Graphics
 	class MaterialBuffer;
 	class MeshBuffer;
 	class Texture;
+	class RenderObject;
 
 	class Light
 	{
@@ -33,6 +34,8 @@ namespace Graphics
 		void UpdateLightTexture();
 
 		void ExcutePass();
+
+		void RegistRenderObject(RenderObject& renderObject);
 
 	private:
 		void Init();

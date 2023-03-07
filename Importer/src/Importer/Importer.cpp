@@ -97,8 +97,8 @@ namespace Utility
 		meshData._indexAttributes = _meshData.indices;
 		meshData._isSkin = _meshData._isSkinned;
 		meshData._skinName = StringHelper::StringToWString(_meshData._boneName);
-		meshData._boundingMinBox = meshData._boundingMinBox;
-		meshData._boundingMaxBox = meshData._boundingMaxBox;
+		meshData._boundingMinBox = _meshData._boundingMinBox;
+		meshData._boundingMaxBox = _meshData._boundingMaxBox;
 
 		return true;
 	}

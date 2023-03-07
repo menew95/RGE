@@ -70,6 +70,7 @@ namespace GameEngine
 						if (m_Materials[i] == nullptr) continue;
 
 						Graphics::RenderObject _renderObject;
+						_renderObject.m_World = GetTransform()->GetWorldTM();
 
 						auto* _materialBuffer = m_Materials[i]->GetMaterialBuffer();
 

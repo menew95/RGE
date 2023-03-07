@@ -49,6 +49,7 @@ namespace GameEngine
 			Math::Vector3 _right = _transform->GetRight();
 			Math::Vector3 _up = _transform->GetUp();
 
+			m_CameraBuffer->SetWorld(_transform->GetWorldTM());
 			m_CameraBuffer->Update(_pos, _forward, _right, _up, m_Near, m_Far, m_FieldOfView, m_AspectRadio);
 		}
 	}
