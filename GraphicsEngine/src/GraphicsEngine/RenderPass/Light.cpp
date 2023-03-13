@@ -1,16 +1,21 @@
 #include "GraphicsEnginePCH.h"
 #include "GraphicsEngine/RenderPass/Light.h"
+#include "GraphicsEngine/RenderPass/RenderPass.h"
 #include "GraphicsEngine/Resource/ResourceManager.h"
 #include "GraphicsEngine/Resource/LightBuffer.h"
+#include "GraphicsEngine/Resource/MeshBuffer.h"
+
+#include "GraphicsModule/Core/RenderTarget.h"
 
 namespace Graphics
 {
 	
-	Light::Light(RenderSystem* renderSystem, ResourceManager* resourceManager)
+	Light::Light(RenderSystem* renderSystem, CommandBuffer* command, ResourceManager* resourceManager)
 		: m_RenderSystem(renderSystem)
+		, m_CommandBuffer(command)
 		, m_ResourceManager(resourceManager)
 	{
-
+		Init();
 	}
 
 	Light::~Light()
@@ -27,11 +32,11 @@ namespace Graphics
 		return _newLight.get();
 	}
 
-	void Light::GetLightingData(struct Lighting& perLightFrame)
+	Lighting* Light::GetLightingData()
 	{
-		perLightFrame._dirLightCount = 0;
-		perLightFrame._pointLightCount = 0;
-		perLightFrame._spotLightCount = 0;
+		m_Lighting._dirLightCount = 0;
+		m_Lighting._pointLightCount = 0;
+		m_Lighting._spotLightCount = 0;
 
 		for (uint32 i = 0; i < m_LightBuffers.size(); i++)
 		{
@@ -60,9 +65,9 @@ namespace Graphics
 
 						m_LightBuffers[i]->GetSpotLightTransform(_spotLight._lightTransform);
 						
-						perLightFrame._spotLight[perLightFrame._spotLightCount] = _spotLight;
+						m_Lighting._spotLight[m_Lighting._spotLightCount] = _spotLight;
 
-						perLightFrame._spotLightCount++;
+						m_Lighting._spotLightCount++;
 
 						break;
 					}
@@ -76,9 +81,9 @@ namespace Graphics
 
 						m_LightBuffers[i]->GetDirectionLightTransform(_dirLight._lightTransform);
 
-						perLightFrame._directionLight[perLightFrame._dirLightCount] = _dirLight;
+						m_Lighting._directionLight[m_Lighting._dirLightCount] = _dirLight;
 
-						perLightFrame._dirLightCount++;
+						m_Lighting._dirLightCount++;
 
 						break;
 					}
@@ -98,9 +103,9 @@ namespace Graphics
 
 						m_LightBuffers[i]->GetPointLightTransform(_pointLight._lightTransform);
 						
-						perLightFrame._pointLight[perLightFrame._pointLightCount] = _pointLight;
+						m_Lighting._pointLight[m_Lighting._pointLightCount] = _pointLight;
 
-						perLightFrame._pointLightCount++;
+						m_Lighting._pointLightCount++;
 
 						break;
 					}
@@ -109,6 +114,8 @@ namespace Graphics
 				}
 			}
 		}
+
+		return &m_Lighting;
 	}
 
 	void Light::UpdateLightTexture()
@@ -116,23 +123,248 @@ namespace Graphics
 		ImageDesc _imgDesc;
 		TextureRegion _region;
 
-
-
 		m_RenderSystem->WriteTexture(*m_LightTexture, _region, _imgDesc);
 	}
 
 	void Light::ExcutePass()
 	{
+		// Light 별로 Shadow Map를 그리는 패스
 
+		for (uint32 _idx = 0; _idx < m_Lighting._pointLightCount; _idx++)
+		{
+			m_PointShadow_Pass->SetRenderTarget(m_PointShadowRenderTarget[_idx]);
+			m_PointShadow_Skinned_Pass->SetRenderTarget(m_PointShadowRenderTarget[_idx]);
+
+			m_PointShadow_Pass->ClearRenderObject();
+			m_PointShadow_Skinned_Pass->ClearRenderObject();
+
+			Culling(m_Lighting._pointLight[_idx]);
+
+
+			m_PointShadow_Pass->UpdatePerFrame(m_CommandBuffer, &m_Lighting._pointLight[_idx], sizeof(PointLight));
+			m_PointShadow_Skinned_Pass->UpdatePerFrame(m_CommandBuffer, &m_Lighting._pointLight[_idx], sizeof(PointLight));
+
+
+			{
+				m_PointShadow_Pass->BeginExcute(m_CommandBuffer, nullptr);
+
+				m_PointShadow_Pass->Excute(m_CommandBuffer);
+
+				m_PointShadow_Pass->EndExcute(m_CommandBuffer);
+			}
+
+			{
+				m_PointShadow_Skinned_Pass->BeginExcute(m_CommandBuffer, nullptr);
+
+				m_PointShadow_Skinned_Pass->Excute(m_CommandBuffer);
+
+				m_PointShadow_Skinned_Pass->EndExcute(m_CommandBuffer);
+			}
+		}
+
+		/*for (size_t i = 0; i < m_LightBuffers.size(); i++)
+		{
+			if (!m_LightBuffers[i]->GetEnable()) continue;
+
+			switch (m_LightBuffers[i]->GetLightType())
+			{
+				case 0:
+				{
+
+					break;
+				}
+				case 1:
+				{
+
+					break;
+				}
+				default:
+					break;
+			}
+		}*/
+
+		m_StaticRenderObjectList.clear();
+		m_SkinnedRenderObjectList.clear();
 	}
 
-	void Light::RegistRenderObject(RenderObject& renderObject)
+	void Light::RegistStaticRenderObject(RenderObject& renderObject)
 	{
+		m_StaticRenderObjectList.push_back(renderObject);
+	}
 
+	void Light::RegistSkinnedRenderObject(RenderObject& renderObject)
+	{
+		m_SkinnedRenderObjectList.push_back(renderObject);
 	}
 
 	void Light::Init()
 	{
 		m_LightTexture = m_ResourceManager->GetTexture(TEXT("LightTexture"));
+		m_PointLightShadowTexture = m_ResourceManager->GetTexture(TEXT("PointLightShadow"));
+		m_SpotLightShadowTexture = m_ResourceManager->GetTexture(TEXT("SpotLightShadow"));
+
+		m_CascadedShadow_Pass = m_ResourceManager->GetRenderPass(TEXT("CascadedShadow Pass"));
+		m_CascadedShadow_Skinned_Pass = m_ResourceManager->GetRenderPass(TEXT("CascadedShadow_Skinned Pass"));
+
+		m_PointShadow_Pass = m_ResourceManager->GetRenderPass(TEXT("PointLightShadow Pass"));
+		m_PointShadow_Skinned_Pass = m_ResourceManager->GetRenderPass(TEXT("PointLightShadow_Skinned Pass"));
+
+		CreateRenderTarget();
 	}
+
+	void Light::Culling(PointLight& pointLight)
+	{
+		// PointLight Culling
+
+		// BoundingSphere와, 렌더 오브젝트의 BoundingOrientedBox가 충돌 하면 랜더 패스에 그려야하는 오브젝트로 등록
+
+		BoundingSphere _boundSphere(pointLight._position, pointLight._range);
+
+		for (size_t i = 0; i < m_StaticRenderObjectList.size(); i++)
+		{
+			auto _min = m_StaticRenderObjectList[i].m_MeshBuffer->GetBoundingBoxMin();
+			auto _max = m_StaticRenderObjectList[i].m_MeshBuffer->GetBoundingBoxMax();
+
+			auto _center = (_min + _max) * 0.5f;
+			auto _extents = _max - _center;
+
+			BoundingOrientedBox _boundingOrientedBox;
+			_boundingOrientedBox.Center = _center;
+			_boundingOrientedBox.Extents = _extents;
+
+			_boundingOrientedBox.Transform(_boundingOrientedBox, m_StaticRenderObjectList[i].m_World);
+
+			if (_boundSphere.Intersects(_boundingOrientedBox))
+			{
+				m_PointShadow_Pass->RegistRenderObject(m_StaticRenderObjectList[i]);
+			}
+		}
+
+		for (size_t i = 0; i < m_SkinnedRenderObjectList.size(); i++)
+		{
+			auto _min = m_SkinnedRenderObjectList[i].m_MeshBuffer->GetBoundingBoxMin();
+			auto _max = m_SkinnedRenderObjectList[i].m_MeshBuffer->GetBoundingBoxMax();
+
+			auto _center = (_min + _max) * 0.5f;
+			auto _extents = _max - _center;
+
+			BoundingOrientedBox _boundingOrientedBox;
+			_boundingOrientedBox.Center = _center;
+			_boundingOrientedBox.Extents = _extents;
+
+			_boundingOrientedBox.Transform(_boundingOrientedBox, m_SkinnedRenderObjectList[i].m_World);
+
+			if (_boundSphere.Intersects(_boundingOrientedBox))
+			{
+				m_PointShadow_Skinned_Pass->RegistRenderObject(m_StaticRenderObjectList[i]);
+			}
+		}
+	}
+
+	void Light::Culling(SpotLight& spotLight)
+	{
+		// SpotLight Culling
+
+		// BoundingFrustum과, 렌더 오브젝트의 BoundingOrientedBox가 충돌 하면 랜더 패스에 그려야하는 오브젝트로 등록
+
+		Math::Matrix _spotProj = Math::Matrix::CreatePerspectiveFieldOfView(spotLight._spotAngle * Math::Deg2Rad, 1.0f, 0.1f, spotLight._range);
+		Math::Matrix _spotWorld = Math::Matrix::CreateWorld(spotLight._position, spotLight._direction, Math::Vector3::Up);
+
+		BoundingFrustum _boundingFrustum{ _spotProj };
+
+		_boundingFrustum.Transform(_boundingFrustum, _spotWorld);
+
+		for (size_t i = 0; i < m_StaticRenderObjectList.size(); i++)
+		{
+			// Frustum Culling
+
+			auto _min = m_StaticRenderObjectList[i].m_MeshBuffer->GetBoundingBoxMin();
+			auto _max = m_StaticRenderObjectList[i].m_MeshBuffer->GetBoundingBoxMax();
+
+			auto _center = (_min + _max) * 0.5f;
+			auto _extents = _max - _center;
+
+			BoundingOrientedBox _boundingOrientedBox;
+			_boundingOrientedBox.Center = _center;
+			_boundingOrientedBox.Extents = _extents;
+
+			_boundingOrientedBox.Transform(_boundingOrientedBox, m_StaticRenderObjectList[i].m_World);
+
+			if (_boundingFrustum.Intersects(_boundingOrientedBox))
+			{
+				switch (m_StaticRenderObjectList[i].m_RenderPassIdx)
+				{
+					case 0:
+					{
+						//m_Deferred_Mesh_Pass->RegistRenderObject(m_RenderObjectList[i]);
+						break;
+					}
+					case 1:
+					{
+						//m_Deferred_Mesh_Albedo_Pass->RegistRenderObject(m_RenderObjectList[i]);
+						break;
+					}
+					default:
+						assert(false);
+						break;
+				}
+			}
+		}
+	}
+
+	void Light::CreateRenderTarget()
+	{
+		// 라이트의 종류에 따른 랜더 타겟 생성 필요
+		// 스팟 라이트는 하나만
+		// 포인트 라이트는 랜더 타겟을 6개의 면을 하나의 랜더 타겟으로 생성 필요
+
+		for (uint32 i = 0; i < MAX_LIGHT_COUNT; i++)
+		{
+			uuid _uuid = TEXT("POINTLIGHT_SHADOWMAP_RT_") + std::to_wstring(i);
+
+			RenderTargetDesc _renderTargetDesc;
+
+			_renderTargetDesc._extend = { 512, 512 };
+			_renderTargetDesc._sample = 1;
+
+			AttachmentDesc _depthAttachDesc;
+
+			_depthAttachDesc._renderTargetType = RenderTargetType::DepthStencil;
+			_depthAttachDesc._resource = m_PointLightShadowTexture;
+			_depthAttachDesc._mipLevel = 0;
+			_depthAttachDesc._arrayLayer = i;
+			_depthAttachDesc._arraySize = 6;
+
+			_renderTargetDesc._attachments.push_back(_depthAttachDesc);
+
+			auto* _rt = m_ResourceManager->CreateRenderTarget(_uuid, _renderTargetDesc);
+
+			m_PointShadowRenderTarget.push_back(_rt);
+		}
+
+		for (uint32 i = 0; i < MAX_LIGHT_COUNT; i++)
+		{
+			uuid _uuid = TEXT("SPOTLIGHT_SHADOWMAP_RT_") + std::to_wstring(i);
+
+			RenderTargetDesc _renderTargetDesc;
+
+			_renderTargetDesc._extend = { 512, 512 };
+			_renderTargetDesc._sample = 1;
+
+			AttachmentDesc _depthAttachDesc;
+
+			_depthAttachDesc._renderTargetType = RenderTargetType::DepthStencil;
+			_depthAttachDesc._resource = m_SpotLightShadowTexture;
+			_depthAttachDesc._mipLevel = 0;
+			_depthAttachDesc._arrayLayer = i;
+			_depthAttachDesc._arraySize = 1;
+
+			_renderTargetDesc._attachments.push_back(_depthAttachDesc);
+
+			auto* _rt = m_ResourceManager->CreateRenderTarget(_uuid, _renderTargetDesc);
+
+			m_SpotShadowRenderTarget.push_back(_rt);
+		}
+	}
+
 }

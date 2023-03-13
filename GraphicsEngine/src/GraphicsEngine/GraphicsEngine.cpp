@@ -298,7 +298,7 @@ namespace Graphics
 
 	void GraphicsEngine::InitLight()
 	{
-		m_Light = std::make_shared<Light>(m_RenderSystem, m_ResourceManager);
+		m_Light = std::make_shared<Light>(m_RenderSystem, m_CommandBuffer, m_ResourceManager);
 
 
 	}
@@ -394,9 +394,24 @@ namespace Graphics
 		m_Deferred->RegistRenderObject(renderObject);
 	}
 
-	void GraphicsEngine::RegistRenderShadow(RenderObject& renderObject)
+	void GraphicsEngine::RegistRenderShadow(uint32 type, RenderObject& renderObject)
 	{
-		m_Light->RegistRenderObject(renderObject);
+		switch (type)
+		{
+			case 0:
+			{
+				m_Light->RegistStaticRenderObject(renderObject);
+				break;
+			}
+			case 1:
+			{
+				m_Light->RegistSkinnedRenderObject(renderObject);
+				break;
+			}
+			default:
+				assert("Attempt to register undefined type in shadow object list", false);
+				break;
+		}
 	}
 
 	void GraphicsEngine::Excute()
@@ -412,25 +427,25 @@ namespace Graphics
 		_deferredMergeRenderObject.m_MaterialBuffer = m_Deferred_Light_Material;
 
 		// Update Per Object Buffer(Lighting)
-		Lighting _perLighting;
-		m_Light->GetLightingData(_perLighting);
+		Lighting* _perLighting = m_Light->GetLightingData();
+		//m_Light->GetLightingData(_perLighting);
 
-		UpdateResourceData _perDraw{ eUpdateTime::PerObject, 1, ResourceType::Buffer, &_perLighting, sizeof(Lighting) };
+		UpdateResourceData _perDraw{ eUpdateTime::PerObject, 1, ResourceType::Buffer, _perLighting, sizeof(Lighting) };
 		_deferredMergeRenderObject.m_UpdateResourcePerObjects.push_back(_perDraw);
 
 		m_Deferred_Light_Pass->RegistRenderObject(_deferredMergeRenderObject);
 
 
-		m_MainCameraBuffer->UpdateCascadeShadow(_perLighting._directionLight[0]._direction, _perLighting._cascadedLight);
+		m_MainCameraBuffer->UpdateCascadeShadow(_perLighting->_directionLight[0]._direction, _perLighting->_cascadedLight);
 
-		m_CascadedShadow_Pass->UpdatePerFrame(m_CommandBuffer, &_perLighting._cascadedLight, sizeof(_perLighting._cascadedLight));
+		m_CascadedShadow_Pass->UpdatePerFrame(m_CommandBuffer, &_perLighting->_cascadedLight, sizeof(_perLighting->_cascadedLight));
 
-		m_Deferred_Light_Pass->UpdatePerFrame(m_CommandBuffer, &_perLighting, sizeof(Lighting));
+		m_Deferred_Light_Pass->UpdatePerFrame(m_CommandBuffer, _perLighting, sizeof(Lighting));
 		
 		m_Deferred->SetCameraBuffer(m_MainCameraBuffer);
 
 		m_Deferred->ExcutePass();
-
+		m_Light->ExcutePass();
 		{
 			m_CascadedShadow_Pass->BeginExcute(m_CommandBuffer, nullptr);
 
@@ -581,85 +596,6 @@ namespace Graphics
 		auto* _renderPass = m_ResourceManager->GetRenderPass(uuid).get();
 
 		return _renderPass;
-	}
-
-
-	void GraphicsEngine::GetLightingData(Lighting& perLightFrame)
-	{
-		//perLightFrame._li = static_cast<uint32>(m_LightBuffers.size());
-		perLightFrame._dirLightCount = 0;
-		perLightFrame._pointLightCount = 0;
-		perLightFrame._spotLightCount = 0;
-		for (uint32 i = 0; i < m_LightBuffers.size(); i++)
-		{
-			if (m_LightBuffers[i]->GetEnable())
-			{
-				const auto& _perLight = m_LightBuffers[i]->GetPerLight();
-
-				// 0 : spot 1 : dir 2 : point
-				switch (_perLight._type)
-				{
-					case 0:
-					{
-						SpotLight _spotLight;
-
-						_spotLight._range = _perLight._range;
-						_spotLight._fallOff = _perLight._fallOff;
-
-						_spotLight._position = _perLight._lightPosition;
-						_spotLight._spotAngle = _perLight._spotAngle;
-
-						_spotLight._direction = _perLight._direction;
-						_spotLight._fallOffAngle = _perLight._fallOffAngle;
-
-						_spotLight._color = _perLight._color;
-						_spotLight._power = _perLight._intensity;
-
-						perLightFrame._spotLight[perLightFrame._spotLightCount] = _spotLight;
-
-						perLightFrame._spotLightCount++;
-
-						break;
-					}
-					case 1:
-					{
-						DirectionLight _dirLight;
-
-						_dirLight._direction = _perLight._direction;
-						_dirLight._color = _perLight._color;
-						_dirLight._power = _perLight._intensity;
-
-						perLightFrame._directionLight[perLightFrame._dirLightCount] = _dirLight;
-
-						perLightFrame._dirLightCount++;
-
-						break;
-					}
-					case 2:
-					{
-						PointLight _pointLight;
-
-						_pointLight._position = _perLight._lightPosition;
-
-						_pointLight._range = _perLight._range;
-
-						_pointLight._color = _perLight._color;
-
-						_pointLight._fallOff = _perLight._fallOff;
-
-						_pointLight._power = _perLight._intensity;
-
-						perLightFrame._pointLight[perLightFrame._pointLightCount] = _pointLight;
-
-						perLightFrame._pointLightCount++;
-
-						break;
-					}
-					default:
-						break;
-				}
-			}
-		}
 	}
 
 	void GraphicsEngine::LoadGraphicsTable()

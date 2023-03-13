@@ -156,16 +156,18 @@ namespace GameEngine
 						if (m_ShadowCasting)
 						{
 							Graphics::RenderObject _shadow;
+							_shadow.m_World = GetTransform()->GetWorldTM();
 							_shadow.m_MeshBuffer = _sharedMesh->GetMeshBuffer();
 							_shadow.m_MaterialBuffer = _materialBuffer;
 
+							_perObjectResource._index = 0;
 							_shadow.m_UpdateResourcePerObjects.push_back(_perObjectResource);
 
-							_shadow.m_RenderPassIdx = 8;
-							GraphicsSystem::GetInstance()->RegistRenderObject(8, _shadow);
+							//_shadow.m_RenderPassIdx = 8;
+							//GraphicsSystem::GetInstance()->RegistRenderObject(8, _shadow);
 
-							_shadow.m_RenderPassIdx = 10;
-							GraphicsSystem::GetInstance()->RegistRenderObject(10, _shadow);
+							//_shadow.m_RenderPassIdx = 10;
+							GraphicsSystem::GetInstance()->RegistShadowObject(0, _shadow);
 						}
 					}
 				

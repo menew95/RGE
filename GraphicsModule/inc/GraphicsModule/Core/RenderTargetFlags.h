@@ -21,6 +21,8 @@ namespace Graphics
 		uint32 _mipLevel = 0;
 
 		uint32 _arrayLayer = 0;
+
+		uint32 _arraySize = 0;
 	};
 
 	struct RenderTargetDesc

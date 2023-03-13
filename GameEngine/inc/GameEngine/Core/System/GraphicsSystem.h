@@ -46,6 +46,7 @@ namespace GameEngine
 
 			void RegistRenderObject(const tstring& passName, Graphics::RenderObject& renderObject);
 			void RegistRenderObject(uint32 passIdx, Graphics::RenderObject& renderObject);
+			void RegistShadowObject(uint32 type, Graphics::RenderObject& renderObject);
 
 		protected:
 			void LoadGraphicsEngineDll();

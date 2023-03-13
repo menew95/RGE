@@ -83,7 +83,7 @@ TestScene::TestScene()
 
 		_lightCom->SetLightType(2);
 
-		_lightCom->SetRange(30.0f);
+		_lightCom->SetRange(3.0f);
 
 		AddGameObject(_pointLight);
 	}

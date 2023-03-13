@@ -23,6 +23,7 @@ namespace Graphics
 		const TCHAR* UUID = _T("UUID");
 		const TCHAR* sample = _T("Sample");
 		const TCHAR* arrayLayer = _T("ArrayLayer");
+		const TCHAR* arraySize = _T("ArraySize");
 		const TCHAR* mipLevels = _T("MipLevel");
 		const TCHAR* extent = _T("Extent");
 		const TCHAR* attachmentsCount = _T("AttachmentsCount");
@@ -92,6 +93,11 @@ namespace Graphics
 				if (_rtArray[_idx].HasMember(arrayLayer))
 				{
 					_attachmentDesc._arrayLayer = _rtArray[_idx][arrayLayer].GetInt();
+				}
+
+				if (_rtArray[_idx].HasMember(arraySize))
+				{
+					_attachmentDesc._arraySize = _rtArray[_idx][arraySize].GetInt();
 				}
 
 				_renderTargetDesc._attachments.push_back(_attachmentDesc);

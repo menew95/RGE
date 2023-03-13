@@ -116,8 +116,12 @@ namespace GameEngine
 		{
 			renderObject.m_RenderPassIdx = passIdx;
 
-			if(passIdx < 8)	m_GraphicsEngine->RegistRenderMesh(renderObject);
-			else m_GraphicsEngine->RegistRenderShadow(renderObject);
+			m_GraphicsEngine->RegistRenderMesh(renderObject);
+		}
+
+		void GraphicsSystem::RegistShadowObject(uint32 type, Graphics::RenderObject& renderObject)
+		{
+			m_GraphicsEngine->RegistRenderShadow(type, renderObject);
 		}
 
 		void GraphicsSystem::LoadGraphicsEngineDll()

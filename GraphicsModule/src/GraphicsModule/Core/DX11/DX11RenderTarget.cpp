@@ -31,16 +31,16 @@ namespace Graphics
 	{
 		viewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE1DARRAY;
 		viewDesc.Texture1DArray.MipSlice = attachmentDesc._mipLevel;
-		viewDesc.Texture1DArray.FirstArraySlice = 0;
-		viewDesc.Texture1DArray.ArraySize = attachmentDesc._arrayLayer;
+		viewDesc.Texture1DArray.FirstArraySlice = attachmentDesc._arrayLayer;
+		viewDesc.Texture1DArray.ArraySize = attachmentDesc._arraySize;
 	}
 
 	static void FillViewDescForTexture2DArray(const AttachmentDesc& attachmentDesc, D3D11_RENDER_TARGET_VIEW_DESC& viewDesc)
 	{
 		viewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2DARRAY;
 		viewDesc.Texture2DArray.MipSlice = attachmentDesc._mipLevel;
-		viewDesc.Texture2DArray.FirstArraySlice = 0;
-		viewDesc.Texture2DArray.ArraySize = attachmentDesc._arrayLayer;
+		viewDesc.Texture2DArray.FirstArraySlice = attachmentDesc._arrayLayer;
+		viewDesc.Texture2DArray.ArraySize = attachmentDesc._arraySize;
 	}
 
 	static void FillViewDescForTexture2DMS(const AttachmentDesc& attachmentDesc, D3D11_RENDER_TARGET_VIEW_DESC& viewDesc)
@@ -52,7 +52,7 @@ namespace Graphics
 	{
 		viewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2DMSARRAY;
 		viewDesc.Texture2DMSArray.FirstArraySlice = attachmentDesc._arrayLayer;
-		viewDesc.Texture2DMSArray.ArraySize = 1;
+		viewDesc.Texture2DMSArray.ArraySize = attachmentDesc._arraySize;
 	}
 
 	DX11::DX11RenderTarget::DX11RenderTarget(ID3D11Device* device, const RenderTargetDesc& desc)
@@ -166,7 +166,7 @@ namespace Graphics
 				_dsvDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE1DARRAY;
 				_dsvDesc.Texture1DArray.MipSlice = desc._mipLevel;
 				_dsvDesc.Texture1DArray.FirstArraySlice = desc._arrayLayer;
-				_dsvDesc.Texture1DArray.ArraySize = 1;
+				_dsvDesc.Texture1DArray.ArraySize = desc._arraySize;
 				break;
 
 			case TextureType::Texture3D:
@@ -175,8 +175,8 @@ namespace Graphics
 			case TextureType::TextureCubeArray:
 				_dsvDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DARRAY;
 				_dsvDesc.Texture2DArray.MipSlice = desc._mipLevel;
-				_dsvDesc.Texture2DArray.FirstArraySlice = 0;
-				_dsvDesc.Texture2DArray.ArraySize = desc._arrayLayer;
+				_dsvDesc.Texture2DArray.FirstArraySlice = desc._arrayLayer;
+				_dsvDesc.Texture2DArray.ArraySize = desc._arraySize;
 				break;
 
 			case TextureType::Texture2DMS:
@@ -186,7 +186,7 @@ namespace Graphics
 			case TextureType::Texture2DMSArray:
 				_dsvDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DMSARRAY;
 				_dsvDesc.Texture2DMSArray.FirstArraySlice = desc._arrayLayer;
-				_dsvDesc.Texture2DMSArray.ArraySize = 1;
+				_dsvDesc.Texture2DMSArray.ArraySize = desc._arraySize;
 				break;
 		}
 

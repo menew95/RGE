@@ -21,32 +21,48 @@ namespace Graphics
 	class Texture;
 	class RenderObject;
 
+	struct Lighting;
+
 	class Light
 	{
 	public:
-		Light(RenderSystem* renderSystem, ResourceManager* resourceManager);
+		Light(RenderSystem* renderSystem, CommandBuffer* commandBuffer, ResourceManager* resourceManager);
 		~Light();
 
 		LightBuffer* AddLight();
 
-		void GetLightingData(struct Lighting& perLightFrame);
+		//void GetLightingData(struct Lighting& perLightFrame);
+		Lighting* GetLightingData();
 
 		void UpdateLightTexture();
 
 		void ExcutePass();
 
-		void RegistRenderObject(RenderObject& renderObject);
+		void RegistStaticRenderObject(RenderObject& renderObject);
+		void RegistSkinnedRenderObject(RenderObject& renderObject);
 
 	private:
 		void Init();
 
+		void Culling(PointLight& pointLight);
+		void Culling(SpotLight& pointLight);
+
+		void CreateRenderTarget();
+
 		RenderSystem* m_RenderSystem;
+		CommandBuffer* m_CommandBuffer;
 		ResourceManager* m_ResourceManager;
 
 		MaterialBuffer* m_Deferred_Light_Material;
 		MeshBuffer* m_Screen_Mesh;
 
 		Texture* m_LightTexture;
+
+		Texture* m_PointLightShadowTexture;
+		Texture* m_SpotLightShadowTexture;
+
+		std::vector<RenderObject> m_StaticRenderObjectList;
+		std::vector<RenderObject> m_SkinnedRenderObjectList;
 
 		std::shared_ptr<Graphics::RenderPass> m_Deferred_Light_Pass;
 
@@ -57,5 +73,11 @@ namespace Graphics
 		std::shared_ptr<Graphics::RenderPass> m_PointShadow_Skinned_Pass;
 
 		std::vector<std::shared_ptr<LightBuffer>> m_LightBuffers;
+
+		std::vector<Graphics::RenderTarget*> m_SpotShadowRenderTarget;
+		std::vector<Graphics::RenderTarget*> m_PointShadowRenderTarget;
+
+		Lighting m_Lighting;
+		
 	};
 }

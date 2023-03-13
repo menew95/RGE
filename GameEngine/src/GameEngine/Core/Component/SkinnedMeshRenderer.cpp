@@ -199,15 +199,19 @@ namespace GameEngine
 						if (m_ShadowCasting)
 						{
 							Graphics::RenderObject _shadow;
+							_shadow.m_World = GetTransform()->GetWorldTM();
 							_shadow.m_MeshBuffer = _sharedMesh->GetMeshBuffer();
 							_shadow.m_MaterialBuffer = _materialBuffer;
 
+							_perObjectResource._index = 0;
 							_shadow.m_UpdateResourcePerObjects.push_back(_perObjectResource);
 
+							_perSkinnedObjectResource._index = 1;
 							_shadow.m_UpdateResourcePerObjects.push_back(_perSkinnedObjectResource);
 
-							GraphicsSystem::GetInstance()->RegistRenderObject(9, _shadow);
-							//GraphicsSystem::GetInstance()->RegistRenderObject(11, _shadow);
+							//GraphicsSystem::GetInstance()->RegistRenderObject(9, _shadow);
+
+							GraphicsSystem::GetInstance()->RegistShadowObject(1, _shadow);
 						}
 					}
 				}

@@ -55,7 +55,7 @@ namespace Graphics
 
 		void RegistRenderObject(RenderObject& renderObject);
 		void RegistRenderMesh(RenderObject& renderObject);
-		void RegistRenderShadow(RenderObject& renderObject);
+		void RegistRenderShadow(uint32 type, RenderObject& renderObject);
 
 		void Excute();
 		void ExcuteRenderPass(Graphics::RenderPass* renderPass);
@@ -72,7 +72,6 @@ namespace Graphics
 		Graphics::RenderPass* GetRenderPass(uuid uuid);
 
 	private:
-		void GetLightingData(struct Lighting& perLightFrame);
 
 		void LoadGraphicsTable();
 

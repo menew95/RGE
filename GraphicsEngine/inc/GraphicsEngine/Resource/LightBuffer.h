@@ -64,6 +64,7 @@ namespace Graphics
 		void GetPointLightTransform(Math::Matrix* lightTMs);
 
 	private:
+		void CreateRenderTexture();
 
 		void CreateRenderTarget();
 
@@ -72,5 +73,6 @@ namespace Graphics
 		PerLight m_PerLight;
 
 		RenderTarget* m_RenderTarget = nullptr;
+		Texture* m_ShadowMap = nullptr;
 	};
 }

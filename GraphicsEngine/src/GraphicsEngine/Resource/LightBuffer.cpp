@@ -125,6 +125,36 @@ namespace Graphics
 		lightTMs[5] = _views[5] * _proj;
 	}
 
+	void LightBuffer::CreateRenderTexture()
+	{
+		// 라이트의 종류에 따른 랜더 타겟 생성 필요
+		// 스팟 라이트는 하나만
+		// 포인트 라이트는 랜더 타겟을 6개의 밉슬라이스로 생성 필요
+
+		RenderTargetDesc _renderTargetDesc;
+
+		//_renderTargetDesc._extend = (m_PerLight._type == static_cast<uint32>(LightType::Point)) ? { 512, 512 } : { 1024, 1024 };
+		_renderTargetDesc._extend = { 512, 512 };
+
+		AttachmentDesc _renderAttachDesc;
+
+		_renderAttachDesc._renderTargetType = RenderTargetType::RenderTarget;
+
+		_renderAttachDesc._mipLevel = 0;
+		_renderAttachDesc._arrayLayer = m_PerLight._type == static_cast<uint32>(LightType::Point) ? 6 : 1;
+
+		_renderTargetDesc._attachments.push_back(_renderAttachDesc);
+
+		AttachmentDesc _depthAttachDesc;
+
+		_depthAttachDesc._renderTargetType = RenderTargetType::DepthStencil;
+
+		_depthAttachDesc._mipLevel = 0;
+		_depthAttachDesc._arrayLayer = m_PerLight._type == static_cast<uint32>(LightType::Point) ? 6 : 1;
+
+		_renderTargetDesc._attachments.push_back(_depthAttachDesc);
+	}
+
 	void LightBuffer::CreateRenderTarget()
 	{
 		// 라이트의 종류에 따른 랜더 타겟 생성 필요

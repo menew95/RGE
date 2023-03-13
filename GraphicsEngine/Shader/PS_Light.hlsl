@@ -139,13 +139,13 @@ float4 main(VSOutput input) : SV_TARGET
 		_lightColor += CalcSpotLight(_spotLight[_spotIdx], _roughness, _metallic, _specularColor, _diffuseColor, N, V, _worldPos.xyz) * _shadowFactor;
 	}
 	
-	//float3 _ambient = CalcIBL(V, N, _albedo.rgb, _specularColor, _roughness, _metallic, _ao);
+	float3 _ambient = CalcIBL(V, N, _albedo.rgb, _specularColor, _roughness, _metallic, _ao);
 	float4 _reflect = gReflect.Sample(samPoint, input.uv);
 	int a = 0;
 
-	float3 _ambient = gAlbedo.Sample(samPoint, _reflect.xy);
+	//float3 _ambient = gAlbedo.Sample(samPoint, _reflect.xy);
 
-	_finColor = _ambient * _reflect.w;// +_lightColor;
+	_finColor = _ambient + _lightColor;// *_reflect.w;// +_lightColor;
 
 	_finColor = pow(_finColor, 1 / 2.2);
 
