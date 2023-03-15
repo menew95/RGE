@@ -6,6 +6,14 @@ struct Output
     float4 pos		: SV_POSITION;
 };
 
+
+#if !defined(_USE_GS)
+cbuffer LightTransform : register(b0)
+{
+    matrix _lightTransform;
+};
+#endif
+
 Output main(VSInput input)
 {
     Output _output;
@@ -35,8 +43,7 @@ Output main(VSInput input)
 
 #if !defined(_SKIN) && !defined(BONECNT)
     _output.pos = mul(float4(input.posL, 1.0f), world);
-    _output.pos = mul(_output.pos, camera._view);
-    _output.pos = mul(_output.pos, camera._proj);
+    _output.pos = mul(_output.pos, _lightTransform);
 
 #else // !defined(_SKIN) && !defined(BONECNT)
     float3 _posL = float3(0.0f, 0.0f, 0.0f);
@@ -51,8 +58,7 @@ Output main(VSInput input)
     }
 
     _output.pos = float4(_posL, 1.0f);
-    _output.pos = mul(_output.pos, camera._view);
-    _output.pos = mul(_output.pos, camera._proj);
+    _output.pos = mul(_output.pos, _lightTransform);
 
 #endif // !defined(_SKIN) && !defined(BONECNT)
 

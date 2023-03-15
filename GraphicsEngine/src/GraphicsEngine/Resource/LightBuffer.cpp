@@ -80,40 +80,32 @@ namespace Graphics
 
 	void LightBuffer::GetPointLightTransform(Math::Matrix* lightTMs)
 	{
-		Math::Vector3 _eye = { 0.0f, 0.0f, 0.0f };
-
-		Math::Vector3 _look, _up;
+		Math::Vector3 _up;
 
 		Math::Matrix _views[6], _proj;
 		// +X
-		_look = Math::Vector3::Right + m_PerLight._lightPosition;
 		_up = { 0.0f, 1.0f, 0.0f };
-		_views[0] = Math::Matrix::CreateLookAt(_eye, _look, _up);
+		_views[0] = Math::Matrix::CreateLookTo(m_PerLight._lightPosition, Math::Vector3::Right, _up);
 
 		// -X
-		_look = Math::Vector3::Left + m_PerLight._lightPosition;
 		_up = { 0.0f, 1.0f, 0.0f };
-		_views[1] = Math::Matrix::CreateLookAt(_eye, _look, _up);
+		_views[1] = Math::Matrix::CreateLookTo(m_PerLight._lightPosition, Math::Vector3::Left, _up);
 
 		// +Y
-		_look = Math::Vector3::Up + m_PerLight._lightPosition;
 		_up = { 0.0f, 0.0f, -1.0f };
-		_views[2] = Math::Matrix::CreateLookAt(_eye, _look, _up);
+		_views[2] = Math::Matrix::CreateLookTo(m_PerLight._lightPosition, Math::Vector3::Up, _up);
 
 		// -Y
-		_look = Math::Vector3::Down + m_PerLight._lightPosition;
 		_up = { 0.0f, 0.0f, 1.0f };
-		_views[3] = Math::Matrix::CreateLookAt(_eye, _look, _up);
+		_views[3] = Math::Matrix::CreateLookTo(m_PerLight._lightPosition, Math::Vector3::Down, _up);
 
 		// +Z
-		_look = Math::Vector3::Forward + m_PerLight._lightPosition;
 		_up = { 0.0f, 1.0f, 0.0f };
-		_views[4] = Math::Matrix::CreateLookAt(_eye, _look, _up);
+		_views[4] = Math::Matrix::CreateLookTo(m_PerLight._lightPosition, Math::Vector3::Forward, _up);
 
 		// -Z
-		_look = Math::Vector3::Backward + m_PerLight._lightPosition;
 		_up = { 0.0f, 1.0f, 0.0f };
-		_views[5] = Math::Matrix::CreateLookAt(_eye, _look, _up);
+		_views[5] = Math::Matrix::CreateLookTo(m_PerLight._lightPosition, Math::Vector3::Backward, _up);
 
 		_proj = Math::Matrix::CreatePerspectiveFieldOfView(90.f * Math::Deg2Rad, 1.0f, 0.1f, m_PerLight._range);
 

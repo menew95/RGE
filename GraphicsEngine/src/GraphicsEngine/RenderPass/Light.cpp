@@ -130,6 +130,34 @@ namespace Graphics
 	{
 		// Light 별로 Shadow Map를 그리는 패스
 
+		m_CommandBuffer->BeginEvent(TEXT("DirectionalLight Shadow Pass"));
+
+		for (uint32 _idx = 0; _idx < m_Lighting._dirLightCount; _idx++)
+		{
+			Culling(m_Lighting._directionLight[_idx]);
+
+			{
+				m_CascadedShadow_Pass->BeginExcute(m_CommandBuffer, nullptr);
+
+				m_CascadedShadow_Pass->Excute(m_CommandBuffer);
+
+				m_CascadedShadow_Pass->EndExcute(m_CommandBuffer);
+			}
+
+			{
+				m_CascadedShadow_Skinned_Pass->BeginExcute(m_CommandBuffer, nullptr);
+
+				m_CascadedShadow_Skinned_Pass->Excute(m_CommandBuffer);
+
+				m_CascadedShadow_Skinned_Pass->EndExcute(m_CommandBuffer);
+			}
+
+		}
+
+		m_CommandBuffer->EndEvent();
+
+		m_CommandBuffer->BeginEvent(TEXT("PointLight Shadow Pass"));
+
 		for (uint32 _idx = 0; _idx < m_Lighting._pointLightCount; _idx++)
 		{
 			m_PointShadow_Pass->SetRenderTarget(m_PointShadowRenderTarget[_idx]);
@@ -139,7 +167,6 @@ namespace Graphics
 			m_PointShadow_Skinned_Pass->ClearRenderObject();
 
 			Culling(m_Lighting._pointLight[_idx]);
-
 
 			m_PointShadow_Pass->UpdatePerFrame(m_CommandBuffer, &m_Lighting._pointLight[_idx], sizeof(PointLight));
 			m_PointShadow_Skinned_Pass->UpdatePerFrame(m_CommandBuffer, &m_Lighting._pointLight[_idx], sizeof(PointLight));
@@ -162,26 +189,41 @@ namespace Graphics
 			}
 		}
 
-		/*for (size_t i = 0; i < m_LightBuffers.size(); i++)
+		m_CommandBuffer->EndEvent();
+
+		m_CommandBuffer->BeginEvent(TEXT("SpotLight Shadow Pass"));
+
+		for (uint32 _idx = 0; _idx < m_Lighting._spotLightCount; _idx++)
 		{
-			if (!m_LightBuffers[i]->GetEnable()) continue;
+			m_SpotShadow_Pass->SetRenderTarget(m_SpotShadowRenderTarget[_idx]);
+			m_SpotShadow_Skinned_Pass->SetRenderTarget(m_SpotShadowRenderTarget[_idx]);
 
-			switch (m_LightBuffers[i]->GetLightType())
+			m_SpotShadow_Pass->ClearRenderObject();
+			m_SpotShadow_Skinned_Pass->ClearRenderObject();
+
+			Culling(m_Lighting._spotLight[_idx]);
+
+			m_SpotShadow_Pass->UpdatePerFrame(m_CommandBuffer, &m_Lighting._spotLight[_idx]._lightTransform, sizeof(m_Lighting._spotLight[_idx]._lightTransform));
+			m_SpotShadow_Skinned_Pass->UpdatePerFrame(m_CommandBuffer, &m_Lighting._spotLight[_idx]._lightTransform, sizeof(m_Lighting._spotLight[_idx]._lightTransform));
+
 			{
-				case 0:
-				{
+				m_SpotShadow_Pass->BeginExcute(m_CommandBuffer, nullptr);
 
-					break;
-				}
-				case 1:
-				{
+				m_SpotShadow_Pass->Excute(m_CommandBuffer);
 
-					break;
-				}
-				default:
-					break;
+				m_SpotShadow_Pass->EndExcute(m_CommandBuffer);
 			}
-		}*/
+
+			{
+				m_SpotShadow_Skinned_Pass->BeginExcute(m_CommandBuffer, nullptr);
+
+				m_SpotShadow_Skinned_Pass->Excute(m_CommandBuffer);
+
+				m_SpotShadow_Skinned_Pass->EndExcute(m_CommandBuffer);
+			}
+		}
+
+		m_CommandBuffer->EndEvent();
 
 		m_StaticRenderObjectList.clear();
 		m_SkinnedRenderObjectList.clear();
@@ -208,6 +250,9 @@ namespace Graphics
 
 		m_PointShadow_Pass = m_ResourceManager->GetRenderPass(TEXT("PointLightShadow Pass"));
 		m_PointShadow_Skinned_Pass = m_ResourceManager->GetRenderPass(TEXT("PointLightShadow_Skinned Pass"));
+
+		m_SpotShadow_Pass = m_ResourceManager->GetRenderPass(TEXT("SpotLightShadow Pass"));
+		m_SpotShadow_Skinned_Pass = m_ResourceManager->GetRenderPass(TEXT("SpotLightShadow_Skinned Pass"));
 
 		CreateRenderTarget();
 	}
@@ -256,7 +301,7 @@ namespace Graphics
 
 			if (_boundSphere.Intersects(_boundingOrientedBox))
 			{
-				m_PointShadow_Skinned_Pass->RegistRenderObject(m_StaticRenderObjectList[i]);
+				m_PointShadow_Skinned_Pass->RegistRenderObject(m_SkinnedRenderObjectList[i]);
 			}
 		}
 	}
@@ -276,8 +321,6 @@ namespace Graphics
 
 		for (size_t i = 0; i < m_StaticRenderObjectList.size(); i++)
 		{
-			// Frustum Culling
-
 			auto _min = m_StaticRenderObjectList[i].m_MeshBuffer->GetBoundingBoxMin();
 			auto _max = m_StaticRenderObjectList[i].m_MeshBuffer->GetBoundingBoxMax();
 
@@ -292,23 +335,46 @@ namespace Graphics
 
 			if (_boundingFrustum.Intersects(_boundingOrientedBox))
 			{
-				switch (m_StaticRenderObjectList[i].m_RenderPassIdx)
-				{
-					case 0:
-					{
-						//m_Deferred_Mesh_Pass->RegistRenderObject(m_RenderObjectList[i]);
-						break;
-					}
-					case 1:
-					{
-						//m_Deferred_Mesh_Albedo_Pass->RegistRenderObject(m_RenderObjectList[i]);
-						break;
-					}
-					default:
-						assert(false);
-						break;
-				}
+				m_SpotShadow_Pass->RegistRenderObject(m_StaticRenderObjectList[i]);
 			}
+		}
+
+		for (size_t i = 0; i < m_SkinnedRenderObjectList.size(); i++)
+		{
+			auto _min = m_SkinnedRenderObjectList[i].m_MeshBuffer->GetBoundingBoxMin();
+			auto _max = m_SkinnedRenderObjectList[i].m_MeshBuffer->GetBoundingBoxMax();
+
+			auto _center = (_min + _max) * 0.5f;
+			auto _extents = _max - _center;
+
+			BoundingOrientedBox _boundingOrientedBox;
+			_boundingOrientedBox.Center = _center;
+			_boundingOrientedBox.Extents = _extents;
+
+			_boundingOrientedBox.Transform(_boundingOrientedBox, m_SkinnedRenderObjectList[i].m_World);
+
+			if (_boundingFrustum.Intersects(_boundingOrientedBox))
+			{
+				m_SpotShadow_Pass->RegistRenderObject(m_SkinnedRenderObjectList[i]);
+			}
+		}
+	}
+
+	void Light::Culling(DirectionLight& pointLight)
+	{
+		// DirectionLight Culling
+		
+		// 직사광의 경우 거의 모든 오브젝트가 그려져야 함으로 컬링 처리가 필요한가?
+		// 그냥 직사광을 씬당 하나로 제한하는 것이 맞지 않나?
+
+		for (auto& _renderObject : m_StaticRenderObjectList)
+		{
+			m_CascadedShadow_Pass->RegistRenderObject(_renderObject);
+		}
+
+		for (auto& _renderObject : m_SkinnedRenderObjectList)
+		{
+			m_CascadedShadow_Skinned_Pass->RegistRenderObject(_renderObject);
 		}
 	}
 
@@ -332,7 +398,7 @@ namespace Graphics
 			_depthAttachDesc._renderTargetType = RenderTargetType::DepthStencil;
 			_depthAttachDesc._resource = m_PointLightShadowTexture;
 			_depthAttachDesc._mipLevel = 0;
-			_depthAttachDesc._arrayLayer = i;
+			_depthAttachDesc._arrayLayer = i * 6;
 			_depthAttachDesc._arraySize = 6;
 
 			_renderTargetDesc._attachments.push_back(_depthAttachDesc);

@@ -12,7 +12,7 @@
 cbuffer PerCamera : register(b0)
 {
 	Camera camera;
-}
+};
 
 // Per Draw
 
@@ -34,7 +34,7 @@ cbuffer Lighting : register(b1)
 	SpotLight _spotLight[MAX_LIGHT_COUNT];
 
 	PointLight _pointLight[MAX_LIGHT_COUNT];
-}
+};
 
 #if defined(_SKIN) && defined(BONECNT)
 cbuffer PerSkin: register(b3)

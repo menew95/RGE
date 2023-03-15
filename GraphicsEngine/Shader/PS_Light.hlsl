@@ -87,7 +87,6 @@ float4 main(VSOutput input) : SV_TARGET
 
 	float3 _lightColor = float3(0.0f, 0.0f, 0.0f);
 
-
 	for (uint _dirIdx = 0; _dirIdx < _lightCount.x; _dirIdx++)
 	{
 		float _shadowFactor = 1.0f;
@@ -147,7 +146,7 @@ float4 main(VSOutput input) : SV_TARGET
 
 	_finColor = _ambient + _lightColor;// *_reflect.w;// +_lightColor;
 
-	_finColor = pow(_finColor, 1 / 2.2);
+	_finColor = pow(_lightColor, 1 / 2.2);
 
 	return float4(_finColor, 1.0f);
 }

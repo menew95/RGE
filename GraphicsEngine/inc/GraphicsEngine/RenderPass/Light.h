@@ -44,6 +44,7 @@ namespace Graphics
 	private:
 		void Init();
 
+		void Culling(DirectionLight& pointLight);
 		void Culling(PointLight& pointLight);
 		void Culling(SpotLight& pointLight);
 
@@ -71,6 +72,9 @@ namespace Graphics
 
 		std::shared_ptr<Graphics::RenderPass> m_PointShadow_Pass;
 		std::shared_ptr<Graphics::RenderPass> m_PointShadow_Skinned_Pass;
+
+		std::shared_ptr<Graphics::RenderPass> m_SpotShadow_Pass;
+		std::shared_ptr<Graphics::RenderPass> m_SpotShadow_Skinned_Pass;
 
 		std::vector<std::shared_ptr<LightBuffer>> m_LightBuffers;
 

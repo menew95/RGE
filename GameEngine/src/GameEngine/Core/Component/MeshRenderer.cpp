@@ -160,7 +160,7 @@ namespace GameEngine
 							_shadow.m_MeshBuffer = _sharedMesh->GetMeshBuffer();
 							_shadow.m_MaterialBuffer = _materialBuffer;
 
-							_perObjectResource._index = 0;
+							//_perObjectResource._index = 0;
 							_shadow.m_UpdateResourcePerObjects.push_back(_perObjectResource);
 
 							//_shadow.m_RenderPassIdx = 8;

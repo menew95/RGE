@@ -446,7 +446,8 @@ namespace Graphics
 
 		m_Deferred->ExcutePass();
 		m_Light->ExcutePass();
-		{
+
+		/*{
 			m_CascadedShadow_Pass->BeginExcute(m_CommandBuffer, nullptr);
 
 			m_CascadedShadow_Pass->Excute(m_CommandBuffer);
@@ -476,7 +477,7 @@ namespace Graphics
 			m_PointShadow_Skinned_Pass->Excute(m_CommandBuffer);
 
 			m_PointShadow_Skinned_Pass->EndExcute(m_CommandBuffer);
-		}
+		}*/
 
 		{
 			m_Deferred_Mesh_Pass->BeginExcute(m_CommandBuffer, nullptr);
