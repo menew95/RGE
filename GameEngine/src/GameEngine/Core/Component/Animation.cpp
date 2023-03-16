@@ -129,7 +129,7 @@ namespace GameEngine
 			{
 				m_Frame._frameRate += static_cast<float>(Time::GetDeltaTime());
 
-				Log::Core_Info("Animation : " + std::to_string(m_Frame._frameRate));
+				//Log::Core_Info("Animation : " + std::to_string(m_Frame._frameRate));
 
 				for (uint32 i = 0; i < m_CurrAnimationInfo->_clip->GetAnimationSnapCount(); i++)
 				{

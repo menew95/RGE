@@ -55,10 +55,10 @@ namespace Graphics
 						_spotLight._fallOff = _perLight._fallOff;
 
 						_spotLight._position = _perLight._lightPosition;
-						_spotLight._spotAngle = _perLight._spotAngle;
+						_spotLight._spotAngle = _perLight._spotAngle * Math::Deg2Rad;
 
 						_spotLight._direction = _perLight._direction;
-						_spotLight._fallOffAngle = _perLight._fallOffAngle;
+						_spotLight._fallOffAngle = _perLight._fallOffAngle * Math::Deg2Rad;
 
 						_spotLight._color = _perLight._color;
 						_spotLight._power = _perLight._intensity;
@@ -129,6 +129,8 @@ namespace Graphics
 	void Light::ExcutePass()
 	{
 		// Light 별로 Shadow Map를 그리는 패스
+
+		m_CommandBuffer->BeginEvent(TEXT("Shadow Map Pass"));
 
 		m_CommandBuffer->BeginEvent(TEXT("DirectionalLight Shadow Pass"));
 
@@ -225,6 +227,8 @@ namespace Graphics
 
 		m_CommandBuffer->EndEvent();
 
+		m_CommandBuffer->EndEvent(); // ShadowMap Pass
+
 		m_StaticRenderObjectList.clear();
 		m_SkinnedRenderObjectList.clear();
 	}
@@ -253,6 +257,18 @@ namespace Graphics
 
 		m_SpotShadow_Pass = m_ResourceManager->GetRenderPass(TEXT("SpotLightShadow Pass"));
 		m_SpotShadow_Skinned_Pass = m_ResourceManager->GetRenderPass(TEXT("SpotLightShadow_Skinned Pass"));
+
+
+		std::vector<AttachmentClear> _attachmentClears =
+		{
+			{ 1, 0 }
+		};
+
+		m_CascadedShadow_Pass->SetAttachmentClears(_attachmentClears);
+
+		m_PointShadow_Pass->SetAttachmentClears(_attachmentClears);
+
+		m_SpotShadow_Pass->SetAttachmentClears(_attachmentClears);
 
 		CreateRenderTarget();
 	}
@@ -312,7 +328,8 @@ namespace Graphics
 
 		// BoundingFrustum과, 렌더 오브젝트의 BoundingOrientedBox가 충돌 하면 랜더 패스에 그려야하는 오브젝트로 등록
 
-		Math::Matrix _spotProj = Math::Matrix::CreatePerspectiveFieldOfView(spotLight._spotAngle * Math::Deg2Rad, 1.0f, 0.1f, spotLight._range);
+		Math::Matrix _spotProj = Math::Matrix::CreatePerspectiveFieldOfView(spotLight._spotAngle, 1.0f, 0.1f, spotLight._range);
+		
 		Math::Matrix _spotWorld = Math::Matrix::CreateWorld(spotLight._position, spotLight._direction, Math::Vector3::Up);
 
 		BoundingFrustum _boundingFrustum{ _spotProj };

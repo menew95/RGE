@@ -27,7 +27,9 @@ namespace Graphics
 	{
 		Culling();
 
-		/*{
+		m_CommandBuffer->BeginEvent(TEXT("Deferred Pass"));
+
+		{
 			m_Deferred_Mesh_Pass->BeginExcute(m_CommandBuffer, nullptr);
 
 			m_Deferred_Mesh_Pass->Excute(m_CommandBuffer);
@@ -89,7 +91,9 @@ namespace Graphics
 			m_Deferred_Mesh_Skinned_Albedo_Bump_MRA_Pass->Excute(m_CommandBuffer);
 
 			m_Deferred_Mesh_Skinned_Albedo_Bump_MRA_Pass->EndExcute(m_CommandBuffer);
-		}*/
+		}
+
+		m_CommandBuffer->EndEvent();
 
 		m_RenderObjectList.clear();
 	}

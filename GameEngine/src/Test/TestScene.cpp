@@ -89,6 +89,8 @@ TestScene::TestScene()
 
 		_lightCom->SetRange(4.0f);
 
+		_lightCom->SetLightColor(Math::Color::Red);
+
 		AddGameObject(_pointLight);
 	}
 
@@ -107,6 +109,8 @@ TestScene::TestScene()
 
 		_lightCom->SetRange(5.0f);
 
+		_lightCom->SetLightColor(Math::Color::Green);
+
 		AddGameObject(_pointLight);
 	}
 
@@ -117,15 +121,19 @@ TestScene::TestScene()
 
 		auto _lightCom = _spotLight->AddComponent<Light>();
 
-		Vector3 _move = { -1, 2, 1 };
+		Vector3 _move = { 0, 2, 4 };
 
 		_spotLight->GetTransform()->Translate(_move);
 
+
+		Vector3 _rot = { 90, 0, 0 };
+		_spotLight->GetTransform()->Rotate(_rot);
+
 		_lightCom->SetLightType(0);
 
-		_lightCom->SetRange(3.0f);
+		//_lightCom->SetSpotAnlge(15.0f);
 
-		_lightCom->SetLightColor();
+		_lightCom->SetLightColor(Math::Color::Blue);
 
 		AddGameObject(_spotLight);
 	}

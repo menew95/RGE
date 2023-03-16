@@ -100,7 +100,8 @@ float3 CalcSpotLight(in SpotLight light
 	, in float3 position)
 {
 	float3 litColor = float3(0.0f, 0.0f, 0.0f);
-	float3 lightVec = normalize(light._position - position);
+
+	float3 lightVec = light._position - position;
 	float distance = length(lightVec);
 
 	if (distance > light._range)
@@ -111,16 +112,20 @@ float3 CalcSpotLight(in SpotLight light
 	float NdotV = saturate(dot(N, V));
 	if (NdotV <= 0.0) return litColor;
 
+	// L이 픽셀의 월드로부터 라이트의 월드임으로 빛의 방향을 뒤집어서 코사인
 	float cosAng = dot(-light._direction, L);
-
+	
 	float conAttenuate = 0.0f;
 
-	if (cosAng < light._spotAngle)
+	float innerCos = cos(light._fallOffAngle);
+	float outCos = cos(light._spotAngle);
+
+	if (cosAng < outCos)
 	{
 		// cosAng이 더 작으면 사이각이 더 크다.
 		conAttenuate = 0.0f;
 	}
-	else if (cosAng > light._fallOffAngle)
+	else if (cosAng > innerCos)
 	{
 		// cosAng이 더 작고 FallOffAngle크면 감쇄가 시작되는 각도보다 작다.
 		conAttenuate = 1.0f;
@@ -128,7 +133,13 @@ float3 CalcSpotLight(in SpotLight light
 	else
 	{
 		// 감쇄되는 영역 안에 있다.
-		conAttenuate = 1 - CalcFallOff(light._spotAngle - cosAng, light._spotAngle - light._fallOffAngle);
+		float angleRangeInv = 1.f / max(innerCos - outCos, 0.0001f);
+		float angleRangeInv2 = -outCos * angleRangeInv;
+
+		// 0도에서 90도 까지의.. Spot Attenuation (위의 코드와 다를바가 거의 없다)
+		float spotAttn = pow(saturate(cosAng * angleRangeInv + angleRangeInv2), 2.0f);
+
+		conAttenuate = spotAttn;// CalcFallOff(light._spotAngle - , light._spotAngle - light._fallOffAngle);
 	}
 
 

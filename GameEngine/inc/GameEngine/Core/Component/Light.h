@@ -30,7 +30,7 @@ namespace GameEngine
 			void OnDisable() override;
 
 			void SetLightType(uint32 value);
-			void SetLightColor(Math::Color& value);
+			void SetLightColor(Math::Color value);
 			void SetIntensity(float value);
 			void SetRange(float value);
 			void SetSpotAnlge(float value);

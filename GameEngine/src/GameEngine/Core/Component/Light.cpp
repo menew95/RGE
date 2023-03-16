@@ -102,7 +102,7 @@ namespace GameEngine
 			}
 		}
 
-		void Light::SetLightColor(Math::Color& value)
+		void Light::SetLightColor(Math::Color value)
 		{
 			m_LightColor = value;
 

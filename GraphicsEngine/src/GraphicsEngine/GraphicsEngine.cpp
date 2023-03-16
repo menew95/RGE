@@ -308,17 +308,8 @@ namespace Graphics
 		m_CascadedShadow_Pass = m_ResourceManager->GetRenderPass(TEXT("CascadedShadow Pass"));
 		m_CascadedShadow_Skinned_Pass = m_ResourceManager->GetRenderPass(TEXT("CascadedShadow_Skinned Pass"));
 
-		std::vector<AttachmentClear> _attachmentClears =
-		{
-			{ 1, 0 }
-		};
-
-		m_CascadedShadow_Pass->SetAttachmentClears(_attachmentClears);
-
 		m_PointShadow_Pass = m_ResourceManager->GetRenderPass(TEXT("PointLightShadow Pass"));
 		m_PointShadow_Skinned_Pass = m_ResourceManager->GetRenderPass(TEXT("PointLightShadow_Skinned Pass"));
-
-		m_PointShadow_Pass->SetAttachmentClears(_attachmentClears);
 	}
 
 	void GraphicsEngine::InitSSR()
@@ -428,120 +419,19 @@ namespace Graphics
 
 		// Update Per Object Buffer(Lighting)
 		Lighting* _perLighting = m_Light->GetLightingData();
-		//m_Light->GetLightingData(_perLighting);
 
 		UpdateResourceData _perDraw{ eUpdateTime::PerObject, 1, ResourceType::Buffer, _perLighting, sizeof(Lighting) };
 		_deferredMergeRenderObject.m_UpdateResourcePerObjects.push_back(_perDraw);
-
-		m_Deferred_Light_Pass->RegistRenderObject(_deferredMergeRenderObject);
-
 
 		m_MainCameraBuffer->UpdateCascadeShadow(_perLighting->_directionLight[0]._direction, _perLighting->_cascadedLight);
 
 		m_CascadedShadow_Pass->UpdatePerFrame(m_CommandBuffer, &_perLighting->_cascadedLight, sizeof(_perLighting->_cascadedLight));
 
-		m_Deferred_Light_Pass->UpdatePerFrame(m_CommandBuffer, _perLighting, sizeof(Lighting));
+		m_Light->ExcutePass();
 		
 		m_Deferred->SetCameraBuffer(m_MainCameraBuffer);
 
 		m_Deferred->ExcutePass();
-		m_Light->ExcutePass();
-
-		/*{
-			m_CascadedShadow_Pass->BeginExcute(m_CommandBuffer, nullptr);
-
-			m_CascadedShadow_Pass->Excute(m_CommandBuffer);
-
-			m_CascadedShadow_Pass->EndExcute(m_CommandBuffer);
-		}
-
-		{
-			m_CascadedShadow_Skinned_Pass->BeginExcute(m_CommandBuffer, nullptr);
-
-			m_CascadedShadow_Skinned_Pass->Excute(m_CommandBuffer);
-
-			m_CascadedShadow_Skinned_Pass->EndExcute(m_CommandBuffer);
-		}
-
-		{
-			m_PointShadow_Pass->BeginExcute(m_CommandBuffer, nullptr);
-
-			m_PointShadow_Pass->Excute(m_CommandBuffer);
-
-			m_PointShadow_Pass->EndExcute(m_CommandBuffer);
-		}
-
-		{
-			m_PointShadow_Skinned_Pass->BeginExcute(m_CommandBuffer, nullptr);
-
-			m_PointShadow_Skinned_Pass->Excute(m_CommandBuffer);
-
-			m_PointShadow_Skinned_Pass->EndExcute(m_CommandBuffer);
-		}*/
-
-		{
-			m_Deferred_Mesh_Pass->BeginExcute(m_CommandBuffer, nullptr);
-
-			m_Deferred_Mesh_Pass->Excute(m_CommandBuffer);
-
-			m_Deferred_Mesh_Pass->EndExcute(m_CommandBuffer);
-		}
-
-		{
-			m_Deferred_Mesh_Albedo_Pass->BeginExcute(m_CommandBuffer, nullptr);
-
-			m_Deferred_Mesh_Albedo_Pass->Excute(m_CommandBuffer);
-
-			m_Deferred_Mesh_Albedo_Pass->EndExcute(m_CommandBuffer);
-		}
-
-		{
-			m_Deferred_Mesh_Albedo_Bump_Pass->BeginExcute(m_CommandBuffer, nullptr);
-
-			m_Deferred_Mesh_Albedo_Bump_Pass->Excute(m_CommandBuffer);
-
-			m_Deferred_Mesh_Albedo_Bump_Pass->EndExcute(m_CommandBuffer);
-		}
-
-		{
-			m_Deferred_Mesh_Albedo_Bump_MRA_Pass->BeginExcute(m_CommandBuffer, nullptr);
-
-			m_Deferred_Mesh_Albedo_Bump_MRA_Pass->Excute(m_CommandBuffer);
-
-			m_Deferred_Mesh_Albedo_Bump_MRA_Pass->EndExcute(m_CommandBuffer);
-		}
-
-		{
-			m_Deferred_Mesh_Skinned_Pass->BeginExcute(m_CommandBuffer, nullptr);
-
-			m_Deferred_Mesh_Skinned_Pass->Excute(m_CommandBuffer);
-
-			m_Deferred_Mesh_Skinned_Pass->EndExcute(m_CommandBuffer);
-		}
-
-		{
-			m_Deferred_Mesh_Skinned_Albedo_Pass->BeginExcute(m_CommandBuffer, nullptr);
-
-			m_Deferred_Mesh_Skinned_Albedo_Pass->Excute(m_CommandBuffer);
-
-			m_Deferred_Mesh_Skinned_Albedo_Pass->EndExcute(m_CommandBuffer);
-		}
-
-		{
-			m_Deferred_Mesh_Skinned_Albedo_Bump_Pass->BeginExcute(m_CommandBuffer, nullptr);
-
-			m_Deferred_Mesh_Skinned_Albedo_Bump_Pass->Excute(m_CommandBuffer);
-
-			m_Deferred_Mesh_Skinned_Albedo_Bump_Pass->EndExcute(m_CommandBuffer);
-		}
-
-		{
-			m_Deferred_Mesh_Skinned_Albedo_Bump_MRA_Pass->BeginExcute(m_CommandBuffer, nullptr);
-
-			m_Deferred_Mesh_Skinned_Albedo_Bump_MRA_Pass->Excute(m_CommandBuffer);
-
-			m_Deferred_Mesh_Skinned_Albedo_Bump_MRA_Pass->EndExcute(m_CommandBuffer);
-		}
 
 		{
 			m_SSR_Pass->BeginExcute(m_CommandBuffer, nullptr);
@@ -560,6 +450,10 @@ namespace Graphics
 		}
 
 		{
+			m_Deferred_Light_Pass->RegistRenderObject(_deferredMergeRenderObject);
+
+			m_Deferred_Light_Pass->UpdatePerFrame(m_CommandBuffer, _perLighting, sizeof(Lighting));
+
 			m_Deferred_Light_Pass->BeginExcute(m_CommandBuffer, nullptr);
 
 			m_Deferred_Light_Pass->Excute(m_CommandBuffer);

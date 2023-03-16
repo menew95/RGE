@@ -58,9 +58,9 @@ namespace Graphics
 	void LightBuffer::GetSpotLightTransform(Math::Matrix& lightTM)
 	{
 		lightTM =
-			Math::Matrix::CreateLookAt(
+			Math::Matrix::CreateLookTo(
 				m_PerLight._lightPosition,
-				m_PerLight._lightPosition + m_PerLight._direction,
+				m_PerLight._direction,
 				Math::Vector3::Up) *
 			Math::Matrix::CreatePerspectiveFieldOfView(
 				m_PerLight._spotAngle * Math::Deg2Rad

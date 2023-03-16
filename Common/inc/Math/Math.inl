@@ -2645,7 +2645,7 @@ inline Matrix Matrix::CreateLookTo(const Vector3& eye, const Vector3& dir, const
 inline Matrix Matrix::CreateWorld(const Vector3& position, const Vector3& forward, const Vector3& up) noexcept
 {
     using namespace DirectX;
-    const XMVECTOR zaxis = XMVector3Normalize(XMVectorNegate(XMLoadFloat3(&forward)));
+    const XMVECTOR zaxis = XMVector3Normalize(XMLoadFloat3(&forward));
     XMVECTOR yaxis = XMLoadFloat3(&up);
     const XMVECTOR xaxis = XMVector3Normalize(XMVector3Cross(yaxis, zaxis));
     yaxis = XMVector3Cross(zaxis, xaxis);
