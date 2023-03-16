@@ -38,7 +38,7 @@ namespace Graphics
 		UpdateResourceData _resourceD{ eUpdateTime::PerObject, 2, ResourceType::Buffer, &m_PerCubeMapMatrix, sizeof(PerCubeMapMatrix) };
 		_renderObject.m_UpdateResourcePerObjects.push_back(_resourceD);
 
-		m_Irradiance_Pass->RegistRenderObject(_renderObject);
+		m_Irradiance_Pass->RegistRenderObject(&_renderObject);
 
 		m_Irradiance_Pass->BeginExcute(m_CommandBuffer, nullptr);
 
@@ -53,7 +53,7 @@ namespace Graphics
 		_renderObject.m_MeshBuffer = m_Screen_Mesh;
 		_renderObject.m_MaterialBuffer = nullptr;
 
-		m_IntegrateBRDF_Pass->RegistRenderObject(_renderObject);
+		m_IntegrateBRDF_Pass->RegistRenderObject(&_renderObject);
 
 		m_IntegrateBRDF_Pass->BeginExcute(m_CommandBuffer, nullptr);
 
@@ -86,7 +86,7 @@ namespace Graphics
 		Math::Viewport _viewport{ 0.f, 0.f, _size, _size, 0.f, 1.0f };
 		_renderObject.AddViewport(_viewport);
 
-		m_PreFiltered_Pass->RegistRenderObject(_renderObject);
+		m_PreFiltered_Pass->RegistRenderObject(&_renderObject);
 
 		m_PreFiltered_Pass->BeginExcute(m_CommandBuffer, nullptr);
 

@@ -88,6 +88,7 @@ float4 main(VSOutput input) : SV_TARGET
 	float3 _lightColor = float3(0.0f, 0.0f, 0.0f);
 
 	// calculate directional light
+	[unroll]
 	for (uint _dirIdx = 0; _dirIdx < _lightCount.x; _dirIdx++)
 	{
 		float _shadowFactor = 1.0f;
@@ -114,6 +115,7 @@ float4 main(VSOutput input) : SV_TARGET
 	}
 
 	// calculate spot light
+	[unroll]
 	for (uint _pointIdx = 0; _pointIdx < _lightCount.y; _pointIdx++)
 	{
 		float _shadowFactor = 1.0f;
@@ -130,6 +132,7 @@ float4 main(VSOutput input) : SV_TARGET
 	}
 	
 	// calculate spot light
+	[unroll]
 	for (uint _spotIdx = 0; _spotIdx < _lightCount.z; _spotIdx++)
 	{
 		float _shadowFactor = 1.0f;
@@ -149,7 +152,7 @@ float4 main(VSOutput input) : SV_TARGET
 
 	_finColor = _ambient + _lightColor;// *_reflect.w;// +_lightColor;
 
-	_finColor = pow(_lightColor, 1 / 2.2);
+	_finColor = pow(_finColor, 1 / 2.2);
 
 	return float4(_finColor, 1.0f);
 }

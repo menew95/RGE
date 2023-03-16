@@ -130,8 +130,6 @@ namespace Graphics
 
 		m_Frustum.Transform(m_Frustum, m_CameraBuffer->GetWorld());
 
-		int cul = 0;
-
 		for (size_t i = 0; i < m_RenderObjectList.size(); i++)
 		{
 			// Frustum Culling
@@ -154,42 +152,42 @@ namespace Graphics
 				{
 					case 0:
 					{
-						m_Deferred_Mesh_Pass->RegistRenderObject(m_RenderObjectList[i]);
+						m_Deferred_Mesh_Pass->RegistRenderObject(&m_RenderObjectList[i]);
 						break;
 					}
 					case 1:
 					{
-						m_Deferred_Mesh_Albedo_Pass->RegistRenderObject(m_RenderObjectList[i]);
+						m_Deferred_Mesh_Albedo_Pass->RegistRenderObject(&m_RenderObjectList[i]);
 						break;
 					}
 					case 2:
 					{
-						m_Deferred_Mesh_Albedo_Bump_Pass->RegistRenderObject(m_RenderObjectList[i]);
+						m_Deferred_Mesh_Albedo_Bump_Pass->RegistRenderObject(&m_RenderObjectList[i]);
 						break;
 					}
 					case 3:
 					{
-						m_Deferred_Mesh_Albedo_Bump_MRA_Pass->RegistRenderObject(m_RenderObjectList[i]);
+						m_Deferred_Mesh_Albedo_Bump_MRA_Pass->RegistRenderObject(&m_RenderObjectList[i]);
 						break;
 					}
 					case 4:
 					{
-						m_Deferred_Mesh_Skinned_Pass->RegistRenderObject(m_RenderObjectList[i]);
+						m_Deferred_Mesh_Skinned_Pass->RegistRenderObject(&m_RenderObjectList[i]);
 						break;
 					}
 					case 5:
 					{
-						m_Deferred_Mesh_Skinned_Albedo_Pass->RegistRenderObject(m_RenderObjectList[i]);
+						m_Deferred_Mesh_Skinned_Albedo_Pass->RegistRenderObject(&m_RenderObjectList[i]);
 						break;
 					}
 					case 6:
 					{
-						m_Deferred_Mesh_Skinned_Albedo_Bump_Pass->RegistRenderObject(m_RenderObjectList[i]);
+						m_Deferred_Mesh_Skinned_Albedo_Bump_Pass->RegistRenderObject(&m_RenderObjectList[i]);
 						break;
 					}
 					case 7:
 					{
-						m_Deferred_Mesh_Skinned_Albedo_Bump_MRA_Pass->RegistRenderObject(m_RenderObjectList[i]);
+						m_Deferred_Mesh_Skinned_Albedo_Bump_MRA_Pass->RegistRenderObject(&m_RenderObjectList[i]);
 						break;
 					}
 					default:
@@ -197,15 +195,6 @@ namespace Graphics
 						break;
 				}
 			}
-			else
-			{
-				cul++;
-			}
-		}
-
-		if (cul != 0)
-		{
-			int a = 0;
 		}
 	}
 

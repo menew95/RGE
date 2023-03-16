@@ -297,7 +297,7 @@ namespace Graphics
 
 			if (_boundSphere.Intersects(_boundingOrientedBox))
 			{
-				m_PointShadow_Pass->RegistRenderObject(m_StaticRenderObjectList[i]);
+				m_PointShadow_Pass->RegistRenderObject(&m_StaticRenderObjectList[i]);
 			}
 		}
 
@@ -317,7 +317,7 @@ namespace Graphics
 
 			if (_boundSphere.Intersects(_boundingOrientedBox))
 			{
-				m_PointShadow_Skinned_Pass->RegistRenderObject(m_SkinnedRenderObjectList[i]);
+				m_PointShadow_Skinned_Pass->RegistRenderObject(&m_SkinnedRenderObjectList[i]);
 			}
 		}
 	}
@@ -352,7 +352,7 @@ namespace Graphics
 
 			if (_boundingFrustum.Intersects(_boundingOrientedBox))
 			{
-				m_SpotShadow_Pass->RegistRenderObject(m_StaticRenderObjectList[i]);
+				m_SpotShadow_Pass->RegistRenderObject(&m_StaticRenderObjectList[i]);
 			}
 		}
 
@@ -372,7 +372,7 @@ namespace Graphics
 
 			if (_boundingFrustum.Intersects(_boundingOrientedBox))
 			{
-				m_SpotShadow_Pass->RegistRenderObject(m_SkinnedRenderObjectList[i]);
+				m_SpotShadow_Pass->RegistRenderObject(&m_SkinnedRenderObjectList[i]);
 			}
 		}
 	}
@@ -386,12 +386,12 @@ namespace Graphics
 
 		for (auto& _renderObject : m_StaticRenderObjectList)
 		{
-			m_CascadedShadow_Pass->RegistRenderObject(_renderObject);
+			m_CascadedShadow_Pass->RegistRenderObject(&_renderObject);
 		}
 
 		for (auto& _renderObject : m_SkinnedRenderObjectList)
 		{
-			m_CascadedShadow_Skinned_Pass->RegistRenderObject(_renderObject);
+			m_CascadedShadow_Skinned_Pass->RegistRenderObject(&_renderObject);
 		}
 	}
 

@@ -72,8 +72,8 @@ PSOut main(VSOutput input)
 #endif
 
 #if !defined(_ALBEDO_MAP)
-	//_out.Albedo = float4(material._albedo.xyz, _metallic);
-	_out.Albedo = float4(0.2f, 0.2f, 0.2f, _metallic);
+	_out.Albedo = float4(material._albedo.xyz, _metallic);
+	//_out.Albedo = float4(0.2f, 0.2f, 0.2f, _metallic);
 #else
 	_out.Albedo = float4(gAlbedoMap.Sample(samWrapLinear, input.uv).xyz, _metallic);
 #endif

@@ -66,9 +66,9 @@ namespace Graphics
 
 	}
 
-	void RenderPass::RegistRenderObject(class RenderObject& renderObject)
+	void RenderPass::RegistRenderObject(class RenderObject* renderObject)
 	{
-		m_RenderObjects.push_back(renderObject);
+		m_RenderObjects.emplace_back(renderObject);
 	}
 
 	void RenderPass::ClearRenderObject()
@@ -98,20 +98,20 @@ namespace Graphics
 	{
 		for (size_t _index = 0; _index < m_RenderObjects.size(); _index++)
 		{
-			auto _vertexBuffer = m_RenderObjects[_index].GetMeshBuffer()->GetBuffer();
+			auto _vertexBuffer = m_RenderObjects[_index]->GetMeshBuffer()->GetBuffer();
 
 			commandBuffer->SetVertexBuffer(*_vertexBuffer);
 
 			UpdateResourcePerObject(commandBuffer, m_RenderObjects[_index]);
 			
-			if (m_RenderObjects[_index].IsHasViewport())
+			if (m_RenderObjects[_index]->IsHasViewport())
 			{
-				commandBuffer->SetViewports(static_cast<uint32>(m_RenderObjects[_index].GetViewports().size()), m_RenderObjects[_index].GetViewports().data());
+				commandBuffer->SetViewports(static_cast<uint32>(m_RenderObjects[_index]->GetViewports().size()), m_RenderObjects[_index]->GetViewports().data());
 			}
 
-			for (uint32 _subMeshCnt = 0; _subMeshCnt < m_RenderObjects[_index].GetMeshBuffer()->GetSubMeshCount(); _subMeshCnt++)
+			for (uint32 _subMeshCnt = 0; _subMeshCnt < m_RenderObjects[_index]->GetMeshBuffer()->GetSubMeshCount(); _subMeshCnt++)
 			{
-				auto _subMeshBuffer = m_RenderObjects[_index].GetMeshBuffer()->GetSubMesh(_subMeshCnt);
+				auto _subMeshBuffer = m_RenderObjects[_index]->GetMeshBuffer()->GetSubMesh(_subMeshCnt);
 
 				UpdateResourcePerMaterial(commandBuffer, m_RenderObjects[_index]);
 
@@ -142,9 +142,9 @@ namespace Graphics
 #endif
 	}
 
-	void RenderPass::UpdateResourcePerMaterial(CommandBuffer* commandBuffer, RenderObject& renderObject)
+	void RenderPass::UpdateResourcePerMaterial(CommandBuffer* commandBuffer, RenderObject* renderObject)
 	{
-		auto& _sources = renderObject.GetUpdateResourceData();
+		auto& _sources = renderObject->GetUpdateResourceData();
 
 		for (size_t i = 0; i < _sources.size(); i++)
 		{
@@ -175,9 +175,9 @@ namespace Graphics
 		}
 	}
 
-	void RenderPass::UpdateResourcePerObject(CommandBuffer* commandBuffer, RenderObject& renderObject)
+	void RenderPass::UpdateResourcePerObject(CommandBuffer* commandBuffer, RenderObject* renderObject)
 	{
-		auto& _sources = renderObject.GetUpdateResourceDataPerObject();
+		auto& _sources = renderObject->GetUpdateResourceDataPerObject();
 
 		for (size_t i = 0; i < _sources.size(); i++)
 		{

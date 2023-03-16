@@ -63,7 +63,7 @@ namespace Graphics
 				m_PerLight._direction,
 				Math::Vector3::Up) *
 			Math::Matrix::CreatePerspectiveFieldOfView(
-				m_PerLight._spotAngle * Math::Deg2Rad
+				m_PerLight._spotAngle * Math::Deg2Rad * 2.0f
 				, 1.0f, 0.1f, m_PerLight._range);
 	}
 

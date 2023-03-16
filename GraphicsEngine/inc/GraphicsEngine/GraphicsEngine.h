@@ -22,6 +22,10 @@ namespace Graphics
 	class Light;
 	class Deferred;
 	class RenderQueue;
+	class Sky;
+	class PostProcess;
+
+	class DebugDeferred;
 
 	class GRAPHICSENGINE_DLL_DECLSPEC GraphicsEngine
 	{
@@ -33,7 +37,7 @@ namespace Graphics
 
 		void InitMeshPass();
 		void InitLightPass();
-		void InitSkyBoxPass();
+		void InitSkyPass();
 		void InitDebugPass();
 
 		void InitIBL();
@@ -60,14 +64,6 @@ namespace Graphics
 		void Excute();
 		void ExcuteRenderPass(Graphics::RenderPass* renderPass);
 		void Present();
-		/*Graphics::RenderPass* GetMeshPass() { return m_Deferred_Mesh_Pass.get(); }
-		Graphics::RenderPass* GetMeshPass() { return m_Deferred_Mesh_Albedo_Pass.get(); }
-		Graphics::RenderPass* GetMeshBumpPass() { return m_Deferred_Mesh_Albedo_Bump_Pass.get(); }
-		Graphics::RenderPass* GetMeshBumpMRAPass() { return m_Deferred_Mesh_Albedo_Bump_MRA_Pass.get(); }
-		Graphics::RenderPass* GetSkinnedMeshPass() { return m_Deferred_Mesh_Skinned_Pass.get(); }
-		Graphics::RenderPass* GetSkinnedMeshPass() { return m_Deferred_Mesh_Skinned_Albedo_Pass.get(); }
-		Graphics::RenderPass* GetSkinnedMeshBumpPass() { return m_Deferred_Mesh_Skinned_Albedo_Bump_Pass.get(); }
-		Graphics::RenderPass* GetSkinnedMeshBumpMRAPass() { return m_Deferred_Mesh_Skinned_Albedo_Bump_MRA_Pass.get(); }*/
 		
 		Graphics::RenderPass* GetRenderPass(uuid uuid);
 
@@ -102,34 +98,20 @@ namespace Graphics
 		std::shared_ptr<Graphics::RenderPass> m_PointShadow_Pass;
 		std::shared_ptr<Graphics::RenderPass> m_PointShadow_Skinned_Pass;
 
-		std::shared_ptr<Graphics::RenderPass> m_SSR_Pass;
-
 		MaterialBuffer* m_Deferred_Light_Material;
 		MeshBuffer* m_Screen_Mesh;
 		std::shared_ptr<Graphics::RenderPass> m_Deferred_Light_Pass;
 
-		MaterialBuffer* m_SkyBox_Material;
-		MeshBuffer* m_SkyBox_Mesh;
-		std::shared_ptr<Graphics::RenderPass> m_SkyBox_Pass;
-
 		std::vector<std::shared_ptr<LightBuffer>> m_LightBuffers;
-
-		MaterialBuffer* m_Debug_Material;
-		std::shared_ptr<Graphics::RenderPass> m_Debug_Pass;
-
-		// Deferrd resource for debug
-		Texture* m_Albedo;
-		Texture* m_Normal;
-		Texture* m_Depth;
-		Texture* m_World;
-		Texture* m_Reflect;
-
-		std::vector<RenderObject> m_DebugRenderObject;
 
 		std::shared_ptr<IBL> m_IBL;
 		std::shared_ptr<Light> m_Light;
 		std::shared_ptr<RenderQueue> m_RenderQueue;
 		std::shared_ptr<Deferred> m_Deferred;
+		std::shared_ptr<Sky> m_Sky;
+		std::shared_ptr<PostProcess> m_SSR_Pass;
+
+		std::shared_ptr<DebugDeferred> m_Debug_Deferred;
 	};
 
 	extern "C"

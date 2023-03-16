@@ -109,7 +109,7 @@ namespace GameEngine
 
 			assert(_find != m_RenderPassList.end());
 
-			_find->second->RegistRenderObject(renderObject);
+			//_find->second->RegistRenderObject(renderObject);
 		}
 
 		void GraphicsSystem::RegistRenderObject(uint32 passIdx, Graphics::RenderObject& renderObject)

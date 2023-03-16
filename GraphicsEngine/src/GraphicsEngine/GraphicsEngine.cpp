@@ -18,6 +18,9 @@
 #include "GraphicsEngine/RenderPass/IBL.h"
 #include "GraphicsEngine/RenderPass/Light.h"
 #include "GraphicsEngine/RenderPass/Deferred.h"
+#include "GraphicsEngine/RenderPass/Sky.h"
+#include "GraphicsEngine/RenderPass/DebugDeferred.h"
+#include "GraphicsEngine/RenderPass/PostProcess.h"
 
 HINSTANCE m_GraphicsModule;
 
@@ -65,7 +68,7 @@ namespace Graphics
 
 		InitLightPass();
 
-		InitSkyBoxPass();
+		InitSkyPass();
 
 		InitDebugPass();
 
@@ -151,136 +154,18 @@ namespace Graphics
 		m_Deferred_Light_Pass->SetRenderTarget(m_SwapChain);
 	}
 
-	void GraphicsEngine::InitSkyBoxPass()
+	void GraphicsEngine::InitSkyPass()
 	{
-		m_SkyBox_Material = m_ResourceManager->CreateMaterialBuffer(TEXT("SkyBox"));
+		m_Sky = std::make_shared<Sky>(m_CommandBuffer, m_ResourceManager);
 
-		m_SkyBox_Mesh = m_ResourceManager->CreateMeshBuffer(TEXT("Cube_Mesh"));
-
-		std::vector<Math::Vector3> _data =
-		{
-			{ -1.0f, +1.0f, -1.0f },
-			{ +1.0f, +1.0f, -1.0f },
-			{ +1.0f, +1.0f, +1.0f },
-			{ -1.0f, +1.0f, +1.0f },
-			{ -1.0f, -1.0f, -1.0f },
-			{ +1.0f, -1.0f, -1.0f },
-			{ +1.0f, -1.0f, +1.0f },
-			{ -1.0f, -1.0f, +1.0f }
-		};
-
-		std::vector<uint32> triangles =
-		{
-			// +x
-			1, 5, 2,
-			2, 5, 6,
-			// -x
-			0, 3, 7,
-			0, 7, 4,
-			// +y
-			0, 2, 3,
-			0, 1, 2,
-			// -y
-			4, 6, 5,
-			4, 7, 6,
-			// +z
-			2, 7, 3,
-			2, 6, 7,
-			// -z
-			0, 4, 1,
-			1, 4, 5
-		};
-
-		uint32 _size = static_cast<uint32>(sizeof(Math::Vector3) * _data.size());
-
-		m_SkyBox_Mesh->CreateVertexBuffer(TEXT("Cube_Mesh"), _data.data(), _size, sizeof(Math::Vector3));
-		m_SkyBox_Mesh->CreateSubMesh(TEXT("Cube_Mesh"), triangles);
-
-		auto* _state = m_ResourceManager->GetPipelineState(TEXT("SkyBox"));
-		auto* _layout = m_ResourceManager->GetPipelineLayout(TEXT("SkyBox_Layout"));
-
-		std::vector<AttachmentClear> _attachmentClears =
-		{
-			{ { 1, 0, 0, 0 }, 0 },
-			{ 1, 0 }
-		};
-
-		m_SkyBox_Pass = m_ResourceManager->GetRenderPass(TEXT("Skybox Pass"));
-		m_SkyBox_Pass->SetRenderTarget(m_SwapChain);
-		//m_SkyBox_Pass->SetAttachmentClears(_attachmentClears);
-
-		RenderObject _skyBoxObject;
-		_skyBoxObject.m_MeshBuffer = m_SkyBox_Mesh;
-		_skyBoxObject.m_MaterialBuffer = m_SkyBox_Material;
-
-		m_SkyBox_Pass->RegistRenderObject(_skyBoxObject);
+		m_Sky->SetRenderTarget(m_SwapChain);
 	}
 
 	void GraphicsEngine::InitDebugPass()
 	{
-		m_Debug_Material = m_ResourceManager->CreateMaterialBuffer(TEXT("MRT_Debug"));
+		m_Debug_Deferred = std::make_shared<DebugDeferred>(m_CommandBuffer, m_ResourceManager);
 
-		m_Albedo = m_ResourceManager->GetTexture(TEXT("Albedo"));
-		m_Normal = m_ResourceManager->GetTexture(TEXT("Normal"));
-		m_Depth = m_ResourceManager->GetTexture(TEXT("Depth"));
-		m_World = m_ResourceManager->GetTexture(TEXT("WorldPosition"));
-		m_Reflect = m_ResourceManager->GetTexture(TEXT("SSReflect"));
-
-		RenderObject _albedoObject;
-		_albedoObject.m_MeshBuffer = m_Screen_Mesh;
-		_albedoObject.m_MaterialBuffer = m_Debug_Material;
-
-		UpdateResourceData _resourceA{ 1,  m_Albedo };
-		_albedoObject.m_UpdateResources.push_back(_resourceA);
-
-		RenderObject _normalObject;
-		_normalObject.m_MeshBuffer = m_Screen_Mesh;
-		_normalObject.m_MaterialBuffer = m_Debug_Material;
-
-		UpdateResourceData _resourceN{ 1,  m_Normal };
-		_normalObject.m_UpdateResources.push_back(_resourceN);
-
-		RenderObject _depthObject;
-		_depthObject.m_MeshBuffer = m_Screen_Mesh;
-		_depthObject.m_MaterialBuffer = m_Debug_Material;
-
-		UpdateResourceData _resourceD{ 1,  m_Depth };
-		_depthObject.m_UpdateResources.push_back(_resourceD);
-
-		RenderObject _worldPosObject;
-		_worldPosObject.m_MeshBuffer = m_Screen_Mesh;
-		_worldPosObject.m_MaterialBuffer = m_Debug_Material;
-
-		UpdateResourceData _resourceW{ 1,  m_World };
-		_worldPosObject.m_UpdateResources.push_back(_resourceW);
-
-		RenderObject _reflectObject;
-		_reflectObject.m_MeshBuffer = m_Screen_Mesh;
-		_reflectObject.m_MaterialBuffer = m_Debug_Material;
-
-		UpdateResourceData _resourceR{ 1,  m_Reflect };
-		_reflectObject.m_UpdateResources.push_back(_resourceR);
-
-		m_DebugRenderObject.push_back(_albedoObject);
-		m_DebugRenderObject.push_back(_normalObject);
-		m_DebugRenderObject.push_back(_depthObject);
-		m_DebugRenderObject.push_back(_worldPosObject);
-		m_DebugRenderObject.push_back(_reflectObject);
-
-		m_Debug_Pass = m_ResourceManager->GetRenderPass(TEXT("MRT Debug Pass"));
-
-		m_Debug_Pass->SetRenderTarget(m_SwapChain);
-		m_Debug_Pass->AddResourceClear({ ResourceType::Texture, 0, 1, BindFlags::ShaderResource, StageFlags::PS });
-
-		for (uint i = 0; i < m_DebugRenderObject.size(); i++)
-		{
-			Math::Viewport _viewport{ 256.f * i, 0.f, 256.f, 144.f };
-			//Math::Viewport _viewport{ 128.f, 0.f, 128.f, 72.f  };
-
-			m_DebugRenderObject[i].AddViewport(_viewport);
-
-			m_Debug_Pass->RegistRenderObject(m_DebugRenderObject[i]);
-		}
+		m_Debug_Deferred->SetSwapChain(m_SwapChain);
 	}
 
 	void GraphicsEngine::InitIBL()
@@ -314,33 +199,9 @@ namespace Graphics
 
 	void GraphicsEngine::InitSSR()
 	{
-		std::vector<AttachmentClear> _attachmentClears =
-		{
-			{ { 0, 0, 0, 0 }, 0 },
-		};
+		m_SSR_Pass = std::make_shared<PostProcess>(m_CommandBuffer, m_ResourceManager);
 
-		m_SSR_Pass = m_ResourceManager->GetRenderPass(TEXT("SSReflect Pass"));
-		m_SSR_Pass->SetAttachmentClears(_attachmentClears);
 
-		RenderObject _ssrObject;
-
-		_ssrObject.m_MeshBuffer = m_Screen_Mesh;
-		_ssrObject.m_MaterialBuffer = m_Deferred_Light_Material;
-
-		static SSLR _sslr;
-		_sslr.cb_depthBufferSize = { 1280, 720 };
-		_sslr.cb_zThickness = 0.1f;
-
-		_sslr.cb_nearPlaneZ = 0.1f;
-		_sslr.cb_maxSteps = 300.f;
-		_sslr.cb_maxDistance = 100.f;
-		_sslr.cb_strideZCutoff = 1.f;
-		_sslr.cb_stride = 1.f;
-
-		UpdateResourceData _perDraw{ eUpdateTime::PerObject, 1, ResourceType::Buffer, &_sslr, sizeof(SSLR) };
-		_ssrObject.m_UpdateResourcePerObjects.push_back(_perDraw);
-
-		m_SSR_Pass->RegistRenderObject(_ssrObject);
 	}
 
 	Graphics::MeshBuffer* GraphicsEngine::CreateMeshBuffer(uuid uuid, std::vector<Common::VertexAttribute>& vertices, std::vector<std::vector<uint32>> subMeshs, Math::Vector3 min, Math::Vector3 max)
@@ -433,24 +294,12 @@ namespace Graphics
 
 		m_Deferred->ExcutePass();
 
-		{
-			m_SSR_Pass->BeginExcute(m_CommandBuffer, nullptr);
+		m_SSR_Pass->ExcutePass();
 
-			m_SSR_Pass->Excute(m_CommandBuffer);
-
-			m_SSR_Pass->EndExcute(m_CommandBuffer);
-		}
+		m_Sky->ExcutePass();
 
 		{
-			m_SkyBox_Pass->BeginExcute(m_CommandBuffer, nullptr);
-
-			m_SkyBox_Pass->Excute(m_CommandBuffer);
-
-			m_SkyBox_Pass->EndExcute(m_CommandBuffer);
-		}
-
-		{
-			m_Deferred_Light_Pass->RegistRenderObject(_deferredMergeRenderObject);
+			m_Deferred_Light_Pass->RegistRenderObject(&_deferredMergeRenderObject);
 
 			m_Deferred_Light_Pass->UpdatePerFrame(m_CommandBuffer, _perLighting, sizeof(Lighting));
 
@@ -461,13 +310,7 @@ namespace Graphics
 			m_Deferred_Light_Pass->EndExcute(m_CommandBuffer);
 		}
 
-		{
-			m_Debug_Pass->BeginExcute(m_CommandBuffer, nullptr);
-
-			m_Debug_Pass->Excute(m_CommandBuffer);
-
-			m_Debug_Pass->EndExcute(m_CommandBuffer);
-		}
+		m_Debug_Deferred->ExcutePass();
 
 		m_SwapChain->Present();
 	}

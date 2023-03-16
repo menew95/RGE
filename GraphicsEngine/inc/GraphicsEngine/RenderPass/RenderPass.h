@@ -28,7 +28,7 @@ namespace Graphics
 		RenderPass(PipelineState* pipelineState, PipelineLayout* pipelineLayout, RenderTarget* renderTarget, std::vector<AttachmentClear> attachmentClears);
 		virtual ~RenderPass();
 
-		void RegistRenderObject(class RenderObject& renderObject);
+		void RegistRenderObject(class RenderObject* renderObject);
 		void ClearRenderObject();
 
 		inline const tstring& GetPassName() const 
@@ -74,8 +74,8 @@ namespace Graphics
 		inline std::vector<AttachmentClear> GetAttachmentClears() { return m_AttachmentClears; }
 
 	protected:
-		void UpdateResourcePerMaterial(CommandBuffer* commandBuffer, RenderObject& renderObject);
-		void UpdateResourcePerObject(CommandBuffer* commandBuffer, RenderObject& renderObject);
+		void UpdateResourcePerMaterial(CommandBuffer* commandBuffer, RenderObject* renderObject);
+		void UpdateResourcePerObject(CommandBuffer* commandBuffer, RenderObject* renderObject);
 
 		void UpdateBuffer(CommandBuffer* commandBuffer, Buffer* buffer, void* src, uint32 size);
 
@@ -87,7 +87,7 @@ namespace Graphics
 
 		std::vector<Resource*> m_Resources;
 
-		std::vector<RenderObject> m_RenderObjects;
+		std::vector<RenderObject*> m_RenderObjects;
 
 		std::vector<AttachmentClear> m_AttachmentClears;
 

@@ -81,13 +81,13 @@ TestScene::TestScene()
 
 		auto _lightCom = _pointLight->AddComponent<Light>();
 
-		Vector3 _move = { 2, 1, 2 };
+		Vector3 _move = { 3, 1, 3 };
 
 		_pointLight->GetTransform()->Translate(_move);
 
 		_lightCom->SetLightType(2);
 
-		_lightCom->SetRange(4.0f);
+		_lightCom->SetRange(5.0f);
 
 		_lightCom->SetLightColor(Math::Color::Red);
 
@@ -101,7 +101,7 @@ TestScene::TestScene()
 
 		auto _lightCom = _pointLight->AddComponent<Light>();
 
-		Vector3 _move = { -2, 1, -2 };
+		Vector3 _move = { -3, 1, -1 };
 
 		_pointLight->GetTransform()->Translate(_move);
 
@@ -121,7 +121,7 @@ TestScene::TestScene()
 
 		auto _lightCom = _spotLight->AddComponent<Light>();
 
-		Vector3 _move = { 0, 2, 4 };
+		Vector3 _move = { -1, 2, 4 };
 
 		_spotLight->GetTransform()->Translate(_move);
 

@@ -37,7 +37,7 @@ float CalcSpotShadowFactor(int spotIndex, float4 lightspacepos, Texture2DArray s
 	{
 		for (int y = -1; y <= 1; ++y)
 		{
-			shadow += spotShadowMap.SampleCmpLevelZero(shadowSampler, samplePos, currentDepth - bias, int2(x, y));
+			shadow += spotShadowMap.SampleCmpLevelZero(shadowSampler, samplePos, currentDepth, int2(x, y));
 		}
 	}
 	shadow /= 9.0f;
@@ -145,7 +145,7 @@ float CalcCascadeShadowFactor(int cascadeIndex, float4 lightspacepos, Texture2DA
 	{
 		for (int y = -1; y <= 1; ++y)
 		{
-			shadow += cascadeShadowMap.SampleCmpLevelZero(cascadeShadowSampler, samplePos, currentDepth - bias, int2(x, y));
+			shadow += cascadeShadowMap.SampleCmpLevelZero(cascadeShadowSampler, samplePos, currentDepth /*- bias*/, int2(x, y));
 		}
 	}
 	shadow /= 9.0f;

@@ -27,7 +27,7 @@ namespace Graphics
 
 		m_Near = zNear;
 		m_Far = zFar;
-		m_FieldOfView = fov;
+		m_FieldOfView = fov * Math::Deg2Rad;
 		m_AspectRadio = radio;
 	}
 

@@ -5,20 +5,22 @@
 #include "GraphicsEngine/RenderObject.h"
 
 /*
-* PostProcess 관련 렌더패스를 다루는 클래스 일단은 SSR 하나
+* Sky를 표한하는 렌더 패스
+* Skydom, SkyAtmosphere
 */
 
 namespace Graphics
 {
+	class CameraBuffer;
 	class RenderPass;
 	class CommandBuffer;
 	class ResourceManager;
 
-	class PostProcess
+	class Sky
 	{
 	public:
-		PostProcess(CommandBuffer* command, ResourceManager* resourceManager);
-		~PostProcess();
+		Sky(CommandBuffer* command, ResourceManager* resourceManager);
+		~Sky();
 
 		void ExcutePass();
 
@@ -26,12 +28,16 @@ namespace Graphics
 
 	private:
 		void Initialize();
-
+		
 		ResourceManager* m_ResourceManager;
 		CommandBuffer* m_CommandBuffer;
 
-		RenderObject m_RenderObjects;
+		CameraBuffer* m_CameraBuffer;
 
-		std::shared_ptr<Graphics::RenderPass> m_PostProcess_Pass;
+		std::vector<RenderObject> m_RenderObjects;
+
+		MaterialBuffer* m_SkyBox_Material;
+		MeshBuffer* m_SkyBox_Mesh;
+		std::shared_ptr<Graphics::RenderPass> m_SkyBox_Pass;
 	};
 }

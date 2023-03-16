@@ -225,6 +225,7 @@ xcopy /E /S /Y /R "$(ProjectDir)Shader\*" "$(OutputPath)..\Client\Asset\Shader\*
     <ClInclude Include="inc\GraphicsEngine\Export.h" />
     <ClInclude Include="inc\GraphicsEngine\GraphicsEngine.h" />
     <ClInclude Include="inc\GraphicsEngine\GraphicsEngineFlags.h" />
+    <ClInclude Include="inc\GraphicsEngine\RenderPass\DebugDeferred.h" />
     <ClInclude Include="inc\GraphicsEngine\RenderPass\Deferred.h" />
     <ClInclude Include="inc\GraphicsEngine\RenderPass\IBL.h" />
     <ClInclude Include="inc\GraphicsEngine\RenderPass\Light.h" />
@@ -232,6 +233,7 @@ xcopy /E /S /Y /R "$(ProjectDir)Shader\*" "$(OutputPath)..\Client\Asset\Shader\*
     <ClInclude Include="inc\GraphicsEngine\RenderPass\RenderPass.h" />
     <ClInclude Include="inc\GraphicsEngine\RenderObject.h" />
     <ClInclude Include="inc\GraphicsEngine\RenderPass\RenderPassFlags.h" />
+    <ClInclude Include="inc\GraphicsEngine\RenderPass\Sky.h" />
     <ClInclude Include="inc\GraphicsEngine\RenderQueue\RenderQueue.h" />
     <ClInclude Include="inc\GraphicsEngine\Resource\CameraBuffer.h" />
     <ClInclude Include="inc\GraphicsEngine\Resource\ConstantBuffer.h" />
@@ -255,10 +257,12 @@ xcopy /E /S /Y /R "$(ProjectDir)Shader\*" "$(OutputPath)..\Client\Asset\Shader\*
     <ClCompile Include="src\GraphicsEngine\Culling\Frustum.cpp" />
     <ClCompile Include="src\GraphicsEngine\Culling\Occlusion.cpp" />
     <ClCompile Include="src\GraphicsEngine\Json\JsonTable.cpp" />
+    <ClCompile Include="src\GraphicsEngine\RenderPass\DebugDeferred.cpp" />
     <ClCompile Include="src\GraphicsEngine\RenderPass\Deferred.cpp" />
     <ClCompile Include="src\GraphicsEngine\RenderPass\IBL.cpp" />
     <ClCompile Include="src\GraphicsEngine\RenderPass\Light.cpp" />
     <ClCompile Include="src\GraphicsEngine\RenderPass\PostProcess.cpp" />
+    <ClCompile Include="src\GraphicsEngine\RenderPass\Sky.cpp" />
     <ClCompile Include="src\GraphicsEngine\RenderQueue\RenderQueue.cpp" />
     <ClCompile Include="src\GraphicsEngine\Resource\CameraBuffer.cpp" />
     <ClCompile Include="src\GraphicsEngine\Resource\LightBuffer.cpp" />
