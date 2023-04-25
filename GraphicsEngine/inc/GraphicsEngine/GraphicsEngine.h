@@ -57,9 +57,11 @@ namespace Graphics
 
 		void OnResize(uint32 _width, uint32 _height);
 
-		void RegistRenderObject(RenderObject& renderObject);
-		void RegistRenderMesh(RenderObject& renderObject);
-		void RegistRenderShadow(uint32 type, RenderObject& renderObject);
+		void RegistRenderObject(RenderObject* renderObject);
+		void DeleteRenderObject(RenderObject* renderObject);
+
+		void RegistRenderMesh(RenderObject* renderObject);
+		void RegistRenderShadow(uint32 type, RenderObject* renderObject);
 
 		void Excute();
 		void ExcuteRenderPass(Graphics::RenderPass* renderPass);
@@ -112,6 +114,8 @@ namespace Graphics
 		std::shared_ptr<PostProcess> m_SSR_Pass;
 
 		std::shared_ptr<DebugDeferred> m_Debug_Deferred;
+
+		std::vector<RenderObject*> m_RenderObjectList;
 	};
 
 	extern "C"

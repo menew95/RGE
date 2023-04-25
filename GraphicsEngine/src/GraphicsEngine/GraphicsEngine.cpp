@@ -21,6 +21,7 @@
 #include "GraphicsEngine/RenderPass/Sky.h"
 #include "GraphicsEngine/RenderPass/DebugDeferred.h"
 #include "GraphicsEngine/RenderPass/PostProcess.h"
+#include "GraphicsEngine/RenderPass/Voxel.h"
 
 HINSTANCE m_GraphicsModule;
 
@@ -35,6 +36,8 @@ namespace Graphics
 		LoadGraphicsTable();
 
 		Initialize(desc);
+
+		Voxel voxel{m_CommandBuffer, m_ResourceManager};
 	}
 
 	GraphicsEngine::~GraphicsEngine()
@@ -200,8 +203,6 @@ namespace Graphics
 	void GraphicsEngine::InitSSR()
 	{
 		m_SSR_Pass = std::make_shared<PostProcess>(m_CommandBuffer, m_ResourceManager);
-
-
 	}
 
 	Graphics::MeshBuffer* GraphicsEngine::CreateMeshBuffer(uuid uuid, std::vector<Common::VertexAttribute>& vertices, std::vector<std::vector<uint32>> subMeshs, Math::Vector3 min, Math::Vector3 max)
@@ -236,17 +237,28 @@ namespace Graphics
 		m_SwapChain->ResizeBuffer({ _width, _height });
 	}
 
-	void GraphicsEngine::RegistRenderObject(RenderObject& renderObject)
+	void GraphicsEngine::RegistRenderObject(RenderObject* renderObject)
 	{
-		m_RenderQueue->RegistRenderQueue(renderObject);
+		assert(renderObject != nullptr);
+
+		m_RenderObjectList.emplace_back(renderObject);
 	}
 
-	void GraphicsEngine::RegistRenderMesh(RenderObject& renderObject)
+	void GraphicsEngine::DeleteRenderObject(RenderObject* renderObject)
+	{
+		auto _iter = std::find(m_RenderObjectList.begin(), m_RenderObjectList.end(), renderObject);
+
+		assert(_iter != m_RenderObjectList.end());
+
+		m_RenderObjectList.erase(_iter);
+	}
+
+	void GraphicsEngine::RegistRenderMesh(RenderObject* renderObject)
 	{
 		m_Deferred->RegistRenderObject(renderObject);
 	}
 
-	void GraphicsEngine::RegistRenderShadow(uint32 type, RenderObject& renderObject)
+	void GraphicsEngine::RegistRenderShadow(uint32 type, RenderObject* renderObject)
 	{
 		switch (type)
 		{

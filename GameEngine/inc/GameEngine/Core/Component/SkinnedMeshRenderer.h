@@ -68,18 +68,11 @@ namespace GameEngine
 
 			void UpdateBoneTransform();
 
-			struct PerObjectData
-			{
-				Math::Matrix _world;
-				Math::Matrix _worldInvTranspose;
-			};
-
 			struct PerSkinnedObjectData
 			{
 				Math::Matrix _boneTransform[128];
 			};
 
-			PerObjectData _perObject;
 			PerSkinnedObjectData _perSkinnedObject;
 
 			std::vector<std::shared_ptr<Material>> m_Materials;
@@ -90,8 +83,6 @@ namespace GameEngine
 
 			std::vector<std::weak_ptr<Transform>> m_BoneTransformList;
 			std::vector<Math::Matrix> m_BoneOffset;
-
-			bool m_ShadowCasting = true;
 
 			RTTR_ENABLE(Renderer)
 

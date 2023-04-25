@@ -78,6 +78,8 @@ namespace Graphics
 
 		/* ----- Pipeline States ----- */
 		virtual PipelineState* CreatePipelineState(uuid uuid, const GraphicsPipelineDesc& desc) abstract;
+		virtual PipelineState* CreatePipelineState(uuid uuid, const ComputePipelineDesc& desc) abstract;
 		virtual void Release(PipelineState& pipelineState) abstract;
+
 	};
 }

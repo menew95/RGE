@@ -260,6 +260,63 @@ namespace Graphics
 			, "failed to create D3D11 shader-resource-view");
 		}
 
+		void DX11Texture::CreateUnorderedAccessView(ID3D11Device* device, uint32 baseMipLevel, uint32 numMipLevels, uint32 baseArrayLayer, uint32 numArrayLayers)
+		{
+			D3D11_UNORDERED_ACCESS_VIEW_DESC _uavDesc;
+			ZeroMemory(&_uavDesc, sizeof(D3D11_UNORDERED_ACCESS_VIEW_DESC));
+
+			_uavDesc.Format = MapFormat(m_TextureDesc._format);
+
+			switch (m_TextureDesc._textureType)
+			{
+				case TextureType::Texture1D:
+				{
+					_uavDesc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE1D;
+					_uavDesc.Texture1D.MipSlice = baseMipLevel;
+					break;
+				}
+				case TextureType::Texture2D:
+				{
+					_uavDesc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2D;
+					_uavDesc.Texture2D.MipSlice = baseMipLevel;
+					break;
+				}
+				case TextureType::Texture3D:
+				{
+					_uavDesc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE3D;
+					_uavDesc.Texture3D.MipSlice = baseMipLevel;
+					_uavDesc.Texture3D.FirstWSlice = baseArrayLayer;
+					_uavDesc.Texture3D.WSize = -1;//numArrayLayers; ¿ÖÁö??
+					break;
+				}
+				case TextureType::Texture1DArray:
+				{
+					_uavDesc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE1DARRAY;
+					_uavDesc.Texture1DArray.MipSlice = baseMipLevel;
+					_uavDesc.Texture1DArray.FirstArraySlice = baseArrayLayer;
+					_uavDesc.Texture1DArray.ArraySize = numArrayLayers;
+					break;
+				}
+				case TextureType::Texture2DArray:
+				case TextureType::TextureCube:
+				case TextureType::TextureCubeArray:
+				{
+					_uavDesc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2DARRAY;
+					_uavDesc.Texture2DArray.MipSlice = baseMipLevel;
+					_uavDesc.Texture2DArray.FirstArraySlice = baseArrayLayer;
+					_uavDesc.Texture2DArray.ArraySize = numArrayLayers;
+					break;
+				}
+				case TextureType::Texture2DMS:
+				case TextureType::Texture2DMSArray:
+				{
+					break;
+				}
+			}
+
+			auto hr = device->CreateUnorderedAccessView(m_NativeTexture._resource.Get(), &_uavDesc, m_UnorderedAccessView.ReleaseAndGetAddressOf());
+		}
+
 		void DX11Texture::CreateTextureFromFile(ID3D11Device* device, const ImageDesc& srcDesc)
 		{
 			using namespace DirectX;

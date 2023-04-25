@@ -27,10 +27,6 @@ RTTR_REGISTRATION
 		metadata(GameEngine::Core::MetaData::ObjectType, GameEngine::Core::ObjectType::Resource),
 		metadata(GameEngine::Core::ObjectType::Resource, GameEngine::Core::ResourceType::Material)
 	)
-	.property("m_ShadowCasting", &GameEngine::Core::MeshRenderer::m_ShadowCasting)
-	(
-		metadata(GameEngine::Core::MetaData::Serializable, GameEngine::Core::MetaDataType::BOOL)
-	)
 	.method("GetName", &GameEngine::Core::Material::GetName)
 	.method("CheckVaild", &GameEngine::Core::MeshRenderer::CheckVaild);
 }
@@ -149,11 +145,10 @@ namespace GameEngine
 
 						//_renderObject.m_UpdateResources.push_back(_perMaterialResource);
 
-						// Todo : 임시 나중에 그래픽스 시스템이 랜더 패스 소유하고 리스트를 순회 할 때 바꿀것
 						_renderObject.m_RenderPassIdx = _idx;
-						GraphicsSystem::GetInstance()->RegistRenderObject(_idx, _renderObject);
+						GraphicsSystem::GetInstance()->RegistRenderObject(_idx, &_renderObject);
 
-						if (m_ShadowCasting)
+						if (m_bIsShadowCasting)
 						{
 							Graphics::RenderObject _shadow;
 							_shadow.m_World = GetTransform()->GetWorldTM();
@@ -163,11 +158,7 @@ namespace GameEngine
 							//_perObjectResource._index = 0;
 							_shadow.m_UpdateResourcePerObjects.push_back(_perObjectResource);
 
-							//_shadow.m_RenderPassIdx = 8;
-							//GraphicsSystem::GetInstance()->RegistRenderObject(8, _shadow);
-
-							//_shadow.m_RenderPassIdx = 10;
-							GraphicsSystem::GetInstance()->RegistShadowObject(0, _shadow);
+							GraphicsSystem::GetInstance()->RegistShadowObject(0, &_shadow);
 						}
 					}
 				

@@ -51,13 +51,9 @@ namespace GameEngine
 				Math::Matrix _worldInvTranspose;
 			};
 
-			PerObjectData _perObject;
-
 			std::vector<std::shared_ptr<Material>> m_Materials;
 
 			std::weak_ptr<MeshFilter> m_MeshFilter;
-
-			bool m_ShadowCasting = true;
 
 			RTTR_ENABLE(Renderer)
 

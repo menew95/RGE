@@ -38,8 +38,8 @@ namespace Graphics
 
 		void ExcutePass();
 
-		void RegistStaticRenderObject(RenderObject& renderObject);
-		void RegistSkinnedRenderObject(RenderObject& renderObject);
+		void RegistStaticRenderObject(RenderObject* renderObject);
+		void RegistSkinnedRenderObject(RenderObject* renderObject);
 
 	private:
 		void Init();
@@ -62,8 +62,8 @@ namespace Graphics
 		Texture* m_PointLightShadowTexture;
 		Texture* m_SpotLightShadowTexture;
 
-		std::vector<RenderObject> m_StaticRenderObjectList;
-		std::vector<RenderObject> m_SkinnedRenderObjectList;
+		std::vector<RenderObject*> m_StaticRenderObjectList;
+		std::vector<RenderObject*> m_SkinnedRenderObjectList;
 
 		std::shared_ptr<Graphics::RenderPass> m_Deferred_Light_Pass;
 

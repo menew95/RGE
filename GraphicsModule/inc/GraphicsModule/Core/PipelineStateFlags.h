@@ -227,4 +227,11 @@ namespace Graphics
 
 		BlendDesc _blendDesc;
     };
+
+	struct ComputePipelineDesc
+	{
+		const PipelineLayout* pipelineLayout = nullptr;
+
+		ShaderProgram _shaderProgram;
+	};
 }

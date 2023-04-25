@@ -19,6 +19,16 @@ namespace Graphics
 		std::vector<VertexAttribute>  _vertexAttribs;
 	};
 
+	struct BufferViewDesc
+	{
+		Format _format = Format::UNKNOWN;
+
+		uint32 _offset = 0;
+
+		uint32 _size = -1;
+	};
+
+	GRAPHICS_DLL_DECLSPEC bool IsTypedBuffer(const BufferDesc& desc);
 	GRAPHICS_DLL_DECLSPEC bool IsStructuredBuffer(const BufferDesc& desc);
 	GRAPHICS_DLL_DECLSPEC bool IsByteAddressBuffer(const BufferDesc& desc);
 }

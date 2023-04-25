@@ -266,6 +266,26 @@ namespace Graphics
 		return _newState;
 	}
 
+	Graphics::PipelineState* ResourceManager::CreatePipelineState(uuid uuid, ComputePipelineDesc& desc)
+	{
+		auto _find = std::find_if(std::begin(m_PipelineStateMap),
+			std::end(m_PipelineStateMap),
+			[&uuid](auto& pair) { return (uuid == pair.first); }
+		);
+
+		if (_find != m_PipelineStateMap.end())
+		{
+			AssertMessageBox(false, (StringHelper::WStringToString(uuid) + " is a pipeline-state that already exists.").c_str());
+			return nullptr;
+		}
+
+		auto* _newCSO = m_RenderSystem->CreatePipelineState(uuid, desc);
+
+		m_PipelineStateMap.insert(std::make_pair(uuid, _newCSO));
+
+		return _newCSO;
+	}
+
 	PipelineLayout* ResourceManager::CreatePipelineLayout(uuid uuid, PipelineLayoutDesc& desc)
 	{
 		auto _find = std::find_if(std::begin(m_PipelineLayoutMap),

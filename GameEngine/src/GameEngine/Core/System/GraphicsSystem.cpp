@@ -98,28 +98,24 @@ namespace GameEngine
 			// Todo :
 		}
 
-		void GraphicsSystem::RegistRenderObject(const tstring& passName, Graphics::RenderObject& renderObject)
+		void GraphicsSystem::RegistRenderObject(uint32 passIdx, Graphics::RenderObject* renderObject)
 		{
-			auto _find = std::find_if(std::begin(m_RenderPassList), std::end(m_RenderPassList),
-				[&passName](auto& _pair)
-				{
-					return _pair.first == passName;
-				}
-			);
-
-			assert(_find != m_RenderPassList.end());
-
-			//_find->second->RegistRenderObject(renderObject);
-		}
-
-		void GraphicsSystem::RegistRenderObject(uint32 passIdx, Graphics::RenderObject& renderObject)
-		{
-			renderObject.m_RenderPassIdx = passIdx;
+			renderObject->m_RenderPassIdx = passIdx;
 
 			m_GraphicsEngine->RegistRenderMesh(renderObject);
 		}
 
-		void GraphicsSystem::RegistShadowObject(uint32 type, Graphics::RenderObject& renderObject)
+		void GraphicsSystem::RegistRenderObject(Graphics::RenderObject* renderObject)
+		{
+			m_GraphicsEngine->RegistRenderObject(renderObject);
+		}
+
+		void GraphicsSystem::DeleteRenderObject(Graphics::RenderObject* renderObject)
+		{
+			m_GraphicsEngine->DeleteRenderObject(renderObject);
+		}
+
+		void GraphicsSystem::RegistShadowObject(uint32 type, Graphics::RenderObject* renderObject)
 		{
 			m_GraphicsEngine->RegistRenderShadow(type, renderObject);
 		}

@@ -44,9 +44,12 @@ namespace GameEngine
 			void DeleteTextureBuffer(Graphics::Texture*);
 			void DeleteLightBuffer(Graphics::LightBuffer*);
 
-			void RegistRenderObject(const tstring& passName, Graphics::RenderObject& renderObject);
-			void RegistRenderObject(uint32 passIdx, Graphics::RenderObject& renderObject);
-			void RegistShadowObject(uint32 type, Graphics::RenderObject& renderObject);
+			void RegistRenderObject(Graphics::RenderObject* renderObject);
+			void DeleteRenderObject(Graphics::RenderObject* renderObject);
+
+			//void RegistRenderObject(const tstring& passName, Graphics::RenderObject& renderObject);
+			void RegistRenderObject(uint32 passIdx, Graphics::RenderObject* renderObject);
+			void RegistShadowObject(uint32 type, Graphics::RenderObject* renderObject);
 
 		protected:
 			void LoadGraphicsEngineDll();

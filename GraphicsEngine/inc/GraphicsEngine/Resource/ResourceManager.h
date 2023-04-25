@@ -35,6 +35,7 @@ namespace Graphics
 		Shader*							CreateShader(uuid uuid, ShaderDesc& desc);
 		RenderTarget*					CreateRenderTarget(uuid uuid, RenderTargetDesc& desc);
 		PipelineState*					CreatePipelineState(uuid uuid, GraphicsPipelineDesc& desc);
+		PipelineState*					CreatePipelineState(uuid uuid, ComputePipelineDesc& desc);
 		PipelineLayout*					CreatePipelineLayout(uuid uuid, PipelineLayoutDesc& desc);
 
 		RenderPass*						CreateRenderPass(uuid uuid, RenderPassDesc& desc);

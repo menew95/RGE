@@ -68,6 +68,7 @@ namespace Graphics
 
 			/* ----- Pipeline States ----- */
 			PipelineState* CreatePipelineState(uuid uuid, const GraphicsPipelineDesc& desc) override;
+			PipelineState* CreatePipelineState(uuid uuid, const ComputePipelineDesc& desc) override;
 			void Release(PipelineState& pipelineState) override;
 
 			static DXGI_SAMPLE_DESC FindSuitableSampleDesc(ID3D11Device* device, DXGI_FORMAT format, uint32 maxSampleCount);
@@ -103,7 +104,7 @@ namespace Graphics
 			Container <class DX11RenderTarget>		m_RenderTargetContainer;
 			Container <class DX11Shader>			m_ShaderContainer;
 			Container <class DX11PipelineLayout>	m_PipelineLayoutContainer;
-			Container <class DX11PipelineState>		m_PipelineStateContainer;
+			Container <class PipelineState>		m_PipelineStateContainer;
 		};
 	}
 }

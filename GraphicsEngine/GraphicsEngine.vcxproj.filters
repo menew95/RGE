@@ -93,6 +93,9 @@
     <ClInclude Include="inc\GraphicsEngine\RenderPass\Sky.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="inc\GraphicsEngine\RenderPass\Voxel.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\GraphicsEngine_dllmain.cpp">
@@ -158,6 +161,9 @@
     <ClCompile Include="src\GraphicsEngine\RenderPass\Sky.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="src\GraphicsEngine\RenderPass\Voxel.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\Header\H_ConstBuffer.hlsli" />
@@ -167,6 +173,7 @@
     <None Include="Shader\Header\H_Light.hlsli" />
     <None Include="Shader\Header\H_Shadow.hlsli" />
     <None Include="Shader\Header\H_MathHelper.hlsli" />
+    <None Include="Shader\Header\H_Voxel.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\VS_Mesh.hlsl" />
@@ -189,5 +196,9 @@
     <FxCompile Include="Shader\PS_SSR.hlsl" />
     <FxCompile Include="Shader\VS_SSR.hlsl" />
     <FxCompile Include="Shader\PS_ToneMap.hlsl" />
+    <FxCompile Include="Shader\VS_Voxelization.hlsl" />
+    <FxCompile Include="Shader\GS_Voxelization.hlsl" />
+    <FxCompile Include="Shader\PS_Voxelization.hlsl" />
+    <FxCompile Include="Shader\CS_VoxelCopy.hlsl" />
   </ItemGroup>
 </Project>

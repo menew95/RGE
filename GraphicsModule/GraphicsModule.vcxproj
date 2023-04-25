@@ -195,13 +195,16 @@ xcopy /E /S /Y /R "$(OutputPath)*.pdb" "$(OutputPath)..\Client\*"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="inc\GraphicsModule\Core\BufferUtils.h" />
     <ClInclude Include="inc\GraphicsModule\Core\CommandBuffer.h" />
     <ClInclude Include="inc\GraphicsModule\Core\CommandBufferFlags.h" />
     <ClInclude Include="inc\GraphicsModule\Core\Common\ComPtr.h" />
     <ClInclude Include="inc\GraphicsModule\Core\Common\DXHelper.h" />
     <ClInclude Include="inc\GraphicsModule\Core\DirectXTex\DirectXTex.h" />
     <ClInclude Include="inc\GraphicsModule\Core\DX11\DX11Buffer.h" />
+    <ClInclude Include="inc\GraphicsModule\Core\DX11\DX11BufferRV.h" />
     <ClInclude Include="inc\GraphicsModule\Core\DX11\DX11CommandBuffer.h" />
+    <ClInclude Include="inc\GraphicsModule\Core\DX11\DX11ComputePS.h" />
     <ClInclude Include="inc\GraphicsModule\Core\DX11\DX11PipeLine.h" />
     <ClInclude Include="inc\GraphicsModule\Core\DX11\DX11PipelineLayout.h" />
     <ClInclude Include="inc\GraphicsModule\Core\DX11\DX11PipelineState.h" />
@@ -271,9 +274,12 @@ xcopy /E /S /Y /R "$(OutputPath)*.pdb" "$(OutputPath)..\Client\*"</Command>
   <ItemGroup>
     <ClCompile Include="src\GraphicsModule\Core\Buffer.cpp" />
     <ClCompile Include="src\GraphicsModule\Core\BufferFlags.cpp" />
+    <ClCompile Include="src\GraphicsModule\Core\BufferUtils.cpp" />
     <ClCompile Include="src\GraphicsModule\Core\Common\DXHelper.cpp" />
     <ClCompile Include="src\GraphicsModule\Core\DX11\DX11Buffer.cpp" />
+    <ClCompile Include="src\GraphicsModule\Core\DX11\DX11BufferRV.cpp" />
     <ClCompile Include="src\GraphicsModule\Core\DX11\DX11CommandBuffer.cpp" />
+    <ClCompile Include="src\GraphicsModule\Core\DX11\DX11ComputePS.cpp" />
     <ClCompile Include="src\GraphicsModule\Core\DX11\DX11PipelineLayout.cpp" />
     <ClCompile Include="src\GraphicsModule\Core\DX11\DX11PipelineState.cpp" />
     <ClCompile Include="src\GraphicsModule\Core\DX11\DX11RenderPass.cpp">

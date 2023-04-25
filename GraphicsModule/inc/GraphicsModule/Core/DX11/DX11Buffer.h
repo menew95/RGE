@@ -29,6 +29,11 @@ namespace Graphics
 			inline ID3D11Buffer* GetBuffer() const { return m_Buffer.Get(); }
 			inline ID3D11Buffer* const* GetBufferRef() const { return m_Buffer.GetAddressOf(); }
 
+			inline ID3D11Buffer* GetNative() const
+			{
+				return m_Buffer.Get();
+			}
+
 			inline uint32 GetSize() const
 			{
 				return m_Size;

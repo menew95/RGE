@@ -6,6 +6,7 @@
 #include "GraphicsModule/Core/DX11/DX11SwapChain.h"
 #include "GraphicsModule/Core/DX11/DX11CommandBuffer.h"
 #include "GraphicsModule/Core/DX11/DX11Buffer.h"
+#include "GraphicsModule/Core/DX11/DX11BufferRV.h"
 #include "GraphicsModule/Core/DX11/DX11Texture.h"
 #include "GraphicsModule/Core/DX11/DX11Sampler.h"
 #include "GraphicsModule/Core/DX11/DX11RenderPass.h"
@@ -13,6 +14,8 @@
 #include "GraphicsModule/Core/DX11/DX11Shader.h"
 #include "GraphicsModule/Core/DX11/DX11PipelineLayout.h"
 #include "GraphicsModule/Core/DX11/DX11PipelineState.h"
+#include "GraphicsModule/Core/DX11/DX11ComputePS.h"
+#include "GraphicsModule/Core/DX11/DX11ResourceFlags.h"
 
 namespace Graphics
 {
@@ -161,9 +164,18 @@ namespace Graphics
 			RemoveFromUniqueUnorderedMap(m_CommandBufferContainer, &commandBuffer);
 		}
 
+		static std::unique_ptr<DX11Buffer> MakeD3D11Buffer(ID3D11Device* device, const BufferDesc& desc, const void* initialData)
+		{
+			/* Make respective buffer type */
+			if (DXBindFlagsNeedBufferWithRV(desc._bindFlags))
+				return MakeUnique<DX11BufferRV>(device, desc, initialData);
+			else
+				return MakeUnique<DX11Buffer>(device, desc, initialData);
+		}
+
 		Buffer* DX11RenderSystem::CreateBuffer(uuid uuid, const BufferDesc& desc, const void* initData /*= nullptr*/)
 		{
-			return TakeOwnership(m_BufferContainer, uuid, MakeUnique<DX11Buffer>(m_Device.Get(), desc, initData));
+			return TakeOwnership(m_BufferContainer, uuid, MakeD3D11Buffer(m_Device.Get(), desc, initData));
 		}
 
 		void DX11RenderSystem::Release(Buffer& buffer)
@@ -207,6 +219,10 @@ namespace Graphics
 				if ((desc._bindFlags & BindFlags::ShaderResource) != 0)
 				{
 					_texture->CreateShaderResourceView(m_Device.Get(), 0, desc._mipLevels, 0, desc._arrayLayers);
+				}
+				if ((desc._bindFlags & BindFlags::UnorderedAccess) != 0)
+				{
+					_texture->CreateUnorderedAccessView(m_Device.Get(), 0, desc._mipLevels, 0, desc._arrayLayers);
 				}
 			}
 			else
@@ -276,9 +292,12 @@ namespace Graphics
 
 		Graphics::PipelineState* DX11RenderSystem::CreatePipelineState(uuid uuid, const GraphicsPipelineDesc& desc)
 		{
-			DX11PipelineState* _pipeline = TakeOwnership(m_PipelineStateContainer, uuid, MakeUnique<DX11PipelineState>(m_Device.Get(), desc));
+			return TakeOwnership(m_PipelineStateContainer, uuid, MakeUnique<DX11PipelineState>(m_Device.Get(), desc));
+		}
 
-			return _pipeline;
+		Graphics::PipelineState* DX11RenderSystem::CreatePipelineState(uuid uuid, const ComputePipelineDesc& desc)
+		{
+			return TakeOwnership(m_PipelineStateContainer, uuid, MakeUnique<DX11ComputePS>(m_Device.Get(), desc));
 		}
 
 		DXGI_SAMPLE_DESC DX11RenderSystem::FindSuitableSampleDesc(ID3D11Device* device, DXGI_FORMAT format, uint32 maxSampleCount)

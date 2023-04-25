@@ -61,7 +61,7 @@ namespace Graphics
 		ShaderSourceType _sourceType;
 
 		tstring _filePath;
-		uint32 _sourceSize;
+		uint32 _sourceSize = 0;
 
 		const char* _entryPoint = nullptr;
 		const char* _profile = nullptr;

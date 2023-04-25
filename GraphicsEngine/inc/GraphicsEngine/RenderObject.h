@@ -65,7 +65,9 @@ namespace Graphics
 		uint32 _datasize = 0;
 	};
 
-	// 랜더 패스에 하나의 랜더 오브젝트를 정의
+	/*
+	* 렌더 컴포넌트당 하나의 렌더 오브젝트를 가짐
+	*/
 	class GRAPHICSENGINE_DLL_DECLSPEC RenderObject
 	{
 	public:
@@ -122,6 +124,18 @@ namespace Graphics
 		{
 			return m_Viewports;
 		}
+
+		// 활성화되어있는지 체크
+		bool m_bIsEnable = false;
+
+		// 정적인 오브젝트인가
+		bool m_bIsStatic = false;
+
+		// 그림자를 그리는 오브젝트인가
+		bool m_bIsCastShadow = false;
+
+		// 스키닝 오브젝트인가
+		bool m_bIsSkinned = false;
 
 		// 컬링을 하기위해
 		Math::Matrix m_World;
