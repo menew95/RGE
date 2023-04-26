@@ -181,7 +181,7 @@ namespace Graphics
 			desc.DepthBias = static_cast<INT>(rasterizerDesc._depthBias.constantFactor);
 			desc.DepthBiasClamp = rasterizerDesc._depthBias.clamp;
 			desc.SlopeScaledDepthBias = rasterizerDesc._depthBias.slopeFactor;
-			desc.DepthClipEnable = !rasterizerDesc._depthClampEnabled;
+			desc.DepthClipEnable = rasterizerDesc._depthClampEnabled;
 			desc.ScissorEnable = rasterizerDesc._scissorTestEnabled;
 			desc.MultisampleEnable = rasterizerDesc._multiSampleEnabled;
 			desc.AntialiasedLineEnable = rasterizerDesc._antiAliasedLineEnabled;

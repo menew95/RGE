@@ -143,7 +143,8 @@ namespace Graphics
 
 		uint32 m_RenderPassIdx = 0;
 
-		MeshBuffer* m_MeshBuffer;
+		MeshBuffer* m_MeshBuffer = nullptr;
+
 		MaterialBuffer* m_MaterialBuffer;
 
 		std::vector<Graphics::Resource*> m_Resources;

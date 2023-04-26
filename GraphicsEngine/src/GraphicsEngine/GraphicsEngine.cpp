@@ -253,12 +253,12 @@ namespace Graphics
 		m_RenderObjectList.erase(_iter);
 	}
 
-	void GraphicsEngine::RegistRenderMesh(RenderObject* renderObject)
+	void GraphicsEngine::RegistRenderMesh(RenderObject& renderObject)
 	{
 		m_Deferred->RegistRenderObject(renderObject);
 	}
 
-	void GraphicsEngine::RegistRenderShadow(uint32 type, RenderObject* renderObject)
+	void GraphicsEngine::RegistRenderShadow(uint32 type, RenderObject& renderObject)
 	{
 		switch (type)
 		{

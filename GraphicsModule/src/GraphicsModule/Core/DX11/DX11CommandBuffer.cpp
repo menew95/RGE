@@ -10,7 +10,9 @@
 #include "GraphicsModule/Core/DX11/DX11Texture.h"
 #include "GraphicsModule/Core/DX11/DX11Sampler.h"
 #include "GraphicsModule/Core/DX11/DX11Buffer.h"
+#include "GraphicsModule/Core/DX11/DX11BufferRV.h"
 #include "GraphicsModule/Core/DX11/Direct3D11.h"
+#include "GraphicsModule/Core/DX11/DX11ResourceFlags.h"
 
 
 namespace Graphics
@@ -302,9 +304,9 @@ namespace Graphics
 
 		void DX11CommandBuffer::SetBuffer(Buffer& buffer, uint32 slot, uint32 bindFlags, uint32 stageFlags)
 		{
-			/*if ((bindFlags & (BindFlags::ShaderResource | BindFlags::UnorderedAccess)) != 0)
+			if (DXBindFlagsNeedBufferWithRV(buffer.GetBindFlags()))
 			{
-				auto _buffer = reinterpret_cast<DX11Buffer&>(buffer);
+				auto _buffer = reinterpret_cast<DX11BufferRV&>(buffer);
 
 				if ((bindFlags & BindFlags::ConstantBuffer) != 0)
 				{
@@ -327,14 +329,14 @@ namespace Graphics
 				}
 			}
 			else
-			{*/
+			{
 				auto _buffer = reinterpret_cast<DX11Buffer&>(buffer);
 
 				if ((bindFlags & BindFlags::ConstantBuffer) != 0)
 				{
 					m_StateManager->SetConstantBuffers(slot, 1, _buffer.GetBufferRef(), stageFlags);
 				}
-			//}
+			}
 		}
 
 		void DX11CommandBuffer::SetTexture(Texture& texture, uint32 slot, uint32 bindFlags, uint32 stageFlags)
@@ -424,6 +426,16 @@ namespace Graphics
 						g_zeroCounters
 					);
 				}
+			}
+
+			if ((bindFlags & BindFlags::ShaderResource) != 0)
+			{
+				ResetResourceSlotsSRV(firstSlot, numSlots, stageFlags);
+			}
+
+			if ((bindFlags & BindFlags::UnorderedAccess) != 0)
+			{
+				ResetResourceSlotsUAV(firstSlot, numSlots, stageFlags);
 			}
 		}
 

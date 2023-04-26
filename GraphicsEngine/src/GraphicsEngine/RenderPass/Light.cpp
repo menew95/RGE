@@ -233,12 +233,12 @@ namespace Graphics
 		m_SkinnedRenderObjectList.clear();
 	}
 
-	void Light::RegistStaticRenderObject(RenderObject* renderObject)
+	void Light::RegistStaticRenderObject(RenderObject& renderObject)
 	{
 		m_StaticRenderObjectList.push_back(renderObject);
 	}
 
-	void Light::RegistSkinnedRenderObject(RenderObject* renderObject)
+	void Light::RegistSkinnedRenderObject(RenderObject& renderObject)
 	{
 		m_SkinnedRenderObjectList.push_back(renderObject);
 	}
@@ -283,8 +283,8 @@ namespace Graphics
 
 		for (size_t i = 0; i < m_StaticRenderObjectList.size(); i++)
 		{
-			auto _min = m_StaticRenderObjectList[i]->m_MeshBuffer->GetBoundingBoxMin();
-			auto _max = m_StaticRenderObjectList[i]->m_MeshBuffer->GetBoundingBoxMax();
+			auto _min = m_StaticRenderObjectList[i].m_MeshBuffer->GetBoundingBoxMin();
+			auto _max = m_StaticRenderObjectList[i].m_MeshBuffer->GetBoundingBoxMax();
 
 			auto _center = (_min + _max) * 0.5f;
 			auto _extents = _max - _center;
@@ -293,18 +293,18 @@ namespace Graphics
 			_boundingOrientedBox.Center = _center;
 			_boundingOrientedBox.Extents = _extents;
 
-			_boundingOrientedBox.Transform(_boundingOrientedBox, m_StaticRenderObjectList[i]->m_World);
+			_boundingOrientedBox.Transform(_boundingOrientedBox, m_StaticRenderObjectList[i].m_World);
 
 			if (_boundSphere.Intersects(_boundingOrientedBox))
 			{
-				m_PointShadow_Pass->RegistRenderObject(m_StaticRenderObjectList[i]);
+				m_PointShadow_Pass->RegistRenderObject(&m_StaticRenderObjectList[i]);
 			}
 		}
 
 		for (size_t i = 0; i < m_SkinnedRenderObjectList.size(); i++)
 		{
-			auto _min = m_SkinnedRenderObjectList[i]->m_MeshBuffer->GetBoundingBoxMin();
-			auto _max = m_SkinnedRenderObjectList[i]->m_MeshBuffer->GetBoundingBoxMax();
+			auto _min = m_SkinnedRenderObjectList[i].m_MeshBuffer->GetBoundingBoxMin();
+			auto _max = m_SkinnedRenderObjectList[i].m_MeshBuffer->GetBoundingBoxMax();
 
 			auto _center = (_min + _max) * 0.5f;
 			auto _extents = _max - _center;
@@ -313,11 +313,11 @@ namespace Graphics
 			_boundingOrientedBox.Center = _center;
 			_boundingOrientedBox.Extents = _extents;
 
-			_boundingOrientedBox.Transform(_boundingOrientedBox, m_SkinnedRenderObjectList[i]->m_World);
+			_boundingOrientedBox.Transform(_boundingOrientedBox, m_SkinnedRenderObjectList[i].m_World);
 
 			if (_boundSphere.Intersects(_boundingOrientedBox))
 			{
-				m_PointShadow_Skinned_Pass->RegistRenderObject(m_SkinnedRenderObjectList[i]);
+				m_PointShadow_Skinned_Pass->RegistRenderObject(&m_SkinnedRenderObjectList[i]);
 			}
 		}
 	}
@@ -338,8 +338,8 @@ namespace Graphics
 
 		for (size_t i = 0; i < m_StaticRenderObjectList.size(); i++)
 		{
-			auto _min = m_StaticRenderObjectList[i]->m_MeshBuffer->GetBoundingBoxMin();
-			auto _max = m_StaticRenderObjectList[i]->m_MeshBuffer->GetBoundingBoxMax();
+			auto _min = m_StaticRenderObjectList[i].m_MeshBuffer->GetBoundingBoxMin();
+			auto _max = m_StaticRenderObjectList[i].m_MeshBuffer->GetBoundingBoxMax();
 
 			auto _center = (_min + _max) * 0.5f;
 			auto _extents = _max - _center;
@@ -348,18 +348,18 @@ namespace Graphics
 			_boundingOrientedBox.Center = _center;
 			_boundingOrientedBox.Extents = _extents;
 
-			_boundingOrientedBox.Transform(_boundingOrientedBox, m_StaticRenderObjectList[i]->m_World);
+			_boundingOrientedBox.Transform(_boundingOrientedBox, m_StaticRenderObjectList[i].m_World);
 
 			if (_boundingFrustum.Intersects(_boundingOrientedBox))
 			{
-				m_SpotShadow_Pass->RegistRenderObject(m_StaticRenderObjectList[i]);
+				m_SpotShadow_Pass->RegistRenderObject(&m_StaticRenderObjectList[i]);
 			}
 		}
 
 		for (size_t i = 0; i < m_SkinnedRenderObjectList.size(); i++)
 		{
-			auto _min = m_SkinnedRenderObjectList[i]->m_MeshBuffer->GetBoundingBoxMin();
-			auto _max = m_SkinnedRenderObjectList[i]->m_MeshBuffer->GetBoundingBoxMax();
+			auto _min = m_SkinnedRenderObjectList[i].m_MeshBuffer->GetBoundingBoxMin();
+			auto _max = m_SkinnedRenderObjectList[i].m_MeshBuffer->GetBoundingBoxMax();
 
 			auto _center = (_min + _max) * 0.5f;
 			auto _extents = _max - _center;
@@ -368,11 +368,11 @@ namespace Graphics
 			_boundingOrientedBox.Center = _center;
 			_boundingOrientedBox.Extents = _extents;
 
-			_boundingOrientedBox.Transform(_boundingOrientedBox, m_SkinnedRenderObjectList[i]->m_World);
+			_boundingOrientedBox.Transform(_boundingOrientedBox, m_SkinnedRenderObjectList[i].m_World);
 
 			if (_boundingFrustum.Intersects(_boundingOrientedBox))
 			{
-				m_SpotShadow_Pass->RegistRenderObject(m_SkinnedRenderObjectList[i]);
+				m_SpotShadow_Pass->RegistRenderObject(&m_SkinnedRenderObjectList[i]);
 			}
 		}
 	}
@@ -384,14 +384,14 @@ namespace Graphics
 		// 직사광의 경우 거의 모든 오브젝트가 그려져야 함으로 컬링 처리가 필요한가?
 		// 그냥 직사광을 씬당 하나로 제한하는 것이 맞지 않나?
 
-		for (auto& _renderObject : m_StaticRenderObjectList)
+		for (size_t _idx = 0; _idx < m_StaticRenderObjectList.size(); _idx++)
 		{
-			m_CascadedShadow_Pass->RegistRenderObject(_renderObject);
+			m_CascadedShadow_Pass->RegistRenderObject(&m_StaticRenderObjectList[_idx]);
 		}
 
-		for (auto& _renderObject : m_SkinnedRenderObjectList)
+		for (size_t _idx = 0; _idx < m_SkinnedRenderObjectList.size(); _idx++)
 		{
-			m_CascadedShadow_Skinned_Pass->RegistRenderObject(_renderObject);
+			m_CascadedShadow_Skinned_Pass->RegistRenderObject(&m_SkinnedRenderObjectList[_idx]);
 		}
 	}
 

@@ -146,7 +146,7 @@ namespace GameEngine
 						//_renderObject.m_UpdateResources.push_back(_perMaterialResource);
 
 						_renderObject.m_RenderPassIdx = _idx;
-						GraphicsSystem::GetInstance()->RegistRenderObject(_idx, &_renderObject);
+						GraphicsSystem::GetInstance()->RegistRenderObject(_idx, _renderObject);
 
 						if (m_bIsShadowCasting)
 						{
@@ -158,7 +158,7 @@ namespace GameEngine
 							//_perObjectResource._index = 0;
 							_shadow.m_UpdateResourcePerObjects.push_back(_perObjectResource);
 
-							GraphicsSystem::GetInstance()->RegistShadowObject(0, &_shadow);
+							GraphicsSystem::GetInstance()->RegistShadowObject(0, _shadow);
 						}
 					}
 				

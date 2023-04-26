@@ -28,8 +28,6 @@ namespace Graphics
 			Math::Vector2 _tile = Math::Vector2::One;
 		};
 		
-
-
 		std::vector<UpdateResourceData> m_UpdateResources;
 	};
 }

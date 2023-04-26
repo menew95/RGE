@@ -60,8 +60,8 @@ namespace Graphics
 		void RegistRenderObject(RenderObject* renderObject);
 		void DeleteRenderObject(RenderObject* renderObject);
 
-		void RegistRenderMesh(RenderObject* renderObject);
-		void RegistRenderShadow(uint32 type, RenderObject* renderObject);
+		void RegistRenderMesh(RenderObject& renderObject);
+		void RegistRenderShadow(uint32 type, RenderObject& renderObject);
 
 		void Excute();
 		void ExcuteRenderPass(Graphics::RenderPass* renderPass);

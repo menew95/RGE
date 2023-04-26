@@ -37,6 +37,12 @@ namespace Graphics
 		void CreateVoxelResource();
 
 		void CreateVoxelizePass();
+		void CreateVoxelCopyPass();
+
+		void UpdateResourcePerMaterial(CommandBuffer* commandBuffer, RenderObject* renderObject, PipelineLayout* pipelineLayout);
+		void UpdateResourcePerObject(CommandBuffer* commandBuffer, RenderObject* renderObject, PipelineLayout* pipelineLayout);
+
+		void UpdateBuffer(CommandBuffer* commandBuffer, Buffer* buffer, void* src, uint32 size);
 
 		ResourceManager* m_ResourceManager = nullptr;
 		CommandBuffer* m_CommandBuffer = nullptr;
@@ -47,6 +53,7 @@ namespace Graphics
 		PipelineLayout* m_PiprlineLayout = nullptr;
 		
 		Buffer* m_Voxel = nullptr;
+		Buffer* m_VoxelData = nullptr;
 		Texture* m_VoxelTexture = nullptr;
 		Texture* m_VoxelBoundTexture = nullptr;
 
@@ -55,8 +62,10 @@ namespace Graphics
 #pragma region
 
 		PipelineState* m_VoxelizePSO = nullptr;
-		PipelineState* m_VoxelCopyCSO = nullptr;
 		PipelineLayout* m_VoxelizeLayout = nullptr;
+
+		PipelineState* m_VoxelCopyCSO = nullptr;
+		PipelineLayout* m_VoxelCopyLayout = nullptr;
 
 #pragma endregion
 

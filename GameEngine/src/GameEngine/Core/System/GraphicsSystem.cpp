@@ -98,9 +98,9 @@ namespace GameEngine
 			// Todo :
 		}
 
-		void GraphicsSystem::RegistRenderObject(uint32 passIdx, Graphics::RenderObject* renderObject)
+		void GraphicsSystem::RegistRenderObject(uint32 passIdx, Graphics::RenderObject& renderObject)
 		{
-			renderObject->m_RenderPassIdx = passIdx;
+			renderObject.m_RenderPassIdx = passIdx;
 
 			m_GraphicsEngine->RegistRenderMesh(renderObject);
 		}
@@ -115,7 +115,7 @@ namespace GameEngine
 			m_GraphicsEngine->DeleteRenderObject(renderObject);
 		}
 
-		void GraphicsSystem::RegistShadowObject(uint32 type, Graphics::RenderObject* renderObject)
+		void GraphicsSystem::RegistShadowObject(uint32 type, Graphics::RenderObject& renderObject)
 		{
 			m_GraphicsEngine->RegistRenderShadow(type, renderObject);
 		}

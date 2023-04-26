@@ -23,11 +23,6 @@ struct PSInput
 
 RWStructuredBuffer<VoxelType> VoxelGrid     : register(u0);
 
-cbuffer VoxelCbuf : register(b2)
-{
-    VoxelRadiance voxel_radiance;
-}
-
 void main(PSInput input)
 {
     float3 _diff = (input.positionWS.xyz - voxel_radiance._gridCenter) * voxel_radiance._dataResRCP * voxel_radiance._dataSizeRCP;

@@ -23,7 +23,7 @@ namespace Graphics
 
 		void ExcutePass();
 
-		void RegistRenderObject(RenderObject* renderObject);
+		void RegistRenderObject(RenderObject& renderObject);
 
 		inline void SetCameraBuffer(CameraBuffer* camera) { m_CameraBuffer = camera; }
 
@@ -37,7 +37,7 @@ namespace Graphics
 
 		CameraBuffer* m_CameraBuffer;
 
-		std::vector<RenderObject*> m_RenderObjectList;
+		std::vector<RenderObject> m_RenderObjectList;
 
 		std::shared_ptr<Graphics::RenderPass> m_Deferred_Mesh_Pass;
 		std::shared_ptr<Graphics::RenderPass> m_Deferred_Mesh_Albedo_Pass;

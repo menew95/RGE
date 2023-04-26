@@ -1,9 +1,5 @@
 #include "Header/H_Voxel.hlsli"
 
-cbuffer voxelBuffer :register(b1)
-{
-    VoxelRadiance voxel_radiance;
-}
 struct GSInput
 {
     float4 posW		: POSITION;
@@ -62,5 +58,14 @@ void main(triangle GSInput input[3] : SV_POSITION, inout TriangleStream<GSOutput
         _output.positionWS = input[i].posW;
 
         outputStream.Append(_output);
+
+        // Conservative Rasterization setup:
+        /*float2 side0N = normalize(output[1].pos.xy - output[0].pos.xy);
+        float2 side1N = normalize(output[2].pos.xy - output[1].pos.xy);
+        float2 side2N = normalize(output[0].pos.xy - output[2].pos.xy);
+        const float texelSize = 1.0f / g_xWorld_VoxelRadianceDataRes;
+        output[0].pos.xy += normalize(-side0N + side2N) * texelSize;
+        output[1].pos.xy += normalize(side0N - side1N) * texelSize;
+        output[2].pos.xy += normalize(side1N - side2N) * texelSize;*/
     }
 }

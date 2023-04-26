@@ -1,10 +1,5 @@
 #include "Header/H_Voxel.hlsli"
 
-cbuffer VoxelCbuf : register(b4)
-{
-    VoxelRadiance voxel_radiance;
-}
-
 RWStructuredBuffer<VoxelType> VoxelGrid : register(u0);
 
 RWTexture3D<float4> VoxelTexture : register(u1);

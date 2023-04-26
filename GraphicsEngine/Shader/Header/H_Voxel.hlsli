@@ -21,6 +21,11 @@ struct VoxelType
 static const float g_hdr_range = 10.f;
 static const float g_max_voxel_light = 20;
 
+cbuffer VoxelCB :register(b4)
+{
+	VoxelRadiance voxel_radiance;
+}
+
 // Encode HDR color to a 32 bit uint
 // Alpha i 1 bit + 7 bit HDR remapping
 inline uint EncodeColor(in float4 color)

@@ -98,7 +98,7 @@ namespace Graphics
 		m_RenderObjectList.clear();
 	}
 
-	void Deferred::RegistRenderObject(RenderObject* renderObject)
+	void Deferred::RegistRenderObject(RenderObject& renderObject)
 	{
 		m_RenderObjectList.push_back(renderObject);
 	}
@@ -134,8 +134,8 @@ namespace Graphics
 		{
 			// Frustum Culling
 
-			auto _min = m_RenderObjectList[i]->m_MeshBuffer->GetBoundingBoxMin();
-			auto _max = m_RenderObjectList[i]->m_MeshBuffer->GetBoundingBoxMax();
+			auto _min = m_RenderObjectList[i].m_MeshBuffer->GetBoundingBoxMin();
+			auto _max = m_RenderObjectList[i].m_MeshBuffer->GetBoundingBoxMax();
 
 			auto _center = (_min + _max) * 0.5f;
 			auto _extents = _max - _center;
@@ -144,50 +144,50 @@ namespace Graphics
 			_boundingOrientedBox.Center = _center;
 			_boundingOrientedBox.Extents = _extents;
 
-			_boundingOrientedBox.Transform(_boundingOrientedBox, m_RenderObjectList[i]->m_World);
+			_boundingOrientedBox.Transform(_boundingOrientedBox, m_RenderObjectList[i].m_World);
 
 			if (m_Frustum.Intersects(_boundingOrientedBox))
 			{
-				switch (m_RenderObjectList[i]->m_RenderPassIdx)
+				switch (m_RenderObjectList[i].m_RenderPassIdx)
 				{
 					case 0:
 					{
-						m_Deferred_Mesh_Pass->RegistRenderObject(m_RenderObjectList[i]);
+						m_Deferred_Mesh_Pass->RegistRenderObject(&m_RenderObjectList[i]);
 						break;
 					}
 					case 1:
 					{
-						m_Deferred_Mesh_Albedo_Pass->RegistRenderObject(m_RenderObjectList[i]);
+						m_Deferred_Mesh_Albedo_Pass->RegistRenderObject(&m_RenderObjectList[i]);
 						break;
 					}
 					case 2:
 					{
-						m_Deferred_Mesh_Albedo_Bump_Pass->RegistRenderObject(m_RenderObjectList[i]);
+						m_Deferred_Mesh_Albedo_Bump_Pass->RegistRenderObject(&m_RenderObjectList[i]);
 						break;
 					}
 					case 3:
 					{
-						m_Deferred_Mesh_Albedo_Bump_MRA_Pass->RegistRenderObject(m_RenderObjectList[i]);
+						m_Deferred_Mesh_Albedo_Bump_MRA_Pass->RegistRenderObject(&m_RenderObjectList[i]);
 						break;
 					}
 					case 4:
 					{
-						m_Deferred_Mesh_Skinned_Pass->RegistRenderObject(m_RenderObjectList[i]);
+						m_Deferred_Mesh_Skinned_Pass->RegistRenderObject(&m_RenderObjectList[i]);
 						break;
 					}
 					case 5:
 					{
-						m_Deferred_Mesh_Skinned_Albedo_Pass->RegistRenderObject(m_RenderObjectList[i]);
+						m_Deferred_Mesh_Skinned_Albedo_Pass->RegistRenderObject(&m_RenderObjectList[i]);
 						break;
 					}
 					case 6:
 					{
-						m_Deferred_Mesh_Skinned_Albedo_Bump_Pass->RegistRenderObject(m_RenderObjectList[i]);
+						m_Deferred_Mesh_Skinned_Albedo_Bump_Pass->RegistRenderObject(&m_RenderObjectList[i]);
 						break;
 					}
 					case 7:
 					{
-						m_Deferred_Mesh_Skinned_Albedo_Bump_MRA_Pass->RegistRenderObject(m_RenderObjectList[i]);
+						m_Deferred_Mesh_Skinned_Albedo_Bump_MRA_Pass->RegistRenderObject(&m_RenderObjectList[i]);
 						break;
 					}
 					default:
