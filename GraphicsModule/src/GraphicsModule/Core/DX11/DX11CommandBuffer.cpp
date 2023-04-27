@@ -530,6 +530,12 @@ namespace Graphics
 			_castSwapChain->BindFramebufferView(this);
 		}
 
+		void DX11CommandBuffer::ClearState()
+		{
+			m_Context->ClearState();
+
+			m_StateManager->ClearState();
+		}
 
 	}
 }

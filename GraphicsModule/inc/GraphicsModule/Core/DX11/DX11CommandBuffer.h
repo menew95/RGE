@@ -66,6 +66,8 @@ namespace Graphics
 
 			void ResetResourceSlots(const ResourceType  resourceType, uint32 firstSlot, uint32 numSlots, long bindFlags, long stageFlags = StageFlags::AllStages) override;
 
+			void ClearState() override;
+
 			/* ----- Render Passes ----- */
 
 			void BeginRenderPass(

@@ -44,6 +44,8 @@ namespace Graphics
 			void SetBlendState(ID3D11BlendState* blendState, const FLOAT* blendFactor, uint32 sampleMask);
 			void SetBlendFactor(const FLOAT* blendFactor);
 
+			void ClearState();
+
 			void SetConstantBuffers(
 				uint32                    startSlot,
 				uint32                    count,
@@ -86,6 +88,7 @@ namespace Graphics
 			{
 				return m_Context.Get();
 			}
+
 
 		private:
 			ComPtr<ID3D11DeviceContext> m_Context;

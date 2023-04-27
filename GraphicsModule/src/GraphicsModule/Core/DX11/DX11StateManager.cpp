@@ -370,5 +370,24 @@ namespace Graphics
 			}
 		}
 
+		void DX11StateManager::ClearState()
+		{
+			m_PrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_UNDEFINED;
+			m_InputLayout = nullptr;
+
+			m_VS = nullptr;
+			m_HS = nullptr;
+			m_DS = nullptr;
+			m_GS = nullptr;
+			m_PS = nullptr;
+			m_CS = nullptr;
+
+			m_RasterizerState = nullptr;
+			m_DepthStencilState = nullptr;
+			m_StencilRef = 0;
+			m_BlendState = nullptr;
+			m_SampleMask = 0xffffffff;
+		}
+
 	}
 }

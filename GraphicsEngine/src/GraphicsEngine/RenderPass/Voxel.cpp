@@ -32,6 +32,8 @@ namespace Graphics
 		ExcuteVoxelize();
 
 		ExcuteCopy();
+
+		m_CommandBuffer->ClearState();
 	}
 
 	void Voxel::ExcuteVoxelize()
@@ -65,13 +67,14 @@ namespace Graphics
 
 				m_CommandBuffer->SetResources(*m_VoxelizeLayout);
 
-				//m_CommandBuffer->DrawIndexed(_subMeshBuffer.m_IndexCount, 0, 0);
+				m_CommandBuffer->DrawIndexed(_subMeshBuffer.m_IndexCount, 0, 0);
 			}
 		}
 
 		m_CommandBuffer->ResetResourceSlots(ResourceType::Buffer, 0, 1, BindFlags::UnorderedAccess, StageFlags::PS);
-
+		
 		m_CommandBuffer->EndEvent();
+
 	}
 
 	void Voxel::ExcuteCopy()
@@ -115,14 +118,14 @@ namespace Graphics
 
 		m_Voxel_Info.data_res = VOXEL_RESOLUTION;
 		m_Voxel_Info.data_res_rcp = 1.0f / VOXEL_RESOLUTION;
-		m_Voxel_Info.data_size = voxelSize;
-		m_Voxel_Info.data_size_rcp = 1.0f / voxelSize;
+		m_Voxel_Info.data_size = 0.1;
+		m_Voxel_Info.data_size_rcp = 1.0f / 0.1f;
 		m_Voxel_Info.mips = 7;
 		m_Voxel_Info.num_cones = coneNum;
 		m_Voxel_Info.num_cones_rcp = 1.0f / coneNum;
 		m_Voxel_Info.ray_step_size = rayStepDis;
 		m_Voxel_Info.max_distance = maxDis;
-		m_Voxel_Info.grid_center = center;
+		m_Voxel_Info.grid_center = { 0,0,0 };// center;
 		
 		m_CommandBuffer->UpdateBuffer(*m_VoxelData, 0, &m_Voxel_Info, GetCBufferSize(sizeof(VoxelInfoCB)));
 	}
@@ -251,13 +254,15 @@ namespace Graphics
 		_voxelizePSODesc._shaderProgram._geometryShader = m_ResourceManager->CreateShader(TEXT("GS_Voxelization"), _voxelizeGS);
 		_voxelizePSODesc._shaderProgram._pixelShader = m_ResourceManager->CreateShader(TEXT("PS_Voxelization"), _voxelizePS);
 
-		_voxelizePSODesc._hasDSS = false;
 		_voxelizePSODesc._hasBS = false;
 
 		_voxelizePSODesc._rasterizerDesc._cullMode = CullMode::None;
 		_voxelizePSODesc._rasterizerDesc._fillMode = FillMode::Solid;
-		_voxelizePSODesc._rasterizerDesc._depthClampEnabled = true;
+		_voxelizePSODesc._rasterizerDesc._depthClampEnabled = false;
 		_voxelizePSODesc._rasterizerDesc._multiSampleEnabled = true;
+
+		_voxelizePSODesc._depthDesc._depthEnabled = false;
+		_voxelizePSODesc._stencilDesc._stencilEnable = false;
 
 		m_VoxelizePSO = m_ResourceManager->CreatePipelineState(TEXT("Voxelize"), _voxelizePSODesc);
 	}

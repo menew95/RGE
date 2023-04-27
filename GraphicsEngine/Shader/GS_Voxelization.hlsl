@@ -51,7 +51,7 @@ void main(triangle GSInput input[3] : SV_POSITION, inout TriangleStream<GSOutput
         
         // ±×¸®°í º¹¼¿ ÇØ»óµµ¸¸Å­ ³ª´²ÁÜ
         _output.position.xy *= voxel_radiance._dataResRCP;
-        _output.position.zw = float2(0, 1);
+        _output.position.zw = float2(1, 1);
 
         _output.uv = input[i].uv;
         _output.normalWS = input[i].normalWS;

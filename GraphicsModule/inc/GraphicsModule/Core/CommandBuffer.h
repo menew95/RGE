@@ -70,6 +70,8 @@ namespace Graphics
 
 		virtual void Clear(long flags, const ClearValue& clearValue = {}) abstract;
 		virtual void ClearAttachments(uint32 numAttachments, const AttachmentClear* attachments) abstract;
+		
+		virtual void ClearState() abstract;
 
 		/* ----- Render Target ----- */
 		virtual void SetRenderTarget(RenderTarget& renderTarget, uint32 numAttachments, const AttachmentClear* attachments) abstract;

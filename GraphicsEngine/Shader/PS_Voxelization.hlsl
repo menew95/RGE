@@ -36,9 +36,8 @@ void main(PSInput input)
 
     float3 _normal = normalize(input.normalWS);
 
-    input.uv.y = 1 - input.uv.y;
     float4 _color = gAlbedoMap.Sample(samWrapLinear, input.uv);
-
+    _color = float4(1, 1, 1, 1);
 
     uint _colorEncoded = EncodeColor(_color);
     uint _normalEncoded = EncodeNormal(_normal);

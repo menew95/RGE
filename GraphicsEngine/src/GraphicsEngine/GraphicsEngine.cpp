@@ -40,8 +40,8 @@ namespace Graphics
 
 	GraphicsEngine::~GraphicsEngine()
 	{
-		m_CommandBuffer->ResetResourceSlots(ResourceType::Texture, 0, 8, StageFlags::AllStages);
 		m_CommandBuffer->EndRenderPass();
+		m_CommandBuffer->ClearState();
 
 		m_RenderSystem->Release(*m_SwapChain);
 		m_RenderSystem->Release(*m_CommandBuffer);
@@ -315,9 +315,6 @@ namespace Graphics
 
 		m_Sky->ExcutePass();
 
-		m_Voxel_Pass->UpdateVoxelInfo(_perFrame._camera._camWorld, 4, 2, 0.75f, 20.0f);
-
-		m_Voxel_Pass->Excute();
 
 		{
 			m_Deferred_Light_Pass->RegistRenderObject(&_deferredMergeRenderObject);
@@ -332,6 +329,11 @@ namespace Graphics
 		}
 
 		m_Debug_Deferred->ExcutePass();
+
+
+		m_Voxel_Pass->UpdateVoxelInfo(_perFrame._camera._camWorld, 4, 2, 0.75f, 20.0f);
+
+		m_Voxel_Pass->Excute();
 
 		m_SwapChain->Present();
 	}
