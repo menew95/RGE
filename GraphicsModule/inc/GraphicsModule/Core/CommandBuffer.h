@@ -88,6 +88,7 @@ namespace Graphics
 		/* ----- Compute ----- */
 
 		virtual void Dispatch(uint32 numWorkGroupsX, uint32 numWorkGroupsY, uint32 numWorkGroupsZ) abstract;
+		virtual void DispatchIndirect(Buffer& buffer, uint32 offset) abstract;
 	};
 
 }

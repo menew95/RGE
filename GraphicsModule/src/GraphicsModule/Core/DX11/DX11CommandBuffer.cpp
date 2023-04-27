@@ -315,16 +315,14 @@ namespace Graphics
 
 				if ((bindFlags & BindFlags::ShaderResource) != 0)
 				{
-					assert(false);
-					ID3D11ShaderResourceView* srv[] = { 0 };
+					ID3D11ShaderResourceView* srv[] = { _buffer.GetSRV() };
 					m_StateManager->SetShaderResources(slot, 1, srv, stageFlags);
 				}
 
 				if ((bindFlags & BindFlags::UnorderedAccess) != 0)
 				{
-					assert(false);
-					ID3D11UnorderedAccessView* uav[] = { 0 };
-					UINT auvCounts[] = { 0 };
+					ID3D11UnorderedAccessView* uav[] = { _buffer.GetUAV() };
+					UINT auvCounts[] = { _buffer.GetInitialCount() };
 					m_StateManager->SetUnorderedAccessViews(slot, 1, uav, auvCounts, stageFlags);
 				}
 			}
@@ -367,8 +365,14 @@ namespace Graphics
 
 		void DX11CommandBuffer::Dispatch(uint32 numWorkGroupsX, uint32 numWorkGroupsY, uint32 numWorkGroupsZ)
 		{
-			// Todo : compute shader
-			assert(false);
+			m_Context->Dispatch(numWorkGroupsX, numWorkGroupsY, numWorkGroupsZ);
+		}
+
+		void DX11CommandBuffer::DispatchIndirect(Buffer& buffer, uint32 offset)
+		{
+			auto& _castBuffer = reinterpret_cast<DX11Buffer&>(buffer);
+
+			m_Context->DispatchIndirect(_castBuffer.GetNative(), offset);
 		}
 
 		void DX11CommandBuffer::ResetBufferSlots(uint32 firstSlot, uint32 numSlots, long bindFlags, long stageFlags /*= StageFlags::AllStages*/)
@@ -525,6 +529,7 @@ namespace Graphics
 
 			_castSwapChain->BindFramebufferView(this);
 		}
+
 
 	}
 }

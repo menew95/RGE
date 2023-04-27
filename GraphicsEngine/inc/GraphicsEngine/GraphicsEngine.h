@@ -24,6 +24,7 @@ namespace Graphics
 	class RenderQueue;
 	class Sky;
 	class PostProcess;
+	class Voxel;
 
 	class DebugDeferred;
 
@@ -47,6 +48,7 @@ namespace Graphics
 		void InitCascadedShadow();
 
 		void InitSSR();
+		void InitVoxel();
 
 		MeshBuffer* CreateMeshBuffer(uuid uuid, std::vector<Common::VertexAttribute>& vertices, std::vector<std::vector<uint32>> subMeshs, Math::Vector3 min, Math::Vector3 max);
 		MaterialBuffer* CreateMaterialBuffer(uuid uuid);
@@ -112,6 +114,8 @@ namespace Graphics
 		std::shared_ptr<Deferred> m_Deferred;
 		std::shared_ptr<Sky> m_Sky;
 		std::shared_ptr<PostProcess> m_SSR_Pass;
+
+		std::shared_ptr<Voxel> m_Voxel_Pass;
 
 		std::shared_ptr<DebugDeferred> m_Debug_Deferred;
 

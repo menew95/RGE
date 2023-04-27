@@ -36,8 +36,6 @@ namespace Graphics
 		LoadGraphicsTable();
 
 		Initialize(desc);
-
-		Voxel voxel{m_CommandBuffer, m_ResourceManager};
 	}
 
 	GraphicsEngine::~GraphicsEngine()
@@ -83,6 +81,7 @@ namespace Graphics
 
 		InitSSR();
 
+		InitVoxel();
 	}
 
 	void GraphicsEngine::InitMeshPass()
@@ -188,7 +187,6 @@ namespace Graphics
 	{
 		m_Light = std::make_shared<Light>(m_RenderSystem, m_CommandBuffer, m_ResourceManager);
 
-
 	}
 
 	void GraphicsEngine::InitCascadedShadow()
@@ -203,6 +201,11 @@ namespace Graphics
 	void GraphicsEngine::InitSSR()
 	{
 		m_SSR_Pass = std::make_shared<PostProcess>(m_CommandBuffer, m_ResourceManager);
+	}
+
+	void GraphicsEngine::InitVoxel()
+	{
+		m_Voxel_Pass = std::make_shared<Voxel>(m_CommandBuffer, m_ResourceManager);
 	}
 
 	Graphics::MeshBuffer* GraphicsEngine::CreateMeshBuffer(uuid uuid, std::vector<Common::VertexAttribute>& vertices, std::vector<std::vector<uint32>> subMeshs, Math::Vector3 min, Math::Vector3 max)
@@ -256,6 +259,8 @@ namespace Graphics
 	void GraphicsEngine::RegistRenderMesh(RenderObject& renderObject)
 	{
 		m_Deferred->RegistRenderObject(renderObject);
+
+		m_Voxel_Pass->RegistRenderObject(renderObject);
 	}
 
 	void GraphicsEngine::RegistRenderShadow(uint32 type, RenderObject& renderObject)
@@ -309,6 +314,10 @@ namespace Graphics
 		m_SSR_Pass->ExcutePass();
 
 		m_Sky->ExcutePass();
+
+		m_Voxel_Pass->UpdateVoxelInfo(_perFrame._camera._camWorld, 4, 2, 0.75f, 20.0f);
+
+		m_Voxel_Pass->Excute();
 
 		{
 			m_Deferred_Light_Pass->RegistRenderObject(&_deferredMergeRenderObject);

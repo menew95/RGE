@@ -11,6 +11,7 @@ namespace Graphics
 	{
 
 		DX11Shader::DX11Shader(ID3D11Device* device, const ShaderDesc& desc)
+			: m_ShaderDesc(desc)
 		{
 			BuildShader(device, desc);
 		}

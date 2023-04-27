@@ -101,6 +101,7 @@ namespace Graphics
 			/* ----- Compute ----- */
 
 			void Dispatch(uint32 numWorkGroupsX, uint32 numWorkGroupsY, uint32 numWorkGroupsZ) override;
+			void DispatchIndirect(Buffer& buffer, uint32 offset) override;
 
 		private:
 			void SetBuffer(Buffer& buffer, uint32 slot, uint32 bindFlags, uint32 stageFlags);

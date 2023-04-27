@@ -200,5 +200,8 @@
     <FxCompile Include="Shader\GS_Voxelization.hlsl" />
     <FxCompile Include="Shader\PS_Voxelization.hlsl" />
     <FxCompile Include="Shader\CS_VoxelCopy.hlsl" />
+    <FxCompile Include="Shader\VS_VoxelDebug.hlsl" />
+    <FxCompile Include="Shader\GS_VoxelDebug.hlsl" />
+    <FxCompile Include="Shader\PS_VoxelDebug.hlsl" />
   </ItemGroup>
 </Project>
