@@ -377,6 +377,13 @@ xcopy /E /S /Y /R "$(ProjectDir)Shader\*" "$(OutputPath)..\Client\Asset\Shader\*
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </None>
     <None Include="Shader\Header\H_Voxel.hlsli" />
+    <FxCompile Include="Shader\PS_VoxelGI.hlsl">
+      <FileType>Document</FileType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\GS_Cascaded.hlsl">

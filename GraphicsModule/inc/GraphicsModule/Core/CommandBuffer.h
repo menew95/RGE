@@ -36,6 +36,9 @@ namespace Graphics
 
 		virtual void CopyBuffer(Buffer& dstBuffer, uint32 dstOffset, Buffer& srcBuffer, uint32 srcOffset, uint32 size) abstract;
 
+		virtual void GenerateMips(Texture& texture) abstract;
+		virtual void GenerateMips(Texture& texture, const TextureSubresource& subresource) abstract;
+
 		/* ----- Viewport and Scissor ----- */
 
 		virtual void SetViewport(const Math::Viewport& viewport) abstract;

@@ -44,6 +44,9 @@ namespace Graphics
 
 			void CopyBuffer(Buffer& dstBuffer, uint32 dstOffset, Buffer& srcBuffer, uint32 srcOffset, uint32 size) override;
 
+			void GenerateMips(Texture& texture) override;
+			void GenerateMips(Texture& texture, const TextureSubresource& subresource) override;
+
 			/* ----- Viewport and Scissor ----- */
 
 			void SetViewport(const Math::Viewport& viewport) override;

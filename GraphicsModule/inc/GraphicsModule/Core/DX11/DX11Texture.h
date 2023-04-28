@@ -78,6 +78,22 @@ namespace Graphics
 			//void CreateUnorderedAccessView(ID3D11Device* device, ID3D11Resource* resource, ID3D11UnorderedAccessView** uavOutput, const TextureType type, const DXGI_FORMAT format, uint32 baseMipLevel, uint32 baseArrayLayer, uint32 numArrayLayers, const char* errorContextInfo = nullptr);
 
 			void CreateTextureFromFile(ID3D11Device* device, const ImageDesc& srcDesc);
+
+			inline DXGI_FORMAT GetDXFormat() const
+			{
+				return m_Format;
+			}
+
+			inline uint32 GetNumMipLevels() const
+			{
+				return m_NumMipLevels;
+			}
+
+			inline uint32 GetNumArrayLayers() const
+			{
+				return m_NumArrayLayers;
+			}
+
 		private:
 			void SetResourceParams(DXGI_FORMAT format, const Extent3D& extent, UINT mipLevels, UINT arraySize);
 

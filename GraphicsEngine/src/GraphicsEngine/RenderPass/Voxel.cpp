@@ -92,6 +92,8 @@ namespace Graphics
 
 		m_CommandBuffer->ResetResourceSlots(ResourceType::Texture, 0, 2, BindFlags::UnorderedAccess, StageFlags::CS);
 
+		m_CommandBuffer->GenerateMips(*m_VoxelTexture);
+
 		m_CommandBuffer->EndEvent();
 	}
 

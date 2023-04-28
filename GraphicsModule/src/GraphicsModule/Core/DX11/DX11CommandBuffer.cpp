@@ -89,6 +89,34 @@ namespace Graphics
 
 		}
 
+		void DX11CommandBuffer::GenerateMips(Texture& texture)
+		{
+			auto& _castTexture = reinterpret_cast<DX11Texture&>(texture);
+
+			auto* _srv = _castTexture.GetSRV();
+
+			if (_srv != nullptr)
+			{
+				m_Context->GenerateMips(_srv);
+			}
+		}
+
+		void DX11CommandBuffer::GenerateMips(Texture& texture, const TextureSubresource& subresource)
+		{
+			auto& _castTexture = reinterpret_cast<DX11Texture&>(texture);
+
+			auto* _srv = _castTexture.GetSRV();
+
+			if (subresource.baseMipLevel == 0 && 
+				subresource.numMipLevels == _castTexture.GetNumMipLevels() &&
+				subresource.baseArrayLayer == 0 &&
+				subresource.numArrayLayers == _castTexture.GetNumArrayLayers() &&
+				_srv != nullptr)
+			{
+				m_Context->GenerateMips(_srv);
+			}
+		}
+
 		void DX11CommandBuffer::SetViewport(const Math::Viewport& viewport)
 		{
 			m_StateManager->SetViewports(1, &viewport);
@@ -536,6 +564,5 @@ namespace Graphics
 
 			m_StateManager->ClearState();
 		}
-
 	}
 }
