@@ -59,7 +59,10 @@ namespace Graphics
 
 			/* Set input-assembly states */
 			stateManager.SetPrimitiveTopology(m_PrimitiveTopology);
-			stateManager.SetInputLayout(m_InputLayout.Get());
+			if(m_PrimitiveTopology == D3D11_PRIMITIVE_TOPOLOGY_POINTLIST)
+				stateManager.SetInputLayout(nullptr);
+			else
+				stateManager.SetInputLayout(m_InputLayout.Get());
 
 			/* Set shader states */
 			stateManager.SetVertexShader(m_VS.Get());

@@ -330,10 +330,13 @@ namespace Graphics
 
 		m_Debug_Deferred->ExcutePass();
 
+		m_Voxel_Pass->SetRenderTarget(m_SwapChain);
 
-		m_Voxel_Pass->UpdateVoxelInfo(_perFrame._camera._camWorld, 4, 2, 0.75f, 20.0f);
+		m_Voxel_Pass->UpdateVoxelInfo(_perFrame._camera._camWorld, 0.1, 2, 0.75f, 20.0f);
 
 		m_Voxel_Pass->Excute();
+
+		m_CommandBuffer->ClearState();
 
 		m_SwapChain->Present();
 	}

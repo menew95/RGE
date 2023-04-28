@@ -29,7 +29,8 @@ void main(triangle GSInput input[3] : SV_POSITION, inout TriangleStream<GSOutput
     {
         GSOutput _output;
 
-        //WS 위치 값에서 voxel공간의 위치값으로 변경
+        // WS 위치 값에서 복셀공간의 중점으로부터의 거리를 구하고 복셀 사이즈 만큼 나눠줌
+        // 복셀 공간의 점으로 변환 
         _output.position.xyz = (input[i].posW.xyz - voxel_radiance._gridCenter) * voxel_radiance._dataSizeRCP;
 
         // 주요 축에 투영시킴 노말의 절대값이 제일 크다는 의미는 해당 축에서 제일 수직인 값이라는 뜻

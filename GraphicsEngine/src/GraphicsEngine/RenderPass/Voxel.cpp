@@ -33,7 +33,7 @@ namespace Graphics
 
 		ExcuteCopy();
 
-		m_CommandBuffer->ClearState();
+		ExcuteDebug();
 	}
 
 	void Voxel::ExcuteVoxelize()
@@ -75,6 +75,7 @@ namespace Graphics
 		
 		m_CommandBuffer->EndEvent();
 
+		m_RenderObjectList.clear();
 	}
 
 	void Voxel::ExcuteCopy()
@@ -83,6 +84,7 @@ namespace Graphics
 
 		m_CommandBuffer->SetPipelineState(*m_VoxelCopyCSO);
 
+		m_CommandBuffer->SetResource(*m_VoxelData, 4, BindFlags::ConstantBuffer, StageFlags::CS);
 		m_CommandBuffer->SetResource(*m_Voxel, 0, BindFlags::UnorderedAccess, StageFlags::CS);
 		m_CommandBuffer->SetResource(*m_VoxelTexture, 1, BindFlags::UnorderedAccess, StageFlags::CS);
 
@@ -93,19 +95,21 @@ namespace Graphics
 		m_CommandBuffer->EndEvent();
 	}
 
-	void Voxel::ExcuteDebug(RenderTarget* renderTarget)
+	void Voxel::ExcuteDebug()
 	{
 		m_CommandBuffer->BeginEvent(TEXT("Voxel Debug Pass"));
 
+		m_CommandBuffer->SetViewport({ 0, 0, 1280, 720, 0, 1 });
+
 		m_CommandBuffer->SetPipelineState(*m_VoxelDebugPSO);
 
-		m_CommandBuffer->SetRenderTarget(*renderTarget, 0, 0);
+		m_CommandBuffer->SetRenderTarget(*m_RenderTarget, 0, 0);
 		
 		m_CommandBuffer->SetResources(*m_VoxelDebugLayout);
 
 		m_CommandBuffer->Draw(VOXEL_RESOLUTION * VOXEL_RESOLUTION * VOXEL_RESOLUTION, 0);
 
-		m_CommandBuffer->EndRenderPass();
+		m_CommandBuffer->ResetResourceSlots(ResourceType::Texture, 0, 1, BindFlags::ShaderResource, StageFlags::VS);
 
 		m_CommandBuffer->EndEvent();
 	}
@@ -118,14 +122,14 @@ namespace Graphics
 
 		m_Voxel_Info.data_res = VOXEL_RESOLUTION;
 		m_Voxel_Info.data_res_rcp = 1.0f / VOXEL_RESOLUTION;
-		m_Voxel_Info.data_size = 0.1;
-		m_Voxel_Info.data_size_rcp = 1.0f / 0.1f;
+		m_Voxel_Info.data_size = voxelSize;
+		m_Voxel_Info.data_size_rcp = 1.0f / voxelSize;
 		m_Voxel_Info.mips = 7;
 		m_Voxel_Info.num_cones = coneNum;
 		m_Voxel_Info.num_cones_rcp = 1.0f / coneNum;
 		m_Voxel_Info.ray_step_size = rayStepDis;
 		m_Voxel_Info.max_distance = maxDis;
-		m_Voxel_Info.grid_center = { 0,0,0 };// center;
+		m_Voxel_Info.grid_center = center;
 		
 		m_CommandBuffer->UpdateBuffer(*m_VoxelData, 0, &m_Voxel_Info, GetCBufferSize(sizeof(VoxelInfoCB)));
 	}
@@ -163,6 +167,29 @@ namespace Graphics
 
 		m_VoxelTexture = m_ResourceManager->CreateTexture(TEXT("VoxelTexture"), _textureDesc);
 		//m_VoxelBoundTexture = m_ResourceManager->CreateTexture(TEXT("VoxelBoundTexture"), _textureDesc);
+
+		//RenderTargetDesc _renderTargetDesc;
+
+		//_renderTargetDesc._extend = { 1280, 720 };
+		//_renderTargetDesc._sample = 1;
+
+		//{
+		//	AttachmentDesc _attachDesc;
+		//	_attachDesc._renderTargetType = RenderTargetType::RenderTarget;
+		//	_attachDesc._resource = m_ResourceManager->GetTexture(TEXT("Degerred_Light"));
+		//	_attachDesc._mipLevel = 0;
+		//	_renderTargetDesc._attachments.push_back(_attachDesc);
+		//}
+
+		//{
+		//	AttachmentDesc _attachDesc;
+		//	_attachDesc._renderTargetType = RenderTargetType::DepthStencil;
+		//	_attachDesc._resource = m_ResourceManager->GetTexture(TEXT("DeferredDSV"));
+		//	_attachDesc._mipLevel = 0;
+		//	_renderTargetDesc._attachments.push_back(_attachDesc);
+		//}
+
+		//m_RenderTarget = m_ResourceManager->CreateRenderTarget(TEXT("VoxelDebugRT"), _renderTargetDesc);
 	}
 
 	void Voxel::CreateVoxelizePass()
@@ -370,6 +397,15 @@ namespace Graphics
 			_pipelineDesc._bindings.push_back(_bindDesc);
 			_pipelineDesc._resources.push_back(m_VoxelData);
 		}
+		{
+			BindingDescriptor _bindDesc
+			{
+				ResourceType::Buffer, BindFlags::ConstantBuffer, StageFlags::GS, 0
+			};
+
+			_pipelineDesc._bindings.push_back(_bindDesc);
+			_pipelineDesc._resources.push_back(m_ResourceManager->GetBuffer(TEXT("PerCamera")));
+		}
 
 		m_VoxelDebugLayout = m_ResourceManager->CreatePipelineLayout(TEXT("VoxelDebug"), _pipelineDesc);
 
@@ -397,6 +433,7 @@ namespace Graphics
 
 		_voxelDebugPSODesc._rasterizerDesc._cullMode = CullMode::Back;
 		_voxelDebugPSODesc._rasterizerDesc._fillMode = FillMode::Solid;
+		_voxelDebugPSODesc._rasterizerDesc._frontCCW = false;
 		_voxelDebugPSODesc._rasterizerDesc._depthBias.clamp = 0;
 		_voxelDebugPSODesc._rasterizerDesc._depthBias.slopeFactor = 1;
 		_voxelDebugPSODesc._rasterizerDesc._depthBias.constantFactor = 10000;
@@ -478,10 +515,11 @@ namespace Graphics
 	}
 	void Voxel::RegistRenderObject(RenderObject& renderObject)
 	{
-		if (m_RenderObjectList.size() == 0)
-		{
-			m_RenderObjectList.push_back(renderObject);
-		}
+		auto& _sources = renderObject.GetUpdateResourceData();
+
+		if (_sources.size() == 0) return;
+
+		m_RenderObjectList.push_back(renderObject);
 	}
 
 	void Voxel::Initialize()

@@ -48,6 +48,11 @@ namespace Graphics
 
 		void UpdateVoxelInfo(Vector3 camPos, float voxelSize, float coneNum, float rayStepDis, float maxDis);
 
+		inline void SetRenderTarget(RenderTarget* renderTarget)
+		{
+			m_RenderTarget = renderTarget;
+		}
+
 	private:
 		void Initialize();
 
@@ -67,10 +72,12 @@ namespace Graphics
 
 		void ExcuteCopy();
 
-		void ExcuteDebug(RenderTarget* renderTarget);
+		void ExcuteDebug();
 
 		ResourceManager* m_ResourceManager = nullptr;
 		CommandBuffer* m_CommandBuffer = nullptr;
+
+		RenderTarget* m_RenderTarget = nullptr;
 
 		std::vector<RenderObject> m_RenderObjectList;
 
