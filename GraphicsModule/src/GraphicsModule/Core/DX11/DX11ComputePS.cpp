@@ -26,5 +26,18 @@ namespace Graphics
 			stateMngr.SetComputeShader(m_CS.Get());
 		}
 
+		void DX11ComputePS::SetShaderObjects(const ShaderProgram& shaderProgram)
+		{
+			if (shaderProgram._computeShader != nullptr)
+			{
+				auto _castShader = reinterpret_cast<DX11Shader*>(shaderProgram._computeShader);
+				m_CS = _castShader->GetNativeShader()._computeShader;
+			}
+			else
+			{
+				assert(false);
+			}
+		}
+
 	}
 }

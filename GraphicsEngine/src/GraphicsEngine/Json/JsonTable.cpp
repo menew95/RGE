@@ -199,7 +199,7 @@ namespace Graphics
 
 
 				_defines.push_back({ NULL, NULL });
-				_shaderDesc.defines = _defines.data();
+				_shaderDesc._defines = _defines.data();
 			}
 
 			if (_shaderTable.HasMember(flags))

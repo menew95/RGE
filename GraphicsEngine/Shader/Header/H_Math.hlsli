@@ -1,12 +1,13 @@
-#if !defined(H_MATH_HELPER)
+#if !defined(H_MATH)
 
-#define H_MATH_HELPER
+#define H_MATH
 
 //---------------------------------------------------------------------------------------
 // Transforms a normal map sample to world space.
 //---------------------------------------------------------------------------------------
-float3 NormalSampleToWorldSpace(float3 normalMapSample, float3 unitNormalW, float3 tangentW)
+void NormalSampleToWorldSpace(out float3 bumpedNormalW, in float3 normalMapSample, in float3 unitNormalW, in float3 tangentW)
 {
+	//bumpedNormalW = { 0.0f, 0.0f, 0.0f };
 	// Uncompress each component from [0,1] to [-1,1].
 	float3 normalT = 2.0f * normalMapSample - 1.0f;
 
@@ -19,9 +20,9 @@ float3 NormalSampleToWorldSpace(float3 normalMapSample, float3 unitNormalW, floa
 	float3x3 TBN = float3x3(T, BT, N);
 
 	// Transform from tangent space to world space.
-	float3 bumpedNormalW = mul(normalT, TBN);
+	bumpedNormalW = mul(normalT, TBN);
 
-	return bumpedNormalW;
+	normalize(bumpedNormalW);
 }
 
 //---------------------------------------------------------------------------------------

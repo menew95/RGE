@@ -22,7 +22,19 @@ cbuffer Transform : register(b1)
 	matrix worldInvTranspose;
 };
 
-cbuffer Lighting : register(b1)
+#if defined(_SKIN) && defined(BONECNT)
+cbuffer PerSkin: register(b2)
+{
+	matrix boneTransforms[BONE_MAX_CNT];
+};
+#endif //_SKIN && BONECNT
+
+cbuffer PerMaterial : register(b3)
+{
+	Material material;
+};
+
+cbuffer Lighting : register(b4)
 {
 	// x dir y point z spot
 	uint4 _lightCount;
@@ -34,18 +46,6 @@ cbuffer Lighting : register(b1)
 	SpotLight _spotLight[MAX_LIGHT_COUNT];
 
 	PointLight _pointLight[MAX_LIGHT_COUNT];
-};
-
-#if defined(_SKIN) && defined(BONECNT)
-cbuffer PerSkin: register(b3)
-{
-	matrix boneTransforms[BONE_MAX_CNT];
-};
-#endif //_SKIN && BONECNT
-
-cbuffer PerMaterial : register(b2)
-{
-	Material material;
 };
 
 #endif // H_CONSTANTBUFFER

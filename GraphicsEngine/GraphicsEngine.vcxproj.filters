@@ -172,8 +172,9 @@
     <None Include="Shader\Header\H_PBR.hlsli" />
     <None Include="Shader\Header\H_Light.hlsli" />
     <None Include="Shader\Header\H_Shadow.hlsli" />
-    <None Include="Shader\Header\H_MathHelper.hlsli" />
+    <None Include="Shader\Header\H_Math.hlsli" />
     <None Include="Shader\Header\H_Voxel.hlsli" />
+    <None Include="Shader\Header\H_Util.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\VS_Mesh.hlsl" />
@@ -203,7 +204,7 @@
     <FxCompile Include="Shader\VS_VoxelDebug.hlsl" />
     <FxCompile Include="Shader\GS_VoxelDebug.hlsl" />
     <FxCompile Include="Shader\PS_VoxelDebug.hlsl" />
-    <FxCompile Include="Shader\GS_VoxelLineDebug.hlsl" />
+    <FxCompile Include="Shader\GS_VoxelDebugLine.hlsl" />
     <FxCompile Include="Shader\PS_VoxelGI.hlsl" />
   </ItemGroup>
 </Project>

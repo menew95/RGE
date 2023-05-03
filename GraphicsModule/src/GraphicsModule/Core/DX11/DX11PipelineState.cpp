@@ -37,7 +37,7 @@ namespace Graphics
 				CreateBlendState(device, desc);
 			}
 
-			GetShaderObjects(desc._shaderProgram);
+			SetShaderObjects(desc._shaderProgram);
 		}
 
 		void DX11PipelineState::Bind(DX11StateManager& stateManager)
@@ -124,7 +124,7 @@ namespace Graphics
 			HR(_hr, "failed to create blend state");
 		}
 
-		void DX11PipelineState::GetShaderObjects(const ShaderProgram& shaderProgram)
+		void DX11PipelineState::SetShaderObjects(const ShaderProgram& shaderProgram)
 		{
 			if (shaderProgram._vertexShader != nullptr)
 			{

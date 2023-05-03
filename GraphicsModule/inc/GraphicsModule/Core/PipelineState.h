@@ -15,6 +15,7 @@ namespace Graphics
 		virtual ~PipelineState() = default;
 
 		//virtual void Bind(class StateManager* stateManager);
+		virtual void SetShaderObjects(const ShaderProgram& shaderProgram) abstract;
 
 	protected:
 

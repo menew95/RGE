@@ -43,7 +43,6 @@ VSOutput main(VSInput input)
         }
     }
 
-    //_output.posW = mul(float4(_posL, 1.0f), world);
     _output.posW = float4(_posL, 1.0f);
     _output.posV = mul(_output.posW, camera._view);
     _output.posH = mul(_output.posV, camera._proj);

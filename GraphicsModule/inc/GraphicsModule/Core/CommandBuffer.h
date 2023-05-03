@@ -18,6 +18,7 @@ namespace Graphics
 	class Resource;
 	class RenderPass;
 	class RenderTarget;
+	struct TextureSubresource;
 
 	class GRAPHICS_DLL_DECLSPEC CommandBuffer
 	{

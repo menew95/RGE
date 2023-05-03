@@ -1,5 +1,6 @@
 #include "Header/H_ConstBuffer.hlsli"
 #include "Header/H_Voxel.hlsli"
+#include "Header/H_Util.hlsli"
 
 struct GSInput
 {
@@ -12,12 +13,6 @@ struct GSOutput
 	float4 posH : SV_POSITION;
 	float4 color : COLOR;
 };
-
-inline float3 CreateCube(in uint vertexID)
-{
-	uint b = 1u << vertexID;
-	return float3((0x287a & b) != 0, (0x02af & b) != 0, (0x31e3 & b) != 0);
-}
 
 [maxvertexcount(14)]
 void main(point GSInput input[1], inout TriangleStream<GSOutput> output)

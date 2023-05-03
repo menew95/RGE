@@ -96,11 +96,25 @@ namespace Graphics
 		PipelineState* m_VoxelizePSO = nullptr;
 		PipelineLayout* m_VoxelizeLayout = nullptr;
 
+		// albedo map
+		PipelineState* m_VoxelizePSO1 = nullptr;
+		PipelineLayout* m_VoxelizeLayout1 = nullptr;
+
+		// normal map
+		PipelineState* m_VoxelizePSO2 = nullptr;
+		PipelineLayout* m_VoxelizeLayout2 = nullptr;
+
+		// mra map
+		PipelineState* m_VoxelizePSO3 = nullptr;
+		PipelineLayout* m_VoxelizeLayout3 = nullptr;
+
 		PipelineState* m_VoxelCopyCSO = nullptr;
 		PipelineLayout* m_VoxelCopyLayout = nullptr;
 
 		PipelineState* m_VoxelDebugPSO = nullptr;
+		PipelineState* m_VoxelDebugLinePSO = nullptr;
 		PipelineLayout* m_VoxelDebugLayout = nullptr;
+ 
 #pragma endregion
 
 		uint32 VOXEL_RESOLUTION = 128;

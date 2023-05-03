@@ -44,7 +44,7 @@ namespace Graphics
 
 		m_CommandBuffer->SetViewport(_viewport);
 
-		m_CommandBuffer->SetPipelineState(*m_VoxelizePSO);
+		m_CommandBuffer->SetPipelineState(*m_VoxelizePSO1);
 
 		for (auto& _renderObject : m_RenderObjectList)
 		{
@@ -92,7 +92,7 @@ namespace Graphics
 
 		m_CommandBuffer->ResetResourceSlots(ResourceType::Texture, 0, 2, BindFlags::UnorderedAccess, StageFlags::CS);
 
-		m_CommandBuffer->GenerateMips(*m_VoxelTexture);
+		//m_CommandBuffer->GenerateMips(*m_VoxelTexture);
 
 		m_CommandBuffer->EndEvent();
 	}
@@ -127,7 +127,7 @@ namespace Graphics
 		m_Voxel_Info.data_size = voxelSize;
 		m_Voxel_Info.data_size_rcp = 1.0f / voxelSize;
 		m_Voxel_Info.mips = 7;
-		m_Voxel_Info.num_cones = coneNum;
+		m_Voxel_Info.num_cones = static_cast<uint32>(coneNum);
 		m_Voxel_Info.num_cones_rcp = 1.0f / coneNum;
 		m_Voxel_Info.ray_step_size = rayStepDis;
 		m_Voxel_Info.max_distance = maxDis;
@@ -163,7 +163,7 @@ namespace Graphics
 		_textureDesc._textureType = TextureType::Texture3D;
 		_textureDesc._extend = { VOXEL_RESOLUTION, VOXEL_RESOLUTION , VOXEL_RESOLUTION };
 		_textureDesc._miscFlags = MiscFlags::GenerateMips;
-		_textureDesc._mipLevels = 1;
+		_textureDesc._mipLevels = 7;
 		_textureDesc._bindFlags = BindFlags::UnorderedAccess | BindFlags::ShaderResource | BindFlags::RenderTarget;
 		_textureDesc._format = Format::R16G16B16A16_FLOAT;
 
@@ -196,6 +196,14 @@ namespace Graphics
 
 	void Voxel::CreateVoxelizePass()
 	{
+		ShaderMacro _albedoMap{ "_ALBEDO_MAP", "" };
+		ShaderMacro _normalMap{ "_NORMAL_MAP", "" };
+		ShaderMacro _mraMap{ "_MRA_MAP", "" };
+		ShaderMacro _null{ NULL, NULL };
+
+		std::vector<ShaderMacro> _macro{ _null, _null, _null, _null };
+
+#pragma region NONE TEXTURE
 		ShaderDesc _voxelizeVS;
 		{
 			_voxelizeVS._shaderType = ShaderType::Vertex;
@@ -230,7 +238,7 @@ namespace Graphics
 		{
 			BindingDescriptor _bindDesc
 			{
-				ResourceType::Buffer, BindFlags::ConstantBuffer, StageFlags::GS | StageFlags::PS, 4
+				ResourceType::Buffer, BindFlags::ConstantBuffer, StageFlags::GS | StageFlags::PS, 5
 			};
 
 			_voxelizeLayoutDesc._bindings.push_back(_bindDesc);
@@ -245,6 +253,15 @@ namespace Graphics
 			_voxelizeLayoutDesc._bindings.push_back(_bindDesc);
 			_voxelizeLayoutDesc._resources.push_back(m_ResourceManager->GetBuffer(TEXT("Transform")));
 		}
+		/*{
+			BindingDescriptor _bindDesc
+			{
+				ResourceType::Buffer, BindFlags::ConstantBuffer, StageFlags::VS | StageFlags::GS | StageFlags::PS, 4
+			};
+
+			_voxelizeLayoutDesc._bindings.push_back(_bindDesc);
+			_voxelizeLayoutDesc._resources.push_back(m_ResourceManager->GetBuffer(TEXT("Lighting")));
+		}*/
 		{
 			BindingDescriptor _bindDesc
 			{
@@ -264,6 +281,60 @@ namespace Graphics
 			_voxelizeLayoutDesc._resources.push_back(nullptr);
 		}
 		{
+			BindingDescriptor _bindDesc
+			{
+				ResourceType::Texture, BindFlags::ShaderResource, StageFlags::PS, 5
+			};
+
+			_voxelizeLayoutDesc._bindings.push_back(_bindDesc);
+			_voxelizeLayoutDesc._resources.push_back(m_ResourceManager->GetTexture(TEXT("Pre_Filtered")));
+		}
+		{
+			BindingDescriptor _bindDesc
+			{
+				ResourceType::Texture, BindFlags::ShaderResource, StageFlags::PS, 6
+			};
+
+			_voxelizeLayoutDesc._bindings.push_back(_bindDesc);
+			_voxelizeLayoutDesc._resources.push_back(m_ResourceManager->GetTexture(TEXT("Irradiance")));
+		}
+		{
+			BindingDescriptor _bindDesc
+			{
+				ResourceType::Texture, BindFlags::ShaderResource, StageFlags::PS, 7
+			};
+
+			_voxelizeLayoutDesc._bindings.push_back(_bindDesc);
+			_voxelizeLayoutDesc._resources.push_back(m_ResourceManager->GetTexture(TEXT("IntegrateBRDF")));
+		}
+		{
+			BindingDescriptor _bindDesc
+			{
+				ResourceType::Texture, BindFlags::ShaderResource, StageFlags::PS, 8
+			};
+
+			_voxelizeLayoutDesc._bindings.push_back(_bindDesc);
+			_voxelizeLayoutDesc._resources.push_back(m_ResourceManager->GetTexture(TEXT("CascadedShadow")));
+		}
+		{
+			BindingDescriptor _bindDesc
+			{
+				ResourceType::Texture, BindFlags::ShaderResource, StageFlags::PS, 9
+			};
+
+			_voxelizeLayoutDesc._bindings.push_back(_bindDesc);
+			_voxelizeLayoutDesc._resources.push_back(m_ResourceManager->GetTexture(TEXT("SpotLightShadow")));
+		}
+		{
+			BindingDescriptor _bindDesc
+			{
+				ResourceType::Texture, BindFlags::ShaderResource, StageFlags::PS, 10
+			};
+
+			_voxelizeLayoutDesc._bindings.push_back(_bindDesc);
+			_voxelizeLayoutDesc._resources.push_back(m_ResourceManager->GetTexture(TEXT("PointLightShadow")));
+		}
+		{
 			BindingDescriptor _bindDesc;
 			{
 				ResourceType::Sampler, 0, StageFlags::PS, 0;
@@ -271,6 +342,33 @@ namespace Graphics
 
 			_voxelizeLayoutDesc._bindings.push_back(_bindDesc);
 			_voxelizeLayoutDesc._resources.push_back(m_ResourceManager->GetSampler(TEXT("samWrapLinear")));
+		}
+		{
+			BindingDescriptor _bindDesc;
+			{
+				ResourceType::Sampler, 0, StageFlags::PS, 1;
+			};
+
+			_voxelizeLayoutDesc._bindings.push_back(_bindDesc);
+			_voxelizeLayoutDesc._resources.push_back(m_ResourceManager->GetSampler(TEXT("samCascaded")));
+		}
+		{
+			BindingDescriptor _bindDesc;
+			{
+				ResourceType::Sampler, 0, StageFlags::PS, 2;
+			};
+
+			_voxelizeLayoutDesc._bindings.push_back(_bindDesc);
+			_voxelizeLayoutDesc._resources.push_back(m_ResourceManager->GetSampler(TEXT("samPointLight")));
+		}
+		{
+			BindingDescriptor _bindDesc;
+			{
+				ResourceType::Sampler, 0, StageFlags::PS, 3;
+			};
+
+			_voxelizeLayoutDesc._bindings.push_back(_bindDesc);
+			_voxelizeLayoutDesc._resources.push_back(m_ResourceManager->GetSampler(TEXT("samPoint")));
 		}
 
 		m_VoxelizeLayout = m_ResourceManager->CreatePipelineLayout(TEXT("Voxelize"), _voxelizeLayoutDesc);
@@ -294,6 +392,64 @@ namespace Graphics
 		_voxelizePSODesc._stencilDesc._stencilEnable = false;
 
 		m_VoxelizePSO = m_ResourceManager->CreatePipelineState(TEXT("Voxelize"), _voxelizePSODesc);
+		
+#pragma endregion NONE TEXTURE
+
+#pragma region ALBEDO
+
+		//_macro.push_back(_albedoMap);
+		_macro[0] = _albedoMap;
+
+		_voxelizeVS._defines = _macro.data();
+
+		_voxelizeGS._defines = _macro.data();
+		
+		_voxelizePS._defines = _macro.data();
+
+		m_VoxelizeLayout1 = m_ResourceManager->CreatePipelineLayout(TEXT("Voxelize1"), _voxelizeLayoutDesc);
+
+		_voxelizePSODesc._pipelineLayout = m_VoxelizeLayout1;
+
+		_voxelizePSODesc._shaderProgram._vertexShader = m_ResourceManager->CreateShader(TEXT("VS_Voxelization1"), _voxelizeVS);
+		_voxelizePSODesc._shaderProgram._geometryShader = m_ResourceManager->CreateShader(TEXT("GS_Voxelization1"), _voxelizeGS);
+		_voxelizePSODesc._shaderProgram._pixelShader = m_ResourceManager->CreateShader(TEXT("PS_Voxelization1"), _voxelizePS);
+
+		m_VoxelizePSO1 = m_ResourceManager->CreatePipelineState(TEXT("Voxelize1"), _voxelizePSODesc);
+		
+#pragma endregion ALBEDO
+
+#pragma region ALBEDOMAP + NORMAL
+
+		_macro[1] = _normalMap;
+		
+		m_VoxelizeLayout2 = m_ResourceManager->CreatePipelineLayout(TEXT("Voxelize2"), _voxelizeLayoutDesc);
+
+		_voxelizePSODesc._pipelineLayout = m_VoxelizeLayout;
+
+		_voxelizePSODesc._shaderProgram._vertexShader = m_ResourceManager->CreateShader(TEXT("VS_Voxelization2"), _voxelizeVS);
+		_voxelizePSODesc._shaderProgram._geometryShader = m_ResourceManager->CreateShader(TEXT("GS_Voxelization2"), _voxelizeGS);
+		_voxelizePSODesc._shaderProgram._pixelShader = m_ResourceManager->CreateShader(TEXT("PS_Voxelization2"), _voxelizePS);
+
+		m_VoxelizePSO = m_ResourceManager->CreatePipelineState(TEXT("Voxelize2"), _voxelizePSODesc);
+
+#pragma endregion ALBEDO + NORMAL
+
+#pragma region ALBEDO + NORMAL + MRA
+
+		_macro[2] = _mraMap;
+
+		m_VoxelizeLayout3 = m_ResourceManager->CreatePipelineLayout(TEXT("Voxelize3"), _voxelizeLayoutDesc);
+
+		_voxelizePSODesc._pipelineLayout = m_VoxelizeLayout;
+
+		_voxelizePSODesc._shaderProgram._vertexShader = m_ResourceManager->CreateShader(TEXT("VS_Voxelization3"), _voxelizeVS);
+		_voxelizePSODesc._shaderProgram._geometryShader = m_ResourceManager->CreateShader(TEXT("GS_Voxelization3"), _voxelizeGS);
+		_voxelizePSODesc._shaderProgram._pixelShader = m_ResourceManager->CreateShader(TEXT("PS_Voxelization3"), _voxelizePS);
+
+		m_VoxelizePSO3 = m_ResourceManager->CreatePipelineState(TEXT("Voxelize3"), _voxelizePSODesc);
+		
+#pragma endregion ALBEDO + NORMAL + MRA
+		
 	}
 
 	void Voxel::CreateVoxelCopyPass()
@@ -314,7 +470,7 @@ namespace Graphics
 		{
 			BindingDescriptor _bindDesc
 			{
-				ResourceType::Buffer, BindFlags::ConstantBuffer, StageFlags::CS, 4
+				ResourceType::Buffer, BindFlags::ConstantBuffer, StageFlags::CS, 5
 			};
 
 			_voxelCopyLayoutDesc._bindings.push_back(_bindDesc);
@@ -370,6 +526,16 @@ namespace Graphics
 			_voxelDebugGS._profile = "gs_5_0";
 		}
 
+		ShaderDesc _voxelDebugLineGS;
+		{
+			_voxelDebugLineGS._shaderType = ShaderType::Geometry;
+			_voxelDebugLineGS._sourceType = ShaderSourceType::HLSL;
+			_voxelDebugLineGS._filePath = TEXT("Asset\\Shader\\GS_VoxelDebugLine.hlsl");
+			_voxelDebugLineGS._sourceSize = 0;
+			_voxelDebugLineGS._entryPoint = "main";
+			_voxelDebugLineGS._profile = "gs_5_0";
+		}
+
 		ShaderDesc _voxelDebugPS;
 		{
 			_voxelDebugPS._shaderType = ShaderType::Pixel;
@@ -393,7 +559,7 @@ namespace Graphics
 		{
 			BindingDescriptor _bindDesc
 			{
-				ResourceType::Buffer, BindFlags::ConstantBuffer, StageFlags::VS | StageFlags::GS, 4
+				ResourceType::Buffer, BindFlags::ConstantBuffer, StageFlags::VS | StageFlags::GS, 5
 			};
 
 			_pipelineDesc._bindings.push_back(_bindDesc);
@@ -443,6 +609,14 @@ namespace Graphics
 		_voxelDebugPSODesc._hasBS = false;
 		
 		m_VoxelDebugPSO = m_ResourceManager->CreatePipelineState(TEXT("VoxelDebug"), _voxelDebugPSODesc);
+
+		// Line Debug
+
+		//_voxelDebugPSODesc._rasterizerDesc._fillMode = FillMode::WireFrame;
+
+		_voxelDebugPSODesc._shaderProgram._geometryShader = m_ResourceManager->CreateShader(TEXT("GS_VoxelDebugLine"), _voxelDebugLineGS);
+
+		m_VoxelDebugLinePSO = m_ResourceManager->CreatePipelineState(TEXT("VoxelDebugLine"), _voxelDebugPSODesc);
 	}
 
 	void Voxel::UpdateResourcePerMaterial(CommandBuffer* commandBuffer, RenderObject* renderObject, PipelineLayout* pipelineLayout)

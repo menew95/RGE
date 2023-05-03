@@ -66,7 +66,7 @@ namespace Graphics
 		const char* _entryPoint = nullptr;
 		const char* _profile = nullptr;
 
-		const ShaderMacro* defines = nullptr;
+		const ShaderMacro* _defines = nullptr;
 
 		uint32 _flags = 0;
 	};

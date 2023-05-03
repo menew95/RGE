@@ -34,7 +34,7 @@ namespace Graphics
 			/* Get parameter from union */
 			const char* entry = desc._entryPoint;
 			const char* target = (desc._profile != nullptr ? desc._profile : "");
-			auto        defines = reinterpret_cast<const D3D_SHADER_MACRO*>(desc.defines);
+			auto        defines = reinterpret_cast<const D3D_SHADER_MACRO*>(desc._defines);
 			auto        flags = desc._flags;
 
 			flags = D3DCOMPILE_ENABLE_STRICTNESS | D3DCOMPILE_PACK_MATRIX_ROW_MAJOR;

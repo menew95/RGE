@@ -39,7 +39,6 @@ struct VSOutput
 #if defined(_NORMAL_MAP)
 	float3 tangent	: TANGENT;
 #endif
-//#endif
 };
 
 struct PSOut

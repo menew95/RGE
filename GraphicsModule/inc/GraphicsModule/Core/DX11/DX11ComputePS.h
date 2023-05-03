@@ -18,6 +18,8 @@ namespace Graphics
 
 			virtual void Bind(DX11StateManager& stateMngr);
 
+			void SetShaderObjects(const ShaderProgram& shaderProgram) override;
+
 		private:
 			ComPtr<ID3D11ComputeShader> m_CS;
 		};

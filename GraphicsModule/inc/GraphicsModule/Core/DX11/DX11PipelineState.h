@@ -20,7 +20,8 @@ namespace Graphics
 			virtual void Bind(DX11StateManager& stateMngr);
 
 			void SetStaticViewportsAndScissors(DX11StateManager& stateManager);
-			
+
+			void SetShaderObjects(const ShaderProgram& shaderProgram) override;
 		protected:
 			
 			inline D3D11_PRIMITIVE_TOPOLOGY GetPrimitiveTopology() const
@@ -60,9 +61,6 @@ namespace Graphics
 			void CreateRasterizerState(ID3D11Device* device, const GraphicsPipelineDesc& pipelineDesc);
 
 			void CreateBlendState(ID3D11Device* device, const GraphicsPipelineDesc& pipelineDesc);
-
-			void GetShaderObjects(const ShaderProgram& shaderProgram);
-
 
 			ComPtr<ID3D11DepthStencilState> m_DepthStencilState = nullptr;
 			ComPtr<ID3D11RasterizerState>   m_RasterizerState = nullptr;

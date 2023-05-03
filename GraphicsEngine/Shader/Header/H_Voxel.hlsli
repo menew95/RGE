@@ -21,7 +21,7 @@ struct VoxelType
 static const float g_hdr_range = 10.f;
 static const float g_max_voxel_light = 20;
 
-cbuffer VoxelCB :register(b4)
+cbuffer VoxelCB :register(b5)
 {
 	VoxelRadiance voxel_radiance;
 }
