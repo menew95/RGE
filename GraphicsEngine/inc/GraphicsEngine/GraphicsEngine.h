@@ -106,6 +106,9 @@ namespace Graphics
 		MeshBuffer* m_Screen_Mesh;
 		std::shared_ptr<Graphics::RenderPass> m_Deferred_Light_Pass;
 
+
+		std::shared_ptr<Graphics::RenderPass> m_Final_Pass;
+
 		std::vector<std::shared_ptr<LightBuffer>> m_LightBuffers;
 
 		std::shared_ptr<IBL> m_IBL;

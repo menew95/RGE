@@ -589,7 +589,7 @@ namespace Graphics
 
 		_voxelDebugPSODesc._viewports.push_back({ 0, 0, 1280, 720, 0, 1 });
 
-		_voxelDebugPSODesc._depthDesc._depthEnabled = false;
+		_voxelDebugPSODesc._depthDesc._depthEnabled = true;
 		_voxelDebugPSODesc._depthDesc.compareOp = CompareOp::Less;
 		_voxelDebugPSODesc._depthDesc._writeEnabled = false;
 
@@ -617,6 +617,8 @@ namespace Graphics
 		_voxelDebugPSODesc._shaderProgram._geometryShader = m_ResourceManager->CreateShader(TEXT("GS_VoxelDebugLine"), _voxelDebugLineGS);
 
 		m_VoxelDebugLinePSO = m_ResourceManager->CreatePipelineState(TEXT("VoxelDebugLine"), _voxelDebugPSODesc);
+
+		m_RenderTarget = m_ResourceManager->GetRenderTarget(TEXT("FinalRT"));
 	}
 
 	void Voxel::UpdateResourcePerMaterial(CommandBuffer* commandBuffer, RenderObject* renderObject, PipelineLayout* pipelineLayout)

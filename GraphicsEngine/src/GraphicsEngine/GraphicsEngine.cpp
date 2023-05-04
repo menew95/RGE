@@ -153,7 +153,7 @@ namespace Graphics
 
 		m_Deferred_Light_Pass = m_ResourceManager->GetRenderPass(TEXT("Deferred_Light Pass"));
 
-		m_Deferred_Light_Pass->SetRenderTarget(m_SwapChain);
+		//m_Deferred_Light_Pass->SetRenderTarget(m_SwapChain);
 	}
 
 	void GraphicsEngine::InitSkyPass()
@@ -187,6 +187,19 @@ namespace Graphics
 	{
 		m_Light = std::make_shared<Light>(m_RenderSystem, m_CommandBuffer, m_ResourceManager);
 
+		m_Final_Pass = m_ResourceManager->GetRenderPass(TEXT("Final Pass"));
+
+		m_Final_Pass->SetRenderTarget(m_SwapChain);
+
+		static RenderObject _reflectObject;
+		_reflectObject.m_MeshBuffer = m_Screen_Mesh;
+
+		UpdateResourceData _resourceR{ 1,  m_ResourceManager->GetTexture(TEXT("Deferred_Light")) };
+		_reflectObject.m_UpdateResources.push_back(_resourceR);
+
+		_reflectObject.AddViewport({ 0, 0, 1280, 720, 0, 1 });
+
+		m_Final_Pass->RegistRenderObject(&_reflectObject);
 	}
 
 	void GraphicsEngine::InitCascadedShadow()
@@ -328,13 +341,20 @@ namespace Graphics
 			m_Deferred_Light_Pass->EndExcute(m_CommandBuffer);
 		}
 
-		m_Debug_Deferred->ExcutePass();
 
-		m_Voxel_Pass->SetRenderTarget(m_SwapChain);
+		//m_Voxel_Pass->SetRenderTarget(m_SwapChain);
 
 		m_Voxel_Pass->UpdateVoxelInfo(_perFrame._camera._camWorld, 0.1, 2, 0.75f, 20.0f);
 
 		m_Voxel_Pass->Excute();
+
+		m_Final_Pass->BeginExcute(m_CommandBuffer, nullptr);
+
+		m_Final_Pass->Excute(m_CommandBuffer);
+
+		m_Final_Pass->EndExcute(m_CommandBuffer);
+
+		m_Debug_Deferred->ExcutePass();
 
 		m_CommandBuffer->ClearState();
 
