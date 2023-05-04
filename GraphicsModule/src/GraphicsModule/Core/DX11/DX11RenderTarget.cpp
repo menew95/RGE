@@ -4,6 +4,7 @@
 #include "GraphicsModule/Core/DX11/Direct3D11.h"
 #include "GraphicsModule/Core/DX11/DX11Texture.h"
 #include "GraphicsModule/Core/DX11/DX11Type.h"
+#include "GraphicsModule/Core/DX11/DX11Utilitys.h"
 
 namespace Graphics
 {
@@ -225,4 +226,32 @@ namespace Graphics
 			}
 		}
 	}
+
+	void DX11::DX11RenderTarget::SetName(const char* name)
+	{
+		if (name != nullptr)
+		{
+			/* Set label for each RTV */
+			uint32 _rtvIdx = 0;
+			for (const auto& rtv : GetRenderTargetViews())
+			{
+				const std::string subscript = ".RTV[" + std::to_string(_rtvIdx++) + "]";
+				DX11SetObjectNameSubscript(rtv, name, subscript.c_str());
+			}
+
+			/* Set labels for DS and DSV */
+			if (m_DepthStencilView)
+				DX11SetObjectNameSubscript(m_DepthStencilView.Get(), name, ".DSV");
+
+		}
+		else
+		{
+			/* Reset all labels */
+			for (auto rtv : GetRenderTargetViews())
+				DX11SetObjectName(rtv, nullptr);
+
+			DX11SetObjectName(m_DepthStencilView.Get(), nullptr);
+		}
+	}
+
 }

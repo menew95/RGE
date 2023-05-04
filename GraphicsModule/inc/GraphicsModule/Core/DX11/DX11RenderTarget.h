@@ -39,6 +39,7 @@ namespace Graphics
 
 			void ClearRenderTarget(ID3D11DeviceContext* context, uint32 numAttachments, const AttachmentClear* attachments);
 
+			void SetName(const char* name) override;
 
 		private:
 			void CreateRenderTarget(ID3D11Device* device, const RenderTargetDesc& desc);

@@ -84,7 +84,7 @@ namespace Graphics
 
 		m_CommandBuffer->SetPipelineState(*m_VoxelCopyCSO);
 
-		m_CommandBuffer->SetResource(*m_VoxelData, 4, BindFlags::ConstantBuffer, StageFlags::CS);
+		m_CommandBuffer->SetResource(*m_VoxelData, 5, BindFlags::ConstantBuffer, StageFlags::CS);
 		m_CommandBuffer->SetResource(*m_Voxel, 0, BindFlags::UnorderedAccess, StageFlags::CS);
 		m_CommandBuffer->SetResource(*m_VoxelTexture, 1, BindFlags::UnorderedAccess, StageFlags::CS);
 
@@ -103,7 +103,7 @@ namespace Graphics
 
 		m_CommandBuffer->SetViewport({ 0, 0, 1280, 720, 0, 1 });
 
-		m_CommandBuffer->SetPipelineState(*m_VoxelDebugPSO);
+		m_CommandBuffer->SetPipelineState(*m_VoxelDebugLinePSO);
 
 		m_CommandBuffer->SetRenderTarget(*m_RenderTarget, 0, 0);
 		

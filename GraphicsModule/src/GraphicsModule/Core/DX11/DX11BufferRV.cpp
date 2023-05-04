@@ -39,7 +39,7 @@ namespace Graphics
 
 		DX11BufferRV::DX11BufferRV(ID3D11Device* device, const BufferDesc& desc, const void* initialData /*= nullptr*/)
 			: DX11Buffer(device, desc, initialData)
-			, uavFlags_ { GetUAVFlags(desc) }
+			, m_UAVFlags { GetUAVFlags(desc) }
 		{
 			const uint32 _stride = GetStorageBufferStride(desc);
 
@@ -117,9 +117,23 @@ namespace Graphics
 				format,
 				firstElement,
 				numElements,
-				uavFlags_,
+				m_UAVFlags,
 				"for buffer subresource"
 			);
+		}
+
+		void DX11BufferRV::SetName(const char* name)
+		{
+			DX11Buffer::SetName(name);
+
+			if (m_SRV)
+			{
+				DX11SetObjectNameSubscript(m_SRV.Get(), name, ".SRV");
+			}
+			if (m_UAV)
+			{
+				DX11SetObjectNameSubscript(m_UAV.Get(), name, ".UAV");
+			}
 		}
 
 		// private
@@ -129,7 +143,7 @@ namespace Graphics
 			CreateD3D11BufferSubresourceSRV(
 				device,
 				GetNative(),
-				srv_.ReleaseAndGetAddressOf(),
+				m_SRV.ReleaseAndGetAddressOf(),
 				format,
 				firstElement,
 				numElements,
@@ -142,11 +156,11 @@ namespace Graphics
 			CreateD3D11BufferSubresourceUAV(
 				device,
 				GetNative(),
-				uav_.ReleaseAndGetAddressOf(),
+				m_UAV.ReleaseAndGetAddressOf(),
 				format,
 				firstElement,
 				numElements,
-				uavFlags_,
+				m_UAVFlags,
 				"for buffer"
 			);
 		}

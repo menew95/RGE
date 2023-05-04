@@ -54,6 +54,8 @@ namespace Graphics
 				return m_Usage;
 			}
 
+			void SetName(const char* name) override;
+
 		private:
 			void CreateBuffer(ID3D11Device* device, const BufferDesc& desc, const void* initData = nullptr);
 			

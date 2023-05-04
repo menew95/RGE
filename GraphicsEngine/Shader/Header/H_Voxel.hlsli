@@ -31,12 +31,12 @@ cbuffer VoxelCB :register(b5)
 inline uint EncodeColor(in float4 color)
 {
 	// normalize color to LDR
-	float hdr = length(color.rgb);
-	color.rgb /= hdr;
+	float _hdr = length(color.rgb);
+	color.rgb /= _hdr;
 
 	// encode LDR color and HDR range
 	uint3 _iColor = uint3(color.rgb * 255.0f);
-	uint _iHDR = (uint) (saturate(hdr / g_hdr_range) * 127);
+	uint _iHDR = (uint) (saturate(_hdr / g_hdr_range) * 127);
 	uint _colorMask = (_iHDR << 24u) | (_iColor.r << 16u) | (_iColor.g << 8u) | _iColor.b;
 
 	// encode alpha into highest bit
@@ -71,12 +71,13 @@ inline float4 DecodeColor(in uint colorMask)
 inline uint EncodeNormal(in float3 normal)
 {
 	int3 _iNormal = int3(normal * 255.0f);
-	uint3  _iNormalSigns;
 
+	uint3 _iNormalSigns;
 	_iNormalSigns.x = (_iNormal.x >> 5) & 0x04000000;
 	_iNormalSigns.y = (_iNormal.y >> 14) & 0x00020000;
 	_iNormalSigns.z = (_iNormal.z >> 23) & 0x00000100;
 	_iNormal = abs(_iNormal);
+	
 	uint _normalMask = _iNormalSigns.x | (_iNormal.x << 18) | _iNormalSigns.y | (_iNormal.y << 9) | _iNormalSigns.z | _iNormal.z;
 	return _normalMask;
 }

@@ -2,7 +2,7 @@
 
 #include "Common.h"
 
-#include "GraphicsModule/Utility/Export.h"
+#include "GraphicsModule/Core/RenderSystemObject.h"
 
 #include "GraphicsModule/Core/CommandBufferFlags.h"
 #include "GraphicsModule/Core/ShaderFlags.h"
@@ -20,7 +20,7 @@ namespace Graphics
 	class RenderTarget;
 	struct TextureSubresource;
 
-	class GRAPHICS_DLL_DECLSPEC CommandBuffer
+	class GRAPHICS_DLL_DECLSPEC CommandBuffer : public RenderSystemObject
 	{
 	public:
 		CommandBuffer() = default;

@@ -2,7 +2,7 @@
 #include "GraphicsModule/Core/DX11/DX11Texture.h"
 #include "GraphicsModule/Core/DX11/Direct3D11.h"
 #include "GraphicsModule/Core/DX11/DX11Type.h"
-
+#include "GraphicsModule/Core/DX11/DX11Utilitys.h"
 #include "GraphicsModule/Core/DirectXTex/DirectXTex.h"
 
 namespace Graphics
@@ -401,6 +401,16 @@ namespace Graphics
 			m_TextureDesc._mipLevels = textureDesc.MipLevels;
 			m_TextureDesc._bindFlags = textureDesc.BindFlags;
 
+		}
+
+		void DX11Texture::SetName(const char* name)
+		{
+			DX11SetObjectName(GetNativeTexture()._resource.Get(), name);
+
+			if (m_ShaderResourceView)
+				DX11SetObjectNameSubscript(m_ShaderResourceView.Get(), name, ".SRV");
+			if (m_UnorderedAccessView)
+				DX11SetObjectNameSubscript(m_UnorderedAccessView.Get(), name, ".UAV");
 		}
 
 		FileFormat DX11Texture::CheckFileFormat(const tstring& path)

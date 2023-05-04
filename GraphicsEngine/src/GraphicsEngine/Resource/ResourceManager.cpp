@@ -160,7 +160,11 @@ namespace Graphics
 		}
 
 		auto* _newBuffer= m_RenderSystem->CreateBuffer(uuid, desc);
+#if defined(_DEBUG)
+		std::string _name = StringHelper::WStringToString(uuid);
 
+		_newBuffer->SetName(_name.c_str());
+#endif
 		m_BufferMap.insert(std::make_pair(uuid, _newBuffer));
 
 		return _newBuffer;
@@ -180,7 +184,11 @@ namespace Graphics
 		}
 
 		auto* _newSampler = m_RenderSystem->CreateSampler(uuid, desc);
+#if defined(_DEBUG)
+		std::string _name = StringHelper::WStringToString(uuid);
 
+		_newSampler->SetName(_name.c_str());
+#endif
 		m_SamplerMap.insert(std::make_pair(uuid, _newSampler));
 
 		return _newSampler;
@@ -200,7 +208,11 @@ namespace Graphics
 		}
 
 		auto* _newShader = m_RenderSystem->CreateShader(uuid, desc);
+#if defined(_DEBUG)
+		std::string _name = StringHelper::WStringToString(uuid);
 
+		_newShader->SetName(_name.c_str());
+#endif
 		m_ShaderMap.insert(std::make_pair(uuid, _newShader));
 
 		return _newShader;
@@ -221,6 +233,11 @@ namespace Graphics
 
 		auto* _newTex = m_RenderSystem->CreateTexture(uuid, desc);
 
+#if defined(_DEBUG)
+		std::string _name = StringHelper::WStringToString(uuid);
+
+		_newTex->SetName(_name.c_str());
+#endif
 		m_TextureMap.insert(std::make_pair(uuid, _newTex));
 
 		return _newTex;
@@ -241,6 +258,11 @@ namespace Graphics
 
 		auto* _newRT = m_RenderSystem->CreateRenderTarget(uuid, desc);
 
+#if defined(_DEBUG)
+		std::string _name = StringHelper::WStringToString(uuid);
+
+		_newRT->SetName(_name.c_str());
+#endif
 		m_RenderTargetMap.insert(std::make_pair(uuid, _newRT));
 
 		return _newRT;
@@ -469,6 +491,12 @@ namespace Graphics
 		TextureDesc desc;
 
 		auto* _loadTex = m_RenderSystem->CreateTexture(uuid, desc, imageDesc);
+
+#if defined(_DEBUG)
+		std::string _name = StringHelper::WStringToString(uuid);
+
+		_loadTex->SetName(_name.c_str());
+#endif // _DEBUG
 
 		m_TextureMap.insert(std::make_pair(uuid, _loadTex));
 

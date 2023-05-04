@@ -42,7 +42,7 @@ namespace Graphics
 
 		void DX11Sampler::SetName(const char* name)
 		{
-			DX11ObjectSetName(m_SamplerState.Get(), name);
+			DX11SetObjectName(m_SamplerState.Get(), name);
 		}
 
 	}

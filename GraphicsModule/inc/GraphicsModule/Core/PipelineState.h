@@ -2,13 +2,13 @@
 
 #include "Common.h"
 
-#include "GraphicsModule/Utility/Export.h"
+#include "GraphicsModule/Core/RenderSystemObject.h"
 
 #include "GraphicsModule/Core/PipelineStateFlags.h"
 
 namespace Graphics
 {
-	class GRAPHICS_DLL_DECLSPEC PipelineState
+	class GRAPHICS_DLL_DECLSPEC PipelineState : public RenderSystemObject
 	{
 	public:
 		PipelineState() = default;

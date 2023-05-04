@@ -247,6 +247,7 @@ xcopy /E /S /Y /R "$(OutputPath)*.pdb" "$(OutputPath)..\Client\*"</Command>
     <ClInclude Include="inc\GraphicsModule\Core\RenderSystemFlags.h" />
     <ClInclude Include="inc\GraphicsModule\Core\RenderTarget.h" />
     <ClInclude Include="inc\GraphicsModule\Core\RenderTargetFlags.h" />
+    <ClInclude Include="inc\GraphicsModule\Core\RenderSystemObject.h" />
     <ClInclude Include="inc\GraphicsModule\Core\Resource.h" />
     <ClInclude Include="inc\GraphicsModule\Core\ResourceFlags.h" />
     <ClInclude Include="inc\GraphicsModule\Core\Sampler.h" />

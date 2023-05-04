@@ -1,5 +1,6 @@
 #include "GraphicsPCH.h"
 #include "GraphicsModule/Core/DX11/DX11Shader.h"
+#include "GraphicsModule/Core/DX11/DX11Utilitys.h"
 
 #include <d3dcommon.h>
 #include <d3dcompiler.h>
@@ -14,6 +15,11 @@ namespace Graphics
 			: m_ShaderDesc(desc)
 		{
 			BuildShader(device, desc);
+		}
+
+		void DX11Shader::SetName(const char* name)
+		{
+			DX11SetObjectName(static_cast<ID3D11DeviceChild*>(m_NativeShader._vertexShader.Get()), name);
 		}
 
 		void DX11Shader::BuildShader(ID3D11Device* device, const ShaderDesc& desc)

@@ -79,6 +79,8 @@ namespace Graphics
 
 			void CreateTextureFromFile(ID3D11Device* device, const ImageDesc& srcDesc);
 
+			void SetName(const char* name) override;
+
 			inline DXGI_FORMAT GetDXFormat() const
 			{
 				return m_Format;

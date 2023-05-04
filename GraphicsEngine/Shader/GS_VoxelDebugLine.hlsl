@@ -20,19 +20,20 @@ void main(point GSInput input[1], inout LineStream<GSOutput> output)
 	[branch]
 	if (input[0].color.a > 0)
 	{
+		float3 _pos = input[0].pos;
+
+		_pos = _pos * voxel_radiance._dataResRCP * 2 - 1;
+		_pos.y = -_pos.y;
+
+		_pos *= voxel_radiance._dataRes;
+
 		for (uint i = 0; i < 9; i++)
 		{
 			GSOutput _output;
 
-			_output.posH = float4(input[0].pos, 1.0f);
-			_output.color = float4(0, 1, 0, 1); // input[0].color;
+			_output.color = float4(0, 1, 0, 1);
 
-			_output.posH.xyz = _output.posH.xyz * voxel_radiance._dataResRCP * 2 - 1;
-			_output.posH.y = -_output.posH.y;
-
-			_output.posH.xyz *= voxel_radiance._dataRes;
-
-			_output.posH.xyz += (CreateCubeLine(i) - float3(0, 1, 0)) * 2;
+			_output.posH = float4(_pos + (CreateCubeLine(i) - float3(0, 1, 0)) * 2, 1.0f);
 
 			_output.posH.xyz *= voxel_radiance._dataRes * voxel_radiance._dataSize / voxel_radiance._dataRes;
 			_output.posH.xyz += voxel_radiance._gridCenter;
@@ -51,15 +52,9 @@ void main(point GSInput input[1], inout LineStream<GSOutput> output)
 			{
 				GSOutput _output;
 
-				_output.posH = float4(input[0].pos, 1.0f);
-				_output.color = float4(0, 1, 0, 1); // input[0].color;
+				_output.color = float4(0, 1, 0, 1);
 
-				_output.posH.xyz = _output.posH.xyz * voxel_radiance._dataResRCP * 2 - 1;
-				_output.posH.y = _output.posH.y;
-
-				_output.posH.xyz *= voxel_radiance._dataRes;
-
-				_output.posH.xyz += (CreateCubeLine(i2 + j) - float3(0, 1, 0)) * 2;
+				_output.posH = float4(_pos+ (CreateCubeLine(i2 + j) - float3(0, 1, 0)) * 2, 1.0f);
 
 				_output.posH.xyz *= voxel_radiance._dataRes * voxel_radiance._dataSize / voxel_radiance._dataRes;
 				_output.posH.xyz += voxel_radiance._gridCenter;

@@ -122,94 +122,93 @@ void main(PSInput input)
     float4 _albedo = gAlbedoMap.Sample(samWrapLinear, input.uv);
 #endif
 
-    float4 _emissive = material._emissive;
+    //float4 _emissive = material._emissive;
 
 
-    // 최종 색상값 Forward 연산
+    //// 최종 색상값 Forward 연산
 
-    float3 _finColor = { 0.0f, 0.0f, 0.0f };
-    float4 _worldPos = input.posW;
+    //float3 _finColor = { 0.0f, 0.0f, 0.0f };
+    //float4 _worldPos = input.posW;
 
-    // Gamma
-    _albedo = pow(_albedo, 2.2);
+    //// Gamma
+    //_albedo = pow(_albedo, 2.2);
 
-    float3 N = _normal;
-    float3 V = normalize(camera._camWorld.xyz - input.posW.xyz);
+    //float3 N = _normal;
+    //float3 V = normalize(camera._camWorld.xyz - input.posW.xyz);
 
-    static const float kSpecularCoefficient = 0.04;
+    //static const float kSpecularCoefficient = 0.04;
 
-    float3 _specularColor = lerp(kSpecularCoefficient, _albedo.xyz, _metallic);
-    float3 _diffuseColor = lerp(_albedo.xyz, float3(0, 0, 0), _metallic);
+    //float3 _specularColor = lerp(kSpecularCoefficient, _albedo.xyz, _metallic);
+    //float3 _diffuseColor = lerp(_albedo.xyz, float3(0, 0, 0), _metallic);
 
-    float3 _lightColor = float3(0.0f, 0.0f, 0.0f);
+    //float3 _lightColor = float3(0.0f, 0.0f, 0.0f);
 
-    // calculate directional light
-    [unroll]
-    for (uint _dirIdx = 0; _dirIdx < _lightCount.x; _dirIdx++)
-    {
-        float _shadowFactor = 1.0f;
-        float4 cascadeLightPos[4];
-        float _clipZ = _emissive.a;
+    //// calculate directional light
+    //[unroll]
+    //for (uint _dirIdx = 0; _dirIdx < _lightCount.x; _dirIdx++)
+    //{
+    //    float _shadowFactor = 1.0f;
+    //    float4 cascadeLightPos[4];
+    //    float _clipZ = _emissive.a;
 
-        [unroll]
-        for (int i = 0; i < 4; ++i)
-        {
-            cascadeLightPos[i] = mul(_worldPos, _cascadedLight._lightTransform[i]);
-        }
+    //    [unroll]
+    //    for (int i = 0; i < 4; ++i)
+    //    {
+    //        cascadeLightPos[i] = mul(_worldPos, _cascadedLight._lightTransform[i]);
+    //    }
 
-        [unroll]
-        for (int j = 0; j < 4; ++j)
-        {
-            if (_clipZ <= _cascadedLight._cascadeEndClipSpace[j])
-            {
-                _shadowFactor = CalcCascadeShadowFactor(j, cascadeLightPos[j], gCascadedShadowMap, samShadowSampler);
-                break;
-            }
-        }
+    //    [unroll]
+    //    for (int j = 0; j < 4; ++j)
+    //    {
+    //        if (_clipZ <= _cascadedLight._cascadeEndClipSpace[j])
+    //        {
+    //            _shadowFactor = CalcCascadeShadowFactor(j, cascadeLightPos[j], gCascadedShadowMap, samShadowSampler);
+    //            break;
+    //        }
+    //    }
 
-        _lightColor += CalcDirectionalLight(_directionLight[_dirIdx], _roughness, _metallic, _specularColor, _diffuseColor, N, V) * _shadowFactor;
-    }
+    //    _lightColor += CalcDirectionalLight(_directionLight[_dirIdx], _roughness, _metallic, _specularColor, _diffuseColor, N, V) * _shadowFactor;
+    //}
 
-    // calculate spot light
-    [unroll]
-    for (uint _pointIdx = 0; _pointIdx < _lightCount.y; _pointIdx++)
-    {
-        float _shadowFactor = 1.0f;
+    //// calculate spot light
+    //[unroll]
+    //for (uint _pointIdx = 0; _pointIdx < _lightCount.y; _pointIdx++)
+    //{
+    //    float _shadowFactor = 1.0f;
 
-        uint _view = SelectView(_worldPos.xyz, _pointLight[_pointIdx]._position);
+    //    uint _view = SelectView(_worldPos.xyz, _pointLight[_pointIdx]._position);
 
-        float4 _lightSpacePos = mul(_worldPos, _pointLight[_pointIdx]._lightTransform[_view]);
+    //    float4 _lightSpacePos = mul(_worldPos, _pointLight[_pointIdx]._lightTransform[_view]);
 
-        float3 _posToLight = _worldPos.xyz - _pointLight[_pointIdx]._position;
+    //    float3 _posToLight = _worldPos.xyz - _pointLight[_pointIdx]._position;
 
-        _shadowFactor = CalcPointShadowFactor(_pointIdx, _lightSpacePos, _posToLight, _pointLight[_pointIdx]._range, gPointShadowMap, samShadowSampler);
+    //    _shadowFactor = CalcPointShadowFactor(_pointIdx, _lightSpacePos, _posToLight, _pointLight[_pointIdx]._range, gPointShadowMap, samShadowSampler);
 
-        _lightColor += CalcPointLight(_pointLight[_pointIdx], _roughness, _metallic, _specularColor, _diffuseColor, N, V, _worldPos.xyz) * _shadowFactor;
-    }
+    //    _lightColor += CalcPointLight(_pointLight[_pointIdx], _roughness, _metallic, _specularColor, _diffuseColor, N, V, _worldPos.xyz) * _shadowFactor;
+    //}
 
-    // calculate spot light
-    [unroll]
-    for (uint _spotIdx = 0; _spotIdx < _lightCount.z; _spotIdx++)
-    {
-        float _shadowFactor = 1.0f;
+    //// calculate spot light
+    //[unroll]
+    //for (uint _spotIdx = 0; _spotIdx < _lightCount.z; _spotIdx++)
+    //{
+    //    float _shadowFactor = 1.0f;
 
-        float4 _lightSpacePos = mul(_worldPos, _spotLight[_spotIdx]._lightTransform);
+    //    float4 _lightSpacePos = mul(_worldPos, _spotLight[_spotIdx]._lightTransform);
 
-        _shadowFactor = CalcSpotShadowFactor(_spotIdx, _lightSpacePos, gSpotShadowMap, samShadowSampler);
+    //    _shadowFactor = CalcSpotShadowFactor(_spotIdx, _lightSpacePos, gSpotShadowMap, samShadowSampler);
 
-        _lightColor += CalcSpotLight(_spotLight[_spotIdx], _roughness, _metallic, _specularColor, _diffuseColor, N, V, _worldPos.xyz) * _shadowFactor;
-    }
+    //    _lightColor += CalcSpotLight(_spotLight[_spotIdx], _roughness, _metallic, _specularColor, _diffuseColor, N, V, _worldPos.xyz) * _shadowFactor;
+    //}
 
-    float3 _ambient = CalcIBL(V, N, _albedo.rgb, _specularColor, _roughness, _metallic, _ao);
+    //float3 _ambient = CalcIBL(V, N, _albedo.rgb, _specularColor, _roughness, _metallic, _ao);
 
-    _finColor = _ambient + _lightColor;
+    //_finColor = _ambient + _lightColor;
 
-    // Gamma
-    _finColor = pow(_finColor, 1 / 2.2);
-
+    //// Gamma
+    //_finColor = pow(_finColor, 1 / 2.2);
 
     // Voxel Encode
-    float4 _color = float4(_finColor, 1.0f);
+    float4 _color = _albedo;
 
     uint _colorEncoded = EncodeColor(_color);
     uint _normalEncoded = EncodeNormal(_normal);

@@ -2,8 +2,9 @@
 #include "GraphicsModule/Core/DX11/DX11Buffer.h"
 #include "GraphicsModule/Core/DX11/Direct3D11.h"
 #include "GraphicsModule/Core/DX11/DX11ResourceFlags.h"
-
+#include "GraphicsModule/Core/DX11/DX11Utilitys.h"
 #include "GraphicsModule/Core/DX11/DX11Type.h"
+
 #include "GraphicsModule/Utility/Helper.h"
 namespace Graphics
 {
@@ -89,6 +90,12 @@ namespace Graphics
 		void DX11Buffer::Unmap(ID3D11DeviceContext* context)
 		{
 			context->Unmap(GetBuffer(), 0);
+		}
+
+		void DX11Buffer::SetName(const char* name)
+		{
+			DX11SetObjectName(GetNative(), name);
+
 		}
 
 		static uint32 GetD3DBufferSize(const BufferDesc& desc)

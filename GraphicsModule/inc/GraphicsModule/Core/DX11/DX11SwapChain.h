@@ -47,6 +47,7 @@ namespace Graphics
 			// Binds the framebuffer view of this swap-chain and stores a references to this command buffer.
 			void BindFramebufferView(DX11CommandBuffer* commandBuffer);
 
+			void SetName(const char* name) override;
 		private:
 			void ResizeBackBuffer(const Extent2D& resolution);
 			// Create SwapChain

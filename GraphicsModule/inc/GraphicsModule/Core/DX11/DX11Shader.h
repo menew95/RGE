@@ -48,7 +48,7 @@ namespace Graphics
 			inline const ID3DBlob* GetBlob() const { return m_Blob.Get(); }
 			inline const ComPtr<ID3D11InputLayout>& GetInputLayout() const { return m_InputLayout; }
 
-			void SetName(const char* name) override {};
+			void SetName(const char* name) override;
 		private:
 			// shader 파일의 종류에 따라 컴파일 혹은 로드를 해줌
 			void BuildShader(ID3D11Device* device, const ShaderDesc& desc);

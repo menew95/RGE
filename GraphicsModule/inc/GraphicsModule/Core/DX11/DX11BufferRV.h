@@ -32,21 +32,22 @@ namespace Graphics
 			// Returns the native SRV object.
 			inline ID3D11ShaderResourceView* GetSRV() const
 			{
-				return srv_.Get();
+				return m_SRV.Get();
 			}
 
 			// Returns the native UAV object.
 			inline ID3D11UnorderedAccessView* GetUAV() const
 			{
-				return uav_.Get();
+				return m_UAV.Get();
 			}
 
 			// Returns the initial value for the internal buffer counter.
 			inline UINT GetInitialCount() const
 			{
-				return initialCount_;
+				return m_InitialCnt;
 			}
 
+			void SetName(const char* name) override;
 		private:
 
 			void CreateInternalSRV(ID3D11Device* device, DXGI_FORMAT format, UINT firstElement, UINT numElements);
@@ -54,10 +55,10 @@ namespace Graphics
 
 		private:
 
-			ComPtr<ID3D11ShaderResourceView>    srv_;
-			ComPtr<ID3D11UnorderedAccessView>   uav_;
-			UINT                                uavFlags_ = 0;
-			UINT                                initialCount_ = UINT_MAX;
+			ComPtr<ID3D11ShaderResourceView>    m_SRV;
+			ComPtr<ID3D11UnorderedAccessView>   m_UAV;
+			UINT                                m_UAVFlags = 0;
+			UINT                                m_InitialCnt = UINT_MAX;
 		};
 	}
 }

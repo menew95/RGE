@@ -4,6 +4,7 @@
 #include "GraphicsModule/Core/DX11/Direct3D11.h"
 #include "GraphicsModule/Core/DX11/DX11RenderSystem.h"
 #include "GraphicsModule/Core/DX11/DX11CommandBuffer.h"
+#include "GraphicsModule/Core/DX11/DX11Utilitys.h"
 
 namespace Graphics
 {
@@ -65,6 +66,31 @@ namespace Graphics
 
 			/* Store reference to last used command buffer */
 			m_CommandBuffer = commandBuffer;
+		}
+
+		void DX11SwapChain::SetName(const char* name)
+		{
+			if (name != nullptr)
+			{
+				DX11SetObjectName(m_BackBuffer.Get(), name);
+				DX11SetObjectNameSubscript(m_RenderTargetView.Get(), name, ".RTV");
+				if (m_DepthBuffer)
+				{
+					DX11SetObjectName(m_DepthBuffer.Get(), name);
+					DX11SetObjectNameSubscript(m_DepthStencilView.Get(), name, ".DSV");
+				}
+			}
+			else
+			{
+				/* Reset all back-buffer labels */
+				DX11SetObjectName(m_BackBuffer.Get(), nullptr);
+				DX11SetObjectName(m_RenderTargetView.Get(), nullptr);
+				if (m_DepthBuffer)
+				{
+					DX11SetObjectName(m_DepthBuffer.Get(), nullptr);
+					DX11SetObjectName(m_DepthStencilView.Get(), nullptr);
+				}
+			}
 		}
 
 		bool DX11SwapChain::ResizeBuffer(const Extent2D& resolution)

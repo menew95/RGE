@@ -1,13 +1,13 @@
 #pragma once
 
-#include "GraphicsModule/Utility/Export.h"
+#include "GraphicsModule/Core/RenderSystemObject.h"
 
 #include "GraphicsModule/Core/RenderTargetFlags.h"
 
 namespace Graphics
 {
 
-	class GRAPHICS_DLL_DECLSPEC RenderTarget
+	class GRAPHICS_DLL_DECLSPEC RenderTarget : public RenderSystemObject
 	{
 	public:
 		RenderTarget() = default;
