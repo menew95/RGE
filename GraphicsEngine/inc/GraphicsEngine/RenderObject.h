@@ -145,7 +145,7 @@ namespace Graphics
 
 		MeshBuffer* m_MeshBuffer = nullptr;
 
-		MaterialBuffer* m_MaterialBuffer;
+		MaterialBuffer* m_MaterialBuffer = nullptr;
 
 		std::vector<Graphics::Resource*> m_Resources;
 

@@ -4,18 +4,26 @@
 
 #include "GraphicsEngine/RenderObject.h"
 
+#include "GraphicsModule/Core/PipelineLayoutFlags.h"
+
 namespace Graphics
 {
+	class CommandBuffer;
+
 	class GRAPHICSENGINE_DLL_DECLSPEC MaterialBuffer : public ResourceBuffer
 	{
 	public:
 		MaterialBuffer(Graphics::RenderSystem* renderSystem);
 		~MaterialBuffer() override;
 
-		inline const std::vector<UpdateResourceData>& GetUpdateReosurceData() const
+		inline const std::vector<UpdateResourceData>& GetUpdateResourceData() const
 		{
 			return m_UpdateResources;
 		}
+
+		void SetResource(Resource* resource, ResourceType type, uint32 bindSlot, uint32 size = 0);
+
+		void BindResource(CommandBuffer* commandBuffer);
 
 	private:
 
@@ -27,7 +35,14 @@ namespace Graphics
 			float _metallic = 0.0f;
 			Math::Vector2 _tile = Math::Vector2::One;
 		};
-		
+
 		std::vector<UpdateResourceData> m_UpdateResources;
+
+		struct ResourceBind
+		{
+			Resource* _resource = nullptr;
+			uint32 _slot = 0;
+		};
+		std::vector<ResourceBind> m_ResourceBindList;
 	};
 }

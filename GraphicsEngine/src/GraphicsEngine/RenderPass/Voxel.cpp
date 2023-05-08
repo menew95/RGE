@@ -1,7 +1,9 @@
 #include "GraphicsEnginePCH.h"
 
 #include "GraphicsEngine/Resource/ResourceManager.h"
+
 #include "GraphicsEngine/RenderPass/Voxel.h"
+#include "GraphicsEngine/RenderPass/RenderPass.h"
 
 #include "GraphicsEngine/RenderObject.h"
 #include "GraphicsEngine/Resource/MeshBuffer.h"
@@ -34,15 +36,45 @@ namespace Graphics
 		ExcuteCopy();
 
 		ExcuteDebug();
+
+		m_RenderObjectList.clear();
 	}
 
 	void Voxel::ExcuteVoxelize()
 	{
+		Culling();
+
 		Viewport _viewport{ 0, 0, static_cast<float>(VOXEL_RESOLUTION), static_cast<float>(VOXEL_RESOLUTION), 0.f, 1.f };
 
 		m_CommandBuffer->BeginEvent(TEXT("Voxelization Pass"));
 
 		m_CommandBuffer->SetViewport(_viewport);
+
+		m_Voxelize_Pass->BeginExcute(m_CommandBuffer);
+
+		m_Voxelize_Pass->Excute(m_CommandBuffer);
+
+		m_Voxelize_Pass->EndExcute(m_CommandBuffer);
+
+		m_Voxelize_Albedo_Pass->BeginExcute(m_CommandBuffer);
+
+		m_Voxelize_Albedo_Pass->Excute(m_CommandBuffer);
+
+		m_Voxelize_Albedo_Pass->EndExcute(m_CommandBuffer);
+
+		m_Voxelize_Albedo_Normal_Pass->BeginExcute(m_CommandBuffer);
+
+		m_Voxelize_Albedo_Normal_Pass->Excute(m_CommandBuffer);
+
+		m_Voxelize_Albedo_Normal_Pass->EndExcute(m_CommandBuffer);
+
+		m_Voxelize_Albedo_Nomal_MRA_Pass->BeginExcute(m_CommandBuffer);
+
+		m_Voxelize_Albedo_Nomal_MRA_Pass->Excute(m_CommandBuffer);
+
+		m_Voxelize_Albedo_Nomal_MRA_Pass->EndExcute(m_CommandBuffer);
+
+		/*
 
 		m_CommandBuffer->SetPipelineState(*m_VoxelizePSO1);
 
@@ -58,10 +90,7 @@ namespace Graphics
 			{
 				auto _subMeshBuffer = _renderObject.GetMeshBuffer()->GetSubMesh(_subMeshCnt);
 
-				// Albedo
-				auto& _sources = _renderObject.GetUpdateResourceData();
-
-				m_VoxelizeLayout->SetResource(3, reinterpret_cast<Resource*>(_sources[0]._dataSrc));
+				UpdateResourcePerMaterial(commandBuffer, m_RenderObjects[_index]);
 
 				m_CommandBuffer->SetIndexBuffer(*_subMeshBuffer.m_IndexBuffer);
 
@@ -71,7 +100,7 @@ namespace Graphics
 			}
 		}
 
-		m_CommandBuffer->ResetResourceSlots(ResourceType::Buffer, 0, 1, BindFlags::UnorderedAccess, StageFlags::PS);
+		m_CommandBuffer->ResetResourceSlots(ResourceType::Buffer, 0, 1, BindFlags::UnorderedAccess, StageFlags::PS);*/
 		
 		m_CommandBuffer->EndEvent();
 
@@ -103,7 +132,7 @@ namespace Graphics
 
 		m_CommandBuffer->SetViewport({ 0, 0, 1280, 720, 0, 1 });
 
-		m_CommandBuffer->SetPipelineState(*m_VoxelDebugLinePSO);
+		m_CommandBuffer->SetPipelineState(*m_VoxelDebugPSO);
 
 		m_CommandBuffer->SetRenderTarget(*m_RenderTarget, 0, 0);
 		
@@ -253,15 +282,6 @@ namespace Graphics
 			_voxelizeLayoutDesc._bindings.push_back(_bindDesc);
 			_voxelizeLayoutDesc._resources.push_back(m_ResourceManager->GetBuffer(TEXT("Transform")));
 		}
-		/*{
-			BindingDescriptor _bindDesc
-			{
-				ResourceType::Buffer, BindFlags::ConstantBuffer, StageFlags::VS | StageFlags::GS | StageFlags::PS, 4
-			};
-
-			_voxelizeLayoutDesc._bindings.push_back(_bindDesc);
-			_voxelizeLayoutDesc._resources.push_back(m_ResourceManager->GetBuffer(TEXT("Lighting")));
-		}*/
 		{
 			BindingDescriptor _bindDesc
 			{
@@ -270,15 +290,6 @@ namespace Graphics
 
 			_voxelizeLayoutDesc._bindings.push_back(_bindDesc);
 			_voxelizeLayoutDesc._resources.push_back(m_Voxel);
-		}
-		{
-			BindingDescriptor _bindDesc
-			{
-				ResourceType::Texture, BindFlags::ShaderResource, StageFlags::PS, 0
-			};
-
-			_voxelizeLayoutDesc._bindings.push_back(_bindDesc);
-			_voxelizeLayoutDesc._resources.push_back(nullptr);
 		}
 		{
 			BindingDescriptor _bindDesc
@@ -392,7 +403,15 @@ namespace Graphics
 		_voxelizePSODesc._stencilDesc._stencilEnable = false;
 
 		m_VoxelizePSO = m_ResourceManager->CreatePipelineState(TEXT("Voxelize"), _voxelizePSODesc);
-		
+
+		RenderPassDesc _renderPassDesc;
+		_renderPassDesc._passName = TEXT("Base");
+		_renderPassDesc._pipelineLayout = m_VoxelizeLayout;
+		_renderPassDesc._pipelineState = m_VoxelizePSO;
+		_renderPassDesc._IsClearObjects = true;
+
+		m_Voxelize_Pass = m_ResourceManager->CreateRenderPass(TEXT("Voxelize Pass0"), _renderPassDesc);
+
 #pragma endregion NONE TEXTURE
 
 #pragma region ALBEDO
@@ -416,12 +435,19 @@ namespace Graphics
 
 		m_VoxelizePSO1 = m_ResourceManager->CreatePipelineState(TEXT("Voxelize1"), _voxelizePSODesc);
 		
+		_renderPassDesc._passName = TEXT("Albedo");
+		_renderPassDesc._pipelineLayout = m_VoxelizeLayout1;
+		_renderPassDesc._pipelineState = m_VoxelizePSO1;
+		_renderPassDesc._IsClearObjects = true;
+
+		m_Voxelize_Albedo_Pass = m_ResourceManager->CreateRenderPass(TEXT("Voxelize Pass1"), _renderPassDesc);
+
 #pragma endregion ALBEDO
 
 #pragma region ALBEDOMAP + NORMAL
 
 		_macro[1] = _normalMap;
-		
+
 		m_VoxelizeLayout2 = m_ResourceManager->CreatePipelineLayout(TEXT("Voxelize2"), _voxelizeLayoutDesc);
 
 		_voxelizePSODesc._pipelineLayout = m_VoxelizeLayout;
@@ -430,7 +456,14 @@ namespace Graphics
 		_voxelizePSODesc._shaderProgram._geometryShader = m_ResourceManager->CreateShader(TEXT("GS_Voxelization2"), _voxelizeGS);
 		_voxelizePSODesc._shaderProgram._pixelShader = m_ResourceManager->CreateShader(TEXT("PS_Voxelization2"), _voxelizePS);
 
-		m_VoxelizePSO = m_ResourceManager->CreatePipelineState(TEXT("Voxelize2"), _voxelizePSODesc);
+		m_VoxelizePSO2 = m_ResourceManager->CreatePipelineState(TEXT("Voxelize2"), _voxelizePSODesc);
+
+		_renderPassDesc._passName = TEXT("Albedo + Normal");
+		_renderPassDesc._pipelineLayout = m_VoxelizeLayout2;
+		_renderPassDesc._pipelineState = m_VoxelizePSO2;
+		_renderPassDesc._IsClearObjects = true;
+
+		m_Voxelize_Albedo_Normal_Pass = m_ResourceManager->CreateRenderPass(TEXT("Voxelize Pass2"), _renderPassDesc);
 
 #pragma endregion ALBEDO + NORMAL
 
@@ -448,6 +481,13 @@ namespace Graphics
 
 		m_VoxelizePSO3 = m_ResourceManager->CreatePipelineState(TEXT("Voxelize3"), _voxelizePSODesc);
 		
+		_renderPassDesc._passName = TEXT("Albedo + Normal + MRA");
+		_renderPassDesc._pipelineLayout = m_VoxelizeLayout3;
+		_renderPassDesc._pipelineState = m_VoxelizePSO3;
+		_renderPassDesc._resourceClears.push_back({ ResourceType::Buffer, 0, 1, BindFlags::UnorderedAccess, StageFlags::PS });
+		_renderPassDesc._IsClearObjects = true;
+
+		m_Voxelize_Albedo_Nomal_MRA_Pass = m_ResourceManager->CreateRenderPass(TEXT("Voxelize Pass3"), _renderPassDesc);
 #pragma endregion ALBEDO + NORMAL + MRA
 		
 	}
@@ -691,13 +731,35 @@ namespace Graphics
 	{
 		commandBuffer->UpdateBuffer(*buffer, 0, src, size);
 	}
+
 	void Voxel::RegistRenderObject(RenderObject& renderObject)
 	{
-		auto& _sources = renderObject.GetUpdateResourceData();
-
-		if (_sources.size() == 0) return;
-
 		m_RenderObjectList.push_back(renderObject);
+	}
+
+	void Voxel::Culling()
+	{
+		for (size_t i = 0; i < m_RenderObjectList.size(); i++)
+		{
+			switch (m_RenderObjectList[i].m_RenderPassIdx)
+			{
+				case 0:
+					m_Voxelize_Pass->RegistRenderObject(&m_RenderObjectList[i]);
+					break;
+				case 1:
+					m_Voxelize_Albedo_Pass->RegistRenderObject(&m_RenderObjectList[i]);
+					break;
+				case 2:
+					m_Voxelize_Albedo_Normal_Pass->RegistRenderObject(&m_RenderObjectList[i]);
+					break;
+				case 3:
+					m_Voxelize_Albedo_Nomal_MRA_Pass->RegistRenderObject(&m_RenderObjectList[i]);
+					break;
+				default:
+					assert(false);
+					break;
+			}
+		}
 	}
 
 	void Voxel::Initialize()

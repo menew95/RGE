@@ -53,7 +53,7 @@ namespace Graphics
 
 		void UpdatePerFrame(CommandBuffer* commandBuffer, void* src, uint32 size);
 
-		void BeginExcute(CommandBuffer* commandBuffer, PerFrame* perFrameData);
+		void BeginExcute(CommandBuffer* commandBuffer, PerFrame* perFrameData = nullptr);
 		void Excute(CommandBuffer* commandBuffer);
 		void EndExcute(CommandBuffer* commandBuffer);
 
@@ -78,6 +78,7 @@ namespace Graphics
 		void UpdateResourcePerObject(CommandBuffer* commandBuffer, RenderObject* renderObject);
 
 		void UpdateBuffer(CommandBuffer* commandBuffer, Buffer* buffer, void* src, uint32 size);
+
 
 		tstring m_PassName;
 

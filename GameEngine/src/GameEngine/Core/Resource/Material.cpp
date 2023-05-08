@@ -35,45 +35,21 @@ namespace GameEngine
 		{
 			m_AlbedoMap = texture;
 
-			/*Graphics::UpdateResourceData _data;
-
-			_data._resourceType = Graphics::ResourceType::Texture;
-
-			_data._index = 4;
-
-			_data._dataSrc = texture;
-
-			m_MaterialBuffer->GetUpdateReosurceData().push_back(_data);*/
+			m_MaterialBuffer->SetResource(reinterpret_cast<Graphics::Resource*>(texture), Graphics::ResourceType::Texture, 0);
 		}
 
 		void Material::SetNormalTexture(Graphics::Texture* texture)
 		{
 			m_NormalMap = texture;
 
-			/*Graphics::UpdateResourceData _data;
-
-			_data._resourceType = Graphics::ResourceType::Texture;
-
-			_data._index = 5;
-
-			_data._dataSrc = texture;
-
-			m_MaterialBuffer->GetUpdateReosurceData().push_back(_data);*/
+			m_MaterialBuffer->SetResource(reinterpret_cast<Graphics::Resource*>(texture), Graphics::ResourceType::Texture, 1);
 		}
 
 		void Material::SetMRATexture(Graphics::Texture* texture)
 		{
 			m_MRAMap = texture;
 
-			/*Graphics::UpdateResourceData _data;
-
-			_data._resourceType = Graphics::ResourceType::Texture;
-
-			_data._index = 6;
-
-			_data._dataSrc = texture;
-
-			m_MaterialBuffer->GetUpdateReosurceData().push_back(_data);*/
+			m_MaterialBuffer->SetResource(reinterpret_cast<Graphics::Resource*>(texture), Graphics::ResourceType::Texture, 2);
 		}
 
 		void Material::Release()

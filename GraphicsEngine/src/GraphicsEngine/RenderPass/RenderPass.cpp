@@ -90,8 +90,12 @@ namespace Graphics
 #endif
 
 		commandBuffer->SetPipelineState(*m_PipelineState);
-		commandBuffer->SetRenderTarget(*m_RenderTarget, static_cast<uint32>(m_AttachmentClears.size()), m_AttachmentClears.data());
+		
+		if(m_RenderTarget)
+			commandBuffer->SetRenderTarget(*m_RenderTarget, static_cast<uint32>(m_AttachmentClears.size()), m_AttachmentClears.data());
 
+		if (m_PipelineLayout != nullptr)
+			commandBuffer->SetResources(*m_PipelineLayout);
 	}
 
 	void RenderPass::Excute(CommandBuffer* commandBuffer)
@@ -113,12 +117,14 @@ namespace Graphics
 			{
 				auto _subMeshBuffer = m_RenderObjects[_index]->GetMeshBuffer()->GetSubMesh(_subMeshCnt);
 
-				UpdateResourcePerMaterial(commandBuffer, m_RenderObjects[_index]);
+				if (m_RenderObjects[_index]->m_MaterialBuffer)
+				{
+					UpdateResourcePerMaterial(commandBuffer, m_RenderObjects[_index]);
+				}
+
+				//UpdateResourcePerMaterial(commandBuffer, m_RenderObjects[_index]);
 
 				commandBuffer->SetIndexBuffer(*_subMeshBuffer.m_IndexBuffer);
-
-				if(m_PipelineLayout != nullptr)
-					commandBuffer->SetResources(*m_PipelineLayout);
 
 				commandBuffer->DrawIndexed(_subMeshBuffer.m_IndexCount, 0, 0);
 			}
@@ -144,35 +150,38 @@ namespace Graphics
 
 	void RenderPass::UpdateResourcePerMaterial(CommandBuffer* commandBuffer, RenderObject* renderObject)
 	{
-		auto& _sources = renderObject->GetUpdateResourceData();
+		auto& _sources = renderObject->m_MaterialBuffer->GetUpdateResourceData();
 
-		for (size_t i = 0; i < _sources.size(); i++)
-		{
-			assert(m_PipelineLayout != nullptr);
+		renderObject->m_MaterialBuffer->BindResource(commandBuffer);
 
-			switch (_sources[i]._resourceType)
-			{
-				case ResourceType::Buffer:
-				{
-					auto _buffer = m_PipelineLayout->GetBuffer(_sources[i]._index);
+		//for (size_t i = 0; i < _sources.size(); i++)
+		//{
+		//	assert(m_PipelineLayout != nullptr);
 
-					UpdateBuffer(commandBuffer, _buffer, _sources[i]._dataSrc, _sources[i]._datasize);
-					break;
-				}
-				case ResourceType::Sampler:
-				case ResourceType::Texture:
-				{
-					m_PipelineLayout->SetResource(_sources[i]._index, reinterpret_cast<Resource*>(_sources[i]._dataSrc));
-					break;
-				}
-				case ResourceType::Undefined:
-				default:
-				{
-					assert(false);
-					break;
-				}
-			}
-		}
+		//	switch (_sources[i]._resourceType)
+		//	{
+		//		case ResourceType::Buffer:
+		//		{
+		//			auto _buffer = m_PipelineLayout->GetBuffer(_sources[i]._index);
+
+		//			UpdateBuffer(commandBuffer, _buffer, _sources[i]._dataSrc, _sources[i]._datasize);
+		//			break;
+		//		}
+		//		case ResourceType::Sampler:
+		//		case ResourceType::Texture:
+		//		{
+		//			//commandBuffer->SetResource(reinterpret_cast<Resource*>(_sources[i]._dataSrc), BindFlags::)
+		//			//m_PipelineLayout->SetResource(_sources[i]._index, );
+		//			break;
+		//		}
+		//		case ResourceType::Undefined:
+		//		default:
+		//		{
+		//			assert(false);
+		//			break;
+		//		}
+		//	}
+		//}
 	}
 
 	void RenderPass::UpdateResourcePerObject(CommandBuffer* commandBuffer, RenderObject* renderObject)

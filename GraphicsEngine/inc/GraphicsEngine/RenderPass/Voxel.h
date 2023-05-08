@@ -54,6 +54,8 @@ namespace Graphics
 		}
 
 	private:
+		void Culling();
+
 		void Initialize();
 
 		void CreateVoxelResource();
@@ -81,6 +83,7 @@ namespace Graphics
 
 		std::vector<RenderObject> m_RenderObjectList;
 
+
 		PipelineState* m_PipelineState = nullptr;
 		PipelineLayout* m_PiprlineLayout = nullptr;
 		
@@ -93,20 +96,28 @@ namespace Graphics
 
 #pragma region
 
+		std::vector<RenderObject*> m_RenderObjectList0;
 		PipelineState* m_VoxelizePSO = nullptr;
 		PipelineLayout* m_VoxelizeLayout = nullptr;
-
+		RenderPass* m_Voxelize_Pass = nullptr;
+		
 		// albedo map
+		std::vector<RenderObject*> m_RenderObjectList1;
 		PipelineState* m_VoxelizePSO1 = nullptr;
 		PipelineLayout* m_VoxelizeLayout1 = nullptr;
+		RenderPass* m_Voxelize_Albedo_Pass = nullptr;
 
 		// normal map
+		std::vector<RenderObject*> m_RenderObjectList2;
 		PipelineState* m_VoxelizePSO2 = nullptr;
 		PipelineLayout* m_VoxelizeLayout2 = nullptr;
+		RenderPass* m_Voxelize_Albedo_Normal_Pass = nullptr;
 
 		// mra map
+		std::vector<RenderObject*> m_RenderObjectList3;
 		PipelineState* m_VoxelizePSO3 = nullptr;
 		PipelineLayout* m_VoxelizeLayout3 = nullptr;
+		RenderPass* m_Voxelize_Albedo_Nomal_MRA_Pass = nullptr;
 
 		PipelineState* m_VoxelCopyCSO = nullptr;
 		PipelineLayout* m_VoxelCopyLayout = nullptr;

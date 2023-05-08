@@ -194,8 +194,8 @@ namespace Graphics
 		static RenderObject _reflectObject;
 		_reflectObject.m_MeshBuffer = m_Screen_Mesh;
 
-		UpdateResourceData _resourceR{ 1,  m_ResourceManager->GetTexture(TEXT("Deferred_Light")) };
-		_reflectObject.m_UpdateResources.push_back(_resourceR);
+		_reflectObject.m_MaterialBuffer = m_ResourceManager->CreateMaterialBuffer(TEXT("Final_Mat"));
+		_reflectObject.m_MaterialBuffer->SetResource(m_ResourceManager->GetTexture(TEXT("Deferred_Light")), ResourceType::Texture, 0);
 
 		_reflectObject.AddViewport({ 0, 0, 1280, 720, 0, 1 });
 
@@ -344,7 +344,7 @@ namespace Graphics
 
 		//m_Voxel_Pass->SetRenderTarget(m_SwapChain);
 
-		m_Voxel_Pass->UpdateVoxelInfo(_perFrame._camera._camWorld, 0.1, 2, 0.75f, 20.0f);
+		m_Voxel_Pass->UpdateVoxelInfo(_perFrame._camera._camWorld, 0.1f, 2.f, 0.75f, 20.0f);
 
 		m_Voxel_Pass->Excute();
 
