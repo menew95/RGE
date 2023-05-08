@@ -38,4 +38,15 @@ float4 CubeMapSampler(SamplerState sam, TextureCube cubeMap, float3 toEye, float
 	return reflectionColor;
 }
 
+inline float3 GetPositionVS(float2 texcoord, float depth)
+{
+	float4 clipSpaceLocation;
+	clipSpaceLocation.xy = texcoord * 2.0f - 1.0f;
+	clipSpaceLocation.y *= -1;
+	clipSpaceLocation.z = depth;
+	clipSpaceLocation.w = 1.0f;
+	float4 homogenousLocation = mul(clipSpaceLocation, camera._projInv);
+	return homogenousLocation.xyz / homogenousLocation.w;
+}
+
 #endif

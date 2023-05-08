@@ -74,45 +74,69 @@ TestScene::TestScene()
 		AddGameObject(_dirLight);
 	}
 
-	{
-		std::shared_ptr<GameObject> _pointLight = GameObject::Instantiate();
+	//{
+	//	std::shared_ptr<GameObject> _pointLight = GameObject::Instantiate();
 
-		_pointLight->SetName(TEXT("Point Light"));
+	//	_pointLight->SetName(TEXT("Point Light"));
 
-		auto _lightCom = _pointLight->AddComponent<Light>();
+	//	auto _lightCom = _pointLight->AddComponent<Light>();
 
-		Vector3 _move = { 3, 1, 3 };
+	//	Vector3 _move = { 3, 1, 3 };
 
-		_pointLight->GetTransform()->Translate(_move);
+	//	_pointLight->GetTransform()->Translate(_move);
 
-		_lightCom->SetLightType(2);
+	//	_lightCom->SetLightType(2);
 
-		_lightCom->SetRange(5.0f);
+	//	_lightCom->SetRange(5.0f);
 
-		_lightCom->SetLightColor(Math::Color::Red);
+	//	_lightCom->SetLightColor(Math::Color::Red);
 
-		AddGameObject(_pointLight);
-	}
+	//	AddGameObject(_pointLight);
+	//}
 
-	{
-		std::shared_ptr<GameObject> _pointLight = GameObject::Instantiate();
+	//{
+	//	std::shared_ptr<GameObject> _pointLight = GameObject::Instantiate();
 
-		_pointLight->SetName(TEXT("Point Light2"));
+	//	_pointLight->SetName(TEXT("Point Light2"));
 
-		auto _lightCom = _pointLight->AddComponent<Light>();
+	//	auto _lightCom = _pointLight->AddComponent<Light>();
 
-		Vector3 _move = { -3, 1, -1 };
+	//	Vector3 _move = { -3, 1, -1 };
 
-		_pointLight->GetTransform()->Translate(_move);
+	//	_pointLight->GetTransform()->Translate(_move);
 
-		_lightCom->SetLightType(2);
+	//	_lightCom->SetLightType(2);
 
-		_lightCom->SetRange(5.0f);
+	//	_lightCom->SetRange(5.0f);
 
-		_lightCom->SetLightColor(Math::Color::Green);
+	//	_lightCom->SetLightColor(Math::Color::Green);
 
-		AddGameObject(_pointLight);
-	}
+	//	AddGameObject(_pointLight);
+	//}
+
+	//{
+	//	std::shared_ptr<GameObject> _spotLight = GameObject::Instantiate();
+
+	//	_spotLight->SetName(TEXT("Spot Light"));
+
+	//	auto _lightCom = _spotLight->AddComponent<Light>();
+
+	//	Vector3 _move = { -1, 2, 4 };
+
+	//	_spotLight->GetTransform()->Translate(_move);
+
+
+	//	Vector3 _rot = { 90, 0, 0 };
+	//	_spotLight->GetTransform()->Rotate(_rot);
+
+	//	_lightCom->SetLightType(0);
+
+	//	//_lightCom->SetSpotAnlge(15.0f);
+
+	//	_lightCom->SetLightColor(Math::Color::Blue);
+
+	//	AddGameObject(_spotLight);
+	//}
 
 	{
 		std::shared_ptr<GameObject> _spotLight = GameObject::Instantiate();
@@ -121,19 +145,18 @@ TestScene::TestScene()
 
 		auto _lightCom = _spotLight->AddComponent<Light>();
 
-		Vector3 _move = { -1, 2, 4 };
+		Vector3 _move = { 1, 2, 1 };
 
 		_spotLight->GetTransform()->Translate(_move);
-
-
-		Vector3 _rot = { 90, 0, 0 };
-		_spotLight->GetTransform()->Rotate(_rot);
+		
+		Vector3 _eular = { 90, 0, 0 };
+		_spotLight->GetTransform()->Rotate(_eular);
 
 		_lightCom->SetLightType(0);
 
-		//_lightCom->SetSpotAnlge(15.0f);
+		_lightCom->SetRange(5.0f);
 
-		_lightCom->SetLightColor(Math::Color::Blue);
+		_lightCom->SetLightColor(Math::Color::Red);
 
 		AddGameObject(_spotLight);
 	}

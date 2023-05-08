@@ -35,7 +35,10 @@ namespace Graphics
 
 		ExcuteCopy();
 
-		ExcuteDebug();
+		if (m_VoxelDebug)
+			ExcuteDebug();
+		else
+			ExcuteVoxelGI();
 
 		m_RenderObjectList.clear();
 	}
@@ -141,6 +144,28 @@ namespace Graphics
 		m_CommandBuffer->Draw(VOXEL_RESOLUTION * VOXEL_RESOLUTION * VOXEL_RESOLUTION, 0);
 
 		m_CommandBuffer->ResetResourceSlots(ResourceType::Texture, 0, 1, BindFlags::ShaderResource, StageFlags::VS);
+
+		m_CommandBuffer->EndEvent();
+	}
+
+	void Voxel::ExcuteVoxelGI()
+	{
+		m_CommandBuffer->BeginEvent(TEXT("Voxel GI"));
+
+		m_CommandBuffer->SetPipelineState(*m_VoxelGI);
+
+		AttachmentClear _clear{ {0, 0, 0, 0}, 0 };
+
+		m_CommandBuffer->SetRenderTarget(*m_VoxelGIRT, 1, &_clear);
+
+		m_CommandBuffer->SetResources(*m_VoxelGILayout);
+
+		m_CommandBuffer->SetVertexBuffer(*(m_ScreenMesh->GetBuffer()));
+		m_CommandBuffer->SetIndexBuffer(*(m_ScreenMesh->GetSubMesh(0).m_IndexBuffer));
+
+		m_CommandBuffer->DrawIndexed(m_ScreenMesh->GetSubMesh(0).m_IndexCount, 0, 0);
+
+		m_CommandBuffer->ResetResourceSlots(ResourceType::Texture, 0, 5, BindFlags::ShaderResource, StageFlags::PS);
 
 		m_CommandBuffer->EndEvent();
 	}
@@ -661,6 +686,112 @@ namespace Graphics
 		m_RenderTarget = m_ResourceManager->GetRenderTarget(TEXT("FinalRT"));
 	}
 
+	void Voxel::CreateVoxelGIPass()
+	{
+		PipelineLayoutDesc _pipelineLayoutDesc;
+		{
+			BindingDescriptor _bindDesc
+			{
+				ResourceType::Texture, BindFlags::ShaderResource, StageFlags::PS, 0
+			};
+
+			_pipelineLayoutDesc._bindings.push_back(_bindDesc);
+			_pipelineLayoutDesc._resources.push_back(m_ResourceManager->GetTexture(TEXT("Albedo")));
+		}
+		{
+			BindingDescriptor _bindDesc
+			{
+				ResourceType::Texture, BindFlags::ShaderResource, StageFlags::PS, 1
+			};
+
+			_pipelineLayoutDesc._bindings.push_back(_bindDesc);
+			_pipelineLayoutDesc._resources.push_back(m_ResourceManager->GetTexture(TEXT("Normal")));
+		}
+		{
+			BindingDescriptor _bindDesc
+			{
+				ResourceType::Texture, BindFlags::ShaderResource, StageFlags::PS, 2
+			};
+
+			_pipelineLayoutDesc._bindings.push_back(_bindDesc);
+			_pipelineLayoutDesc._resources.push_back(m_ResourceManager->GetTexture(TEXT("Depth")));
+		}
+		{
+			BindingDescriptor _bindDesc
+			{
+				ResourceType::Texture, BindFlags::ShaderResource, StageFlags::PS, 3
+			};
+
+			_pipelineLayoutDesc._bindings.push_back(_bindDesc);
+			_pipelineLayoutDesc._resources.push_back(m_ResourceManager->GetTexture(TEXT("WorldPosition")));
+		}
+		{
+			BindingDescriptor _bindDesc
+			{
+				ResourceType::Texture, BindFlags::ShaderResource, StageFlags::PS, 4
+			};
+
+			_pipelineLayoutDesc._bindings.push_back(_bindDesc);
+			_pipelineLayoutDesc._resources.push_back(m_VoxelTexture);
+		}
+		{
+			BindingDescriptor _bindDesc
+			{
+				ResourceType::Sampler, BindFlags::VideoEncoder, StageFlags::PS, 0
+			};
+
+			_pipelineLayoutDesc._bindings.push_back(_bindDesc);
+			_pipelineLayoutDesc._resources.push_back(m_ResourceManager->GetSampler(TEXT("samWrapLinear")));
+		}
+		{
+			BindingDescriptor _bindDesc
+			{
+				ResourceType::Sampler, BindFlags::VideoEncoder, StageFlags::PS, 1
+			};
+
+			_pipelineLayoutDesc._bindings.push_back(_bindDesc);
+			_pipelineLayoutDesc._resources.push_back(m_ResourceManager->GetSampler(TEXT("samClampLinear")));
+		}
+
+		m_VoxelGILayout = m_ResourceManager->CreatePipelineLayout(TEXT("Voxel GI"), _pipelineLayoutDesc);
+
+		GraphicsPipelineDesc _pipelineStateDesc;
+		_pipelineStateDesc._pipelineLayout = m_VoxelGILayout;
+
+		_pipelineStateDesc._shaderProgram._vertexShader = m_ResourceManager->GetShader(TEXT("VS_Screen"));
+
+		ShaderDesc _voxelGI;
+		{
+			_voxelGI._shaderType = ShaderType::Pixel;
+			_voxelGI._sourceType = ShaderSourceType::HLSL;
+			_voxelGI._filePath = TEXT("Asset\\Shader\\PS_VoxelGI.hlsl");
+			_voxelGI._sourceSize = 0;
+			_voxelGI._entryPoint = "main";
+			_voxelGI._profile = "ps_5_0";
+		}
+		_pipelineStateDesc._shaderProgram._pixelShader = m_ResourceManager->CreateShader(TEXT("PS_VoxelGI"), _voxelGI);
+
+		_pipelineStateDesc._viewports.push_back({ 0, 0, 1280, 720, 0, 1 });
+		
+		_pipelineStateDesc._hasDSS = false;
+
+		_pipelineStateDesc._rasterizerDesc._cullMode = CullMode::None;
+		_pipelineStateDesc._rasterizerDesc._fillMode = FillMode::Solid;
+		_pipelineStateDesc._rasterizerDesc._depthClampEnabled = false;
+		_pipelineStateDesc._rasterizerDesc._multiSampleEnabled = true;
+
+		_pipelineStateDesc._blendDesc._renderTarget[0]._blendEnable = true;
+		_pipelineStateDesc._blendDesc._renderTarget[0]._srcBlend = Blend::One;
+		_pipelineStateDesc._blendDesc._renderTarget[0]._destBlend = Blend::One;
+		_pipelineStateDesc._blendDesc._renderTarget[0]._blendOp = BlendOp::Add;
+		_pipelineStateDesc._blendDesc._sampleMask = 0xffffffff;
+
+		m_VoxelGI = m_ResourceManager->CreatePipelineState(TEXT("Voxel GI"), _pipelineStateDesc);
+
+		m_VoxelGIRT = m_ResourceManager->GetRenderTarget(TEXT("VoxelGI"));
+		m_ScreenMesh = m_ResourceManager->GetMeshBuffer(TEXT("Screen_Mesh"));
+	}
+
 	void Voxel::UpdateResourcePerMaterial(CommandBuffer* commandBuffer, RenderObject* renderObject, PipelineLayout* pipelineLayout)
 	{
 		auto& _sources = renderObject->GetUpdateResourceData();
@@ -771,6 +902,8 @@ namespace Graphics
 		CreateVoxelCopyPass();
 
 		CreateVoxelDebugPass();
+
+		CreateVoxelGIPass();
 	}
 
 }

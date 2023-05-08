@@ -203,7 +203,7 @@ namespace Graphics
 
 		void DX11StateManager::SetBlendState(ID3D11BlendState* blendState, uint32 sampleMask)
 		{
-			if (m_BlendState != blendState)
+			if (m_BlendState != blendState || m_SampleMask != sampleMask)
 			{
 				m_BlendState = blendState;
 
@@ -214,10 +214,11 @@ namespace Graphics
 		void DX11StateManager::SetBlendState(ID3D11BlendState* blendState, const FLOAT* blendFactor, uint32 sampleMask)
 		{
 			if (m_BlendState != blendState 
-				|| m_BlendFactor[0] != blendFactor[0]
+				|| (m_BlendFactor[0] != blendFactor[0]
 				|| m_BlendFactor[1] != blendFactor[1]
 				|| m_BlendFactor[2] != blendFactor[2]
 				|| m_BlendFactor[3] != blendFactor[3])
+				|| m_SampleMask != sampleMask)
 			{
 				m_BlendState = blendState;
 

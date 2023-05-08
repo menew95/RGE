@@ -29,17 +29,9 @@ namespace Graphics
 		ResourceManager* m_ResourceManager;
 		CommandBuffer* m_CommandBuffer;
 
-		MeshBuffer* m_Screen_Mesh;
-		MaterialBuffer* m_Debug_Material;
 		std::shared_ptr<Graphics::RenderPass> m_Debug_Pass;
 
 		// Deferrd resource for debug
-		Texture* m_Albedo;
-		Texture* m_Normal;
-		Texture* m_Depth;
-		Texture* m_World;
-		Texture* m_Reflect;
-
 		std::vector<RenderObject> m_DebugRenderObject;
 	};
 }

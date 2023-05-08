@@ -3,6 +3,7 @@
 #include "Header/H_Input.hlsli"
 #include "Header/H_Light.hlsli"
 #include "Header/H_Shadow.hlsli"
+#include "Header/H_Math.hlsli"
 
 static const float3 CONES[] =
 {
@@ -25,6 +26,16 @@ static const float3 CONES[] =
 };
 
 static const float sqrt2 = 1.414213562;
+
+Texture2D gAlbedo	: register(t0);
+Texture2D gNormal   : register(t1);
+Texture2D<float> gDepth    : register(t2);
+Texture2D gWorldPos	: register(t3);
+Texture3D<float4> voxelTexture : register(t4);
+
+SamplerState samWrapLinear	: register(s0);
+SamplerState samClampLinear	: register(s1);
+
 inline float4 ConeTrace(in Texture3D<float4> voxels, in float3 P, in float3 N, in float3 coneDirection, in float coneAperture)
 {
     float3 color = 0;
@@ -32,27 +43,27 @@ inline float4 ConeTrace(in Texture3D<float4> voxels, in float3 P, in float3 N, i
 
     // We need to offset the cone start position to avoid sampling its own voxel (self-occlusion):
     //	Unfortunately, it will result in disconnection between nearby surfaces :(
-    float dist = voxel_radiance.DataSize; // offset by cone dir so that first sample of all cones are not the same
-    float3 startPos = P + N * voxel_radiance.DataSize * 2 * sqrt2; // sqrt2 is diagonal voxel half-extent
+    float dist = voxel_radiance._dataSize; // offset by cone dir so that first sample of all cones are not the same
+    float3 startPos = P + N * voxel_radiance._dataSize * 2 * sqrt2; // sqrt2 is diagonal voxel half-extent
 
     // We will break off the loop if the sampling distance is too far for performance reasons:
-    while (dist < voxel_radiance.MaxDistance && alpha < 1)
+    while (dist < voxel_radiance._maxDistance && alpha < 1)
     {
-        float diameter = max(voxel_radiance.DataSize, 2 * coneAperture * dist);
-        float mip = log2(diameter * voxel_radiance.DataSizeRCP);
+        float diameter = max(voxel_radiance._dataSize, 2 * coneAperture * dist);
+        float mip = log2(diameter * voxel_radiance._dataSizeRCP);
 
         // Because we do the ray-marching in world space, we need to remap into 3d texture space before sampling:
         //	todo: optimization could be doing ray-marching in texture space
         float3 tc = startPos + coneDirection * dist;
-        tc = (tc - voxel_radiance.GridCenter) * voxel_radiance.DataSizeRCP;
-        tc *= voxel_radiance.DataResRCP;
+        tc = (tc - voxel_radiance._gridCenter) * voxel_radiance._dataSizeRCP;
+        tc *= voxel_radiance._dataResRCP;
         tc = tc * float3(0.5f, -0.5f, 0.5f) + 0.5f;
 
         // break if the ray exits the voxel grid, or we sample from the last mip:
-        if (any(tc < 0) || any(tc > 1) || mip >= (float)voxel_radiance.Mips)
+        if (any(tc < 0) || any(tc > 1) || mip >= (float)voxel_radiance._mips)
             break;
 
-        float4 sam = voxels.SampleLevel(linear_clamp_sampler, tc, mip);
+        float4 sam = voxels.SampleLevel(samClampLinear, tc, mip);
 
         // this is the correct blending to avoid black-staircase artifact (ray stepped front-to back, so blend front to back):
         float a = 1 - alpha;
@@ -60,7 +71,7 @@ inline float4 ConeTrace(in Texture3D<float4> voxels, in float3 P, in float3 N, i
         alpha += a * sam.a;
 
         // step along ray:
-        dist += diameter * voxel_radiance.RayStepSize;
+        dist += diameter * voxel_radiance._rayStepSize;
     }
 
     return float4(color, alpha);
@@ -69,7 +80,7 @@ inline float4 ConeTraceRadiance(in Texture3D<float4> voxels, in float3 P, in flo
 {
     float4 radiance = 0;
 
-    for (uint cone = 0; cone < voxel_radiance.NumCones; ++cone) // quality is between 1 and 16 cones
+    for (uint cone = 0; cone < voxel_radiance._numCones; ++cone) // quality is between 1 and 16 cones
     {
         // approximate a hemisphere from random points inside a sphere:
         //  (and modulate cone with surface normal, no banding this way)
@@ -81,7 +92,7 @@ inline float4 ConeTraceRadiance(in Texture3D<float4> voxels, in float3 P, in flo
     }
 
     // final radiance is average of all the cones radiances
-    radiance *= voxel_radiance.NumConesRCP;
+    radiance *= voxel_radiance._numConesRCP;
     radiance.a = saturate(radiance.a);
 
     return max(0, radiance);
@@ -96,30 +107,20 @@ inline float4 ConeTraceReflection(in Texture3D<float4> voxels, in float3 P, in f
     return float4(max(0, reflection.rgb), saturate(reflection.a));
 }
 
-struct VertexOut
-{
-    float4 PosH : SV_POSITION;
-    float2 Tex : TEX;
-};
-
-Texture2D normalMetallicTx : register(t0);
-Texture2D<float> depthTx : register(t1);
-Texture3D<float4> voxelTexture : register(t2);
-
-float4 main(VertexOut pin) : SV_TARGET
+float4 main(VSOutput input) : SV_TARGET
 {
     //unpack gbuffer
-   float4 NormalMetallic = normalMetallicTx.Sample(linear_wrap_sampler, pin.Tex);
-   float3 Normal = 2 * NormalMetallic.rgb - 1.0;
-   float metallic = NormalMetallic.a;
-   float depth = depthTx.Sample(linear_wrap_sampler, pin.Tex);
-   float3 view_pos = GetPositionVS(pin.Tex, depth);
+   float4 _albedo = gAlbedo.Sample(samWrapLinear, input.uv);
+   float4 _normal = gNormal.Sample(samWrapLinear, input.uv);
+   float _depth = gDepth.Sample(samWrapLinear, input.uv);
+   float4 _worldPos = gWorldPos.Sample(samWrapLinear, input.uv);
+   float3 _viewPos = GetPositionVS(input.uv, _depth);
 
-   float4 world_pos = mul(float4(view_pos, 1.0f), inverse_view);
-   world_pos /= world_pos.w;
+   float _roughness = lerp(0.04f, 1.0f, _normal.w);
+   float _metallic = lerp(0.04f, 1.0f, _albedo.w);
 
-   float3 world_normal = mul(Normal, (float3x3) transpose(view));
+   float3 N = ((_normal - 0.5f) * 2.0f).xyz;
 
-   return ConeTraceRadiance(voxelTexture, world_pos.xyz, world_normal);
+   return ConeTraceRadiance(voxelTexture, _worldPos.xyz, N);
 
 }

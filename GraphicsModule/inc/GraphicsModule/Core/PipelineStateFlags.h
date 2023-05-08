@@ -127,7 +127,7 @@ namespace Graphics
 		Blend _srcBlendAlpha = Blend::One;
 		Blend _destBlendAlpha = Blend::Zero;
 		BlendOp _blendOpAlpha = BlendOp::Add;
-		UINT8 _renderTargetWriteMask = 0xff;
+		UINT8 _renderTargetWriteMask = 0xf;
 	};
 
 	struct BlendDesc

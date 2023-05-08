@@ -7,7 +7,7 @@ struct VoxelRadiance
 	float	_dataResRCP;	// 1.0 / resolution
 	uint	_numCones;
 	float	_numConesRCP;
-	float	_maxDIstance;
+	float	_maxDistance;
 	float	_rayStepSize;
 	uint	_mips;
 };

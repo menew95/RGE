@@ -160,7 +160,7 @@ namespace Graphics
 	{
 		m_Sky = std::make_shared<Sky>(m_CommandBuffer, m_ResourceManager);
 
-		m_Sky->SetRenderTarget(m_SwapChain);
+		m_Sky->SetRenderTarget(m_ResourceManager->GetRenderTarget(TEXT("FinalRT")));
 	}
 
 	void GraphicsEngine::InitDebugPass()
@@ -328,7 +328,6 @@ namespace Graphics
 
 		m_Sky->ExcutePass();
 
-
 		{
 			m_Deferred_Light_Pass->RegistRenderObject(&_deferredMergeRenderObject);
 
@@ -341,10 +340,7 @@ namespace Graphics
 			m_Deferred_Light_Pass->EndExcute(m_CommandBuffer);
 		}
 
-
-		//m_Voxel_Pass->SetRenderTarget(m_SwapChain);
-
-		m_Voxel_Pass->UpdateVoxelInfo(_perFrame._camera._camWorld, 0.1f, 2.f, 0.75f, 20.0f);
+		m_Voxel_Pass->UpdateVoxelInfo(_perFrame._camera._camWorld, 0.1f, 8.f, 0.5f, 20.f);
 
 		m_Voxel_Pass->Excute();
 

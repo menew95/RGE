@@ -150,7 +150,7 @@ float4 main(VSOutput input) : SV_TARGET
 
 	//float3 _ambient = gAlbedo.Sample(samPoint, _reflect.xy);
 
-	_finColor = _ambient + _lightColor;// *_reflect.w;// +_lightColor;
+	_finColor = /*_ambient + */_lightColor;// *_reflect.w;// +_lightColor;
 
 	_finColor = pow(_finColor, 1 / 2.2);
 

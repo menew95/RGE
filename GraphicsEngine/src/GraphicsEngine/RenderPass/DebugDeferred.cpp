@@ -5,6 +5,7 @@
 
 #include "GraphicsEngine/Resource/MeshBuffer.h"
 #include "GraphicsEngine/Resource/CameraBuffer.h"
+#include "GraphicsEngine/Resource/MaterialBuffer.h"
 #include "GraphicsEngine/Resource/ResourceManager.h"
 
 namespace Graphics
@@ -13,13 +14,6 @@ namespace Graphics
 	DebugDeferred::DebugDeferred(CommandBuffer* command, ResourceManager* resourceManager)
 		: m_CommandBuffer(command)
 		, m_ResourceManager(resourceManager)
-		, m_Screen_Mesh(nullptr)
-		, m_Debug_Material(nullptr)
-		, m_Albedo(nullptr)
-		, m_Normal(nullptr)
-		, m_Depth(nullptr)
-		, m_World(nullptr)
-		, m_Reflect(nullptr)
 	{
 		Initialize();
 	}
@@ -45,50 +39,43 @@ namespace Graphics
 
 	void DebugDeferred::Initialize()
 	{
-		m_Debug_Material = m_ResourceManager->CreateMaterialBuffer(TEXT("MRT_Debug"));
-
-		m_Screen_Mesh = m_ResourceManager->GetMeshBuffer(TEXT("Screen_Mesh"));
-
-		m_Albedo = m_ResourceManager->GetTexture(TEXT("Albedo"));
-		m_Normal = m_ResourceManager->GetTexture(TEXT("Normal"));
-		m_Depth = m_ResourceManager->GetTexture(TEXT("Depth"));
-		m_World = m_ResourceManager->GetTexture(TEXT("WorldPosition"));
-		m_Reflect = m_ResourceManager->GetTexture(TEXT("SSReflect"));
+		auto* _mesh = m_ResourceManager->GetMeshBuffer(TEXT("Screen_Mesh"));
 
 		RenderObject _albedoObject;
-		_albedoObject.m_MeshBuffer = m_Screen_Mesh;
-		_albedoObject.m_MaterialBuffer = m_Debug_Material;
+		_albedoObject.m_MeshBuffer = _mesh;
+		_albedoObject.m_MaterialBuffer = m_ResourceManager->CreateMaterialBuffer(TEXT("MRT_Debug_Albedo"));
 
-		UpdateResourceData _resourceA{ 1,  m_Albedo };
-		_albedoObject.m_UpdateResources.push_back(_resourceA);
+		_albedoObject.m_MaterialBuffer->SetResource(m_ResourceManager->GetTexture(TEXT("Albedo")), ResourceType::Texture, 0);
 
 		RenderObject _normalObject;
-		_normalObject.m_MeshBuffer = m_Screen_Mesh;
-		_normalObject.m_MaterialBuffer = m_Debug_Material;
+		_normalObject.m_MeshBuffer = _mesh;
+		_normalObject.m_MaterialBuffer = m_ResourceManager->CreateMaterialBuffer(TEXT("MRT_Debug_Normal"));;
 
-		UpdateResourceData _resourceN{ 1,  m_Normal };
-		_normalObject.m_UpdateResources.push_back(_resourceN);
+		_normalObject.m_MaterialBuffer->SetResource(m_ResourceManager->GetTexture(TEXT("Normal")), ResourceType::Texture, 0);
 
 		RenderObject _depthObject;
-		_depthObject.m_MeshBuffer = m_Screen_Mesh;
-		_depthObject.m_MaterialBuffer = m_Debug_Material;
+		_depthObject.m_MeshBuffer = _mesh;
+		_depthObject.m_MaterialBuffer = m_ResourceManager->CreateMaterialBuffer(TEXT("MRT_Debug_Depth"));;
 
-		UpdateResourceData _resourceD{ 1,  m_Depth };
-		_depthObject.m_UpdateResources.push_back(_resourceD);
+		_depthObject.m_MaterialBuffer->SetResource(m_ResourceManager->GetTexture(TEXT("Depth")), ResourceType::Texture, 0);
 
 		RenderObject _worldPosObject;
-		_worldPosObject.m_MeshBuffer = m_Screen_Mesh;
-		_worldPosObject.m_MaterialBuffer = m_Debug_Material;
+		_worldPosObject.m_MeshBuffer = _mesh;
+		_worldPosObject.m_MaterialBuffer = m_ResourceManager->CreateMaterialBuffer(TEXT("MRT_Debug_WorldPos"));;
 
-		UpdateResourceData _resourceW{ 1,  m_World };
-		_worldPosObject.m_UpdateResources.push_back(_resourceW);
+		_worldPosObject.m_MaterialBuffer->SetResource(m_ResourceManager->GetTexture(TEXT("WorldPosition")), ResourceType::Texture, 0);
 
 		RenderObject _reflectObject;
-		_reflectObject.m_MeshBuffer = m_Screen_Mesh;
-		_reflectObject.m_MaterialBuffer = m_Debug_Material;
+		_reflectObject.m_MeshBuffer = _mesh;
+		_reflectObject.m_MaterialBuffer = m_ResourceManager->CreateMaterialBuffer(TEXT("MRT_Debug_Reflect"));;
 
-		UpdateResourceData _resourceR{ 1,  m_Reflect };
-		_reflectObject.m_UpdateResources.push_back(_resourceR);
+		_reflectObject.m_MaterialBuffer->SetResource(m_ResourceManager->GetTexture(TEXT("SSReflect")), ResourceType::Texture, 0);
+
+		RenderObject _voxelObject;
+		_voxelObject.m_MeshBuffer = _mesh;
+		_voxelObject.m_MaterialBuffer = m_ResourceManager->CreateMaterialBuffer(TEXT("MRT_Debug_Voxel"));;
+
+		_voxelObject.m_MaterialBuffer->SetResource(m_ResourceManager->GetTexture(TEXT("VoxelGI")), ResourceType::Texture, 0);
 
 		m_DebugRenderObject.push_back(_albedoObject);
 		m_DebugRenderObject.push_back(_normalObject);
@@ -108,5 +95,9 @@ namespace Graphics
 
 			m_Debug_Pass->RegistRenderObject(&m_DebugRenderObject[i]);
 		}
+
+		m_DebugRenderObject.push_back(_voxelObject);
+		m_DebugRenderObject[5].AddViewport({ 0, 144.f, 256.f, 144.f });
+		m_Debug_Pass->RegistRenderObject(&m_DebugRenderObject[5]);
 	}
 }
