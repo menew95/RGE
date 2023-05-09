@@ -41,29 +41,33 @@ inline float4 ConeTrace(in Texture3D<float4> voxels, in float3 P, in float3 N, i
     float3 color = 0;
     float alpha = 0;
 
-    // We need to offset the cone start position to avoid sampling its own voxel (self-occlusion):
-    //	Unfortunately, it will result in disconnection between nearby surfaces :(
-    float dist = voxel_radiance._dataSize; // offset by cone dir so that first sample of all cones are not the same
+    // 콘의 시작점을 물체안에서 삼각형 모양으로 콘을 분산시키기 위해
+    // 2 * sqrt2는 샘플링된 복셀들이 콘의 진행 방향과 수직인 평면 상에 놓이도록 하는 역할을 합니다.
     float3 startPos = P + N * voxel_radiance._dataSize * 2 * sqrt2; // sqrt2 is diagonal voxel half-extent
-
+    float dist = voxel_radiance._dataSize; // 이미 콘의 시작점을
+    
     // We will break off the loop if the sampling distance is too far for performance reasons:
     while (dist < voxel_radiance._maxDistance && alpha < 1)
     {
+        // 현재 위치에서 쏜 빛이 원뿔의 바닥면까지 도달할 때의 반경 만약 복셀의 크기보다 작다면 복셀 크기로
         float diameter = max(voxel_radiance._dataSize, 2 * coneAperture * dist);
+
+        // Cone의 바닥면의 지름이 지름을 복셀 크기로 나눈 비율을 계산합니다.
+        // 예를 들어, diameter가 복셀 크기의 2배인 경우, mip 값은 1이 됩니다. 이는 밉맵 레벨 1을 의미합니다.
+        // 반면, diameter가 복셀 크기의 4배인 경우, mip 값은 2가 됩니다. 이는 밉맵 레벨 2를 의미합니다.
         float mip = log2(diameter * voxel_radiance._dataSizeRCP);
 
-        // Because we do the ray-marching in world space, we need to remap into 3d texture space before sampling:
-        //	todo: optimization could be doing ray-marching in texture space
-        float3 tc = startPos + coneDirection * dist;
-        tc = (tc - voxel_radiance._gridCenter) * voxel_radiance._dataSizeRCP;
-        tc *= voxel_radiance._dataResRCP;
-        tc = tc * float3(0.5f, -0.5f, 0.5f) + 0.5f;
+        // 샘플링할 복셀의 좌표를 구한다.
+        float3 _voxelPosition = startPos + coneDirection * dist;
+        _voxelPosition = (_voxelPosition - voxel_radiance._gridCenter) * voxel_radiance._dataSizeRCP;
+        _voxelPosition *= voxel_radiance._dataResRCP;
+        _voxelPosition = _voxelPosition * float3(0.5f, -0.5f, 0.5f) + 0.5f; // dx에서는 y축을 뒤집어야함
 
-        // break if the ray exits the voxel grid, or we sample from the last mip:
-        if (any(tc < 0) || any(tc > 1) || mip >= (float)voxel_radiance._mips)
+        // 만약 광선이 복셀 공간을 벗어 났거나 샘플링할 밉을 벗어 났으면 멈춤
+        if (any(_voxelPosition < 0) || any(_voxelPosition > 1) || mip >= (float)voxel_radiance._mips)
             break;
 
-        float4 sam = voxels.SampleLevel(samClampLinear, tc, mip);
+        float4 sam = voxels.SampleLevel(samClampLinear, _voxelPosition, mip);
 
         // this is the correct blending to avoid black-staircase artifact (ray stepped front-to back, so blend front to back):
         float a = 1 - alpha;
@@ -80,15 +84,20 @@ inline float4 ConeTraceRadiance(in Texture3D<float4> voxels, in float3 P, in flo
 {
     float4 radiance = 0;
 
+
+    float aperture = PI / 3.0f; // 원뿔 각도 60도
+    float tanHalfAperture = tan(aperture / 2.0f); // 원뿔 절반 탄젠트 
+
     for (uint cone = 0; cone < voxel_radiance._numCones; ++cone) // quality is between 1 and 16 cones
     {
         // approximate a hemisphere from random points inside a sphere:
         //  (and modulate cone with surface normal, no banding this way)
-        float3 coneDirection = normalize(CONES[cone] + N);
+        //float3 coneDirection = normalize(CONES[cone] + N);
+        float3 coneDirection = reflect(N, CONES[cone]);
         // if point on sphere is facing below normal (so it's located on bottom hemisphere), put it on the opposite hemisphere instead:
         coneDirection *= dot(coneDirection, N) < 0 ? -1 : 1;
 
-        radiance += ConeTrace(voxels, P, N, coneDirection, tan(PI * 0.5f * 0.33f));
+        radiance += ConeTrace(voxels, P, N, coneDirection, tanHalfAperture);
     }
 
     // final radiance is average of all the cones radiances

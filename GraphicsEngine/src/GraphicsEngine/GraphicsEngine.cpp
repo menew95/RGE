@@ -340,7 +340,7 @@ namespace Graphics
 			m_Deferred_Light_Pass->EndExcute(m_CommandBuffer);
 		}
 
-		m_Voxel_Pass->UpdateVoxelInfo(_perFrame._camera._camWorld, 0.1f, 8.f, 0.5f, 20.f);
+		m_Voxel_Pass->UpdateVoxelInfo(_perFrame._camera._camWorld, 0.1f, 8.f, 1.0f, 20.f);
 
 		m_Voxel_Pass->Excute();
 
