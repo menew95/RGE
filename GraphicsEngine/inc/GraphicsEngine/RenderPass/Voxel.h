@@ -47,12 +47,14 @@ namespace Graphics
 
 		void Excute();
 
-		void UpdateVoxelInfo(Vector3 camPos, float voxelSize, float coneNum, float rayStepDis, float maxDis);
+		void UpdateVoxelInfo(Vector3 camPos, float voxelSize, uint32 coneNum, float rayStepDis, float maxDis);
 
 		inline void SetRenderTarget(RenderTarget* renderTarget)
 		{
 			m_RenderTarget = renderTarget;
 		}
+
+		void SetVoxelSetting(bool voxelgi, bool debug, bool line, bool boundce, uint32 frame);
 
 	private:
 		void Culling();
@@ -80,6 +82,12 @@ namespace Graphics
 		void ExcuteDebug();
 
 		void ExcuteVoxelGI();
+
+		bool	m_VoxelGI = false;
+		bool	m_VoxelDebug = false;
+		bool	m_VoxelDebugLine = false;
+		bool	m_VoxelSecondBounce = false;
+		uint32	m_VoxelUpdateFrame = 1;
 
 		ResourceManager* m_ResourceManager = nullptr;
 		CommandBuffer* m_CommandBuffer = nullptr;
@@ -127,16 +135,15 @@ namespace Graphics
 		PipelineState* m_VoxelDebugLinePSO = nullptr;
 		PipelineLayout* m_VoxelDebugLayout = nullptr;
 		
-		PipelineState* m_VoxelGI = nullptr;
+		PipelineState* m_VoxelGIPSO = nullptr;
 		PipelineLayout* m_VoxelGILayout = nullptr;
 		RenderTarget* m_VoxelGIRT = nullptr;
 		MeshBuffer* m_ScreenMesh = nullptr;
 #pragma endregion
 
-		bool m_VoxelDebug = false;
-
 		uint32 VOXEL_RESOLUTION = 128;
 
 		VoxelInfoCB m_Voxel_Info;
+
 	};
 }

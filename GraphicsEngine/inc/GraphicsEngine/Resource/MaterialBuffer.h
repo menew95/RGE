@@ -24,6 +24,8 @@ namespace Graphics
 		void SetResource(Resource* resource, ResourceType type, uint32 bindSlot, uint32 size = 0);
 
 		void BindResource(CommandBuffer* commandBuffer);
+		
+		void ChangeResource(Resource* resource, uint32 idx);
 
 		void SetBufferData(void* src, Resource* resource);
 

@@ -10,12 +10,6 @@ Texture2D gLightBuffer : register(t0);
 
 SamplerState samLinearClamp : register(s0);
 
-cbuffer ToneMap : register(b1)
-{
-    float g_fHardExposure;
-    float3 _pad;
-}
-
 float3 ReinhardToneMap(float3 color)
 {
     color *= g_fHardExposure;  // Hardcoded Exposure Adjustment
@@ -54,7 +48,6 @@ float3 Uncharted2ToneMap(float3 color)
 
     return pow(color, 1 / 2.2);
 }
-
 
 float4 main(VSOutput input) : SV_TARGET
 {

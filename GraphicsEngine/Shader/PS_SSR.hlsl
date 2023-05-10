@@ -1,26 +1,6 @@
 #include "Header/H_Input.hlsli"
 #include "Header/H_ConstBuffer.hlsli"
 
-cbuffer cbSSLR : register(b1)
-{
-    float2 cb_depthBufferSize; // dimensions of the z-buffer
-    float cb_zThickness; // thickness to ascribe to each pixel in the depth buffer
-    float cb_nearPlaneZ; // the camera's near z plane
-
-    float cb_stride; // Step in horizontal or vertical pixels between samples. This is a float
-    // because integer math is slow on GPUs, but should be set to an integer >= 1.
-    float cb_maxSteps; // Maximum number of iterations. Higher gives better images but may be slow.
-    float cb_maxDistance; // Maximum camera-space distance to trace before returning a miss.
-    float cb_strideZCutoff; // More distant pixels are smaller in screen space. This value tells at what point to
-    // start relaxing the stride to give higher quality reflections for objects far from
-    // the camera.
-
-    float cb_numMips; // the number of mip levels in the convolved color buffer
-    float cb_fadeStart; // determines where to start screen edge fading of effect
-    float cb_fadeEnd; // determines where to end screen edge fading of effect
-    float cb_sslr_padding0; // padding for alignment
-};
-
 Texture2D depthBuffer : register(t0);
 Texture2D normalBuffer: register(t1);
 
@@ -57,9 +37,9 @@ bool intersectsDepthBuffer(float z, float minZ, float maxZ)
      //	= clamp( (z * biasRangeTimesAmount + -biasStartTimesRangeTimesAmount), 0, biasAmount );
      //The goal is to preserver precision as biasRange may be too small,
      //and to allow fmad optimization.
-    float depthScale = min(1.0f, z * cb_strideZCutoff);
-    z += cb_zThickness + lerp(0.0f, 2.0f, depthScale);
-    return (maxZ >= z) && (minZ - cb_zThickness <= z);
+    float depthScale = min(1.0f, z * _strideZCutoff);
+    z += _zThickness + lerp(0.0f, 2.0f, depthScale);
+    return (maxZ >= z) && (minZ - _zThickness <= z);
 }
 
 void swap(inout float a, inout float b)
@@ -107,15 +87,15 @@ bool traceScreenSpaceRay(
     out float3 hitPoint)
 {
     // Clip to the near plane
-    float rayLength = ((csOrig.z + csDir.z * cb_maxDistance) < cb_nearPlaneZ) ?
-    (cb_nearPlaneZ - csOrig.z) / csDir.z : cb_maxDistance;
+    float rayLength = ((csOrig.z + csDir.z * _maxDistance) < _nearPlaneZ) ?
+    (_nearPlaneZ - csOrig.z) / csDir.z : _maxDistance;
     float3 csEndPoint = csOrig + csDir * rayLength;
 
     // Project into homogeneous clip space
     float4 H0 = mul(float4(csOrig, 1.0f), camera._viewToTextureSpaceMatrix);
-    H0.xy *= cb_depthBufferSize;
+    H0.xy *= _depthBufferSize;
     float4 H1 = mul(float4(csEndPoint, 1.0f), camera._viewToTextureSpaceMatrix);
-    H1.xy *= cb_depthBufferSize;
+    H1.xy *= _depthBufferSize;
     float k0 = 1.0f / H0.w;
     float k1 = 1.0f / H1.w;
 
@@ -154,8 +134,8 @@ bool traceScreenSpaceRay(
 
     // Scale derivatives by the desired pixel stride and then
     // offset the starting values by the jitter fraction
-    float strideScale = 1.0f - min(1.0f, csOrig.z * cb_strideZCutoff);
-    float stride = 1.0f + strideScale * cb_stride;
+    float strideScale = 1.0f - min(1.0f, csOrig.z * _strideZCutoff);
+    float stride = 1.0f + strideScale * _stride;
     dP *= stride;
     dQ *= stride;
     dk *= stride;
@@ -178,7 +158,7 @@ bool traceScreenSpaceRay(
     float rayZMax = prevZMaxEstimate;
     float sceneZMax = rayZMax + 100.0f;
     for(;
-        ((PQk.x * stepDir) <= end) && (stepCount < cb_maxSteps) &&
+        ((PQk.x * stepDir) <= end) && (stepCount < _maxSteps) &&
         !intersectsDepthBuffer(sceneZMax, rayZMin, rayZMax) &&
         (sceneZMax != 0.0f);
         ++stepCount)
@@ -251,8 +231,8 @@ float4 main(VertexOut input) : SV_TARGET
     float3 hitPoint = float3(0.0f, 0.0f, 0.0f);
 
     // 
-    //float jitter = cb_stride > 1.0f ? float(int(input.posH.x + input.posH.y) & 1) * 0.5f : 0.0f;
-    float jitter = cb_stride > 1.0f ? float(int(input.viewRay.x + input.viewRay.y) & 1) * 0.5f : 0.0f;
+    //float jitter = _stride > 1.0f ? float(int(input.posH.x + input.posH.y) & 1) * 0.5f : 0.0f;
+    float jitter = _stride > 1.0f ? float(int(input.viewRay.x + input.viewRay.y) & 1) * 0.5f : 0.0f;
 
     // perform ray tracing - true if hit found, false otherwise
     bool intersection = traceScreenSpaceRay(rayOriginVS, rayDirectionVS, jitter, hitPixel, hitPoint);

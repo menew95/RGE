@@ -31,6 +31,9 @@ namespace Graphics
 
 	void Voxel::Excute()
 	{
+		if (!m_VoxelGI)
+			return;
+
 		ExcuteVoxelize();
 
 		ExcuteCopy();
@@ -45,6 +48,7 @@ namespace Graphics
 
 	void Voxel::ExcuteVoxelize()
 	{
+
 		Culling();
 
 		Viewport _viewport{ 0, 0, static_cast<float>(VOXEL_RESOLUTION), static_cast<float>(VOXEL_RESOLUTION), 0.f, 1.f };
@@ -76,38 +80,15 @@ namespace Graphics
 		m_Voxelize_Albedo_Nomal_MRA_Pass->Excute(m_CommandBuffer);
 
 		m_Voxelize_Albedo_Nomal_MRA_Pass->EndExcute(m_CommandBuffer);
-
-		/*
-
-		m_CommandBuffer->SetPipelineState(*m_VoxelizePSO1);
-
-		for (auto& _renderObject : m_RenderObjectList)
-		{
-			auto _vertexBuffer = _renderObject.GetMeshBuffer()->GetBuffer();
-
-			m_CommandBuffer->SetVertexBuffer(*_vertexBuffer);
-
-			UpdateResourcePerObject(m_CommandBuffer, &_renderObject, m_VoxelizeLayout);
-
-			for (uint32 _subMeshCnt = 0; _subMeshCnt < _renderObject.GetMeshBuffer()->GetSubMeshCount(); _subMeshCnt++)
-			{
-				auto _subMeshBuffer = _renderObject.GetMeshBuffer()->GetSubMesh(_subMeshCnt);
-
-				UpdateResourcePerMaterial(commandBuffer, m_RenderObjects[_index]);
-
-				m_CommandBuffer->SetIndexBuffer(*_subMeshBuffer.m_IndexBuffer);
-
-				m_CommandBuffer->SetResources(*m_VoxelizeLayout);
-
-				m_CommandBuffer->DrawIndexed(_subMeshBuffer.m_IndexCount, 0, 0);
-			}
-		}
-
-		m_CommandBuffer->ResetResourceSlots(ResourceType::Buffer, 0, 1, BindFlags::UnorderedAccess, StageFlags::PS);*/
 		
 		m_CommandBuffer->EndEvent();
 
 		m_RenderObjectList.clear();
+
+		if (m_VoxelSecondBounce)
+		{
+
+		}
 	}
 
 	void Voxel::ExcuteCopy()
@@ -124,7 +105,7 @@ namespace Graphics
 
 		m_CommandBuffer->ResetResourceSlots(ResourceType::Texture, 0, 2, BindFlags::UnorderedAccess, StageFlags::CS);
 
-		//m_CommandBuffer->GenerateMips(*m_VoxelTexture);
+		m_CommandBuffer->GenerateMips(*m_VoxelTexture);
 
 		m_CommandBuffer->EndEvent();
 	}
@@ -135,7 +116,10 @@ namespace Graphics
 
 		m_CommandBuffer->SetViewport({ 0, 0, 1280, 720, 0, 1 });
 
-		m_CommandBuffer->SetPipelineState(*m_VoxelDebugPSO);
+		if(m_VoxelDebugLine)
+			m_CommandBuffer->SetPipelineState(*m_VoxelDebugLinePSO);
+		else
+			m_CommandBuffer->SetPipelineState(*m_VoxelDebugPSO);
 
 		m_CommandBuffer->SetRenderTarget(*m_RenderTarget, 0, 0);
 		
@@ -152,11 +136,12 @@ namespace Graphics
 	{
 		m_CommandBuffer->BeginEvent(TEXT("Voxel GI"));
 
-		m_CommandBuffer->SetPipelineState(*m_VoxelGI);
+		m_CommandBuffer->SetPipelineState(*m_VoxelGIPSO);
 
 		AttachmentClear _clear{ {0, 0, 0, 0}, 0 };
 
-		m_CommandBuffer->SetRenderTarget(*m_VoxelGIRT, 1, &_clear);
+		//m_CommandBuffer->SetRenderTarget(*m_VoxelGIRT, 1, &_clear);
+		m_CommandBuffer->SetRenderTarget(*m_VoxelGIRT, 0, nullptr);
 
 		m_CommandBuffer->SetResources(*m_VoxelGILayout);
 
@@ -170,7 +155,7 @@ namespace Graphics
 		m_CommandBuffer->EndEvent();
 	}
 
-	void Voxel::UpdateVoxelInfo(Vector3 camPos, float voxelSize, float coneNum, float rayStepDis, float maxDis)
+	void Voxel::UpdateVoxelInfo(Vector3 camPos, float voxelSize, uint32 coneNum, float rayStepDis, float maxDis)
 	{
 		float const f = 0.05f / voxelSize;
 
@@ -181,13 +166,22 @@ namespace Graphics
 		m_Voxel_Info.data_size = voxelSize;
 		m_Voxel_Info.data_size_rcp = 1.0f / voxelSize;
 		m_Voxel_Info.mips = 7;
-		m_Voxel_Info.num_cones = static_cast<uint32>(coneNum);
+		m_Voxel_Info.num_cones = coneNum;
 		m_Voxel_Info.num_cones_rcp = 1.0f / coneNum;
 		m_Voxel_Info.ray_step_size = rayStepDis;
 		m_Voxel_Info.max_distance = maxDis;
 		m_Voxel_Info.grid_center = center;
 		
 		m_CommandBuffer->UpdateBuffer(*m_VoxelData, 0, &m_Voxel_Info, GetCBufferSize(sizeof(VoxelInfoCB)));
+	}
+
+	void Voxel::SetVoxelSetting(bool voxelgi, bool debug, bool line, bool boundce, uint32 frame)
+	{
+		m_VoxelGI = voxelgi;
+		m_VoxelDebug = debug;
+		m_VoxelDebugLine = line;
+		m_VoxelSecondBounce = boundce;
+		m_VoxelUpdateFrame = frame;
 	}
 
 	void Voxel::CreateVoxelResource()
@@ -786,7 +780,7 @@ namespace Graphics
 		_pipelineStateDesc._blendDesc._renderTarget[0]._blendOp = BlendOp::Add;
 		_pipelineStateDesc._blendDesc._sampleMask = 0xffffffff;
 
-		m_VoxelGI = m_ResourceManager->CreatePipelineState(TEXT("Voxel GI"), _pipelineStateDesc);
+		m_VoxelGIPSO = m_ResourceManager->CreatePipelineState(TEXT("Voxel GI"), _pipelineStateDesc);
 
 		m_VoxelGIRT = m_ResourceManager->GetRenderTarget(TEXT("VoxelGI"));
 		m_ScreenMesh = m_ResourceManager->GetMeshBuffer(TEXT("Screen_Mesh"));

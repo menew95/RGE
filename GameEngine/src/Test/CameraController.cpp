@@ -6,6 +6,8 @@
 #include "GameEngine/Input.h"
 #include "GameEngine/Time.h"
 
+#include "GameEngine/Core/System/GraphicsSystem.h"
+
 CameraController::CameraController(std::shared_ptr<GameObject>& gameObject, const tstring& componentName /*= TEXT("CameraController")*/)
 	:Component(gameObject, componentName)
 {
@@ -88,6 +90,33 @@ void CameraController::Update()
 			_forwardDir.x, _forwardDir.y, _forwardDir.z, 0.f,
 			_nextPosition.x, _nextPosition.y, _nextPosition.z, 1.f
 			});
-
 	}
+
+	if (Input::GetKeyDown(EVirtualKey::Key_0))
+	{
+		Graphics::RenderingSetting _setting = GraphicsSystem::GetInstance()->GetRenderingSetting();
+
+		_setting._voxelGI = !_setting._voxelGI;
+
+		GraphicsSystem::GetInstance()->SetRenderingSetting(_setting);
+	}
+
+	if (Input::GetKeyDown(EVirtualKey::Key_1))
+	{
+		Graphics::RenderingSetting _setting = GraphicsSystem::GetInstance()->GetRenderingSetting();
+
+		_setting._voxelDebug = !_setting._voxelDebug;
+
+		GraphicsSystem::GetInstance()->SetRenderingSetting(_setting);
+	}
+
+	if (Input::GetKeyDown(EVirtualKey::Key_2))
+	{
+		Graphics::RenderingSetting _setting = GraphicsSystem::GetInstance()->GetRenderingSetting();
+
+		_setting._voxelDebugLine = !_setting._voxelDebugLine;
+
+		GraphicsSystem::GetInstance()->SetRenderingSetting(_setting);
+	}
+
 }

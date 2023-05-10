@@ -145,18 +145,18 @@ TestScene::TestScene()
 
 		auto _lightCom = _spotLight->AddComponent<Light>();
 
-		Vector3 _move = { 1, 2, 1 };
+		Vector3 _move = { 2, 2.5, 1 };
 
 		_spotLight->GetTransform()->Translate(_move);
 		
-		Vector3 _eular = { 90, 0, 0 };
+		Vector3 _eular = { 90, 0, 60 };
 		_spotLight->GetTransform()->Rotate(_eular);
 
 		_lightCom->SetLightType(0);
 
-		_lightCom->SetRange(5.0f);
+		_lightCom->SetRange(10.0f);
 
-		_lightCom->SetLightColor(Math::Color::Red);
+		_lightCom->SetLightColor(Math::Color::White);
 
 		AddGameObject(_spotLight);
 	}

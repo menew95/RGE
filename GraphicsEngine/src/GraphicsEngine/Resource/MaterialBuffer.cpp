@@ -79,4 +79,13 @@ namespace Graphics
 		}
 	}
 
+	void MaterialBuffer::ChangeResource(Resource* resource, uint32 idx)
+	{
+		assert(m_ResourceBindList.size() > idx);
+
+		assert(m_ResourceBindList[idx]._resource->GetResourceType() == resource->GetResourceType());
+
+		m_ResourceBindList[idx]._resource = resource;
+	}
+
 }

@@ -47,7 +47,7 @@ namespace Graphics
 		void InitLight();
 		void InitCascadedShadow();
 
-		void InitSSR();
+		void InitPostProcess();
 		void InitVoxel();
 
 		MeshBuffer* CreateMeshBuffer(uuid uuid, std::vector<Common::VertexAttribute>& vertices, std::vector<std::vector<uint32>> subMeshs, Math::Vector3 min, Math::Vector3 max);
@@ -72,6 +72,9 @@ namespace Graphics
 		
 		Graphics::RenderPass* GetRenderPass(uuid uuid);
 
+		inline RenderingSetting& GetRenderingSetting() { return m_RenderingSetting; }
+		inline void SetRenderingSetting(RenderingSetting& setting);
+
 	private:
 
 		void LoadGraphicsTable();
@@ -79,6 +82,9 @@ namespace Graphics
 		void LoadDllAndCreateRenderSystem();
 		void FreeDllAndReleaseRenderSystem();
 		void* LoadProcedure(const char* procedureName);
+
+	private:
+		RenderingSetting m_RenderingSetting;
 
 		class RenderSystem* m_RenderSystem;
 		Graphics::SwapChain* m_SwapChain;
@@ -107,7 +113,7 @@ namespace Graphics
 		MeshBuffer* m_Screen_Mesh;
 		std::shared_ptr<Graphics::RenderPass> m_Deferred_Light_Pass;
 
-
+		RenderObject m_Final;
 		std::shared_ptr<Graphics::RenderPass> m_Final_Pass;
 
 		std::vector<std::shared_ptr<LightBuffer>> m_LightBuffers;
@@ -117,7 +123,7 @@ namespace Graphics
 		std::shared_ptr<RenderQueue> m_RenderQueue;
 		std::shared_ptr<Deferred> m_Deferred;
 		std::shared_ptr<Sky> m_Sky;
-		std::shared_ptr<PostProcess> m_SSR_Pass;
+		std::shared_ptr<PostProcess> m_PostProcess_Pass;
 
 		std::shared_ptr<Voxel> m_Voxel_Pass;
 

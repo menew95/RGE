@@ -125,6 +125,13 @@ namespace GameEngine
 			m_GraphicsEngine->RegistRenderShadow(type, renderObject);
 		}
 
+		void GraphicsSystem::SetRenderingSetting(Graphics::RenderingSetting setting)
+		{
+			m_RenderingSetting = setting;
+
+			m_GraphicsEngine->SetRenderingSetting(setting);
+		}
+
 		void GraphicsSystem::LoadGraphicsEngineDll()
 		{
 			std::string _moduleName = "GraphicsEngine";

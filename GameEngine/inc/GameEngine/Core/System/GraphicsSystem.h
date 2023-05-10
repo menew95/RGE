@@ -2,6 +2,8 @@
 
 #include "Common.h"
 
+#include "GraphicsEngine/GraphicsEngineFlags.h"
+
 namespace Graphics
 {
 	class RenderPass;
@@ -53,10 +55,13 @@ namespace GameEngine
 			void RegistRenderObject(uint32 passIdx, Graphics::RenderObject& renderObject);
 			void RegistShadowObject(uint32 type, Graphics::RenderObject& renderObject);
 
+			Graphics::RenderingSetting& GetRenderingSetting() { return m_RenderingSetting; }
+			void SetRenderingSetting(Graphics::RenderingSetting setting);
 		protected:
 			void LoadGraphicsEngineDll();
 			void FreeGraphicsEngineDll();
 
+			Graphics::RenderingSetting m_RenderingSetting;
 			//std::vector<std::pair<tstring, std::shared_ptr<Graphics::RenderPass>>> m_RenderPassList;
 
 			std::vector<std::pair<tstring, Graphics::RenderPass*>> m_RenderPassList;

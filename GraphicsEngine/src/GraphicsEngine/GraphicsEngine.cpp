@@ -79,7 +79,7 @@ namespace Graphics
 
 		InitLight();
 
-		InitSSR();
+		InitPostProcess();
 
 		InitVoxel();
 	}
@@ -191,15 +191,15 @@ namespace Graphics
 
 		m_Final_Pass->SetRenderTarget(m_SwapChain);
 
-		static RenderObject _reflectObject;
-		_reflectObject.m_MeshBuffer = m_Screen_Mesh;
+		m_Final.m_MeshBuffer = m_Screen_Mesh;
 
-		_reflectObject.m_MaterialBuffer = m_ResourceManager->CreateMaterialBuffer(TEXT("Final_Mat"));
-		_reflectObject.m_MaterialBuffer->SetResource(m_ResourceManager->GetTexture(TEXT("Deferred_Light")), ResourceType::Texture, 0);
+		m_Final.m_MaterialBuffer = m_ResourceManager->CreateMaterialBuffer(TEXT("Final_Mat"));
 
-		_reflectObject.AddViewport({ 0, 0, 1280, 720, 0, 1 });
+		m_Final.m_MaterialBuffer->SetResource(m_ResourceManager->GetTexture(TEXT("Deferred_Light")), ResourceType::Texture, 0);
 
-		m_Final_Pass->RegistRenderObject(&_reflectObject);
+		m_Final.AddViewport({ 0, 0, 1280, 720, 0, 1 });
+
+		m_Final_Pass->RegistRenderObject(&m_Final);
 	}
 
 	void GraphicsEngine::InitCascadedShadow()
@@ -211,9 +211,25 @@ namespace Graphics
 		m_PointShadow_Skinned_Pass = m_ResourceManager->GetRenderPass(TEXT("PointLightShadow_Skinned Pass"));
 	}
 
-	void GraphicsEngine::InitSSR()
+	void GraphicsEngine::InitPostProcess()
 	{
-		m_SSR_Pass = std::make_shared<PostProcess>(m_CommandBuffer, m_ResourceManager);
+		m_PostProcess_Pass = std::make_shared<PostProcess>(m_CommandBuffer, m_ResourceManager);
+
+		PostProcessSetting _postprocess{
+			_postprocess._depthBufferSize = m_RenderingSetting._depthBufferSize,
+			_postprocess._zThickness = m_RenderingSetting._zThickness,
+			_postprocess._nearPlaneZ = m_RenderingSetting._nearPlaneZ,
+			_postprocess._stride = m_RenderingSetting._stride,
+			_postprocess._maxSteps = m_RenderingSetting._maxSteps,
+			_postprocess._maxDistance = m_RenderingSetting._maxDistance,
+			_postprocess._strideZCutoff = m_RenderingSetting._strideZCutoff,
+			_postprocess._numMips = m_RenderingSetting._numMips,
+			_postprocess._fadeStart = m_RenderingSetting._fadeStart,
+			_postprocess._fadeEnd = m_RenderingSetting._fadeEnd,
+			_postprocess._exposure = m_RenderingSetting._exposure,
+		};
+
+		m_PostProcess_Pass->SetPostProcessSetting(_postprocess);
 	}
 
 	void GraphicsEngine::InitVoxel()
@@ -250,8 +266,6 @@ namespace Graphics
 
 	Graphics::Resource* GraphicsEngine::GetResource(uuid _uuid, ResourceType type)
 	{
-		Resource* _resource = nullptr;
-
 		switch (type)
 		{
 			case ResourceType::Buffer:
@@ -270,6 +284,8 @@ namespace Graphics
 				assert(false);
 				break;
 		}
+
+		return nullptr;
 	}
 
 	void GraphicsEngine::OnResize(uint32 _width, uint32 _height)
@@ -348,8 +364,6 @@ namespace Graphics
 
 		m_Deferred->ExcutePass();
 
-		m_SSR_Pass->ExcutePass();
-
 		m_Sky->ExcutePass();
 
 		{
@@ -364,9 +378,13 @@ namespace Graphics
 			m_Deferred_Light_Pass->EndExcute(m_CommandBuffer);
 		}
 
-		m_Voxel_Pass->UpdateVoxelInfo(_perFrame._camera._camWorld, 0.1f, 8.f, 1.0f, 20.f);
+		m_Voxel_Pass->UpdateVoxelInfo(_perFrame._camera._camWorld, m_RenderingSetting._voxelSize, m_RenderingSetting._voxelNumCones, m_RenderingSetting._voxelRayStepDistance, m_RenderingSetting._voxelMaxDistance);
 
 		m_Voxel_Pass->Excute();
+
+		m_PostProcess_Pass->ExcutePass();
+
+		m_Final.m_MaterialBuffer->ChangeResource(m_PostProcess_Pass->GetBackBuffer(), 0);
 
 		m_Final_Pass->BeginExcute(m_CommandBuffer, nullptr);
 
@@ -400,6 +418,29 @@ namespace Graphics
 		auto* _renderPass = m_ResourceManager->GetRenderPass(uuid).get();
 
 		return _renderPass;
+	}
+
+	void GraphicsEngine::SetRenderingSetting(RenderingSetting& setting)
+	{
+		m_RenderingSetting = setting;
+
+		PostProcessSetting _postprocess{
+			_postprocess._depthBufferSize = m_RenderingSetting._depthBufferSize,
+			_postprocess._zThickness = m_RenderingSetting._zThickness,
+			_postprocess._nearPlaneZ = m_RenderingSetting._nearPlaneZ,
+			_postprocess._stride = m_RenderingSetting._stride,
+			_postprocess._maxSteps = m_RenderingSetting._maxSteps,
+			_postprocess._maxDistance = m_RenderingSetting._maxDistance,
+			_postprocess._strideZCutoff = m_RenderingSetting._strideZCutoff,
+			_postprocess._numMips = m_RenderingSetting._numMips,
+			_postprocess._fadeStart = m_RenderingSetting._fadeStart,
+			_postprocess._fadeEnd = m_RenderingSetting._fadeEnd,
+			_postprocess._exposure = m_RenderingSetting._exposure,
+		};
+
+		m_PostProcess_Pass->SetPostProcessSetting(_postprocess);
+
+		m_Voxel_Pass->SetVoxelSetting(m_RenderingSetting._voxelGI, m_RenderingSetting._voxelDebug, m_RenderingSetting._voxelDebugLine, m_RenderingSetting._voxelSecondBounce, m_RenderingSetting._voxelUpdateFrame);
 	}
 
 	void GraphicsEngine::LoadGraphicsTable()
