@@ -102,7 +102,6 @@ inline float4 ConeTraceRadiance(in Texture3D<float4> voxels, in float3 P, in flo
         // Cone의 방향이 표면위의 반구안에 들어가도록 방향 설정
         coneDirection *= dot(coneDirection, N) < 0 ? -1 : 1;
 
-        // Cone 마다 ConeTrace를 하고 모두 더함
         radiance += ConeTrace(voxels, P, N, coneDirection, tanHalfAperture);
     }
 
