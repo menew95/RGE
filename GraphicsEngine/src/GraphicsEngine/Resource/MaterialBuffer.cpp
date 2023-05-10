@@ -19,6 +19,22 @@ namespace Graphics
 		//m_RenderSystem->Release(*m_PipelineLayout);
 	}
 
+	void MaterialBuffer::SetBufferData(void* src, Resource* resource)
+	{
+		ResourceBind _resource;
+		_resource._resource = resource;
+		m_ResourceBindList.emplace_back(_resource);
+
+		Graphics::UpdateResourceData _resourceData;
+		_resourceData._datasize = sizeof(Standard);
+		_resourceData._dataSrc = src;
+		_resourceData._resourceType = ResourceType::Buffer;
+		_resourceData._updateTime = eUpdateTime::PerMaterial;
+
+		_resourceData._index = static_cast<uint32>(m_ResourceBindList.size()) - 1u;
+		m_UpdateResources.emplace_back(_resourceData);
+	}
+
 	void MaterialBuffer::SetResource(Resource* resource, ResourceType type, uint32 bindSlot, uint32 size)
 	{
 		Graphics::UpdateResourceData _resourceData;
@@ -44,12 +60,12 @@ namespace Graphics
 			switch (m_UpdateResources[i]._resourceType)
 			{
 				case ResourceType::Buffer:
-					assert(false);
-					//m_ResourceList[m_UpdateResources[i]._index].
-					//Buffer* _buffer = reinterpret_cast<Buffer*>(m_ResourceList[m_UpdateResources[i]._index]);
+				{
+					Buffer* _buffer = reinterpret_cast<Buffer*>(m_ResourceBindList[m_UpdateResources[i]._index]._resource);
 					
-					//commandBuffer->UpdateBuffer(*_buffer, 0, m_UpdateResources[i]._dataSrc, m_UpdateResources[i]._datasize);
+					commandBuffer->UpdateBuffer(*_buffer, 0, m_UpdateResources[i]._dataSrc, m_UpdateResources[i]._datasize);
 					break;
+				}
 				case ResourceType::Sampler:
 				case ResourceType::Texture:
 					commandBuffer->SetResource(*(m_ResourceBindList[i]._resource), m_ResourceBindList[i]._slot, BindFlags::ShaderResource, StageFlags::PS);

@@ -248,6 +248,30 @@ namespace Graphics
 		return m_ResourceManager->LoadTexture(uuid, imageDesc);
 	}
 
+	Graphics::Resource* GraphicsEngine::GetResource(uuid _uuid, ResourceType type)
+	{
+		Resource* _resource = nullptr;
+
+		switch (type)
+		{
+			case ResourceType::Buffer:
+			{
+				return m_ResourceManager->GetBuffer(_uuid);
+			}
+			case ResourceType::Texture:
+			{
+				return m_ResourceManager->GetTexture(_uuid);
+			}
+			case ResourceType::Sampler:
+			{
+				return m_ResourceManager->GetSampler(_uuid);
+			}
+			default:
+				assert(false);
+				break;
+		}
+	}
+
 	void GraphicsEngine::OnResize(uint32 _width, uint32 _height)
 	{
 		m_SwapChain->ResizeBuffer({ _width, _height });
@@ -340,7 +364,7 @@ namespace Graphics
 			m_Deferred_Light_Pass->EndExcute(m_CommandBuffer);
 		}
 
-		m_Voxel_Pass->UpdateVoxelInfo(_perFrame._camera._camWorld, 0.1f, 8.f, 0.5f, 20.f);
+		m_Voxel_Pass->UpdateVoxelInfo(_perFrame._camera._camWorld, 0.1f, 8.f, 1.0f, 20.f);
 
 		m_Voxel_Pass->Excute();
 

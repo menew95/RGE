@@ -56,6 +56,7 @@ namespace Graphics
 		LightBuffer* CreateLightBuffer();
 
 		Texture* LoadTexture(uuid uuid, ImageDesc* imageDesc);
+		Resource* GetResource(uuid _uuid, ResourceType type);
 
 		void OnResize(uint32 _width, uint32 _height);
 

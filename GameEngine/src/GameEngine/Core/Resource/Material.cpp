@@ -52,6 +52,11 @@ namespace GameEngine
 			m_MaterialBuffer->SetResource(reinterpret_cast<Graphics::Resource*>(texture), Graphics::ResourceType::Texture, 2);
 		}
 
+		void Material::SetBuffer(Graphics::Resource* resource)
+		{
+			m_MaterialBuffer->SetBufferData(&m_StandardResource, resource);
+		}
+
 		void Material::Release()
 		{
 			GraphicsSystem::GetInstance()->DeleteMaterialBuffer(m_MaterialBuffer);

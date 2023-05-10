@@ -46,8 +46,7 @@ namespace GameEngine
 			float GetMetallic() { return m_StandardResource._metallic; }
 			Math::Vector2 GetTilling() { return m_StandardResource._tiling; }
 
-			void* GetStandardResource() { return &m_StandardResource; }
-
+			void SetBuffer(Graphics::Resource* resource);
 		protected:
 			virtual void Release() override;
 

@@ -12,6 +12,7 @@ namespace Graphics
 	class CameraBuffer;
 	class LightBuffer;
 	class Texture;
+	class Resource;
 }
 
 namespace GameEngine
@@ -38,6 +39,7 @@ namespace GameEngine
 			Graphics::LightBuffer* CreateLightBuffer();
 
 			Graphics::Texture* LoadTexture(uuid _uuid);
+			Graphics::Resource* GetResource(uuid _uuid, uint32 type);
 
 			void DeleteMeshBuffer(Graphics::MeshBuffer*);
 			void DeleteMaterialBuffer(Graphics::MaterialBuffer*);

@@ -569,8 +569,13 @@ namespace GameEngine
 			if (_matData._metalicRoughnessMapTexture.length() > 0)
 				_newMaterial->SetMRATexture(GraphicsSystem::GetInstance()->LoadTexture(_matData._metalicRoughnessMapTexture));
 
-			_newMaterial->SetRoughness(_matData._roughness);
-			_newMaterial->SetMetallic(_matData._metallic);
+			_newMaterial->SetRoughness(std::clamp(_matData._roughness, 0.f, 1.f));
+			_newMaterial->SetMetallic(std::clamp(_matData._metallic, 0.f, 1.f));
+
+			_newMaterial->SetAlbedoColor(_matData._diffuse);
+			_newMaterial->SetEmissiveColor(_matData._emissive);
+
+			_newMaterial->SetBuffer(GraphicsSystem::GetInstance()->GetResource(TEXT("PerMaterial"), 1));
 
 			m_MaterialMap.insert(std::make_pair(uuid, _newMaterial));
 

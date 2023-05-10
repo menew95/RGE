@@ -25,6 +25,8 @@ namespace Graphics
 
 		void BindResource(CommandBuffer* commandBuffer);
 
+		void SetBufferData(void* src, Resource* resource);
+
 	private:
 
 		struct Standard
@@ -35,9 +37,9 @@ namespace Graphics
 			float _metallic = 0.0f;
 			Math::Vector2 _tile = Math::Vector2::One;
 		};
+//		Resource* m_StandardBuffer = nullptr;
 
 		std::vector<UpdateResourceData> m_UpdateResources;
-
 		struct ResourceBind
 		{
 			Resource* _resource = nullptr;

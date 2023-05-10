@@ -78,6 +78,11 @@ namespace GameEngine
 			return m_GraphicsEngine->LoadTexture(_uuid, &_desc);
 		}
 
+		Graphics::Resource* GraphicsSystem::GetResource(uuid _uuid, uint32 type)
+		{
+			return m_GraphicsEngine->GetResource(_uuid, static_cast<Graphics::ResourceType>(type));
+		}
+
 		void GraphicsSystem::DeleteMeshBuffer(Graphics::MeshBuffer* meshBuffer)
 		{
 			// Todo :
