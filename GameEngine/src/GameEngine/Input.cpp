@@ -74,6 +74,13 @@ namespace GameEngine
 
 	EKeyState Input::GetKeyState(EVirtualKey _vKey)
 	{
+		auto* _focus = GetFocus();
+
+		if(_focus == nullptr)
+		{
+			return EKeyState::None;
+		}
+
 		const auto _vKeyIndex = static_cast<int>(_vKey);
 		const auto _keyInfo = Instance->m_KeyInfos[_vKeyIndex];
 		const auto _gameTimePoint = Time::GetGameTimePoint();

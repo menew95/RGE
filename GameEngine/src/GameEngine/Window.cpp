@@ -161,6 +161,16 @@ namespace GameEngine
 				//g_game->OnSize(g_windowInfo.width, g_windowInfo.height, wParam);
 				break;
 			}
+			case WM_SETFOCUS:
+			{
+
+				break;
+			}
+			case WM_KILLFOCUS:
+			{
+
+				break;
+			}
 			case WM_DESTROY:
 			{
 				PostQuitMessage(0);

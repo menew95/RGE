@@ -26,7 +26,7 @@ static const float3 CONES[] =
 };
 
 static const float sqrt2 = 1.414213562;
-
+static const float aoAlpha = 0.01f;
 Texture2D gAlbedo	: register(t0);
 Texture2D gNormal   : register(t1);
 Texture2D<float> gDepth    : register(t2);
@@ -36,10 +36,42 @@ Texture3D<float4> voxelTexture : register(t4);
 SamplerState samWrapLinear	: register(s0);
 SamplerState samClampLinear	: register(s1);
 
-inline float4 ConeTrace(in Texture3D<float4> voxels, in float3 P, in float3 N, in float3 coneDirection, in float coneAperture)
+
+float4 AnistropicSample(float3 coord, float3 weight, float3 face, float lod)
+{
+    // anisotropic volumes level
+    float anisoLevel = max(lod - 1.0f, 0.0f);
+    // directional sample
+    float4 anisoSample = weight.x * textureLod(voxelTexMipmap[face.x], coord, anisoLevel)
+        + weight.y * textureLod(voxelTexMipmap[face.y], coord, anisoLevel)
+        + weight.z * textureLod(voxelTexMipmap[face.z], coord, anisoLevel);
+    // linearly interpolate on base level
+    if (lod < 1.0f)
+    {
+        vec4 baseColor = texture(voxelTex, coord);
+        anisoSample = mix(baseColor, anisoSample, clamp(lod, 0.0f, 1.0f));
+    }
+
+    return anisoSample;
+}
+
+inline float4 ConeTrace(in Texture3D<float4> voxels, in float3 P, in float3 N, in float3 coneDirection, in float coneAperture, in bool traceOcclusion)
 {
     float3 color = 0;
     float alpha = 0;
+
+    // Occlusion
+    float3 visibleFace;
+    visibleFace.x = (coneDirection.x < 0.0) ? 0 : 1;
+    visibleFace.y = (coneDirection.y < 0.0) ? 2 : 3;
+    visibleFace.z = (coneDirection.z < 0.0) ? 4 : 5;
+    traceOcclusion = traceOcclusion && aoAlpha < 1.0f;
+    float falloff = 0.5f * aoFalloff * voxelScale;
+
+    // weight per axis for aniso sampling
+    float3 weight = coneDirection * coneDirection;
+
+    float occlusion = 0.0f;
 
     // 콘의 시작점을 물체안에서 삼각형 모양으로 콘을 분산시키기 위해
     // 2 * sqrt2는 샘플링된 복셀들이 콘의 진행 방향과 수직인 평면 상에 놓이도록 하는 역할을 합니다.
@@ -63,6 +95,9 @@ inline float4 ConeTrace(in Texture3D<float4> voxels, in float3 P, in float3 N, i
         _voxelPosition *= voxel_radiance._dataResRCP;
         _voxelPosition = _voxelPosition * float3(0.5f, -0.5f, 0.5f) + 0.5f; // dx에서는 y축을 뒤집어야함
 
+
+        float4 anisoSample = AnistropicSample(_voxelPosition, weight, visibleFace, mip);
+
         // 만약 광선이 복셀 공간을 벗어 났거나 샘플링할 밉을 벗어 났으면 멈춤
         if (any(_voxelPosition < 0) || any(_voxelPosition > 1) || mip >= (float)voxel_radiance._mips)
             break;
@@ -75,6 +110,11 @@ inline float4 ConeTrace(in Texture3D<float4> voxels, in float3 P, in float3 N, i
         color += a * sam.rgb;
         alpha += a * sam.a;
 
+        if (traceOcclusion && occlusion < 1.0)
+        {
+            occlusion += ((1.0f - occlusion) * anisoSample.a) / (1.0f + falloff * diameter);
+        }
+
         // step along ray:
         // ray를 전진 시킴 diameter
         dist += diameter * voxel_radiance._rayStepSize;
@@ -85,7 +125,6 @@ inline float4 ConeTrace(in Texture3D<float4> voxels, in float3 P, in float3 N, i
 inline float4 ConeTraceRadiance(in Texture3D<float4> voxels, in float3 P, in float3 N)
 {
     float4 radiance = 0;
-
 
     float aperture = PI / 3.0f; // Cone 각도 60도
     float tanHalfAperture = tan(aperture / 2.0f); // Cone의 밑면의 길이
@@ -113,10 +152,15 @@ inline float4 ConeTraceRadiance(in Texture3D<float4> voxels, in float3 P, in flo
 }
 inline float4 ConeTraceReflection(in Texture3D<float4> voxels, in float3 P, in float3 N, in float3 V, in float roughness)
 {
-    float aperture = tan(roughness * PI * 0.5f * 0.1f);
     float3 coneDirection = reflect(-V, N);
 
-    float4 reflection = ConeTrace(voxels, P, N, coneDirection, aperture);
+    //float tanAperture = tan(roughness * PI / 12.0f);
+
+    //float tanAperture = tan(sqrt(-2.0f * log(1.0f - roughness)));
+
+    float tanAperture = clamp(tan(PI * 0.5f * roughness), 0.0174533f, PI);
+
+    float4 reflection = ConeTrace(voxels, P, N, coneDirection, tanAperture, false);
 
     return float4(max(0, reflection.rgb), saturate(reflection.a));
 }
@@ -133,8 +177,31 @@ float4 main(VSOutput input) : SV_TARGET
    float _roughness = lerp(0.04f, 1.0f, _normal.w);
    float _metallic = lerp(0.04f, 1.0f, _albedo.w);
 
+   _albedo.w = 1.0f;
+   _albedo = pow(_albedo, 2.2);
+
    float3 N = ((_normal - 0.5f) * 2.0f).xyz;
 
-   return ConeTraceRadiance(voxelTexture, _worldPos.xyz, N);
+   float3 V = normalize(camera._camWorld - _worldPos.xyz);
+
+   //return ConeTraceRadiance(voxelTexture, _worldPos.xyz, N);
+   //return ConeTraceReflection(voxelTexture, _worldPos.xyz, N, V, _roughness);
+   
+   float4 _diffuseIndirect = float4(0.0f, 0.0f, 0.0f, 0.0f);
+
+   float4 _finColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
+
+   if (any(_albedo.xyz > 0.0f))
+   {
+       _diffuseIndirect = ConeTraceRadiance(voxelTexture, _worldPos.xyz, N);
+
+       _diffuseIndirect.xyz *= _albedo.xyz;
+   }
+
+   _finColor = _diffuseIndirect;// +ConeTraceReflection(voxelTexture, _worldPos.xyz, N, V, _roughness);
+
+   _finColor = pow(_finColor, 1 / 2.2);
+
+   return _finColor;
 
 }
