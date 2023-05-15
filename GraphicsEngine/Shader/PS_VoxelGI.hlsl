@@ -27,6 +27,7 @@ static const float3 CONES[] =
 
 static const float sqrt2 = 1.414213562;
 static const float aoAlpha = 0.01f;
+uniform float aoFalloff = 725.0f;
 Texture2D gAlbedo	: register(t0);
 Texture2D gNormal   : register(t1);
 Texture2D<float> gDepth    : register(t2);
@@ -37,23 +38,23 @@ SamplerState samWrapLinear	: register(s0);
 SamplerState samClampLinear	: register(s1);
 
 
-float4 AnistropicSample(float3 coord, float3 weight, float3 face, float lod)
-{
-    // anisotropic volumes level
-    float anisoLevel = max(lod - 1.0f, 0.0f);
-    // directional sample
-    float4 anisoSample = weight.x * textureLod(voxelTexMipmap[face.x], coord, anisoLevel)
-        + weight.y * textureLod(voxelTexMipmap[face.y], coord, anisoLevel)
-        + weight.z * textureLod(voxelTexMipmap[face.z], coord, anisoLevel);
-    // linearly interpolate on base level
-    if (lod < 1.0f)
-    {
-        vec4 baseColor = texture(voxelTex, coord);
-        anisoSample = mix(baseColor, anisoSample, clamp(lod, 0.0f, 1.0f));
-    }
-
-    return anisoSample;
-}
+//float4 AnistropicSample(float3 coord, float3 weight, float3 face, float lod)
+//{
+//    // anisotropic volumes level
+//    float anisoLevel = max(lod - 1.0f, 0.0f);
+//    // directional sample
+//    float4 anisoSample = weight.x * textureLod(voxelTexMipmap[face.x], coord, anisoLevel)
+//        + weight.y * textureLod(voxelTexMipmap[face.y], coord, anisoLevel)
+//        + weight.z * textureLod(voxelTexMipmap[face.z], coord, anisoLevel);
+//    // linearly interpolate on base level
+//    if (lod < 1.0f)
+//    {
+//        vec4 baseColor = texture(voxelTex, coord);
+//        anisoSample = mix(baseColor, anisoSample, clamp(lod, 0.0f, 1.0f));
+//    }
+//
+//    return anisoSample;
+//}
 
 inline float4 ConeTrace(in Texture3D<float4> voxels, in float3 P, in float3 N, in float3 coneDirection, in float coneAperture, in bool traceOcclusion)
 {
@@ -66,7 +67,7 @@ inline float4 ConeTrace(in Texture3D<float4> voxels, in float3 P, in float3 N, i
     visibleFace.y = (coneDirection.y < 0.0) ? 2 : 3;
     visibleFace.z = (coneDirection.z < 0.0) ? 4 : 5;
     traceOcclusion = traceOcclusion && aoAlpha < 1.0f;
-    float falloff = 0.5f * aoFalloff * voxelScale;
+    float falloff = 0.5f * aoFalloff * voxel_radiance._dataSize;
 
     // weight per axis for aniso sampling
     float3 weight = coneDirection * coneDirection;
@@ -96,7 +97,7 @@ inline float4 ConeTrace(in Texture3D<float4> voxels, in float3 P, in float3 N, i
         _voxelPosition = _voxelPosition * float3(0.5f, -0.5f, 0.5f) + 0.5f; // dx에서는 y축을 뒤집어야함
 
 
-        float4 anisoSample = AnistropicSample(_voxelPosition, weight, visibleFace, mip);
+        //float4 anisoSample = AnistropicSample(_voxelPosition, weight, visibleFace, mip);
 
         // 만약 광선이 복셀 공간을 벗어 났거나 샘플링할 밉을 벗어 났으면 멈춤
         if (any(_voxelPosition < 0) || any(_voxelPosition > 1) || mip >= (float)voxel_radiance._mips)
@@ -110,10 +111,10 @@ inline float4 ConeTrace(in Texture3D<float4> voxels, in float3 P, in float3 N, i
         color += a * sam.rgb;
         alpha += a * sam.a;
 
-        if (traceOcclusion && occlusion < 1.0)
+        /*if (traceOcclusion && occlusion < 1.0)
         {
             occlusion += ((1.0f - occlusion) * anisoSample.a) / (1.0f + falloff * diameter);
-        }
+        }*/
 
         // step along ray:
         // ray를 전진 시킴 diameter
@@ -141,7 +142,7 @@ inline float4 ConeTraceRadiance(in Texture3D<float4> voxels, in float3 P, in flo
         // Cone의 방향이 표면위의 반구안에 들어가도록 방향 설정
         coneDirection *= dot(coneDirection, N) < 0 ? -1 : 1;
 
-        radiance += ConeTrace(voxels, P, N, coneDirection, tanHalfAperture);
+        radiance += ConeTrace(voxels, P, N, coneDirection, tanHalfAperture, true);
     }
 
     // 모든 ConeTrace가 끝나면 Cone들의 평균 값으로 만듬
@@ -198,7 +199,7 @@ float4 main(VSOutput input) : SV_TARGET
        _diffuseIndirect.xyz *= _albedo.xyz;
    }
 
-   _finColor = _diffuseIndirect;// +ConeTraceReflection(voxelTexture, _worldPos.xyz, N, V, _roughness);
+   _finColor = _diffuseIndirect + ConeTraceReflection(voxelTexture, _worldPos.xyz, N, V, _roughness);
 
    _finColor = pow(_finColor, 1 / 2.2);
 

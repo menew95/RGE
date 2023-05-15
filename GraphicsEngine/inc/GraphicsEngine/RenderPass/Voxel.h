@@ -105,6 +105,8 @@ namespace Graphics
 		Texture* m_VoxelTexture = nullptr;
 		Texture* m_VoxelBoundTexture = nullptr;
 
+		Texture* m_AnisotropicVoxelTexture = nullptr;
+
 		RenderPass* m_VoxelizetionPass = nullptr;
 
 #pragma region
@@ -130,6 +132,12 @@ namespace Graphics
 
 		PipelineState* m_VoxelCopyCSO = nullptr;
 		PipelineLayout* m_VoxelCopyLayout = nullptr;
+
+		PipelineState* m_AnisoVoxelPSO= nullptr;
+		PipelineLayout* m_AnisoVoxelLayout = nullptr;
+
+		PipelineState* m_AnisoVoxelMipPSO = nullptr;
+		PipelineLayout* m_AnisoVoxelMipLayout = nullptr;
 
 		PipelineState* m_VoxelDebugPSO = nullptr;
 		PipelineState* m_VoxelDebugLinePSO = nullptr;

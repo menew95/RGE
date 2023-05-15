@@ -218,28 +218,13 @@ namespace Graphics
 		m_VoxelTexture = m_ResourceManager->CreateTexture(TEXT("VoxelTexture"), _textureDesc);
 		//m_VoxelBoundTexture = m_ResourceManager->CreateTexture(TEXT("VoxelBoundTexture"), _textureDesc);
 
-		//RenderTargetDesc _renderTargetDesc;
+		auto _half = VOXEL_RESOLUTION / 2u;
 
-		//_renderTargetDesc._extend = { 1280, 720 };
-		//_renderTargetDesc._sample = 1;
+		_textureDesc._extend = { _half , _half , _half };
+		_textureDesc._mipLevels = 6;
+		_textureDesc._arrayLayers = 6;
 
-		//{
-		//	AttachmentDesc _attachDesc;
-		//	_attachDesc._renderTargetType = RenderTargetType::RenderTarget;
-		//	_attachDesc._resource = m_ResourceManager->GetTexture(TEXT("Degerred_Light"));
-		//	_attachDesc._mipLevel = 0;
-		//	_renderTargetDesc._attachments.push_back(_attachDesc);
-		//}
-
-		//{
-		//	AttachmentDesc _attachDesc;
-		//	_attachDesc._renderTargetType = RenderTargetType::DepthStencil;
-		//	_attachDesc._resource = m_ResourceManager->GetTexture(TEXT("DeferredDSV"));
-		//	_attachDesc._mipLevel = 0;
-		//	_renderTargetDesc._attachments.push_back(_attachDesc);
-		//}
-
-		//m_RenderTarget = m_ResourceManager->CreateRenderTarget(TEXT("VoxelDebugRT"), _renderTargetDesc);
+		m_AnisotropicVoxelTexture = m_ResourceManager->CreateTexture(TEXT("Anisotropic VoxelTexture"), _textureDesc);
 	}
 
 	void Voxel::CreateVoxelizePass()
@@ -513,6 +498,7 @@ namespace Graphics
 
 	void Voxel::CreateVoxelCopyPass()
 	{
+#pragma region Voxel Copy Pass
 		ShaderDesc _voxelCopyDesc;
 		{
 			_voxelCopyDesc._shaderType = ShaderType::Compute;
@@ -561,6 +547,62 @@ namespace Graphics
 		_voxelCopyCSODesc._shaderProgram._computeShader = _copy;
 
 		m_VoxelCopyCSO = m_ResourceManager->CreatePipelineState(TEXT("VoxelCopy"), _voxelCopyCSODesc);
+#pragma endregion Voxel Copy Pass
+
+#pragma region Anisotropic Voxel Pass
+
+		ShaderDesc _voxelAnisoDesc;
+		{
+			_voxelAnisoDesc._shaderType = ShaderType::Compute;
+			_voxelAnisoDesc._sourceType = ShaderSourceType::HLSL;
+			_voxelAnisoDesc._filePath = TEXT("Asset\\Shader\\CS_AnisoVoxel.hlsl");
+			_voxelAnisoDesc._sourceSize = 0;
+			_voxelAnisoDesc._entryPoint = "main";
+			_voxelAnisoDesc._profile = "cs_5_0";
+		}
+
+		PipelineLayoutDesc _voxelAnisoLayout;
+		{
+			BindingDescriptor _bindDesc
+			{
+				ResourceType::Sampler, BindFlags::VideoEncoder, StageFlags::CS, 0
+			};
+
+			_voxelAnisoLayout._bindings.push_back(_bindDesc);
+			_voxelAnisoLayout._resources.push_back(m_VoxelData);
+		}
+		{
+			BindingDescriptor _bindDesc
+			{
+				ResourceType::Buffer, BindFlags::UnorderedAccess, StageFlags::CS, 0
+			};
+
+			_voxelAnisoLayout._bindings.push_back(_bindDesc);
+			_voxelAnisoLayout._resources.push_back(m_Voxel);
+		}
+		{
+			BindingDescriptor _bindDesc
+			{
+				ResourceType::Texture, BindFlags::UnorderedAccess, StageFlags::CS, 1, 6
+			};
+
+			_voxelAnisoLayout._bindings.push_back(_bindDesc);
+			_voxelAnisoLayout._resources.push_back(m_AnisotropicVoxelTexture);
+		}
+
+		ComputePipelineDesc _voxelAnisoCSODesc;
+		_voxelAnisoCSODesc.pipelineLayout = m_AnisoVoxelLayout;
+		_voxelAnisoCSODesc._shaderProgram._computeShader = m_ResourceManager->CreateShader(TEXT("CS_AnisoVoxel"), _voxelAnisoDesc);
+
+		m_AnisoVoxelPSO = m_ResourceManager->CreatePipelineState(TEXT("VoxelAniso"), _voxelAnisoCSODesc);
+#pragma endregion Anisotropic Voxel Pass
+
+#pragma region Anisotropic Voxel Mip Generate Pass
+
+
+
+#pragma endregion Anisotropic Voxel Mip Generate Pass
+
 	}
 
 	void Voxel::CreateVoxelDebugPass()

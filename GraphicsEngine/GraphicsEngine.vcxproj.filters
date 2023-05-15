@@ -206,5 +206,7 @@
     <FxCompile Include="Shader\PS_VoxelDebug.hlsl" />
     <FxCompile Include="Shader\GS_VoxelDebugLine.hlsl" />
     <FxCompile Include="Shader\PS_VoxelGI.hlsl" />
+    <FxCompile Include="Shader\CS_AnisoVoxel.hlsl" />
+    <FxCompile Include="Shader\CS_AnisoVoxelMip.hlsl" />
   </ItemGroup>
 </Project>
