@@ -8,6 +8,7 @@ namespace Graphics
         Buffer,
 		Texture,
 		Sampler,
+        ResourceView
 	};
 
 	struct BindFlags

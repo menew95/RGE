@@ -216,6 +216,7 @@ xcopy /E /S /Y /R "$(OutputPath)*.pdb" "$(OutputPath)..\Client\*"</Command>
     </ClInclude>
     <ClInclude Include="inc\GraphicsModule\Core\DX11\DX11RenderTarget.h" />
     <ClInclude Include="inc\GraphicsModule\Core\DX11\DX11ResourceFlags.h" />
+    <ClInclude Include="inc\GraphicsModule\Core\DX11\DX11ResourceView.h" />
     <ClInclude Include="inc\GraphicsModule\Core\DX11\DX11Sampler.h" />
     <ClInclude Include="inc\GraphicsModule\Core\DX11\DX11Shader.h" />
     <ClInclude Include="inc\GraphicsModule\Core\DX11\DX11StateManager.h" />
@@ -250,6 +251,7 @@ xcopy /E /S /Y /R "$(OutputPath)*.pdb" "$(OutputPath)..\Client\*"</Command>
     <ClInclude Include="inc\GraphicsModule\Core\RenderSystemObject.h" />
     <ClInclude Include="inc\GraphicsModule\Core\Resource.h" />
     <ClInclude Include="inc\GraphicsModule\Core\ResourceFlags.h" />
+    <ClInclude Include="inc\GraphicsModule\Core\ResourceVIewFlags.h" />
     <ClInclude Include="inc\GraphicsModule\Core\Sampler.h" />
     <ClInclude Include="inc\GraphicsModule\Core\SamplerFlags.h" />
     <ClInclude Include="inc\GraphicsModule\Core\Shader.h" />
@@ -292,6 +294,7 @@ xcopy /E /S /Y /R "$(OutputPath)*.pdb" "$(OutputPath)..\Client\*"</Command>
     <ClCompile Include="src\GraphicsModule\Core\DX11\DX11RenderSystem.cpp" />
     <ClCompile Include="src\GraphicsModule\Core\DX11\DX11RenderTarget.cpp" />
     <ClCompile Include="src\GraphicsModule\Core\DX11\DX11ResourceFlags.cpp" />
+    <ClCompile Include="src\GraphicsModule\Core\DX11\DX11ResourceView.cpp" />
     <ClCompile Include="src\GraphicsModule\Core\DX11\DX11Sampler.cpp" />
     <ClCompile Include="src\GraphicsModule\Core\DX11\DX11Shader.cpp" />
     <ClCompile Include="src\GraphicsModule\Core\DX11\DX11StateManager.cpp" />
@@ -301,6 +304,7 @@ xcopy /E /S /Y /R "$(OutputPath)*.pdb" "$(OutputPath)..\Client\*"</Command>
     <ClCompile Include="src\GraphicsModule\Core\DX11\DX11Utilitys.cpp" />
     <ClCompile Include="src\GraphicsModule\Core\RenderSystem.cpp" />
     <ClCompile Include="src\GraphicsModule\Core\RenderTarget.cpp" />
+    <ClCompile Include="src\GraphicsModule\Core\ResourceView.cpp" />
     <ClCompile Include="src\GraphicsModule\Core\Sampler.cpp" />
     <ClCompile Include="src\GraphicsModule\Core\Shader.cpp" />
     <ClCompile Include="src\GraphicsModule\Core\SwapChain.cpp" />

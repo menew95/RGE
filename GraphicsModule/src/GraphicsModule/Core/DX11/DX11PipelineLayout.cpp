@@ -18,7 +18,7 @@ namespace Graphics
 
 		}
 
-		void DX11PipelineLayout::SetResources(std::vector<Resource*>& resources)
+		void DX11PipelineLayout::SetResources(std::vector<void*>& resources)
 		{
 			for (uint32 i = 0; i < GetNumBindings(); i++)
 			{
@@ -26,12 +26,19 @@ namespace Graphics
 			}
 		}
 
-		void DX11PipelineLayout::SetResource(uint32 index, Resource* resource)
+		void DX11PipelineLayout::SetResource(uint32 index, void* resource)
 		{
 			if (index >= m_Bindings.size())
 				return;
 
-			if (resource->GetResourceType() != m_Bindings[index]._type)
+			Resource* _resource = nullptr;
+
+			if (m_Bindings[index]._arraySize != 1)
+				_resource = *(reinterpret_cast<Resource**>(resource));
+			else
+				_resource = reinterpret_cast<Resource*>(resource);
+
+			if (_resource->GetResourceType() != m_Bindings[index]._type)
 			{
 				// m_Bindings에 기록된 바인딩 정보와 다른 리소스를 저장하려고 함
 				assert(false);
@@ -47,14 +54,17 @@ namespace Graphics
 			return static_cast<uint32>(m_Bindings.size());
 		}
 
-		Resource* DX11PipelineLayout::GetResource(uint32 index)
+		void* DX11PipelineLayout::GetResource(uint32 index)
 		{
 			return m_Resources.at(index);
 		}
 
 		Graphics::Buffer* DX11PipelineLayout::GetBuffer(uint32 index)
 		{
-			auto _resource = m_Resources.at(index);
+			if (m_Bindings[index]._arraySize != 1)
+				return nullptr;
+
+			auto _resource = reinterpret_cast<Resource*>(m_Resources.at(index));
 
 			assert(_resource->GetResourceType() == ResourceType::Buffer);
 
@@ -63,7 +73,10 @@ namespace Graphics
 
 		Graphics::Texture* DX11PipelineLayout::GetTexture(uint32 index)
 		{
-			auto _resource = m_Resources.at(index);
+			if (m_Bindings[index]._arraySize != 1)
+				return nullptr;
+
+			auto _resource = reinterpret_cast<Resource*>(m_Resources.at(index));
 
 			assert(_resource->GetResourceType() == ResourceType::Texture);
 
@@ -72,7 +85,10 @@ namespace Graphics
 
 		Graphics::Sampler* DX11PipelineLayout::GetSampler(uint32 index)
 		{
-			auto _resource = m_Resources.at(index);
+			if (m_Bindings[index]._arraySize != 1)
+				return nullptr;
+
+			auto _resource = reinterpret_cast<Resource*>(m_Resources.at(index));
 
 			assert(_resource->GetResourceType() == ResourceType::Sampler);
 

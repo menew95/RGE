@@ -25,8 +25,7 @@ namespace Graphics
 		bool _toneMap = true;
 		float _exposure = 1.0f;
 
-
-		// Voxel
+		// voxel
 		bool	_voxelGI = false;
 		bool	_voxelDebug = false;
 		bool	_voxelDebugLine = false;

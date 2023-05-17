@@ -31,7 +31,7 @@ namespace Graphics
 		float _fadeEnd;
 
 		// tone map
-		float _exposure = 1.0f;
+		float _exposure = 3.0f;
 
 
 		float _pad[4]; // 64bit

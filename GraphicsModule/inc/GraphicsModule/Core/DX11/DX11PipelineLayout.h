@@ -18,22 +18,22 @@ namespace Graphics
 				return m_Bindings;
 			}
 
-			inline const std::vector<Resource*>& GetResources() const
+			inline const std::vector<void*>& GetResources() const
 			{
 				return m_Resources;
 			}
 
-			void SetResources(std::vector<Resource*>& resources) override;
-			void SetResource(uint32 index, Resource* resource) override;
+			void SetResources(std::vector<void*>& resources) override;
+			void SetResource(uint32 index, void* resource) override;
 			uint32 GetNumBindings() const override;
-			Resource* GetResource(uint32 index) override;
+			void* GetResource(uint32 index) override;
 
 			Buffer* GetBuffer(uint32 index) override;
 			Texture* GetTexture(uint32 index) override;
 			Sampler* GetSampler(uint32 index) override;
 
 		private:
-			std::vector<Resource*> m_Resources;
+			std::vector<void*> m_Resources;
 			std::vector<BindingDescriptor> m_Bindings;
 		};
 	}

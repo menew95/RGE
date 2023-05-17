@@ -56,6 +56,6 @@ namespace Graphics
     struct PipelineLayoutDesc
     {
         std::vector<BindingDescriptor> _bindings;
-        std::vector<class Resource*> _resources;
+        std::vector<void*> _resources;
     };
 }

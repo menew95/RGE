@@ -182,6 +182,55 @@ namespace Graphics
 			}
 		}
 
+		void DX11CommandBuffer::SetResources(PipelineLayout& pipelineLayout)
+		{
+			DX11PipelineLayout& _castLayout = reinterpret_cast<DX11PipelineLayout&>(pipelineLayout);
+
+			auto& _binds = _castLayout.GetBindings();
+			auto& _resources = _castLayout.GetResources();
+
+			for (uint32 i = 0; i < pipelineLayout.GetNumBindings(); i++)
+			{
+				if (_binds[i]._arraySize == 1)
+				{
+					Resource* _resource = reinterpret_cast<Resource*>(_resources[i]);
+					SetResource(*_resource, _binds[i]._slot, _binds[i]._bindFlags, _binds[i]._stageFlags);
+				}
+				else
+				{
+					Resource** _resource = reinterpret_cast<Resource**>(_resources[i]);
+					SetResources(_resource, _binds[i]._slot, _binds[i]._arraySize, _binds[i]._bindFlags, _binds[i]._stageFlags);
+				}
+			}
+		}
+
+		void DX11CommandBuffer::SetResources(Resource** resources, uint32 slot, uint32 count, long bindFlags, long stageFlags /*= StageFlags::AllStages*/)
+		{
+			switch (resources[0]->GetResourceType())
+			{
+				case ResourceType::Undefined:
+					break;
+				case ResourceType::Buffer:
+				{
+					auto* _buffers = reinterpret_cast<Buffer**>(resources);
+					SetBuffers(_buffers, slot, count, bindFlags, stageFlags);
+					break;
+				}
+				case ResourceType::Texture:
+				{
+					auto* _textures = reinterpret_cast<Texture**>(resources);
+					SetTextures(_textures, slot, count, bindFlags, stageFlags);
+					break;
+				}
+				case ResourceType::Sampler:
+				{
+					auto* _samplers = reinterpret_cast<Sampler**>(resources);
+					SetSamplers(_samplers, slot, count, stageFlags);
+					break;
+				}
+			}
+		}
+
 		void DX11CommandBuffer::ResetResourceSlots(const ResourceType resourceType, uint32 firstSlot, uint32 numSlots, long bindFlags, long stageFlags /*= StageFlags::AllStages*/)
 		{
 			if (numSlots > 0)
@@ -201,6 +250,13 @@ namespace Graphics
 						break;
 				}
 			}
+		}
+
+		void DX11CommandBuffer::ClearState()
+		{
+			m_Context->ClearState();
+
+			m_StateManager->ClearState();
 		}
 
 		void DX11CommandBuffer::BeginRenderPass(RenderPass& renderPass, uint32 numClearValues, const ClearValue* clearValues)
@@ -330,6 +386,18 @@ namespace Graphics
 			m_Context->DrawIndexedInstanced(numVertices, firstVertex, numInstances, vertexOffset, firstInstance);
 		}
 
+		void DX11CommandBuffer::Dispatch(uint32 numWorkGroupsX, uint32 numWorkGroupsY, uint32 numWorkGroupsZ)
+		{
+			m_Context->Dispatch(numWorkGroupsX, numWorkGroupsY, numWorkGroupsZ);
+		}
+
+		void DX11CommandBuffer::DispatchIndirect(Buffer& buffer, uint32 offset)
+		{
+			auto& _castBuffer = reinterpret_cast<DX11Buffer&>(buffer);
+
+			m_Context->DispatchIndirect(_castBuffer.GetNative(), offset);
+		}
+
 		void DX11CommandBuffer::SetBuffer(Buffer& buffer, uint32 slot, uint32 bindFlags, uint32 stageFlags)
 		{
 			if (DXBindFlagsNeedBufferWithRV(buffer.GetBindFlags()))
@@ -365,6 +433,7 @@ namespace Graphics
 			}
 		}
 
+		// Private
 		void DX11CommandBuffer::SetTexture(Texture& texture, uint32 slot, uint32 bindFlags, uint32 stageFlags)
 		{
 			auto _texture = reinterpret_cast<DX11Texture&>(texture);
@@ -391,16 +460,110 @@ namespace Graphics
 			m_StateManager->SetSamplers(slot, 1, samplerStates, stageFlags);
 		}
 
-		void DX11CommandBuffer::Dispatch(uint32 numWorkGroupsX, uint32 numWorkGroupsY, uint32 numWorkGroupsZ)
+		void DX11CommandBuffer::SetBuffers(Buffer** buffer, uint32 slot, uint32 count, uint32 bindFlags, uint32 stageFlags)
 		{
-			m_Context->Dispatch(numWorkGroupsX, numWorkGroupsY, numWorkGroupsZ);
+			if (DXBindFlagsNeedBufferWithRV(buffer[0]->GetBindFlags()))
+			{
+				auto _buffers = reinterpret_cast<DX11BufferRV**>(buffer);
+
+				if ((bindFlags & BindFlags::ConstantBuffer) != 0)
+				{
+					std::vector<ID3D11Buffer*> _bufferRefs(count, nullptr);
+
+					for (uint32 i = 0; i < count; i++)
+					{
+						_bufferRefs[i] = _buffers[i]->GetBuffer();
+					}
+
+					m_StateManager->SetConstantBuffers(slot, count, _bufferRefs.data(), stageFlags);
+				}
+
+				if ((bindFlags & BindFlags::ShaderResource) != 0)
+				{
+					std::vector<ID3D11ShaderResourceView*> _srvs(count, nullptr);
+
+					for (uint32 i = 0; i < count; i++)
+					{
+						_srvs[i] = _buffers[i]->GetSRV();
+					}
+
+					m_StateManager->SetShaderResources(slot, count, _srvs.data(), stageFlags);
+				}
+
+				if ((bindFlags & BindFlags::UnorderedAccess) != 0)
+				{
+					std::vector<ID3D11UnorderedAccessView*> _uavs(count, nullptr);
+					std::vector<UINT> _auvCounts(count, 0);
+
+					for (uint32 i = 0; i < count; i++)
+					{
+						_uavs[i] = _buffers[i]->GetUAV();
+						_auvCounts[i] = _buffers[i]->GetInitialCount();
+					}
+
+					m_StateManager->SetUnorderedAccessViews(slot, count, _uavs.data(), _auvCounts.data(), stageFlags);
+				}
+			}
+			else
+			{
+				auto _buffers = reinterpret_cast<DX11Buffer**>(buffer);
+
+				if ((bindFlags & BindFlags::ConstantBuffer) != 0)
+				{
+					std::vector<ID3D11Buffer*> _bufferRefs(count, nullptr);
+
+					for (uint32 i = 0; i < count; i++)
+					{
+						_bufferRefs[i] = _buffers[i]->GetBuffer();
+					}
+
+					m_StateManager->SetConstantBuffers(slot, count, _bufferRefs.data(), stageFlags);
+				}
+			}
 		}
 
-		void DX11CommandBuffer::DispatchIndirect(Buffer& buffer, uint32 offset)
+		void DX11CommandBuffer::SetTextures(Texture** texture, uint32 slot, uint32 count, uint32 bindFlags, uint32 stageFlags)
 		{
-			auto& _castBuffer = reinterpret_cast<DX11Buffer&>(buffer);
+			auto _textures = reinterpret_cast<DX11Texture**>(texture);
 
-			m_Context->DispatchIndirect(_castBuffer.GetNative(), offset);
+			if ((bindFlags & BindFlags::ShaderResource) != 0)
+			{
+				std::vector<ID3D11ShaderResourceView*> _srvs(count, nullptr);
+
+				for (uint32 i = 0; i < count; i++)
+				{
+					_srvs[i] = reinterpret_cast<DX11Texture*>(_textures[i])->GetSRV();
+				}
+
+				m_StateManager->SetShaderResources(slot, count, _srvs.data(), stageFlags);
+			}
+
+			if ((bindFlags & BindFlags::UnorderedAccess) != 0)
+			{
+				std::vector<ID3D11UnorderedAccessView*> _uavs(count, nullptr);
+				
+				for (uint32 i = 0; i < count; i++)
+				{
+					_uavs[i] = reinterpret_cast<DX11Texture*>(_textures[i])->GetUAV();
+				}
+
+				UINT auvCounts[] = { 0 };
+				m_StateManager->SetUnorderedAccessViews(slot, count, _uavs.data(), auvCounts, stageFlags);
+			}
+		}
+
+		void DX11CommandBuffer::SetSamplers(Sampler** sampler, uint32 slot, uint32 count, uint32 stageFlags)
+		{
+			auto _samplers = reinterpret_cast<DX11Sampler**>(sampler);
+
+			std::vector<ID3D11SamplerState*> _samplerStates(count, nullptr);
+
+			for (uint32 i = 0; i < count; i++)
+			{
+				_samplerStates[i] = _samplers[i]->GetSamplerState();
+			}
+
+			m_StateManager->SetSamplers(slot, count, _samplerStates.data(), stageFlags);
 		}
 
 		void DX11CommandBuffer::ResetBufferSlots(uint32 firstSlot, uint32 numSlots, long bindFlags, long stageFlags /*= StageFlags::AllStages*/)
@@ -519,18 +682,6 @@ namespace Graphics
 			);
 		}
 
-		void DX11CommandBuffer::SetResources(PipelineLayout& pipelineLayout)
-		{
-			DX11PipelineLayout& _castLayout = reinterpret_cast<DX11PipelineLayout&>(pipelineLayout);
-
-			auto& _binds = _castLayout.GetBindings();
-			auto& _resources = _castLayout.GetResources();
-
-			for (uint32 i = 0; i < pipelineLayout.GetNumBindings(); i++)
-			{
-				SetResource(*_resources[i], _binds[i]._slot, _binds[i]._bindFlags, _binds[i]._stageFlags);
-			}
-		}
 
 		void DX11CommandBuffer::BeginEvent(const wchar_t* event)
 		{
@@ -556,13 +707,6 @@ namespace Graphics
 			DX11SwapChain* _castSwapChain = reinterpret_cast<DX11SwapChain*>(swapChain);
 
 			_castSwapChain->BindFramebufferView(this);
-		}
-
-		void DX11CommandBuffer::ClearState()
-		{
-			m_Context->ClearState();
-
-			m_StateManager->ClearState();
 		}
 	}
 }

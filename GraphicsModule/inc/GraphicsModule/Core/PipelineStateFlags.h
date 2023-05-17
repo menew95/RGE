@@ -230,7 +230,7 @@ namespace Graphics
 
 	struct ComputePipelineDesc
 	{
-		const PipelineLayout* pipelineLayout = nullptr;
+		const PipelineLayout* _pipelineLayout = nullptr;
 
 		ShaderProgram _shaderProgram;
 	};

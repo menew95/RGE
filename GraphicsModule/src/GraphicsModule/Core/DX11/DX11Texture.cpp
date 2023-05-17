@@ -160,6 +160,17 @@ namespace Graphics
 
 		void DX11Texture::CreateShaderResourceView(ID3D11Device* device, uint32 baseMipLevel, uint32 numMipLevels, uint32 baseArrayLayer, uint32 numArrayLayers)
 		{
+			CreateSubresourceSRV(
+				device,
+				m_ShaderResourceView.GetAddressOf(),
+				baseMipLevel,
+				numMipLevels,
+				baseArrayLayer,
+				numArrayLayers);
+		}
+
+		void DX11Texture::CreateSubresourceSRV(ID3D11Device* device, ID3D11ShaderResourceView** srv, uint32 baseMipLevel, uint32 numMipLevels, uint32 baseArrayLayer, uint32 numArrayLayers)
+		{
 			D3D11_SHADER_RESOURCE_VIEW_DESC _desc;
 			ZeroMemory(&_desc, sizeof(_desc));
 
@@ -256,11 +267,22 @@ namespace Graphics
 			_desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 			_desc.Texture2D.MipLevels = 1;*/
 			_desc.Format = ToDXGIFormatSRV(_desc.Format);
-			HR(device->CreateShaderResourceView(m_NativeTexture._resource.Get(), &_desc, m_ShaderResourceView.ReleaseAndGetAddressOf())
-			, "failed to create D3D11 shader-resource-view");
+			HR(device->CreateShaderResourceView(m_NativeTexture._resource.Get(), &_desc, srv)
+				, "failed to create D3D11 shader-resource-view");
 		}
 
 		void DX11Texture::CreateUnorderedAccessView(ID3D11Device* device, uint32 baseMipLevel, uint32 numMipLevels, uint32 baseArrayLayer, uint32 numArrayLayers)
+		{
+			CreateSubresourceUAV(
+				device,
+				m_UnorderedAccessView.GetAddressOf(),
+				baseMipLevel,
+				numMipLevels,
+				baseArrayLayer, 
+				numArrayLayers);
+		}
+
+		void DX11Texture::CreateSubresourceUAV(ID3D11Device* device, ID3D11UnorderedAccessView** uav, uint32 baseMipLevel, uint32 numMipLevels, uint32 baseArrayLayer, uint32 numArrayLayers)
 		{
 			D3D11_UNORDERED_ACCESS_VIEW_DESC _uavDesc;
 			ZeroMemory(&_uavDesc, sizeof(D3D11_UNORDERED_ACCESS_VIEW_DESC));
@@ -314,7 +336,8 @@ namespace Graphics
 				}
 			}
 
-			auto hr = device->CreateUnorderedAccessView(m_NativeTexture._resource.Get(), &_uavDesc, m_UnorderedAccessView.ReleaseAndGetAddressOf());
+			HR(device->CreateUnorderedAccessView(m_NativeTexture._resource.Get(), &_uavDesc, uav)
+				, "failed to create D3D11 unorder-resource-view");
 		}
 
 		void DX11Texture::CreateTextureFromFile(ID3D11Device* device, const ImageDesc& srcDesc)
@@ -400,7 +423,6 @@ namespace Graphics
 			m_TextureDesc._extend = { textureDesc.Width, textureDesc.Height, 0 };
 			m_TextureDesc._mipLevels = textureDesc.MipLevels;
 			m_TextureDesc._bindFlags = textureDesc.BindFlags;
-
 		}
 
 		void DX11Texture::SetName(const char* name)

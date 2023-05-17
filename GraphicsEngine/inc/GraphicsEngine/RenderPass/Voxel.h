@@ -102,15 +102,17 @@ namespace Graphics
 		
 		Buffer* m_Voxel = nullptr;
 		Buffer* m_VoxelData = nullptr;
+		Buffer* m_VoxelMipLevel = nullptr;
 		Texture* m_VoxelTexture = nullptr;
 		Texture* m_VoxelBoundTexture = nullptr;
 
-		Texture* m_AnisotropicVoxelTexture = nullptr;
+		std::vector<Texture*> m_AnisotropicVoxelTextures;
 
 		RenderPass* m_VoxelizetionPass = nullptr;
 
-#pragma region
+#pragma region Render Pass
 
+		// none texture
 		PipelineState* m_VoxelizePSO = nullptr;
 		PipelineLayout* m_VoxelizeLayout = nullptr;
 		RenderPass* m_Voxelize_Pass = nullptr;
@@ -130,28 +132,33 @@ namespace Graphics
 		PipelineLayout* m_VoxelizeLayout3 = nullptr;
 		RenderPass* m_Voxelize_Albedo_Nomal_MRA_Pass = nullptr;
 
+		// voxel copy
 		PipelineState* m_VoxelCopyCSO = nullptr;
 		PipelineLayout* m_VoxelCopyLayout = nullptr;
 
-		PipelineState* m_AnisoVoxelPSO= nullptr;
+		// aniso voxel
+		PipelineState* m_AnisoVoxelCSO= nullptr;
 		PipelineLayout* m_AnisoVoxelLayout = nullptr;
 
-		PipelineState* m_AnisoVoxelMipPSO = nullptr;
+		// aniso voxel mip
+		PipelineState* m_AnisoVoxelMipCSO = nullptr;
 		PipelineLayout* m_AnisoVoxelMipLayout = nullptr;
-
+		 
+		// voxel debug
 		PipelineState* m_VoxelDebugPSO = nullptr;
 		PipelineState* m_VoxelDebugLinePSO = nullptr;
 		PipelineLayout* m_VoxelDebugLayout = nullptr;
 		
+		// voxel gi
 		PipelineState* m_VoxelGIPSO = nullptr;
 		PipelineLayout* m_VoxelGILayout = nullptr;
 		RenderTarget* m_VoxelGIRT = nullptr;
 		MeshBuffer* m_ScreenMesh = nullptr;
+
 #pragma endregion
 
 		uint32 VOXEL_RESOLUTION = 128;
 
 		VoxelInfoCB m_Voxel_Info;
-
 	};
 }

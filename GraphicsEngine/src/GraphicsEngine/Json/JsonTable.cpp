@@ -821,7 +821,7 @@ namespace Graphics
 					}
 					else
 					{
-						Resource* _resource;
+						Resource* _resource = nullptr;
 
 						switch (_bindingDesc._type)
 						{

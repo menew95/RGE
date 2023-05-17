@@ -31,14 +31,6 @@ namespace Graphics
 	//	Alpha
 	//};
 
-	struct TexturSubresource
-	{
-		uint32 _baseArrayLayer = 0;
-		uint32 _numArrayLayers = 0;
-		uint32 _baseMipLevel = 0;
-		uint32 _numMipLevels = 0;
-	};
-
 	enum class FileFormat
 	{
 		DDS = 0,

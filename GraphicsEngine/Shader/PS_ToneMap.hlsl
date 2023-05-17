@@ -1,8 +1,8 @@
 #include "Header/H_ConstBuffer.hlsli"
 #include "Header/H_Input.hlsli"
 
-#define Reinhard
-//#define Filmic
+//#define Reinhard
+#define Filmic
 //#define Uncharted
 
 // Nonnumeric values cannot be added to a cbuffer.

@@ -198,6 +198,12 @@
     <ClInclude Include="inc\GraphicsModule\Core\RenderSystemObject.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="inc\GraphicsModule\Core\ResourceVIewFlags.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\GraphicsModule\Core\DX11\DX11ResourceView.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\GraphicsModule\Graphics_dllmain.cpp">
@@ -297,6 +303,12 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\GraphicsModule\Core\DX11\DX11ComputePS.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GraphicsModule\Core\ResourceView.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GraphicsModule\Core\DX11\DX11ResourceView.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
