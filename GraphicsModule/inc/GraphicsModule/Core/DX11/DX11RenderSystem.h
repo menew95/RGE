@@ -46,9 +46,13 @@ namespace Graphics
 			void WriteTexture(Texture& texture, const TextureRegion& textureRegion, const ImageDesc& imageDesc) override;
 			void ReadTexture(Texture& texture) override;
 
-			/* ----- Samplers ---- */
+			/* ----- Sampler States ---- */
 			Sampler* CreateSampler(uuid uuid, const SamplerDesc& desc) override;
 			void Release(Sampler& sampler) override;
+
+			/* ----- Resource Views ---- */
+			ResourceView* CreateResoureView(uuid uuid, const ResourceViewDesc& desc) override;
+			void Release(ResourceView& resourceView) override;
 
 			///* ----- Render Passes ----- */
 			//RenderPass* CreateRenderPass(uuid uuid, const RenderPassDesc& desc) override;
@@ -104,7 +108,8 @@ namespace Graphics
 			Container <class DX11RenderTarget>		m_RenderTargetContainer;
 			Container <class DX11Shader>			m_ShaderContainer;
 			Container <class DX11PipelineLayout>	m_PipelineLayoutContainer;
-			Container <class PipelineState>		m_PipelineStateContainer;
+			Container <class PipelineState>			m_PipelineStateContainer;
+			Container <class DX11ResourceView>		m_ResourceViewContainer;
 		};
 	}
 }

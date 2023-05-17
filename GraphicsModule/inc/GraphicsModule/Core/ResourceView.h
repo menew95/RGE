@@ -1,3 +1,5 @@
+#pragma once
+
 #include "GraphicsModule/Core/ResourceViewFlags.h"
 #include "GraphicsModule/Core/Resource.h"
 

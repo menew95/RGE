@@ -16,6 +16,7 @@
 #include "GraphicsModule/Core/DX11/DX11PipelineState.h"
 #include "GraphicsModule/Core/DX11/DX11ComputePS.h"
 #include "GraphicsModule/Core/DX11/DX11ResourceFlags.h"
+#include "GraphicsModule/Core/DX11/DX11ResourceView.h"
 
 namespace Graphics
 {
@@ -39,8 +40,6 @@ namespace Graphics
 		{
 			return TakeOwnership(m_SwapChainContainer, uuid, MakeUnique<DX11SwapChain>(m_Factory.Get(), m_Device.Get(), desc));
 		}
-
-
 
 		void DX11RenderSystem::Release(SwapChain& swapChain)
 		{
@@ -246,6 +245,16 @@ namespace Graphics
 		void DX11RenderSystem::Release(Sampler& sampler)
 		{
 			RemoveFromUniqueUnorderedMap(m_SamplerContainer, &sampler);
+		}
+
+		Graphics::ResourceView* DX11RenderSystem::CreateResoureView(uuid uuid, const ResourceViewDesc& desc)
+		{
+			return TakeOwnership(m_ResourceViewContainer, uuid, MakeUnique<DX11ResourceView>(m_Device.Get(), desc));
+		}
+
+		void DX11RenderSystem::Release(ResourceView& resourceView)
+		{
+			RemoveFromUniqueUnorderedMap(m_ResourceViewContainer, &resourceView);
 		}
 
 		/*Graphics::RenderPass* DX11RenderSystem::CreateRenderPass(uuid uuid, const RenderPassDesc& desc)

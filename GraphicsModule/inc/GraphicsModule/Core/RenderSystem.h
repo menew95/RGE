@@ -11,7 +11,7 @@
 
 #include "GraphicsModule/Core/Shader.h"
 #include "GraphicsModule/Core/SwapChain.h"
-//#include "GraphicsModule/Core/RenderPass.h"
+#include "GraphicsModule/Core/ResourceView.h"
 #include "GraphicsModule/Core/RenderTarget.h"
 #include "GraphicsModule/Core/PipelineLayout.h"
 #include "GraphicsModule/Core/PipelineState.h"
@@ -56,9 +56,13 @@ namespace Graphics
 		virtual void WriteTexture(Texture& texture, const TextureRegion& textureRegion, const ImageDesc& imageDesc) abstract;
 		virtual void ReadTexture(Texture& texture) abstract;
 
-		/* ----- Samplers ---- */
+		/* ----- Sampler States ---- */
 		virtual Sampler* CreateSampler(uuid uuid, const SamplerDesc& desc) abstract;
 		virtual void Release(Sampler& sampler) abstract;
+
+		/* ----- Resource Views ---- */
+		virtual ResourceView* CreateResoureView(uuid uuid, const ResourceViewDesc& desc) abstract;
+		virtual void Release(ResourceView& resourceView) abstract;
 
 		///* ----- Render Passes ----- */
 		//virtual RenderPass* CreateRenderPass(uuid uuid, const RenderPassDesc& desc) abstract;

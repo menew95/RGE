@@ -1,3 +1,5 @@
+#pragma once
+
 #include "GraphicsModule/Core/ResourceFlags.h"
 #include "GraphicsModule/Core/TextureFlags.h"
 
