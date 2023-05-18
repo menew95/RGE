@@ -243,6 +243,30 @@ namespace Graphics
 		return _newTex;
 	}
 
+	ResourceView* ResourceManager::CreateResourceView(uuid uuid, ResourceViewDesc& desc)
+	{
+		auto _find = std::find_if(std::begin(m_ResourceViewMap),
+			std::end(m_ResourceViewMap),
+			[&uuid](auto& pair) { return uuid = pair.first; }
+		);
+
+		if (_find != m_ResourceViewMap.end())
+		{
+			AssertMessageBox(false, (StringHelper::WStringToString(uuid) + " is a resoure-view that already exists.").c_str());
+			return nullptr;
+		}
+
+		auto* _newRV = m_RenderSystem->CreateResoureView(uuid, desc);
+#if defined(_DEBUG)
+		std::string _name = StringHelper::WStringToString(uuid);
+
+		_newRV->SetName(_name.c_str());
+#endif
+		m_ResourceViewMap.insert(std::make_pair(uuid, _newRV));
+
+		return _newRV;
+	}
+
 	RenderTarget* ResourceManager::CreateRenderTarget(uuid uuid, RenderTargetDesc& desc)
 	{
 		auto _find = std::find_if(std::begin(m_RenderTargetMap),

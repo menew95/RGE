@@ -1,6 +1,7 @@
 #include "GraphicsPCH.h"
 #include "GraphicsModule/Core/DX11/DX11ResourceView.h"
 #include "GraphicsModule/Core/DX11/DX11Texture.h"
+#include "GraphicsModule/Core/DX11/DX11Utilitys.h"
 #include "GraphicsModule/Core/ShaderFlags.h"
 
 namespace Graphics
@@ -78,6 +79,18 @@ namespace Graphics
 				}
 
 				context->CSSetUnorderedAccessViews(slot, count, _uavs.data(), _auvCounts.data());
+			}
+		}
+
+		void DX11ResourceView::SetName(const char* name)
+		{
+			for (size_t i = 0; i < m_SRVs.size(); i++)
+			{
+				DX11SetObjectNameSubscript(m_SRVs[i].Get(), name, ".SRV");
+			}
+			for (size_t i = 0; i < m_UAVs.size(); i++)
+			{
+				DX11SetObjectNameSubscript(m_UAVs[i].Get(), name, ".UAV");
 			}
 		}
 

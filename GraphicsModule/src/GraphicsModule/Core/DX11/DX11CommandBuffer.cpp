@@ -11,6 +11,7 @@
 #include "GraphicsModule/Core/DX11/DX11Sampler.h"
 #include "GraphicsModule/Core/DX11/DX11Buffer.h"
 #include "GraphicsModule/Core/DX11/DX11BufferRV.h"
+#include "GraphicsModule/Core/DX11/DX11ResourceView.h"
 #include "GraphicsModule/Core/DX11/Direct3D11.h"
 #include "GraphicsModule/Core/DX11/DX11ResourceFlags.h"
 
@@ -179,6 +180,14 @@ namespace Graphics
 					SetSampler(_sampler, slot, stageFlags);
 					break;
 				}
+				case ResourceType::ResourceView:
+				{
+					// 사실 1개면 딱히 쓸일이 없긴함
+					assert(false);
+					auto& _rv = reinterpret_cast<ResourceView&>(resource);
+					SetResourceView(_rv, slot, 1, bindFlags, stageFlags);
+					break;
+				}
 			}
 		}
 
@@ -226,6 +235,12 @@ namespace Graphics
 				{
 					auto* _samplers = reinterpret_cast<Sampler**>(resources);
 					SetSamplers(_samplers, slot, count, stageFlags);
+					break;
+				}
+				case ResourceType::ResourceView:
+				{
+					auto& _rv = reinterpret_cast<ResourceView&>(resources);
+					SetResourceView(_rv, slot, count, bindFlags, stageFlags);
 					break;
 				}
 			}
@@ -566,6 +581,14 @@ namespace Graphics
 			m_StateManager->SetSamplers(slot, count, _samplerStates.data(), stageFlags);
 		}
 
+		void DX11CommandBuffer::SetResourceView(ResourceView& resourceView, uint32 slot, uint count, uint32 bindFlags, uint32 stageFlags)
+		{
+			auto& _rv = reinterpret_cast<DX11ResourceView&>(resourceView);
+
+			if ((stageFlags & StageFlags::VS) != 0) _rv.BindForGraphicsPipeline(m_Context.Get(), slot, count, bindFlags, stageFlags);
+			if ((stageFlags & StageFlags::CS) != 0) _rv.BindForComputePipeline(m_Context.Get(), slot, count, bindFlags, stageFlags);
+		}
+
 		void DX11CommandBuffer::ResetBufferSlots(uint32 firstSlot, uint32 numSlots, long bindFlags, long stageFlags /*= StageFlags::AllStages*/)
 		{
 			if ((bindFlags & BindFlags::VertexBuffer) != 0)
@@ -708,5 +731,7 @@ namespace Graphics
 
 			_castSwapChain->BindFramebufferView(this);
 		}
+
+
 	}
 }

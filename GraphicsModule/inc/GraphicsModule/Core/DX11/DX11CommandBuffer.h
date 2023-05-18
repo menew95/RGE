@@ -114,10 +114,12 @@ namespace Graphics
 			void SetBuffer(Buffer& buffer, uint32 slot, uint32 bindFlags, uint32 stageFlags);
 			void SetTexture(Texture& texture, uint32 slot, uint32 bindFlags, uint32 stageFlags);
 			void SetSampler(Sampler& sampler, uint32 slot, uint32 stageFlags);
+
 			// Todo : 작업 필요
 			void SetBuffers(Buffer** buffer, uint32 slot, uint32 count, uint32 bindFlags, uint32 stageFlags);
 			void SetTextures(Texture** texture, uint32 slot, uint32 count, uint32 bindFlags, uint32 stageFlags);
 			void SetSamplers(Sampler** sampler, uint32 slot, uint32 count, uint32 stageFlags);
+			void SetResourceView(ResourceView& resourceView, uint32 slot, uint count, uint32 bindFlags, uint32 stageFlags);
 
 			void ResetBufferSlots(uint32 firstSlot, uint32 numSlots, long bindFlags, long stageFlags = StageFlags::AllStages);
 			void ResetTextureSlots(uint32 firstSlot, uint32 numSlots, long bindFlags, long stageFlags = StageFlags::AllStages);

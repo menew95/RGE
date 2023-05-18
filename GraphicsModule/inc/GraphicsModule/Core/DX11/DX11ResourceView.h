@@ -17,6 +17,8 @@ namespace Graphics
 			void BindForGraphicsPipeline(ID3D11DeviceContext* context, uint32 slot, uint32 count, long bindFlags, long stageFlags);
 			void BindForComputePipeline(ID3D11DeviceContext* context, uint32 slot, uint32 count, long bindFlags, long stageFlags);
 
+			void SetName(const char* name) override;
+
 		private:
 			void CreateUnorderedAccessView(const ResourceViewDesc& desc);
 			void CreateShaderAccessView(const ResourceViewDesc& desc);

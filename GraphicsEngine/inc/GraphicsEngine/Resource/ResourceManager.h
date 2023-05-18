@@ -31,6 +31,7 @@ namespace Graphics
 		Buffer*							CreateBuffer(uuid uuid, BufferDesc& desc);
 		Sampler*						CreateSampler(uuid uuid, SamplerDesc& desc);
 		Texture*						CreateTexture(uuid uuid, TextureDesc& desc);
+		ResourceView*					CreateResourceView(uuid uuid, ResourceViewDesc& desc);
 
 		Shader*							CreateShader(uuid uuid, ShaderDesc& desc);
 		RenderTarget*					CreateRenderTarget(uuid uuid, RenderTargetDesc& desc);
@@ -43,6 +44,7 @@ namespace Graphics
 		Buffer*							GetBuffer(uuid uuid);
 		Sampler*						GetSampler(uuid uuid);
 		Texture*						GetTexture(uuid uuid);
+		ResourceView*					GetResourceView(uuid uuid);
 
 		Shader*							GetShader(uuid uuid);
 		RenderTarget*					GetRenderTarget(uuid uuid);
@@ -68,6 +70,8 @@ namespace Graphics
 		std::unordered_map<uuid, Buffer*> m_BufferMap;
 		std::unordered_map<uuid, Sampler*> m_SamplerMap;
 		std::unordered_map<uuid, Texture*> m_TextureMap;
+		std::unordered_map<uuid, ResourceView*> m_ResourceViewMap;
+
 
 		std::unordered_map<uuid, Shader*> m_ShaderMap;
 		std::unordered_map<uuid, RenderTarget*> m_RenderTargetMap;
