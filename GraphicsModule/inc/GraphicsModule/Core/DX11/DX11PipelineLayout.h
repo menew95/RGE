@@ -31,6 +31,7 @@ namespace Graphics
 			Buffer* GetBuffer(uint32 index) override;
 			Texture* GetTexture(uint32 index) override;
 			Sampler* GetSampler(uint32 index) override;
+			ResourceView* GetResourceView(uint32 index) override;
 
 		private:
 			std::vector<void*> m_Resources;

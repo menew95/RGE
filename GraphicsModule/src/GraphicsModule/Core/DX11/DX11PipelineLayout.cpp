@@ -34,7 +34,23 @@ namespace Graphics
 			Resource* _resource = nullptr;
 
 			if (m_Bindings[index]._arraySize != 1)
-				_resource = *(reinterpret_cast<Resource**>(resource));
+			{
+				if (m_Bindings[index]._bindFlags & (BindFlags::ShaderResource | BindFlags::UnorderedAccess) != 0)
+				{
+					auto* _castTest = reinterpret_cast<Resource*>(resource);
+					_resource = dynamic_cast<Resource*>(_castTest);
+
+					if (_resource == nullptr)
+					{
+						assert(false);
+						return;
+					}
+				}
+				else
+				{
+					_resource = *(reinterpret_cast<Resource**>(resource));
+				}
+			}
 			else
 				_resource = reinterpret_cast<Resource*>(resource);
 
@@ -95,5 +111,16 @@ namespace Graphics
 			return reinterpret_cast<Sampler*>(_resource);
 		}
 
+		Graphics::ResourceView* DX11PipelineLayout::GetResourceView(uint32 index)
+		{
+			if (m_Bindings[index]._arraySize != 1)
+				return nullptr;
+
+			auto _resource = reinterpret_cast<Resource*>(m_Resources.at(index));
+
+			assert(_resource->GetResourceType() == ResourceType::ResourceView);
+
+			return reinterpret_cast<ResourceView*>(_resource);
+		}
 	}
 }

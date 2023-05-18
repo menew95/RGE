@@ -13,6 +13,7 @@ namespace Graphics
 	class Buffer;
 	class Texture;
 	class Sampler;
+	class ResourceView;
 	class PipelineState;
 	class PipelineLayout;
 	class Resource;
