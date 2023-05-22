@@ -26,15 +26,20 @@ namespace Graphics
 	DECLSPEC_ALIGN(16) struct VoxelInfoCB
 	{
 		Math::Vector3 grid_center;
-		float   data_size;        // voxel half-extent in world space units
-		float   data_size_rcp;    // 1.0 / voxel-half extent
-		uint32    data_res;         // voxel grid resolution
-		float   data_res_rcp;     // 1.0 / voxel grid resolution
-		uint32    num_cones;
-		float   num_cones_rcp;
-		float   max_distance;
-		float   ray_step_size;
-		uint32    mips;
+		float data_size;        // voxel half-extent in world space units
+		float data_size_rcp;    // 1.0 / voxel-half extent
+		uint32 data_res;		// voxel grid resolution
+		float data_res_rcp;     // 1.0 / voxel grid resolution
+		uint32 num_cones;		
+		float num_cones_rcp;
+		float max_distance;
+		float ray_step_size;
+		uint32 mips;
+
+		float _aoAlpha;			
+		float _aoFalloff;
+		float _inDirectFactor;
+		uint32 _mode;
 	};
 
 	class Voxel
@@ -47,14 +52,16 @@ namespace Graphics
 
 		void Excute();
 
-		void UpdateVoxelInfo(Vector3 camPos, float voxelSize, uint32 coneNum, float rayStepDis, float maxDis);
+		void UpdateVoxelInfo(Vector3 camPos);
 
 		inline void SetRenderTarget(RenderTarget* renderTarget)
 		{
 			m_RenderTarget = renderTarget;
 		}
 
-		void SetVoxelSetting(bool voxelgi, bool debug, bool line, bool boundce, uint32 frame);
+		void SetVoxelSetting(bool voxelgi, bool debug, bool line, bool boundce,
+			uint32 frame, float voxelSize, uint32 coneNum, float rayStepDis,
+			float maxDis, float aoAlpha, float aoFalloff, float inDirectFactor, uint32 mode);
 
 	private:
 		void Culling();
@@ -106,7 +113,10 @@ namespace Graphics
 		Texture* m_VoxelTexture = nullptr;
 		Texture* m_VoxelBoundTexture = nullptr;
 
+
 		std::vector<Texture*> m_AnisotropicVoxelTextures;
+		// Anisotropic Voxel Texture의 각 밉을 담고 있는 UAV Resources;
+		std::vector<ResourceView*> m_MipResourceViews;
 
 		RenderPass* m_VoxelizetionPass = nullptr;
 

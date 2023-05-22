@@ -160,7 +160,7 @@ namespace Graphics
 	{
 		m_Sky = std::make_shared<Sky>(m_CommandBuffer, m_ResourceManager);
 
-		m_Sky->SetRenderTarget(m_ResourceManager->GetRenderTarget(TEXT("FinalRT")));
+		//m_Sky->SetRenderTarget(m_ResourceManager->GetRenderTarget(TEXT("Deferred_Light")));
 	}
 
 	void GraphicsEngine::InitDebugPass()
@@ -195,7 +195,7 @@ namespace Graphics
 
 		m_Final.m_MaterialBuffer = m_ResourceManager->CreateMaterialBuffer(TEXT("Final_Mat"));
 
-		m_Final.m_MaterialBuffer->SetResource(m_ResourceManager->GetTexture(TEXT("Deferred_Light")), ResourceType::Texture, 0);
+		m_Final.m_MaterialBuffer->SetResource(m_ResourceManager->GetTexture(TEXT("FinalOutput")), ResourceType::Texture, 0);
 
 		m_Final.AddViewport({ 0, 0, 1280, 720, 0, 1 });
 
@@ -378,7 +378,7 @@ namespace Graphics
 			m_Deferred_Light_Pass->EndExcute(m_CommandBuffer);
 		}
 
-		m_Voxel_Pass->UpdateVoxelInfo(_perFrame._camera._camWorld, m_RenderingSetting._voxelSize, m_RenderingSetting._voxelNumCones, m_RenderingSetting._voxelRayStepDistance, m_RenderingSetting._voxelMaxDistance);
+		m_Voxel_Pass->UpdateVoxelInfo(_perFrame._camera._camWorld);
 
 		m_Voxel_Pass->Excute();
 
@@ -440,7 +440,20 @@ namespace Graphics
 
 		m_PostProcess_Pass->SetPostProcessSetting(_postprocess);
 
-		m_Voxel_Pass->SetVoxelSetting(m_RenderingSetting._voxelGI, m_RenderingSetting._voxelDebug, m_RenderingSetting._voxelDebugLine, m_RenderingSetting._voxelSecondBounce, m_RenderingSetting._voxelUpdateFrame);
+		m_Voxel_Pass->SetVoxelSetting(
+			m_RenderingSetting._voxelGI,
+			m_RenderingSetting._voxelDebug,
+			m_RenderingSetting._voxelDebugLine,
+			m_RenderingSetting._voxelSecondBounce,
+			m_RenderingSetting._voxelUpdateFrame,
+			m_RenderingSetting._voxelSize,
+			m_RenderingSetting._voxelNumCones,
+			m_RenderingSetting._voxelRayStepDistance,
+			m_RenderingSetting._voxelMaxDistance,
+			m_RenderingSetting._aoAlpha,
+			m_RenderingSetting._aoFalloff,
+			m_RenderingSetting._inDirectFactor,
+			m_RenderingSetting._mode);
 	}
 
 	void GraphicsEngine::LoadGraphicsTable()

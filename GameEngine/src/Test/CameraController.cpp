@@ -92,7 +92,7 @@ void CameraController::Update()
 			});
 	}
 
-	if (Input::GetKeyDown(EVirtualKey::Key_0))
+	if (Input::GetKeyDown(EVirtualKey::Key_1))
 	{
 		Graphics::RenderingSetting _setting = GraphicsSystem::GetInstance()->GetRenderingSetting();
 
@@ -101,7 +101,7 @@ void CameraController::Update()
 		GraphicsSystem::GetInstance()->SetRenderingSetting(_setting);
 	}
 
-	if (Input::GetKeyDown(EVirtualKey::Key_1))
+	if (Input::GetKeyDown(EVirtualKey::Key_2))
 	{
 		Graphics::RenderingSetting _setting = GraphicsSystem::GetInstance()->GetRenderingSetting();
 
@@ -110,7 +110,7 @@ void CameraController::Update()
 		GraphicsSystem::GetInstance()->SetRenderingSetting(_setting);
 	}
 
-	if (Input::GetKeyDown(EVirtualKey::Key_2))
+	if (Input::GetKeyDown(EVirtualKey::Key_3))
 	{
 		Graphics::RenderingSetting _setting = GraphicsSystem::GetInstance()->GetRenderingSetting();
 
@@ -119,4 +119,48 @@ void CameraController::Update()
 		GraphicsSystem::GetInstance()->SetRenderingSetting(_setting);
 	}
 
+	if (Input::GetKeyDown(EVirtualKey::Key_4))
+	{
+		Graphics::RenderingSetting _setting = GraphicsSystem::GetInstance()->GetRenderingSetting();
+
+		_setting._mode = 0;
+
+		GraphicsSystem::GetInstance()->SetRenderingSetting(_setting);
+	}
+
+	if (Input::GetKeyDown(EVirtualKey::Key_5))
+	{
+		Graphics::RenderingSetting _setting = GraphicsSystem::GetInstance()->GetRenderingSetting();
+
+		_setting._mode = 1;
+
+		GraphicsSystem::GetInstance()->SetRenderingSetting(_setting);
+	}
+
+	if (Input::GetKeyDown(EVirtualKey::Key_6))
+	{
+		Graphics::RenderingSetting _setting = GraphicsSystem::GetInstance()->GetRenderingSetting();
+
+		_setting._mode = 2;
+
+		GraphicsSystem::GetInstance()->SetRenderingSetting(_setting);
+	}
+
+	if (Input::GetKeyDown(EVirtualKey::Key_7))
+	{
+		Graphics::RenderingSetting _setting = GraphicsSystem::GetInstance()->GetRenderingSetting();
+
+		_setting._mode = 3;
+
+		GraphicsSystem::GetInstance()->SetRenderingSetting(_setting);
+	}
+
+	if (Input::GetKeyDown(EVirtualKey::Key_8))
+	{
+		Graphics::RenderingSetting _setting = GraphicsSystem::GetInstance()->GetRenderingSetting();
+
+		_setting._mode = 4;
+
+		GraphicsSystem::GetInstance()->SetRenderingSetting(_setting);
+	}
 }

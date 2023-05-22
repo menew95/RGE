@@ -25,6 +25,8 @@ namespace Graphics
 
 	void DebugDeferred::ExcutePass()
 	{
+		return;
+
 		m_Debug_Pass->BeginExcute(m_CommandBuffer, nullptr);
 
 		m_Debug_Pass->Excute(m_CommandBuffer);

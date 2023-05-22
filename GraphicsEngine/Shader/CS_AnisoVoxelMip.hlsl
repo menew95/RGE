@@ -26,8 +26,8 @@ static uint3 g_anisoOffsets[] =
 
 SamplerState samWrapPoint : register(s0);
 
-RWTexture3D<float4> VoxelMipSrc[6] : register(u1);
-RWTexture3D<float4> VoxelMipDst[6] : register(u7);
+RWTexture3D<float4> VoxelMipSrc[6] : register(u0);
+RWTexture3D<float4> VoxelMipDst[6] : register(u6);
 
 cbuffer VoxelCB :register(b6)
 {
@@ -42,7 +42,7 @@ void FetchVoxels(in uint3 pos, in int dir, inout float4 val[8])
 	}
 }
 
-[numthreads(8, 8, 8)]
+[numthreads(1, 1, 1)]
 void main(uint3 DTid : SV_DispatchThreadID)
 {
 	if (DTid.x >= _mipDimension ||
@@ -66,8 +66,6 @@ void main(uint3 DTid : SV_DispatchThreadID)
 
 	FetchVoxels(sourcePos, 0, values);
 
-	uint _dstMip = _mipLevel + 1;
-
 	VoxelMipDst[0][DTid] =
 		(
 			values[0] + values[4] * (1 - values[0].a) +
@@ -88,7 +86,7 @@ void main(uint3 DTid : SV_DispatchThreadID)
 
 	FetchVoxels(sourcePos, 2, values);
 
-	VoxelMip[2][DTid] =
+	VoxelMipDst[2][DTid] =
 		(
 			values[0] + values[2] * (1 - values[0].a) +
 			values[1] + values[3] * (1 - values[1].a) +

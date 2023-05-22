@@ -247,7 +247,7 @@ namespace Graphics
 	{
 		auto _find = std::find_if(std::begin(m_ResourceViewMap),
 			std::end(m_ResourceViewMap),
-			[&uuid](auto& pair) { return uuid = pair.first; }
+			[&uuid](auto& pair) { return (uuid == pair.first); }
 		);
 
 		if (_find != m_ResourceViewMap.end())
@@ -428,6 +428,22 @@ namespace Graphics
 		);
 
 		if (_find != m_TextureMap.end())
+		{
+			return _find->second;
+		}
+
+		//assert(false);
+		return nullptr;
+	}
+
+	Graphics::ResourceView* ResourceManager::GetResourceView(uuid uuid)
+	{
+		auto _find = std::find_if(std::begin(m_ResourceViewMap),
+			std::end(m_ResourceViewMap),
+			[&uuid](auto& pair) { return (uuid == pair.first); }
+		);
+
+		if (_find != m_ResourceViewMap.end())
 		{
 			return _find->second;
 		}

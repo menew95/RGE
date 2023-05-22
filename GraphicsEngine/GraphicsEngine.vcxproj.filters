@@ -208,5 +208,6 @@
     <FxCompile Include="Shader\PS_VoxelGI.hlsl" />
     <FxCompile Include="Shader\CS_AnisoVoxel.hlsl" />
     <FxCompile Include="Shader\CS_AnisoVoxelMip.hlsl" />
+    <FxCompile Include="Shader\CS_VoxelBounce.hlsl" />
   </ItemGroup>
 </Project>

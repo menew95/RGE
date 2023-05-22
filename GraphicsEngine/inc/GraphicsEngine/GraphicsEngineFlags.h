@@ -23,7 +23,7 @@ namespace Graphics
 
 		// tone map
 		bool _toneMap = true;
-		float _exposure = 1.0f;
+		float _exposure = 0.5f;
 
 		// voxel
 		bool	_voxelGI = false;
@@ -36,6 +36,11 @@ namespace Graphics
 		float	_voxelRayStepDistance = 0.75f;
 		float	_voxelMaxDistance = 20.0f;
 		uint32	_voxelMips = 7;
+
+		float	_aoAlpha = 0.01f;
+		float	_aoFalloff = 725.f;
+		float	_inDirectFactor = 1.0f;
+		uint32	_mode = 0;
 	};
 
 	struct GraphicsEngineDesc

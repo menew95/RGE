@@ -11,7 +11,8 @@ namespace Graphics
 
 		DX11ResourceView::DX11ResourceView(ID3D11Device* device, const ResourceViewDesc& desc)
 		{
-
+			if ((desc._bindFlags & BindFlags::ShaderResource) != 0) CreateShaderResourceView(desc);
+			if ((desc._bindFlags & BindFlags::UnorderedAccess) != 0) CreateUnorderedAccessView(desc);
 		}
 
 		void DX11ResourceView::BindForGraphicsPipeline(ID3D11DeviceContext* context, uint32 slot, uint32 count, long bindFlags, long stageFlags)
@@ -105,7 +106,7 @@ namespace Graphics
 			}
 		}
 
-		void DX11ResourceView::CreateShaderAccessView(const ResourceViewDesc& desc)
+		void DX11ResourceView::CreateShaderResourceView(const ResourceViewDesc& desc)
 		{
 			for (size_t i = 0; i < desc._texSubresources.size(); i++)
 			{
@@ -192,6 +193,8 @@ namespace Graphics
 			}
 			else
 			{
+				m_UAVs.push_back(texture.GetUAV());
+
 				return texture.GetUAV();
 			}
 		}

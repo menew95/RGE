@@ -10,6 +10,11 @@ struct VoxelRadiance
 	float	_maxDistance;
 	float	_rayStepSize;
 	uint	_mips;
+
+	float _aoAlpha;
+	float _aoFalloff;
+	float _inDirectFactor;
+	uint _mode;
 };
 
 struct VoxelType

@@ -246,6 +246,14 @@ namespace Graphics
 			}
 		}
 
+		void DX11CommandBuffer::SetResourceView(ResourceView& resourceView, uint32 slot, uint32 count, long bindFlags, long stageFlags)
+		{
+			auto& _rv = reinterpret_cast<DX11ResourceView&>(resourceView);
+
+			if ((stageFlags & StageFlags::VS) != 0) _rv.BindForGraphicsPipeline(m_Context.Get(), slot, count, bindFlags, stageFlags);
+			if ((stageFlags & StageFlags::CS) != 0) _rv.BindForComputePipeline(m_Context.Get(), slot, count, bindFlags, stageFlags);
+		}
+
 		void DX11CommandBuffer::ResetResourceSlots(const ResourceType resourceType, uint32 firstSlot, uint32 numSlots, long bindFlags, long stageFlags /*= StageFlags::AllStages*/)
 		{
 			if (numSlots > 0)
@@ -579,14 +587,6 @@ namespace Graphics
 			}
 
 			m_StateManager->SetSamplers(slot, count, _samplerStates.data(), stageFlags);
-		}
-
-		void DX11CommandBuffer::SetResourceView(ResourceView& resourceView, uint32 slot, uint count, uint32 bindFlags, uint32 stageFlags)
-		{
-			auto& _rv = reinterpret_cast<DX11ResourceView&>(resourceView);
-
-			if ((stageFlags & StageFlags::VS) != 0) _rv.BindForGraphicsPipeline(m_Context.Get(), slot, count, bindFlags, stageFlags);
-			if ((stageFlags & StageFlags::CS) != 0) _rv.BindForComputePipeline(m_Context.Get(), slot, count, bindFlags, stageFlags);
 		}
 
 		void DX11CommandBuffer::ResetBufferSlots(uint32 firstSlot, uint32 numSlots, long bindFlags, long stageFlags /*= StageFlags::AllStages*/)

@@ -9,6 +9,7 @@ namespace Graphics
 
 	struct ResourceViewDesc
 	{
+		long _bindFlags;
 		std::vector<Resource*> _resources;
 		std::vector<TextureSubresource> _texSubresources;
 	};

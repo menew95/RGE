@@ -61,6 +61,8 @@ namespace Graphics
 		
 		virtual void SetResources(PipelineLayout& pipelineLayout) abstract;
 		
+		virtual void SetResourceView(ResourceView& resource, uint32 slot, uint32 count, long bindFlags, long stageFlags = StageFlags::AllStages) abstract;
+
 		virtual void ResetResourceSlots(const ResourceType resourceType, uint32 firstSlot, uint32 numSlots, long bindFlags, long stageFlags = StageFlags::AllStages) abstract;
 	
 		/* ----- Render Passes ----- */

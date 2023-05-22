@@ -21,7 +21,7 @@ namespace Graphics
 
 		private:
 			void CreateUnorderedAccessView(const ResourceViewDesc& desc);
-			void CreateShaderAccessView(const ResourceViewDesc& desc);
+			void CreateShaderResourceView(const ResourceViewDesc& desc);
 
 			ID3D11ShaderResourceView* GetOrCreateSRV(DX11Texture& texture, const TextureSubresource& subresource);
 			ID3D11UnorderedAccessView* GetOrCreateUAV(DX11Texture& texture, const TextureSubresource& subresource);

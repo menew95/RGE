@@ -119,27 +119,32 @@ namespace Graphics
 
 		m_CommandBuffer->Dispatch(_res, _res, _res);
 
+		m_CommandBuffer->ResetResourceSlots(ResourceType::Texture, 0, 7, BindFlags::UnorderedAccess, StageFlags::CS);
+
 		m_CommandBuffer->SetPipelineState(*m_AnisoVoxelMipCSO);
 
-		for (uint i = 0; i < 6; i++)
+		for (uint i = 0; i < 5; i++)
 		{
 			_res /= 2;
 
 			struct {
-				uint _mipLevel;
+				//uint _mipLevel;
 				uint _mipDimension;
 			} _anisoMip
 			{
-				_anisoMip._mipLevel = i,
+				//_anisoMip._mipLevel = i,
 				_anisoMip._mipDimension = _res
 			};
+
+			m_CommandBuffer->SetResourceView(*(m_MipResourceViews[i + 1]), 6, 6, BindFlags::UnorderedAccess, StageFlags::CS);
+			m_CommandBuffer->SetResourceView(*(m_MipResourceViews[i]), 0, 6, BindFlags::UnorderedAccess, StageFlags::CS);
 
 			m_CommandBuffer->UpdateBuffer(*m_VoxelMipLevel, 0, &_anisoMip, sizeof(_anisoMip));
 
 			m_CommandBuffer->Dispatch(_res, _res, _res);
 		}
 
-		m_CommandBuffer->ResetResourceSlots(ResourceType::Texture, 0, 7, BindFlags::UnorderedAccess, StageFlags::CS);
+		m_CommandBuffer->ResetResourceSlots(ResourceType::Texture, 0, 12, BindFlags::UnorderedAccess, StageFlags::CS);
 
 		m_CommandBuffer->EndEvent();
 	}
@@ -184,16 +189,32 @@ namespace Graphics
 
 		m_CommandBuffer->DrawIndexed(m_ScreenMesh->GetSubMesh(0).m_IndexCount, 0, 0);
 
-		m_CommandBuffer->ResetResourceSlots(ResourceType::Texture, 0, 5, BindFlags::ShaderResource, StageFlags::PS);
+		m_CommandBuffer->ResetResourceSlots(ResourceType::Texture, 0, 12, BindFlags::ShaderResource, StageFlags::PS);
 
 		m_CommandBuffer->EndEvent();
 	}
 
-	void Voxel::UpdateVoxelInfo(Vector3 camPos, float voxelSize, uint32 coneNum, float rayStepDis, float maxDis)
+	void Voxel::UpdateVoxelInfo(Vector3 camPos)
 	{
-		float const f = 0.05f / voxelSize;
+		float const f = 0.05f / m_Voxel_Info.data_size;
 
 		Vector3 center = Vector3(floorf(camPos.x * f) / f, floorf(camPos.y * f) / f, floorf(camPos.z * f) / f);
+
+		m_Voxel_Info.grid_center = center;
+		
+		m_CommandBuffer->UpdateBuffer(*m_VoxelData, 0, &m_Voxel_Info, GetCBufferSize(sizeof(VoxelInfoCB)));
+	}
+
+	void Voxel::SetVoxelSetting(bool voxelgi, bool debug, bool line, bool boundce, uint32 frame
+		, float voxelSize, uint32 coneNum, float rayStepDis, float maxDis, float aoAlpha, float aoFalloff, float inDirectFactor, uint32 mode)
+	{
+		m_VoxelGI = voxelgi;
+		m_VoxelDebug = debug;
+		m_VoxelDebugLine = line;
+		m_VoxelSecondBounce = boundce;
+		m_VoxelUpdateFrame = frame;
+
+		float const f = 0.05f / voxelSize;
 
 		m_Voxel_Info.data_res = VOXEL_RESOLUTION;
 		m_Voxel_Info.data_res_rcp = 1.0f / VOXEL_RESOLUTION;
@@ -204,18 +225,11 @@ namespace Graphics
 		m_Voxel_Info.num_cones_rcp = 1.0f / coneNum;
 		m_Voxel_Info.ray_step_size = rayStepDis;
 		m_Voxel_Info.max_distance = maxDis;
-		m_Voxel_Info.grid_center = center;
-		
-		m_CommandBuffer->UpdateBuffer(*m_VoxelData, 0, &m_Voxel_Info, GetCBufferSize(sizeof(VoxelInfoCB)));
-	}
 
-	void Voxel::SetVoxelSetting(bool voxelgi, bool debug, bool line, bool boundce, uint32 frame)
-	{
-		m_VoxelGI = voxelgi;
-		m_VoxelDebug = debug;
-		m_VoxelDebugLine = line;
-		m_VoxelSecondBounce = boundce;
-		m_VoxelUpdateFrame = frame;
+		m_Voxel_Info._aoAlpha = aoAlpha;
+		m_Voxel_Info._aoFalloff = aoFalloff;
+		m_Voxel_Info._inDirectFactor = inDirectFactor;
+		m_Voxel_Info._mode = mode;
 	}
 
 	void Voxel::CreateVoxelResource()
@@ -238,7 +252,7 @@ namespace Graphics
 
 		m_VoxelData = m_ResourceManager->CreateBuffer(TEXT("VoxelData"), _voxelDataDesc);
 
-		UpdateVoxelInfo({ 0, 0, 0 }, 4, 2, 0.75f, 20.0f);
+		SetVoxelSetting(false, false, false, false, 1, 0.1, 2, 0.75f, 20.f, 0.01, 725.f, 1.f, 0);
 
 		m_VoxelMipLevel = m_ResourceManager->GetBuffer(TEXT("Size16"));
 
@@ -266,6 +280,31 @@ namespace Graphics
 		m_AnisotropicVoxelTextures.push_back(m_ResourceManager->CreateTexture(TEXT("Anisotropic VoxelTexture +Y"), _textureDesc));
 		m_AnisotropicVoxelTextures.push_back(m_ResourceManager->CreateTexture(TEXT("Anisotropic VoxelTexture -Z"), _textureDesc));
 		m_AnisotropicVoxelTextures.push_back(m_ResourceManager->CreateTexture(TEXT("Anisotropic VoxelTexture +Z"), _textureDesc));
+	
+		ResourceViewDesc _rvDesc;
+		_rvDesc._bindFlags = BindFlags::UnorderedAccess;
+
+		_rvDesc._resources.push_back(m_AnisotropicVoxelTextures[0]);
+		_rvDesc._resources.push_back(m_AnisotropicVoxelTextures[1]);
+		_rvDesc._resources.push_back(m_AnisotropicVoxelTextures[2]);
+		_rvDesc._resources.push_back(m_AnisotropicVoxelTextures[3]);
+		_rvDesc._resources.push_back(m_AnisotropicVoxelTextures[4]);
+		_rvDesc._resources.push_back(m_AnisotropicVoxelTextures[5]);
+
+		_rvDesc._texSubresources.resize(6);
+		for (uint32 i = 0; i < 6; i++)
+		{
+			_rvDesc._texSubresources[0] = { 0, i };
+			_rvDesc._texSubresources[1] = { 0, i };
+			_rvDesc._texSubresources[2] = { 0, i };
+			_rvDesc._texSubresources[3] = { 0, i };
+			_rvDesc._texSubresources[4] = { 0, i };
+			_rvDesc._texSubresources[5] = { 0, i };
+
+			tstring _uuid = TEXT("Anisotropic VoxelTexture Mip" + std::to_wstring(i));
+
+			m_MipResourceViews.push_back(m_ResourceManager->CreateResourceView(_uuid, _rvDesc));
+		}
 	}
 
 	void Voxel::CreateVoxelizePass()
@@ -654,18 +693,18 @@ namespace Graphics
 
 #pragma region Anisotropic Voxel Mip Generate Pass
 
-		ShaderDesc _voxelAnisoMip;
+		ShaderDesc _voxelAnisoMipDesc;
 		{
-			_voxelAnisoDesc._shaderType = ShaderType::Compute;
-			_voxelAnisoDesc._sourceType = ShaderSourceType::HLSL;
-			_voxelAnisoDesc._filePath = TEXT("Asset\\Shader\\CS_AnisoVoxelMip.hlsl");
-			_voxelAnisoDesc._sourceSize = 0;
-			_voxelAnisoDesc._entryPoint = "main";
-			_voxelAnisoDesc._profile = "cs_5_0";
+			_voxelAnisoMipDesc._shaderType = ShaderType::Compute;
+			_voxelAnisoMipDesc._sourceType = ShaderSourceType::HLSL;
+			_voxelAnisoMipDesc._filePath = TEXT("Asset\\Shader\\CS_AnisoVoxelMip.hlsl");
+			_voxelAnisoMipDesc._sourceSize = 0;
+			_voxelAnisoMipDesc._entryPoint = "main";
+			_voxelAnisoMipDesc._profile = "cs_5_0";
 		}
 
 		PipelineLayoutDesc _voxelAnisoMipLayoutDesc;
-		{
+		/*{
 			BindingDescriptor _bindDesc
 			{
 				ResourceType::Texture, BindFlags::UnorderedAccess, StageFlags::CS, 0
@@ -690,13 +729,13 @@ namespace Graphics
 			};
 			_voxelAnisoMipLayoutDesc._bindings.push_back(_bindDesc);
 			_voxelAnisoMipLayoutDesc._resources.push_back(m_VoxelMipLevel);
-		}
+		}*/
 
 		m_AnisoVoxelMipLayout = m_ResourceManager->CreatePipelineLayout(TEXT("Voxel Aniso Mip"), _voxelAnisoMipLayoutDesc);
 
 		ComputePipelineDesc _voxelAnisoMipCSODesc;
 		_voxelAnisoMipCSODesc._pipelineLayout = m_AnisoVoxelMipLayout;
-		_voxelAnisoMipCSODesc._shaderProgram._computeShader = m_ResourceManager->CreateShader(TEXT("CS_AnisoVoxelMip"), _voxelAnisoMip);
+		_voxelAnisoMipCSODesc._shaderProgram._computeShader = m_ResourceManager->CreateShader(TEXT("CS_AnisoVoxelMip"), _voxelAnisoMipDesc);
 
 		m_AnisoVoxelMipCSO = m_ResourceManager->CreatePipelineState(TEXT("Voxel Aniso Mip"), _voxelAnisoMipCSODesc);
 
@@ -871,6 +910,24 @@ namespace Graphics
 		{
 			BindingDescriptor _bindDesc
 			{
+				ResourceType::Texture, BindFlags::ShaderResource, StageFlags::PS, 5, 6
+			};
+
+			_pipelineLayoutDesc._bindings.push_back(_bindDesc);
+			_pipelineLayoutDesc._resources.push_back(m_AnisotropicVoxelTextures.data());
+		}
+		{
+			BindingDescriptor _bindDesc
+			{
+				ResourceType::Texture, BindFlags::ShaderResource, StageFlags::PS, 11
+			};
+
+			_pipelineLayoutDesc._bindings.push_back(_bindDesc);
+			_pipelineLayoutDesc._resources.push_back(m_ResourceManager->GetTexture(TEXT("Deferred_Light")));
+		}
+		{
+			BindingDescriptor _bindDesc
+			{
 				ResourceType::Sampler, BindFlags::VideoEncoder, StageFlags::PS, 0
 			};
 
@@ -913,6 +970,8 @@ namespace Graphics
 		_pipelineStateDesc._rasterizerDesc._fillMode = FillMode::Solid;
 		_pipelineStateDesc._rasterizerDesc._depthClampEnabled = false;
 		_pipelineStateDesc._rasterizerDesc._multiSampleEnabled = true;
+
+		_pipelineStateDesc._hasBS = false;
 
 		_pipelineStateDesc._blendDesc._renderTarget[0]._blendEnable = true;
 		_pipelineStateDesc._blendDesc._renderTarget[0]._srcBlend = Blend::One;
