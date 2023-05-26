@@ -40,6 +40,8 @@ namespace Graphics
 		float _aoFalloff;
 		float _inDirectFactor;
 		uint32 _mode;
+
+		float _temp;
 	};
 
 	class Voxel
@@ -61,7 +63,7 @@ namespace Graphics
 
 		void SetVoxelSetting(bool voxelgi, bool debug, bool line, bool boundce,
 			uint32 frame, float voxelSize, uint32 coneNum, float rayStepDis,
-			float maxDis, float aoAlpha, float aoFalloff, float inDirectFactor, uint32 mode);
+			float maxDis, float aoAlpha, float aoFalloff, float inDirectFactor, uint32 mode, float temp = 1.f);
 
 	private:
 		void Culling();

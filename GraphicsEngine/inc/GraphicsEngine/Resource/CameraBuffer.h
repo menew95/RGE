@@ -34,6 +34,7 @@ namespace Graphics
 		inline Math::Matrix GetView() { return m_View; }
 		inline Math::Matrix GetProj() { return m_Proj; }
 
+		void GetCascadedInfo();
 	public:
 		Math::Vector3 m_CameraPosition = { 0, 0, 0 };
 		Math::Vector3 m_Right = { 1, 0, 0 };

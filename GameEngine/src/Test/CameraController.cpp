@@ -90,7 +90,10 @@ void CameraController::Update()
 			_forwardDir.x, _forwardDir.y, _forwardDir.z, 0.f,
 			_nextPosition.x, _nextPosition.y, _nextPosition.z, 1.f
 			});
+
+		//Log::Engine_Info("Cam Position : ({0}, {1}, {2])", (double)_nextPosition.x, (double)_nextPosition.y, (double)_nextPosition.z);
 	}
+
 
 	if (Input::GetKeyDown(EVirtualKey::Key_1))
 	{
@@ -160,6 +163,40 @@ void CameraController::Update()
 		Graphics::RenderingSetting _setting = GraphicsSystem::GetInstance()->GetRenderingSetting();
 
 		_setting._mode = 4;
+
+		GraphicsSystem::GetInstance()->SetRenderingSetting(_setting);
+	}
+
+	if (Input::GetKeyDown(EVirtualKey::OEM_Plus))
+	{
+		Graphics::RenderingSetting _setting = GraphicsSystem::GetInstance()->GetRenderingSetting();
+
+		_setting._exposure += 0.1f;
+
+		GraphicsSystem::GetInstance()->SetRenderingSetting(_setting);
+	}
+	else if (Input::GetKeyDown(EVirtualKey::OEM_Minus))
+	{
+		Graphics::RenderingSetting _setting = GraphicsSystem::GetInstance()->GetRenderingSetting();
+
+		_setting._exposure -= 0.1f;
+
+		GraphicsSystem::GetInstance()->SetRenderingSetting(_setting);
+	}
+
+	if (Input::GetKeyPress(EVirtualKey::Key_Z))
+	{
+		Graphics::RenderingSetting _setting = GraphicsSystem::GetInstance()->GetRenderingSetting();
+
+		_setting._temp = std::clamp(_setting._temp + 0.01f, 0.01f, 1.f);
+
+		GraphicsSystem::GetInstance()->SetRenderingSetting(_setting);
+	}
+	else if (Input::GetKeyPress(EVirtualKey::Key_X))
+	{
+		Graphics::RenderingSetting _setting = GraphicsSystem::GetInstance()->GetRenderingSetting();
+
+		_setting._temp = std::clamp(_setting._temp - 0.01f, 0.01f, 1.f);
 
 		GraphicsSystem::GetInstance()->SetRenderingSetting(_setting);
 	}

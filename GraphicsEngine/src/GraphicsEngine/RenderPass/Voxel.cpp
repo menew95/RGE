@@ -101,11 +101,11 @@ namespace Graphics
 		m_CommandBuffer->SetResource(*m_Voxel, 0, BindFlags::UnorderedAccess, StageFlags::CS);
 		m_CommandBuffer->SetResource(*m_VoxelTexture, 1, BindFlags::UnorderedAccess, StageFlags::CS);
 
-		m_CommandBuffer->Dispatch(VOXEL_RESOLUTION * VOXEL_RESOLUTION * VOXEL_RESOLUTION / 256, 1, 1);
+		m_CommandBuffer->Dispatch(VOXEL_RESOLUTION / 8, VOXEL_RESOLUTION / 8, VOXEL_RESOLUTION / 8);
 
 		m_CommandBuffer->ResetResourceSlots(ResourceType::Texture, 0, 2, BindFlags::UnorderedAccess, StageFlags::CS);
 
-		m_CommandBuffer->GenerateMips(*m_VoxelTexture);
+		//m_CommandBuffer->GenerateMips(*m_VoxelTexture);
 
 		m_CommandBuffer->EndEvent();
 
@@ -189,7 +189,7 @@ namespace Graphics
 
 		m_CommandBuffer->DrawIndexed(m_ScreenMesh->GetSubMesh(0).m_IndexCount, 0, 0);
 
-		m_CommandBuffer->ResetResourceSlots(ResourceType::Texture, 0, 12, BindFlags::ShaderResource, StageFlags::PS);
+		m_CommandBuffer->ResetResourceSlots(ResourceType::Texture, 0, 13, BindFlags::ShaderResource, StageFlags::PS);
 
 		m_CommandBuffer->EndEvent();
 	}
@@ -206,7 +206,7 @@ namespace Graphics
 	}
 
 	void Voxel::SetVoxelSetting(bool voxelgi, bool debug, bool line, bool boundce, uint32 frame
-		, float voxelSize, uint32 coneNum, float rayStepDis, float maxDis, float aoAlpha, float aoFalloff, float inDirectFactor, uint32 mode)
+		, float voxelSize, uint32 coneNum, float rayStepDis, float maxDis, float aoAlpha, float aoFalloff, float inDirectFactor, uint32 mode, float temp)
 	{
 		m_VoxelGI = voxelgi;
 		m_VoxelDebug = debug;
@@ -230,6 +230,7 @@ namespace Graphics
 		m_Voxel_Info._aoFalloff = aoFalloff;
 		m_Voxel_Info._inDirectFactor = inDirectFactor;
 		m_Voxel_Info._mode = mode;
+		m_Voxel_Info._temp = temp;
 	}
 
 	void Voxel::CreateVoxelResource()
@@ -261,7 +262,7 @@ namespace Graphics
 		_textureDesc._textureType = TextureType::Texture3D;
 		_textureDesc._extend = { VOXEL_RESOLUTION, VOXEL_RESOLUTION , VOXEL_RESOLUTION };
 		_textureDesc._miscFlags = MiscFlags::GenerateMips;
-		_textureDesc._mipLevels = 7;
+		_textureDesc._mipLevels = 1;
 		_textureDesc._bindFlags = BindFlags::UnorderedAccess | BindFlags::ShaderResource | BindFlags::RenderTarget;
 		_textureDesc._format = Format::R16G16B16A16_FLOAT;
 
@@ -928,6 +929,15 @@ namespace Graphics
 		{
 			BindingDescriptor _bindDesc
 			{
+				ResourceType::Texture, BindFlags::ShaderResource, StageFlags::PS, 12
+			};
+
+			_pipelineLayoutDesc._bindings.push_back(_bindDesc);
+			_pipelineLayoutDesc._resources.push_back(m_ResourceManager->GetTexture(TEXT("IntegrateBRDF")));
+		}
+		{
+			BindingDescriptor _bindDesc
+			{
 				ResourceType::Sampler, BindFlags::VideoEncoder, StageFlags::PS, 0
 			};
 
@@ -1058,6 +1068,8 @@ namespace Graphics
 
 	void Voxel::RegistRenderObject(RenderObject& renderObject)
 	{
+		if (!m_VoxelGI)
+			return;
 		m_RenderObjectList.push_back(renderObject);
 	}
 

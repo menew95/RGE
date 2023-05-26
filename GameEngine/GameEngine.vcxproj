@@ -242,7 +242,9 @@ xcopy /E /S /Y /R "$(OutputPath)*.pdb" "$(OutputPath)..\Client\*"</Command>
     <ClInclude Include="src\GameEngine\GameEnginePCH.h" />
     <ClInclude Include="inc\GameEngine\Core\Component\Transform.h" />
     <ClInclude Include="src\Test\CameraController.h" />
+    <ClInclude Include="src\Test\CubeMove.h" />
     <ClInclude Include="src\Test\TestScene.h" />
+    <ClInclude Include="src\Test\VoxelTest.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\GameEngine\Core\Application.cpp" />
@@ -289,7 +291,9 @@ xcopy /E /S /Y /R "$(OutputPath)*.pdb" "$(OutputPath)..\Client\*"</Command>
     <ClCompile Include="src\GameEngine\Core\Component\Transform.cpp" />
     <ClCompile Include="src\GameEngine\Window.cpp" />
     <ClCompile Include="src\Test\CameraController.cpp" />
+    <ClCompile Include="src\Test\CubeMove.cpp" />
     <ClCompile Include="src\Test\TestScene.cpp" />
+    <ClCompile Include="src\Test\VoxelTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.vcxproj">

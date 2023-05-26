@@ -18,6 +18,7 @@ namespace GameEngine
 				RegistComponent(i++,TEXT("Animation"));
 				RegistComponent(i++,TEXT("Light"));
 				RegistComponent(i++,TEXT("CameraController"));
+				RegistComponent(i++,TEXT("CubeMove"));
 			}, {})
 
 		void ComponentSystem::RegistComponent(uint32 order, const tstring& componentName, bool render)

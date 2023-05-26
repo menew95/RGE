@@ -147,14 +147,6 @@ namespace Graphics
 			m_ShadowOrthoProjInfo[i]._far = maxZ;
 			m_ShadowOrthoProjInfo[i]._near = minZ;
 
-			auto _ortho = Math::Matrix::CreateOrthographicOffCenter(
-				m_ShadowOrthoProjInfo[i]._left,
-				m_ShadowOrthoProjInfo[i]._right,
-				m_ShadowOrthoProjInfo[i]._bottum,
-				m_ShadowOrthoProjInfo[i]._top,
-				m_ShadowOrthoProjInfo[i]._near,
-				m_ShadowOrthoProjInfo[i]._far
-			);
 			cascadedLight._lightTransform[i] = LightM * Math::Matrix::CreateOrthographicOffCenter(
 				m_ShadowOrthoProjInfo[i]._left,
 				m_ShadowOrthoProjInfo[i]._right,

@@ -31,16 +31,19 @@ namespace Graphics
 		bool	_voxelDebugLine = false;
 		bool	_voxelSecondBounce = false;
 		uint32	_voxelUpdateFrame = 1;
-		float	_voxelSize = 0.1f;
-		uint32	_voxelNumCones = 2;
-		float	_voxelRayStepDistance = 0.75f;
+		float	_voxelSize = 0.075f;
+		uint32	_voxelNumCones = 6;
+		float	_voxelRayStepDistance = 0.5f;
 		float	_voxelMaxDistance = 20.0f;
 		uint32	_voxelMips = 7;
 
 		float	_aoAlpha = 0.01f;
-		float	_aoFalloff = 725.f;
+		//float	_aoFalloff = 725.f;
+		float	_aoFalloff = 7250.f;
 		float	_inDirectFactor = 1.0f;
 		uint32	_mode = 0;
+		
+		float	_temp = 1;
 	};
 
 	struct GraphicsEngineDesc

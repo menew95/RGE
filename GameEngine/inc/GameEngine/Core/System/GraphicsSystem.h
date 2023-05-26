@@ -60,6 +60,8 @@ namespace GameEngine
 		protected:
 			void LoadGraphicsEngineDll();
 			void FreeGraphicsEngineDll();
+			
+			bool m_IsSettingChange = false;
 
 			Graphics::RenderingSetting m_RenderingSetting;
 			//std::vector<std::pair<tstring, std::shared_ptr<Graphics::RenderPass>>> m_RenderPassList;

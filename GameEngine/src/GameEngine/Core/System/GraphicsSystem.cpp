@@ -30,6 +30,12 @@ namespace GameEngine
 		
 		void GraphicsSystem::Render()
 		{
+			if (m_IsSettingChange)
+			{
+				m_GraphicsEngine->SetRenderingSetting(m_RenderingSetting);
+				m_IsSettingChange = false;
+			}
+
 			m_GraphicsEngine->Excute();
 			
 			/*for (auto _renderPass : m_RenderPassList)
@@ -129,7 +135,7 @@ namespace GameEngine
 		{
 			m_RenderingSetting = setting;
 
-			m_GraphicsEngine->SetRenderingSetting(setting);
+			m_IsSettingChange = true;
 		}
 
 		void GraphicsSystem::LoadGraphicsEngineDll()

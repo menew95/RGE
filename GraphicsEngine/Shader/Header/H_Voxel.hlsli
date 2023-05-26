@@ -15,6 +15,8 @@ struct VoxelRadiance
 	float _aoFalloff;
 	float _inDirectFactor;
 	uint _mode;
+
+	float temp;
 };
 
 struct VoxelType

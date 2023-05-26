@@ -13,12 +13,17 @@
 #include "GameEngine/Core/Resource/Prefab.h"
 
 #include "Test/CameraController.h"
+#include "Test/CubeMove.h"
 
 TestScene::TestScene()
 {
 	auto camera = FindObject(TEXT("Camera"));
 
 	camera->AddComponent<CameraController>();
+
+	Vector3 _move = { 0, 0, -2 };
+
+	camera->GetTransform()->Translate(_move);
 
 	{
 		std::shared_ptr<GameObject> _wooden_CrateObject_Base = Resources::GetInstance()->GetResource<Prefab>(TEXT("Wooden_Crate"))->GetRootGameObject();
@@ -73,7 +78,7 @@ TestScene::TestScene()
 
 		AddGameObject(_dirLight);
 	}
-
+#pragma region
 	//{
 	//	std::shared_ptr<GameObject> _pointLight = GameObject::Instantiate();
 
@@ -137,6 +142,7 @@ TestScene::TestScene()
 
 	//	AddGameObject(_spotLight);
 	//}
+#pragma endregion TestLight
 
 	{
 		std::shared_ptr<GameObject> _spotLight = GameObject::Instantiate();
@@ -159,5 +165,51 @@ TestScene::TestScene()
 		_lightCom->SetLightColor(Math::Color::White);
 
 		AddGameObject(_spotLight);
+	}
+
+	{
+		std::shared_ptr<GameObject> _colorCube = GameObject::Instantiate();
+
+		AddGameObjects(_colorCube);
+
+		Vector3 _move = { 0.2f, 0.2f, 0.2f };
+
+		_colorCube->GetTransform()->Scale(_move);
+
+		auto _filter = _colorCube->AddComponent<MeshFilter>();
+		_colorCube->AddComponent<CubeMove>();
+		auto _cube = Resources::GetInstance()->GetResource<Mesh>(TEXT("Box"));
+
+		_filter->SetSharedMesh(_cube);
+
+		auto _ren = _colorCube->AddComponent<MeshRenderer>();
+
+		auto _red = Resources::GetInstance()->GetResource<Material>(TEXT("Red"));
+
+		_ren->AddMaterial(_red);
+	}
+
+	{
+		std::shared_ptr<GameObject> _colorCube = GameObject::Instantiate();
+
+		AddGameObjects(_colorCube);
+
+		Vector3 _move2 = { 0, -1, 0 };
+		Vector3 _scale = { 0.2f, 0.2f, 0.2f };
+
+		_colorCube->GetTransform()->Translate(_move2);
+		_colorCube->GetTransform()->Scale(_scale);
+
+		auto _filter = _colorCube->AddComponent<MeshFilter>();
+		_colorCube->AddComponent<CubeMove>();
+		auto _cube = Resources::GetInstance()->GetResource<Mesh>(TEXT("Box"));
+
+		_filter->SetSharedMesh(_cube);
+
+		auto _ren = _colorCube->AddComponent<MeshRenderer>();
+
+		auto _red = Resources::GetInstance()->GetResource<Material>(TEXT("Green"));
+
+		_ren->AddMaterial(_red);
 	}
 }

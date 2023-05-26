@@ -115,11 +115,31 @@ namespace GameEngine
 				m_ComponentSystem->RenderComponent();
 			}
 
+
+			auto _gameTick = _sysTimer.Lap().AsMillis();
+
 			_sysTimer.Lap();
 			{
 				m_GraphicsSystem->Render();
 			}
 
+
+
+			auto _renderTick = _sysTimer.Lap().AsMillis();
+
+			m_dTickTime += _gameTick + _renderTick;
+			m_TickCnt++;
+
+			if (m_dTickTime > 1000)
+			{
+				auto _avgTick = m_dTickTime / m_TickCnt;
+
+				Log::Engine_Info("Total AvgTick : ({0} ms) Game Tick : ({1} ms) Graphics Tick : ({2} ms)", _avgTick, _gameTick, _renderTick);
+
+				// init
+				m_dTickTime -= 1000;
+				m_TickCnt = 0;
+			}
 
 			return _ret;
 		}

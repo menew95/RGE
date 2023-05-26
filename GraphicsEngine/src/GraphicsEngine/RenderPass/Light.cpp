@@ -173,7 +173,6 @@ namespace Graphics
 			m_PointShadow_Pass->UpdatePerFrame(m_CommandBuffer, &m_Lighting._pointLight[_idx], sizeof(PointLight));
 			m_PointShadow_Skinned_Pass->UpdatePerFrame(m_CommandBuffer, &m_Lighting._pointLight[_idx], sizeof(PointLight));
 
-
 			{
 				m_PointShadow_Pass->BeginExcute(m_CommandBuffer, nullptr);
 
@@ -328,7 +327,7 @@ namespace Graphics
 
 		// BoundingFrustum과, 렌더 오브젝트의 BoundingOrientedBox가 충돌 하면 랜더 패스에 그려야하는 오브젝트로 등록
 
-		Math::Matrix _spotProj = Math::Matrix::CreatePerspectiveFieldOfView(spotLight._spotAngle, 1.0f, 0.1f, spotLight._range);
+		Math::Matrix _spotProj = Math::Matrix::CreatePerspectiveFieldOfView(spotLight._spotAngle, 1.0f, 0.01f, spotLight._range);
 		
 		Math::Matrix _spotWorld = Math::Matrix::CreateWorld(spotLight._position, spotLight._direction, Math::Vector3::Up);
 
@@ -384,14 +383,52 @@ namespace Graphics
 		// 직사광의 경우 거의 모든 오브젝트가 그려져야 함으로 컬링 처리가 필요한가?
 		// 그냥 직사광을 씬당 하나로 제한하는 것이 맞지 않나?
 
+		BoundingBox _cascadeOBB[4];
+
 		for (size_t _idx = 0; _idx < m_StaticRenderObjectList.size(); _idx++)
 		{
-			m_CascadedShadow_Pass->RegistRenderObject(&m_StaticRenderObjectList[_idx]);
+			//auto _min = m_StaticRenderObjectList[_idx].m_MeshBuffer->GetBoundingBoxMin();
+			//auto _max = m_StaticRenderObjectList[_idx].m_MeshBuffer->GetBoundingBoxMax();
+			//
+			//auto _center = (_min + _max) * 0.5f;
+			//auto _extents = _max - _center;
+			//
+			//BoundingOrientedBox _boundingOrientedBox;
+			//_boundingOrientedBox.Center = _center;
+			//_boundingOrientedBox.Extents = _extents;
+			//
+			//_boundingOrientedBox.Transform(_boundingOrientedBox, m_StaticRenderObjectList[_idx].m_World);
+			//
+			//if (_cascadeOBB[0].Intersects(_boundingOrientedBox) ||
+			//	_cascadeOBB[1].Intersects(_boundingOrientedBox) || 
+			//	_cascadeOBB[2].Intersects(_boundingOrientedBox) || 
+			//	_cascadeOBB[3].Intersects(_boundingOrientedBox))
+			//{
+				m_CascadedShadow_Pass->RegistRenderObject(&m_StaticRenderObjectList[_idx]);
+			//}
 		}
 
 		for (size_t _idx = 0; _idx < m_SkinnedRenderObjectList.size(); _idx++)
 		{
-			m_CascadedShadow_Skinned_Pass->RegistRenderObject(&m_SkinnedRenderObjectList[_idx]);
+			//auto _min = m_SkinnedRenderObjectList[_idx].m_MeshBuffer->GetBoundingBoxMin();
+			//auto _max = m_SkinnedRenderObjectList[_idx].m_MeshBuffer->GetBoundingBoxMax();
+			//
+			//auto _center = (_min + _max) * 0.5f;
+			//auto _extents = _max - _center;
+			//
+			//BoundingOrientedBox _boundingOrientedBox;
+			//_boundingOrientedBox.Center = _center;
+			//_boundingOrientedBox.Extents = _extents;
+			//
+			//_boundingOrientedBox.Transform(_boundingOrientedBox, m_SkinnedRenderObjectList[_idx].m_World);
+			//
+			//if (_cascadeOBB[0].Intersects(_boundingOrientedBox) ||
+			//	_cascadeOBB[1].Intersects(_boundingOrientedBox) ||
+			//	_cascadeOBB[2].Intersects(_boundingOrientedBox) ||
+			//	_cascadeOBB[3].Intersects(_boundingOrientedBox))
+			//{
+				m_CascadedShadow_Skinned_Pass->RegistRenderObject(&m_SkinnedRenderObjectList[_idx]);
+			//}
 		}
 	}
 

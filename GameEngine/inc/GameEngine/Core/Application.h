@@ -38,6 +38,9 @@ namespace GameEngine
 
 			class Time* m_GameTime;
 			class Input* m_Input;
+
+			double m_dTickTime = 0;
+			double m_TickCnt = 0;
 		};
 	}
 }

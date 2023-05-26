@@ -54,6 +54,10 @@ namespace Graphics
 			, _datasize(size)
 		{}
 
+		//UpdateResourceData(UpdateResourceData& r) = default;
+
+		//UpdateResourceData(UpdateResourceData&& l) = default;
+
 		eUpdateTime _updateTime = eUpdateTime::PerMaterial;
 
 		uint32 _index = 0;
@@ -63,6 +67,15 @@ namespace Graphics
 		void* _dataSrc = nullptr;
 
 		uint32 _datasize = 0;
+
+		bool operator=(UpdateResourceData& r)
+		{
+			return (_updateTime == r._updateTime &&
+				_index == r._index &&
+				_resourceType == r._resourceType &&
+				_dataSrc == r._dataSrc &&
+				_datasize == r._datasize);
+		}
 	};
 
 	/*

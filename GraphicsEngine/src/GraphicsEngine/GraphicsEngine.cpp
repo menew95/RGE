@@ -453,7 +453,9 @@ namespace Graphics
 			m_RenderingSetting._aoAlpha,
 			m_RenderingSetting._aoFalloff,
 			m_RenderingSetting._inDirectFactor,
-			m_RenderingSetting._mode);
+			m_RenderingSetting._mode,
+			m_RenderingSetting._temp
+			);
 	}
 
 	void GraphicsEngine::LoadGraphicsTable()

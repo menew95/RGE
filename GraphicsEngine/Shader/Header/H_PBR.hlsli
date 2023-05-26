@@ -2,6 +2,7 @@
 #define H_PBR
 
 static const float PI = 3.14159265f;
+static const float HALF_PI = 3.14159265f * 0.5f;
 static const float EPSILON = 1e-6f;
 
 float Pow5(in float value)

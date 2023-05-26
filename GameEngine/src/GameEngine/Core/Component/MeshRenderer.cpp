@@ -85,7 +85,7 @@ namespace GameEngine
 							_perObjectResource._datasize = sizeof(Math::Matrix) * 2
 						};
 
-						_renderObject.m_UpdateResourcePerObjects.push_back(_perObjectResource);
+						_renderObject.m_UpdateResourcePerObjects.emplace_back(_perObjectResource);
 
 						uint32 _idx = 0;
 
@@ -99,7 +99,7 @@ namespace GameEngine
 
 							_data._dataSrc = reinterpret_cast<void*>(m_Materials[i]->GetAlbedoTexture());
 
-							_renderObject.m_UpdateResources.push_back(_data);
+							_renderObject.m_UpdateResources.emplace_back(_data);
 
 							_idx++;
 						}
@@ -114,7 +114,7 @@ namespace GameEngine
 
 							_data._dataSrc = reinterpret_cast<void*>(m_Materials[i]->GetNormalTexture());
 
-							_renderObject.m_UpdateResources.push_back(_data);
+							_renderObject.m_UpdateResources.emplace_back(_data);
 
 							_idx++;
 						}
@@ -129,7 +129,7 @@ namespace GameEngine
 
 							_data._dataSrc = reinterpret_cast<void*>(m_Materials[i]->GetMRATexture());
 
-							_renderObject.m_UpdateResources.push_back(_data);
+							_renderObject.m_UpdateResources.emplace_back(_data);
 
 							_idx++;
 						}
@@ -156,7 +156,7 @@ namespace GameEngine
 							_shadow.m_MaterialBuffer = _materialBuffer;
 
 							//_perObjectResource._index = 0;
-							_shadow.m_UpdateResourcePerObjects.push_back(_perObjectResource);
+							_shadow.m_UpdateResourcePerObjects.emplace_back(_perObjectResource);
 
 							GraphicsSystem::GetInstance()->RegistShadowObject(0, _shadow);
 						}

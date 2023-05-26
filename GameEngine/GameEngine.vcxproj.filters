@@ -126,6 +126,12 @@
     <ClInclude Include="inc\GameEngine\Core\MetaDataInfo.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="src\Test\VoxelTest.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Test\CubeMove.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\GameEngine\Game_dllmain.cpp">
@@ -231,6 +237,12 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\GameEngine\Utility\Serialize\Serialization.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Test\VoxelTest.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Test\CubeMove.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

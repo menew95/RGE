@@ -200,11 +200,6 @@ void main(PSInput input)
         _lightColor += CalcSpotLight(_spotLight[_spotIdx], _roughness, _metallic, _specularColor, _diffuseColor, N, V, _worldPos.xyz) * _shadowFactor;
     }
 
-    // Indirect light 만 계산하도록 변경
-    //float3 _ambient = CalcIBL(V, N, _albedo.rgb, _specularColor, _roughness, _metallic, _ao);
-
-   // _finColor = _ambient + _lightColor;
-
     // Gamma
     _finColor = pow(_lightColor, 1 / 2.2);
 

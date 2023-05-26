@@ -104,11 +104,39 @@ namespace GameEngine
 
 				_newMesh->SetName(TEXT("Box"));
 
+				_newMesh->SetBoundingBoxMin(Vector3(-1, -1, -1));
+				_newMesh->SetBoundingBoxMax(Vector3(1, 1, 1));
+
 				GraphicsSystem::GetInstance()->CreateMeshBuffer(_newMesh);
 
 				m_MeshMap.insert(std::make_pair(TEXT("Box"), _newMesh));
 			}
-			
+			{
+				std::shared_ptr<Material> _diffuseColorMat = std::make_shared<Material>();
+
+				_diffuseColorMat->SetName(TEXT("Red"));
+
+				GraphicsSystem::GetInstance()->CreateMaterialBuffer(_diffuseColorMat);
+
+				_diffuseColorMat->SetAlbedoColor(Color::Red);
+				_diffuseColorMat->SetRoughness(1.0f);
+				_diffuseColorMat->SetBuffer(GraphicsSystem::GetInstance()->GetResource(TEXT("PerMaterial"), 1));
+
+				m_MaterialMap.insert(std::make_pair(TEXT("Red"), _diffuseColorMat));
+			}
+			{
+				std::shared_ptr<Material> _diffuseColorMat = std::make_shared<Material>();
+
+				_diffuseColorMat->SetName(TEXT("Green"));
+
+				GraphicsSystem::GetInstance()->CreateMaterialBuffer(_diffuseColorMat);
+
+				_diffuseColorMat->SetAlbedoColor(Color::Green);
+				_diffuseColorMat->SetRoughness(1.0f);
+				_diffuseColorMat->SetBuffer(GraphicsSystem::GetInstance()->GetResource(TEXT("PerMaterial"), 1));
+
+				m_MaterialMap.insert(std::make_pair(TEXT("Green"), _diffuseColorMat));
+			}
 			//LoadFBX(TEXT("Asset/FBX/Joy.fbx"));
 			//LoadFBX(TEXT("Asset/FBX/Wooden_Crate.fbx"));
 			//LoadFBX(TEXT("Asset/FBX/Wooden_Crate_Normal_MRA.fbx"));
@@ -150,14 +178,6 @@ namespace GameEngine
 				std::shared_ptr<Material> _newMaterial = std::make_shared<Material>();
 
 				_newMaterial->SetName(_pair.first);
-
-
-				//_pair.second._albedoMapTexture;
-				//_pair.second._normalMapTexture;
-				//_pair.second._metalicRoughnessMapTexture;
-				_pair.second._emissiveMapTexture;
-				_pair.second._ambientMapTexture;
-				_pair.second._specularMapTexture;
 
 				GraphicsSystem::GetInstance()->CreateMaterialBuffer(_newMaterial);
 
