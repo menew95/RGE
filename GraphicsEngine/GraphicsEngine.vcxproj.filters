@@ -175,6 +175,7 @@
     <None Include="Shader\Header\H_Math.hlsli" />
     <None Include="Shader\Header\H_Voxel.hlsli" />
     <None Include="Shader\Header\H_Util.hlsli" />
+    <None Include="Shader\Header\H_Texture.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\VS_Mesh.hlsl" />

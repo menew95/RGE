@@ -35,6 +35,7 @@ void main(triangle GSInput input[3] : SV_POSITION, inout TriangleStream<GSOutput
     uint _maxi = _faceNormal[1] > _faceNormal[0] ? 1 : 0;
     _maxi = _faceNormal[2] > _faceNormal[_maxi] ? 2 : _maxi;
 
+    [unroll(3)]
     for (uint i = 0; i < 3; i++)
     {
         GSOutput _output;
@@ -74,14 +75,5 @@ void main(triangle GSInput input[3] : SV_POSITION, inout TriangleStream<GSOutput
 #endif
 
         outputStream.Append(_output);
-
-        // Conservative Rasterization setup:
-        /*float2 side0N = normalize(output[1].pos.xy - output[0].pos.xy);
-        float2 side1N = normalize(output[2].pos.xy - output[1].pos.xy);
-        float2 side2N = normalize(output[0].pos.xy - output[2].pos.xy);
-        const float texelSize = 1.0f / g_xWorld_VoxelRadianceDataRes;
-        output[0].pos.xy += normalize(-side0N + side2N) * texelSize;
-        output[1].pos.xy += normalize(side0N - side1N) * texelSize;
-        output[2].pos.xy += normalize(side1N - side2N) * texelSize;*/
     }
 }

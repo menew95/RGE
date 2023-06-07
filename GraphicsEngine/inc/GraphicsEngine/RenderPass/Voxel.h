@@ -169,7 +169,7 @@ namespace Graphics
 
 #pragma endregion
 
-		uint32 VOXEL_RESOLUTION = 128;
+		uint32 VOXEL_RESOLUTION = 256;
 
 		VoxelInfoCB m_Voxel_Info;
 	};

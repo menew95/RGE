@@ -101,7 +101,7 @@ namespace Graphics
 		m_CommandBuffer->SetResource(*m_Voxel, 0, BindFlags::UnorderedAccess, StageFlags::CS);
 		m_CommandBuffer->SetResource(*m_VoxelTexture, 1, BindFlags::UnorderedAccess, StageFlags::CS);
 
-		m_CommandBuffer->Dispatch(VOXEL_RESOLUTION / 8, VOXEL_RESOLUTION / 8, VOXEL_RESOLUTION / 8);
+		m_CommandBuffer->Dispatch(VOXEL_RESOLUTION * VOXEL_RESOLUTION * VOXEL_RESOLUTION / 64 / 4, 1, 1);
 
 		m_CommandBuffer->ResetResourceSlots(ResourceType::Texture, 0, 2, BindFlags::UnorderedAccess, StageFlags::CS);
 
@@ -253,7 +253,7 @@ namespace Graphics
 
 		m_VoxelData = m_ResourceManager->CreateBuffer(TEXT("VoxelData"), _voxelDataDesc);
 
-		SetVoxelSetting(false, false, false, false, 1, 0.1, 2, 0.75f, 20.f, 0.01, 725.f, 1.f, 0);
+		SetVoxelSetting(false, false, false, false, 1, 0.1f, 2, 0.75f, 20.f, 0.01f, 725.f, 1.f, 0);
 
 		m_VoxelMipLevel = m_ResourceManager->GetBuffer(TEXT("Size16"));
 

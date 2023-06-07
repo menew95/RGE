@@ -54,10 +54,6 @@ namespace Graphics
 			, _datasize(size)
 		{}
 
-		//UpdateResourceData(UpdateResourceData& r) = default;
-
-		//UpdateResourceData(UpdateResourceData&& l) = default;
-
 		eUpdateTime _updateTime = eUpdateTime::PerMaterial;
 
 		uint32 _index = 0;
@@ -152,6 +148,7 @@ namespace Graphics
 
 		// 컬링을 하기위해
 		Math::Matrix m_World;
+		Math::Matrix m_WorldInv;
 		bool m_IsCulling = false;
 
 		uint32 m_RenderPassIdx = 0;
@@ -159,6 +156,8 @@ namespace Graphics
 		MeshBuffer* m_MeshBuffer = nullptr;
 
 		MaterialBuffer* m_MaterialBuffer = nullptr;
+
+		std::vector<MaterialBuffer*> m_MaterialBuffers;
 
 		std::vector<Graphics::Resource*> m_Resources;
 

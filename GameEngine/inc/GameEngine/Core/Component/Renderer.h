@@ -26,7 +26,7 @@ namespace GameEngine
 			inline bool GetSetShadowCasting() { return m_bIsShadowCasting; }
 
 		protected:
-			Graphics::RenderObject m_RenderObject;
+			Graphics::RenderObject* m_RenderObject;
 
 			struct PerObjectData
 			{

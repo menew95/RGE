@@ -15,7 +15,7 @@ struct VoxelRadiance
 	float _aoFalloff;
 	float _inDirectFactor;
 	uint _mode;
-
+	
 	float temp;
 };
 
@@ -23,6 +23,16 @@ struct VoxelType
 {
 	uint _colorMask;
 	uint _normalMask;
+};
+
+struct AnisoVoxel
+{
+	uint _xm;
+	uint _xp;
+	uint _ym;
+	uint _yp;
+	uint _zm;
+	uint _zp;
 };
 
 static const float g_hdr_range = 10.f;

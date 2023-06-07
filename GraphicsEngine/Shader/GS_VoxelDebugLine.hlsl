@@ -27,6 +27,7 @@ void main(point GSInput input[1], inout LineStream<GSOutput> output)
 
 		_pos *= voxel_radiance._dataRes;
 
+		[unroll(9)]
 		for (uint i = 0; i < 9; i++)
 		{
 			GSOutput _output;
@@ -46,6 +47,7 @@ void main(point GSInput input[1], inout LineStream<GSOutput> output)
 
 		output.RestartStrip();
 
+		[unroll(5)]
 		for (uint i2 = 9; i2 < 15; i2 += 2)
 		{
 			for (uint j = 0; j < 2; j++)

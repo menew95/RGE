@@ -391,6 +391,7 @@ xcopy /E /S /Y /R "$(ProjectDir)Shader\*" "$(OutputPath)..\Client\Asset\Shader\*
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </None>
+    <None Include="Shader\Header\H_Texture.hlsli" />
     <None Include="Shader\Header\H_Util.hlsli" />
     <None Include="Shader\Header\H_Voxel.hlsli" />
     <FxCompile Include="Shader\PS_VoxelGI.hlsl">
