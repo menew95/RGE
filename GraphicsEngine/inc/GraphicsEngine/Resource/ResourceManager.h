@@ -57,6 +57,10 @@ namespace Graphics
 
 		Texture* LoadTexture(uuid uuid, ImageDesc* imageDesc);
 
+		void ReleaseMeshBuffer(uuid uuid);
+		void ReleaseMaterialBuffer(uuid uuid);
+		void ReleaseCameraBuffer(uuid uuid);
+
 	private:
 		void Release();
 

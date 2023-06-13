@@ -39,7 +39,7 @@ namespace GameEngine
 
 		void Mesh::Release()
 		{
-			GraphicsSystem::GetInstance()->DeleteMeshBuffer(m_MeshBuffer);
+			GraphicsSystem::GetInstance()->ReleaseMeshBuffer(m_MeshBuffer);
 		}
 	}
 }

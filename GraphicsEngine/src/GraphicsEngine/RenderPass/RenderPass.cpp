@@ -117,18 +117,24 @@ namespace Graphics
 			{
 				auto _subMeshBuffer = m_RenderObjects[_index]->GetMeshBuffer()->GetSubMesh(_subMeshCnt);
 
-				if (m_RenderObjects[_index]->m_MaterialBuffer)
+				if (_subMeshCnt < m_RenderObjects[_index]->GetMaterialBuffersCount()
+					&& m_RenderObjects[_index]->m_MaterialBuffers[_subMeshCnt] != nullptr)
 				{
-					UpdateResourcePerMaterial(commandBuffer, m_RenderObjects[_index]);
-				}
+					m_RenderObjects[_index]->m_MaterialBuffers[_subMeshCnt]->BindResource(commandBuffer);
 
-				//UpdateResourcePerMaterial(commandBuffer, m_RenderObjects[_index]);
+					//UpdateResourcePerMaterial(commandBuffer, m_RenderObjects[_index]);
+				}
 
 				commandBuffer->SetIndexBuffer(*_subMeshBuffer.m_IndexBuffer);
 
 				commandBuffer->DrawIndexed(_subMeshBuffer.m_IndexCount, 0, 0);
 			}
 		}
+	}
+
+	void RenderPass::ExcuteMaterial(CommandBuffer* commandBuffer)
+	{
+
 	}
 
 	void RenderPass::EndExcute(CommandBuffer* commandBuffer)
@@ -150,9 +156,9 @@ namespace Graphics
 
 	void RenderPass::UpdateResourcePerMaterial(CommandBuffer* commandBuffer, RenderObject* renderObject)
 	{
-		auto& _sources = renderObject->m_MaterialBuffer->GetUpdateResourceData();
-
-		renderObject->m_MaterialBuffer->BindResource(commandBuffer);
+		//auto& _sources = renderObject->m_MaterialBuffer->GetUpdateResourceData();
+		//
+		//renderObject->m_MaterialBuffer->BindResource(commandBuffer);
 
 		//for (size_t i = 0; i < _sources.size(); i++)
 		//{

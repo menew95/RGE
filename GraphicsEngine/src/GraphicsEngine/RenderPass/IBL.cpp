@@ -32,7 +32,7 @@ namespace Graphics
 	{
 		RenderObject _renderObject;
 
-		_renderObject.m_MaterialBuffer = m_Cube_Material;
+		_renderObject.m_MaterialBuffers.emplace_back(m_Cube_Material);
 		_renderObject.m_MeshBuffer = m_Cube_Mesh;
 
 		UpdateResourceData _resourceD{ eUpdateTime::PerObject, 2, ResourceType::Buffer, &m_PerCubeMapMatrix, sizeof(PerCubeMapMatrix) };
@@ -51,7 +51,7 @@ namespace Graphics
 	{
 		RenderObject _renderObject;
 		_renderObject.m_MeshBuffer = m_Screen_Mesh;
-		_renderObject.m_MaterialBuffer = nullptr;
+		//_renderObject.m_MaterialBuffers.emplace_back(nullptr);
 
 		m_IntegrateBRDF_Pass->RegistRenderObject(&_renderObject);
 
@@ -70,7 +70,7 @@ namespace Graphics
 
 		RenderObject _renderObject;
 
-		_renderObject.m_MaterialBuffer = m_Cube_Material;
+		_renderObject.m_MaterialBuffers.emplace_back(m_Cube_Material);
 		_renderObject.m_MeshBuffer = m_Cube_Mesh;
 
 		UpdateResourceData _resourceD{ eUpdateTime::PerObject, 2, ResourceType::Buffer, &m_PerCubeMapMatrix, sizeof(PerCubeMapMatrix) };

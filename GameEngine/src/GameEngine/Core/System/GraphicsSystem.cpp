@@ -89,46 +89,29 @@ namespace GameEngine
 			return m_GraphicsEngine->GetResource(_uuid, static_cast<Graphics::ResourceType>(type));
 		}
 
-		void GraphicsSystem::DeleteMeshBuffer(Graphics::MeshBuffer* meshBuffer)
+		void GraphicsSystem::ReleaseMeshBuffer(Graphics::MeshBuffer* meshBuffer)
 		{
-			// Todo :
+
 		}
 
-		void GraphicsSystem::DeleteMaterialBuffer(Graphics::MaterialBuffer* materialBuffer)
+		void GraphicsSystem::ReleaseMaterialBuffer(Graphics::MaterialBuffer* materialBuffer)
 		{
-			// Todo :
+
 		}
 
-		void GraphicsSystem::DeleteTextureBuffer(Graphics::Texture*)
+		void GraphicsSystem::ReleaseLightBuffer(Graphics::LightBuffer* lightBuffer)
 		{
-			// Todo :
+
 		}
 
-		void GraphicsSystem::DeleteLightBuffer(Graphics::LightBuffer*)
+		Graphics::RenderObject* GraphicsSystem::CreateRenderObject()
 		{
-			// Todo :
+			return m_GraphicsEngine->CreateRenderObject();
 		}
 
-		void GraphicsSystem::RegistRenderObject(uint32 passIdx, Graphics::RenderObject& renderObject)
+		void GraphicsSystem::RemoveRenderObject(Graphics::RenderObject* renderObject)
 		{
-			renderObject.m_RenderPassIdx = passIdx;
-
-			m_GraphicsEngine->RegistRenderMesh(renderObject);
-		}
-
-		void GraphicsSystem::RegistRenderObject(Graphics::RenderObject* renderObject)
-		{
-			m_GraphicsEngine->RegistRenderObject(renderObject);
-		}
-
-		void GraphicsSystem::DeleteRenderObject(Graphics::RenderObject* renderObject)
-		{
-			m_GraphicsEngine->DeleteRenderObject(renderObject);
-		}
-
-		void GraphicsSystem::RegistShadowObject(uint32 type, Graphics::RenderObject& renderObject)
-		{
-			m_GraphicsEngine->RegistRenderShadow(type, renderObject);
+			m_GraphicsEngine->RemoveRenderObject(renderObject);
 		}
 
 		void GraphicsSystem::SetRenderingSetting(Graphics::RenderingSetting setting)

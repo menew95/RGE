@@ -15,7 +15,7 @@ namespace Graphics
 	class GRAPHICSENGINE_DLL_DECLSPEC CameraBuffer : public ResourceBuffer
 	{
 	public:
-		CameraBuffer(Graphics::RenderSystem* renderSystem);
+		CameraBuffer(Graphics::RenderSystem* renderSystem, uuid uuid);
 		~CameraBuffer() override;
 
 		void Update(Math::Vector3 pos, Math::Vector3 lookAt, Math::Vector3 right, Math::Vector3 up, float zNear, float zFar, float fov, float radio);

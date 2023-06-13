@@ -92,7 +92,7 @@ namespace Graphics
 		m_RenderTarget[1] = m_ResourceManager->CreateRenderTarget(TEXT("PostProcess RT1"), _rtDesc);
 
 		m_RenderObjects.m_MeshBuffer = m_ResourceManager->GetMeshBuffer(TEXT("Screen_Mesh"));
-		m_RenderObjects.m_MaterialBuffer = m_ResourceManager->GetMaterialBuffer(TEXT("Light"));
+		m_RenderObjects.m_MaterialBuffers.emplace_back(m_ResourceManager->GetMaterialBuffer(TEXT("Light")));
 
 		{
 			std::vector<AttachmentClear> _attachmentClears =

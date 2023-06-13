@@ -55,6 +55,9 @@ namespace Graphics
 
 		void BeginExcute(CommandBuffer* commandBuffer, PerFrame* perFrameData = nullptr);
 		void Excute(CommandBuffer* commandBuffer);
+
+		void ExcuteMaterial(CommandBuffer* commnadBuffer);
+
 		void EndExcute(CommandBuffer* commandBuffer);
 
 		inline void SetPassName(const tstring& name) { m_PassName = name; }

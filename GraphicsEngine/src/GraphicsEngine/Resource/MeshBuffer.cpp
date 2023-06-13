@@ -5,8 +5,8 @@
 
 namespace Graphics
 {
-	MeshBuffer::MeshBuffer(RenderSystem* renderSystem)
-		: ResourceBuffer(renderSystem, BufferType::Mesh)
+	MeshBuffer::MeshBuffer(RenderSystem* renderSystem, uuid uuid)
+		: ResourceBuffer(renderSystem, BufferType::Mesh, uuid)
 		, m_VertexBuffer(nullptr)
 	{
 

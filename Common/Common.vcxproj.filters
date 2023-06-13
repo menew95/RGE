@@ -54,6 +54,9 @@
     <ClInclude Include="inc\Struct\VertexAttribute.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="inc\ImGui\imstb_truetype.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
     <ClInclude Include="inc\ImGui\imconfig.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -73,9 +76,6 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="inc\ImGui\imstb_textedit.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="inc\ImGui\imstb_truetype.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

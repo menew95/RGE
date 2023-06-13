@@ -35,7 +35,7 @@ namespace Graphics
 
 			if (m_Bindings[index]._arraySize != 1)
 			{
-				if (m_Bindings[index]._bindFlags & (BindFlags::ShaderResource | BindFlags::UnorderedAccess) != 0)
+				if ((m_Bindings[index]._bindFlags & (BindFlags::ShaderResource | BindFlags::UnorderedAccess)) != 0)
 				{
 					auto* _castTest = reinterpret_cast<Resource*>(resource);
 					_resource = dynamic_cast<Resource*>(_castTest);

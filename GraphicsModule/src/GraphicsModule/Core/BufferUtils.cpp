@@ -9,7 +9,7 @@ namespace Graphics
 	{
 		if (desc._stride > 0)
 			return desc._stride;
-		else 1;
+		else return 1;
 	}
 
 	GRAPHICS_DLL_DECLSPEC long GetCombinedBindFlags(uint32 numBuffers, Buffer* const* bufferArray)

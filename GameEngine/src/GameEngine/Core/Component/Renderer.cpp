@@ -25,29 +25,38 @@ namespace GameEngine
 	{
 		Renderer::Renderer(std::shared_ptr<GameObject>& gameObject, const tstring& componentName /*= TEXT("Renderer")*/)
 			: Component(gameObject, componentName)
+			, m_RenderObject(nullptr)
+			, m_bIsShadowCasting(true)
 		{
-			GraphicsSystem::GetInstance()->RegistRenderObject(&m_RenderObject);
 		}
 
 		Renderer::~Renderer()
 		{
-			GraphicsSystem::GetInstance()->DeleteRenderObject(&m_RenderObject);
+			GraphicsSystem::GetInstance()->RemoveRenderObject(m_RenderObject);
+		}
+
+		void Renderer::Awake()
+		{
+			m_RenderObject = GraphicsSystem::GetInstance()->CreateRenderObject();
 		}
 
 		void Renderer::OnEnable()
 		{
-			m_RenderObject.m_bIsEnable = true;
+			if (!m_RenderObject) m_RenderObject->m_bIsEnable = true;
+
+
 		}
 
 		void Renderer::OnDisalbe()
 		{
-			m_RenderObject.m_bIsEnable = false;
+			if (!m_RenderObject) m_RenderObject->m_bIsEnable = false;
 		}
 
 		void Renderer::SetShadowCasting(bool value)
 		{
 			m_bIsShadowCasting = value;
-			m_RenderObject.m_bIsCastShadow = value;
+
+			if(!m_RenderObject) m_RenderObject->m_bIsCastShadow = value;
 		}
 	}
 }

@@ -48,7 +48,20 @@ namespace GameEngine
 
 		void MeshRenderer::Awake()
 		{
+			__super::Awake();
+			
 			m_MeshFilter = GetComponent<MeshFilter>();
+
+			Graphics::UpdateResourceData _perObjectResource
+			{
+				_perObjectResource._updateTime = Graphics::eUpdateTime::PerObject,
+				_perObjectResource._index = 1,
+				_perObjectResource._resourceType = Graphics::ResourceType::Buffer,
+				_perObjectResource._dataSrc = &m_RenderObject->m_TransformMatrix,
+				_perObjectResource._datasize = sizeof(Math::Matrix) * 2
+			};
+
+			m_RenderObject->m_UpdateResourcePerObjects.emplace_back(_perObjectResource);
 		}
 
 		void MeshRenderer::Render()
@@ -61,22 +74,31 @@ namespace GameEngine
 				{
 					uint32 _subMeshCnt = _sharedMesh->GetSubMeshCount();
 
+					m_RenderObject->m_TransformMatrix._world = GetTransform()->GetWorldTM();
+					m_RenderObject->m_TransformMatrix._worldInv = GetTransform()->GetWorldTM().Invert().Transpose();
+
+					m_RenderObject->m_bIsCastShadow = m_bIsShadowCasting;
+
+					m_RenderObject->m_MeshBuffer = _sharedMesh->GetMeshBuffer();
+
+					m_RenderObject->m_MaterialBuffers.clear();
+
 					for (uint32 i = 0; i < _subMeshCnt && i < static_cast<uint32>(m_Materials.size()); i++)
 					{
-						if (m_Materials[i] == nullptr) continue;
-
-						Graphics::RenderObject _renderObject;
-						_renderObject.m_World = GetTransform()->GetWorldTM();
+						if (m_Materials[i] == nullptr) m_RenderObject->m_MaterialBuffers.push_back(nullptr);
+						{
+							m_RenderObject->m_MaterialBuffers.push_back(nullptr);
+							continue;
+						}
 
 						auto* _materialBuffer = m_Materials[i]->GetMaterialBuffer();
 
-						_renderObject.m_MeshBuffer = _sharedMesh->GetMeshBuffer();
-						_renderObject.m_MaterialBuffer = _materialBuffer;
+						m_RenderObject->m_MaterialBuffers.push_back(_materialBuffer);
 
-						_perObject._world = GetTransform()->GetWorldTM();
-						_perObject._worldInvTranspose = GetTransform()->GetWorldTM().Invert().Transpose();
+						//_perObject._world = GetTransform()->GetWorldTM();
+						//_perObject._worldInvTranspose = GetTransform()->GetWorldTM().Invert().Transpose();
 
-						Graphics::UpdateResourceData _perObjectResource
+						/*Graphics::UpdateResourceData _perObjectResource
 						{
 							_perObjectResource._updateTime = Graphics::eUpdateTime::PerObject,
 							_perObjectResource._index = 1,
@@ -85,9 +107,9 @@ namespace GameEngine
 							_perObjectResource._datasize = sizeof(Math::Matrix) * 2
 						};
 
-						_renderObject.m_UpdateResourcePerObjects.emplace_back(_perObjectResource);
+						_renderObject.m_UpdateResourcePerObjects.emplace_back(_perObjectResource);*/
 
-						uint32 _idx = 0;
+						/*uint32 _idx = 0;
 
 						if (m_Materials[i]->GetAlbedoTexture() != nullptr)
 						{
@@ -132,7 +154,7 @@ namespace GameEngine
 							_renderObject.m_UpdateResources.emplace_back(_data);
 
 							_idx++;
-						}
+						}*/
 
 						//Graphics::UpdateResourceData _perMaterialResource
 						//{
@@ -145,21 +167,21 @@ namespace GameEngine
 
 						//_renderObject.m_UpdateResources.push_back(_perMaterialResource);
 
-						_renderObject.m_RenderPassIdx = _idx;
-						GraphicsSystem::GetInstance()->RegistRenderObject(_idx, _renderObject);
+						//_renderObject.m_RenderPassIdx = _idx;
+						//GraphicsSystem::GetInstance()->RegistRenderObject(_idx, _renderObject);
 
-						if (m_bIsShadowCasting)
-						{
-							Graphics::RenderObject _shadow;
-							_shadow.m_World = GetTransform()->GetWorldTM();
-							_shadow.m_MeshBuffer = _sharedMesh->GetMeshBuffer();
-							_shadow.m_MaterialBuffer = _materialBuffer;
+						//if (m_bIsShadowCasting)
+						//{
+						//	Graphics::RenderObject _shadow;
+						//	_shadow.m_World = GetTransform()->GetWorldTM();
+						//	_shadow.m_MeshBuffer = _sharedMesh->GetMeshBuffer();
+						//	_shadow.m_MaterialBuffer = _materialBuffer;
 
-							//_perObjectResource._index = 0;
-							_shadow.m_UpdateResourcePerObjects.emplace_back(_perObjectResource);
+						//	//_perObjectResource._index = 0;
+						//	_shadow.m_UpdateResourcePerObjects.emplace_back(_perObjectResource);
 
-							GraphicsSystem::GetInstance()->RegistShadowObject(0, _shadow);
-						}
+						//	GraphicsSystem::GetInstance()->RegistShadowObject(0, _shadow);
+						//}
 					}
 				
 				}

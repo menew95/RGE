@@ -13,7 +13,7 @@ namespace Graphics
 	class GRAPHICSENGINE_DLL_DECLSPEC MaterialBuffer : public ResourceBuffer
 	{
 	public:
-		MaterialBuffer(Graphics::RenderSystem* renderSystem);
+		MaterialBuffer(Graphics::RenderSystem* renderSystem, uuid uuid);
 		~MaterialBuffer() override;
 
 		inline const std::vector<UpdateResourceData>& GetUpdateResourceData() const
@@ -42,6 +42,7 @@ namespace Graphics
 //		Resource* m_StandardBuffer = nullptr;
 
 		std::vector<UpdateResourceData> m_UpdateResources;
+
 		struct ResourceBind
 		{
 			Resource* _resource = nullptr;

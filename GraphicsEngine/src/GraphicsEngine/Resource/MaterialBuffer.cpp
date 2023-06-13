@@ -8,8 +8,8 @@
 namespace Graphics
 {
 	
-	MaterialBuffer::MaterialBuffer(Graphics::RenderSystem* renderSystem)
-		: ResourceBuffer(renderSystem, BufferType::Material)
+	MaterialBuffer::MaterialBuffer(Graphics::RenderSystem* renderSystem, uuid uuid)
+		: ResourceBuffer(renderSystem, BufferType::Material, uuid)
 	{
 
 	}

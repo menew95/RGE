@@ -21,7 +21,7 @@ namespace Graphics
 	class GRAPHICSENGINE_DLL_DECLSPEC MeshBuffer : public ResourceBuffer
 	{
 	public:
-		MeshBuffer(RenderSystem* renderSystem);
+		MeshBuffer(RenderSystem* renderSystem, uuid uuid);
 		virtual ~MeshBuffer();
 
 

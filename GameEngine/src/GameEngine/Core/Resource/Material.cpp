@@ -59,7 +59,7 @@ namespace GameEngine
 
 		void Material::Release()
 		{
-			GraphicsSystem::GetInstance()->DeleteMaterialBuffer(m_MaterialBuffer);
+			GraphicsSystem::GetInstance()->ReleaseMaterialBuffer(m_MaterialBuffer);
 		}
 	}
 }

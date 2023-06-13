@@ -995,7 +995,7 @@ namespace Graphics
 		m_ScreenMesh = m_ResourceManager->GetMeshBuffer(TEXT("Screen_Mesh"));
 	}
 
-	void Voxel::UpdateResourcePerMaterial(CommandBuffer* commandBuffer, RenderObject* renderObject, PipelineLayout* pipelineLayout)
+	/*void Voxel::UpdateResourcePerMaterial(CommandBuffer* commandBuffer, RenderObject* renderObject, PipelineLayout* pipelineLayout)
 	{
 		auto& _sources = renderObject->GetUpdateResourceData();
 
@@ -1026,7 +1026,7 @@ namespace Graphics
 				}
 			}
 		}
-	}
+	}*/
 
 	void Voxel::UpdateResourcePerObject(CommandBuffer* commandBuffer, RenderObject* renderObject, PipelineLayout* pipelineLayout)
 	{

@@ -93,7 +93,7 @@ namespace Graphics
 
 		RenderObject _skyBoxObject;
 		_skyBoxObject.m_MeshBuffer = m_SkyBox_Mesh;
-		_skyBoxObject.m_MaterialBuffer = m_SkyBox_Material;
+		_skyBoxObject.m_MaterialBuffers.emplace_back(m_SkyBox_Material);
 
 		m_RenderObjects.push_back(_skyBoxObject);
 

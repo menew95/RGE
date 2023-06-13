@@ -20,7 +20,7 @@ namespace GameEngine
 
 		Light::~Light()
 		{
-			GraphicsSystem::GetInstance()->DeleteLightBuffer(m_LightBuffer);
+			GraphicsSystem::GetInstance()->ReleaseLightBuffer(m_LightBuffer);
 
 			m_LightBuffer = nullptr;
 		}

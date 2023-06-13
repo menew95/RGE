@@ -36,7 +36,7 @@ namespace Graphics
 			return nullptr;
 		}
 
-		auto* _newMeshBuffer = new MeshBuffer(m_RenderSystem);
+		auto* _newMeshBuffer = new MeshBuffer(m_RenderSystem, uuid);
 
 		m_MeshBufferMap.insert(std::make_pair(uuid, _newMeshBuffer));
 
@@ -56,7 +56,7 @@ namespace Graphics
 			return nullptr;
 		}
 
-		auto* _newMeshBuffer = new MeshBuffer(m_RenderSystem);
+		auto* _newMeshBuffer = new MeshBuffer(m_RenderSystem, uuid);
 
 		m_MeshBufferMap.insert(std::make_pair(uuid, _newMeshBuffer));
 
@@ -86,7 +86,7 @@ namespace Graphics
 			return nullptr;
 		}
 
-		auto* _newMaterialBuffer = new MaterialBuffer(m_RenderSystem);
+		auto* _newMaterialBuffer = new MaterialBuffer(m_RenderSystem, uuid);
 
 		m_MaterialBufferMap.insert(std::make_pair(uuid, _newMaterialBuffer));
 
@@ -109,7 +109,7 @@ namespace Graphics
 			return nullptr;
 		}
 
-		auto* _newCameraBuffer = new CameraBuffer(m_RenderSystem);
+		auto* _newCameraBuffer = new CameraBuffer(m_RenderSystem, _uuid);
 
 		m_CameraBufferMap.insert(std::make_pair(_uuid, _newCameraBuffer));
 
@@ -541,6 +541,48 @@ namespace Graphics
 		m_TextureMap.insert(std::make_pair(uuid, _loadTex));
 
 		return _loadTex;
+	}
+
+	void ResourceManager::ReleaseMeshBuffer(uuid uuid)
+	{
+		auto _iter = std::find_if(m_MeshBufferMap.begin(), m_MeshBufferMap.end(),
+			[&uuid](auto& pair) { return (uuid == pair.first); }
+		);
+
+		if (_iter != m_MeshBufferMap.end())
+		{
+			m_MeshBufferMap.erase(_iter);
+		}
+
+		assert(false);
+	}
+
+	void ResourceManager::ReleaseMaterialBuffer(uuid uuid)
+	{
+		auto _iter = std::find_if(m_MaterialBufferMap.begin(), m_MaterialBufferMap.end(),
+			[&uuid](auto& pair) { return (uuid == pair.first); }
+		);
+
+		if (_iter != m_MaterialBufferMap.end())
+		{
+			m_MaterialBufferMap.erase(_iter);
+		}
+
+		assert(false);
+	}
+
+	void ResourceManager::ReleaseCameraBuffer(uuid uuid)
+	{
+		auto _iter = std::find_if(m_CameraBufferMap.begin(), m_CameraBufferMap.end(),
+			[&uuid](auto& pair) { return (uuid == pair.first); }
+		);
+
+		if (_iter != m_CameraBufferMap.end())
+		{
+			m_CameraBufferMap.erase(_iter);
+		}
+
+		assert(false);
 	}
 
 	void ResourceManager::Release()

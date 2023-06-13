@@ -7,8 +7,8 @@
 namespace Graphics
 {
 
-	CameraBuffer::CameraBuffer(Graphics::RenderSystem* renderSystem)
-		: ResourceBuffer(renderSystem, BufferType::Camera)
+	CameraBuffer::CameraBuffer(Graphics::RenderSystem* renderSystem, uuid uuid)
+		: ResourceBuffer(renderSystem, BufferType::Camera, uuid)
 	{
 
 	}

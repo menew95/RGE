@@ -16,6 +16,8 @@ namespace GameEngine
 			Renderer(std::shared_ptr<GameObject>& gameObject, const tstring& componentName = TEXT("Renderer"));
 			virtual ~Renderer() override;
 
+			virtual void Awake();
+
 			virtual void Link() {}
 			virtual void Unlink() {}
 
@@ -36,7 +38,7 @@ namespace GameEngine
 
 			PerObjectData _perObject;
 
-			bool m_bIsShadowCasting = true;
+			bool m_bIsShadowCasting;
 
 			RTTR_ENABLE(Component)
 

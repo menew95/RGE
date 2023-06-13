@@ -1,3 +1,14 @@
+/**
+
+    @file      GraphicsSystem.h
+    @brief     그래픽스 엔진를 관리하는 싱글턴 객체
+    @details   
+    @author    LWT
+    @date      7.06.2023
+
+**/
+#pragma once
+
 #pragma once
 
 #include "Common.h"
@@ -43,17 +54,21 @@ namespace GameEngine
 			Graphics::Texture* LoadTexture(uuid _uuid);
 			Graphics::Resource* GetResource(uuid _uuid, uint32 type);
 
-			void DeleteMeshBuffer(Graphics::MeshBuffer*);
-			void DeleteMaterialBuffer(Graphics::MaterialBuffer*);
-			void DeleteTextureBuffer(Graphics::Texture*);
-			void DeleteLightBuffer(Graphics::LightBuffer*);
+			void ReleaseMeshBuffer(Graphics::MeshBuffer* meshBuffer);
+			void ReleaseMaterialBuffer(Graphics::MaterialBuffer* materialBuffer);
+			void ReleaseLightBuffer(Graphics::LightBuffer* lightBuffer);
 
-			void RegistRenderObject(Graphics::RenderObject* renderObject);
-			void DeleteRenderObject(Graphics::RenderObject* renderObject);
+		   /**
+			   @brief 그래픽스 엔진으로 부터 렌더 객체 생성
+			   @param 렌더 컴포넌트의 랜더 객체 포인터
+		   **/
+			Graphics::RenderObject* CreateRenderObject();
 
-			//void RegistRenderObject(const tstring& passName, Graphics::RenderObject& renderObject);
-			void RegistRenderObject(uint32 passIdx, Graphics::RenderObject& renderObject);
-			void RegistShadowObject(uint32 type, Graphics::RenderObject& renderObject);
+		   /**
+			   @brief 그래픽스 엔진에 등록한 렌더 오브젝트 삭제
+			   @param renderObject - 삭제할 렌더 오브젝트
+		   **/
+			void RemoveRenderObject(Graphics::RenderObject* renderObject);
 
 			Graphics::RenderingSetting& GetRenderingSetting() { return m_RenderingSetting; }
 			void SetRenderingSetting(Graphics::RenderingSetting setting);
@@ -64,7 +79,6 @@ namespace GameEngine
 			bool m_IsSettingChange = false;
 
 			Graphics::RenderingSetting m_RenderingSetting;
-			//std::vector<std::pair<tstring, std::shared_ptr<Graphics::RenderPass>>> m_RenderPassList;
 
 			std::vector<std::pair<tstring, Graphics::RenderPass*>> m_RenderPassList;
 

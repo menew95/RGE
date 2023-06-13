@@ -4,6 +4,8 @@
 
 #include "GraphicsEngine/GraphicsEngine.h"
 
+#include "GraphicsEngine/RenderQueue/RenderQueue.h"
+
 #include "GraphicsEngine/Resource/ResourceManager.h"
 #include "GraphicsEngine/Resource/MeshBuffer.h"
 #include "GraphicsEngine/Resource/MaterialBuffer.h"
@@ -33,6 +35,8 @@ namespace Graphics
 
 		m_ResourceManager = new ResourceManager(m_RenderSystem);
 
+		m_RenderQueue = new RenderQueue();
+
 		LoadGraphicsTable();
 
 		Initialize(desc);
@@ -47,6 +51,8 @@ namespace Graphics
 		m_RenderSystem->Release(*m_CommandBuffer);
 
 		delete m_ResourceManager;
+
+		delete m_RenderQueue;
 
 		FreeDllAndReleaseRenderSystem();
 	}
@@ -193,9 +199,9 @@ namespace Graphics
 
 		m_Final.m_MeshBuffer = m_Screen_Mesh;
 
-		m_Final.m_MaterialBuffer = m_ResourceManager->CreateMaterialBuffer(TEXT("Final_Mat"));
+		m_Final.m_MaterialBuffers.push_back(m_ResourceManager->CreateMaterialBuffer(TEXT("Final_Mat")));
 
-		m_Final.m_MaterialBuffer->SetResource(m_ResourceManager->GetTexture(TEXT("FinalOutput")), ResourceType::Texture, 0);
+		m_Final.m_MaterialBuffers[0]->SetResource(m_ResourceManager->GetTexture(TEXT("FinalOutput")), ResourceType::Texture, 0);
 
 		m_Final.AddViewport({ 0, 0, 1280, 720, 0, 1 });
 
@@ -259,6 +265,26 @@ namespace Graphics
 		return m_Light->AddLight();
 	}
 
+	void GraphicsEngine::ReleaseMeshBuffer(uuid uuid, Graphics::MeshBuffer* meshBuffer)
+	{
+		m_ResourceManager->ReleaseMeshBuffer(uuid);
+	}
+
+	void GraphicsEngine::ReleaseMaterialBuffer(uuid uuid, Graphics::MaterialBuffer* materialBuffer)
+	{
+		m_ResourceManager->ReleaseMaterialBuffer(uuid);
+	}
+
+	void GraphicsEngine::ReleaseCameraBuffer(uuid uuid, Graphics::CameraBuffer* cameraBuffer)
+	{
+		m_ResourceManager->ReleaseCameraBuffer(uuid);
+	}
+
+	void GraphicsEngine::ReleaseLightBuffer(uuid uuid, Graphics::LightBuffer* lightBuffer)
+	{
+		m_Light->RemoveLight(lightBuffer);
+	}
+
 	Graphics::Texture* GraphicsEngine::LoadTexture(uuid uuid, ImageDesc* imageDesc)
 	{
 		return m_ResourceManager->LoadTexture(uuid, imageDesc);
@@ -293,7 +319,7 @@ namespace Graphics
 		m_SwapChain->ResizeBuffer({ _width, _height });
 	}
 
-	void GraphicsEngine::RegistRenderObject(RenderObject* renderObject)
+	/*void GraphicsEngine::RegistRenderObject(RenderObject* renderObject)
 	{
 		assert(renderObject != nullptr);
 
@@ -307,9 +333,9 @@ namespace Graphics
 		assert(_iter != m_RenderObjectList.end());
 
 		m_RenderObjectList.erase(_iter);
-	}
+	}*/
 
-	void GraphicsEngine::RegistRenderMesh(RenderObject& renderObject)
+	/*void GraphicsEngine::RegistRenderMesh(RenderObject& renderObject)
 	{
 		m_Deferred->RegistRenderObject(renderObject);
 
@@ -334,6 +360,18 @@ namespace Graphics
 				assert("Attempt to register undefined type in shadow object list", false);
 				break;
 		}
+	}*/
+
+	Graphics::RenderObject* GraphicsEngine::CreateRenderObject()
+	{
+		return m_RenderQueue->CreateRenderObject();
+	}
+
+	void GraphicsEngine::RemoveRenderObject(RenderObject* renderObject)
+	{
+		bool _result = m_RenderQueue->RemoveRenderObject(renderObject);
+		
+		assert(_result);
 	}
 
 	void GraphicsEngine::Excute()
@@ -346,7 +384,7 @@ namespace Graphics
 
 		RenderObject _deferredMergeRenderObject;
 		_deferredMergeRenderObject.m_MeshBuffer = m_Screen_Mesh;
-		_deferredMergeRenderObject.m_MaterialBuffer = m_Deferred_Light_Material;
+		_deferredMergeRenderObject.m_MaterialBuffers.emplace_back(m_Deferred_Light_Material);
 
 		// Update Per Object Buffer(Lighting)
 		Lighting* _perLighting = m_Light->GetLightingData();
@@ -384,7 +422,7 @@ namespace Graphics
 
 		m_PostProcess_Pass->ExcutePass();
 
-		m_Final.m_MaterialBuffer->ChangeResource(m_PostProcess_Pass->GetBackBuffer(), 0);
+		m_Final.m_MaterialBuffers[0]->ChangeResource(m_PostProcess_Pass->GetBackBuffer(), 0);
 
 		m_Final_Pass->BeginExcute(m_CommandBuffer, nullptr);
 

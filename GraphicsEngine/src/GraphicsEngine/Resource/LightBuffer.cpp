@@ -45,7 +45,7 @@ namespace Graphics
 	}
 
 	LightBuffer::LightBuffer(Graphics::RenderSystem* renderSystem)
-		: ResourceBuffer(renderSystem, BufferType::Light)
+		: ResourceBuffer(renderSystem, BufferType::Light, L"")
 	{
 
 	}

@@ -55,16 +55,34 @@ namespace Graphics
 		CameraBuffer* CreateCameraBuffer();
 		LightBuffer* CreateLightBuffer();
 
+		void ReleaseMeshBuffer(uuid uuid, Graphics::MeshBuffer* meshBuffer);
+		void ReleaseMaterialBuffer(uuid uuid, Graphics::MaterialBuffer* materialBuffer);
+		void ReleaseCameraBuffer(uuid uuid, Graphics::CameraBuffer* cameraBuffer);
+		void ReleaseLightBuffer(uuid uuid, Graphics::LightBuffer* lightBuffer);
+
+
 		Texture* LoadTexture(uuid uuid, ImageDesc* imageDesc);
 		Resource* GetResource(uuid _uuid, ResourceType type);
 
 		void OnResize(uint32 _width, uint32 _height);
 
-		void RegistRenderObject(RenderObject* renderObject);
-		void DeleteRenderObject(RenderObject* renderObject);
+		//void RegistRenderObject(RenderObject* renderObject);
+		//void DeleteRenderObject(RenderObject* renderObject);
 
-		void RegistRenderMesh(RenderObject& renderObject);
-		void RegistRenderShadow(uint32 type, RenderObject& renderObject);
+		//void RegistRenderMesh(RenderObject& renderObject);
+		//void RegistRenderShadow(uint32 type, RenderObject& renderObject);
+
+		  /**
+			  @brief  렌더 큐에 렌더 오브젝트 등록후 포인터 반환
+			  @retval  - 렌더 오브젝트의 원시 포인터
+		  **/
+		RenderObject* CreateRenderObject();
+
+		  /**
+			  @brief 렌더 큐에 등록된 렌더 오브젝트를 삭제
+			  @param renderObject - 등록되어있는 렌더오브젝트의 원시 포인터
+		  **/
+		void RemoveRenderObject(RenderObject* renderObject);
 
 		void Excute();
 		void ExcuteRenderPass(Graphics::RenderPass* renderPass);
@@ -94,6 +112,8 @@ namespace Graphics
 
 		CameraBuffer* m_MainCameraBuffer;
 
+		RenderQueue* m_RenderQueue;
+
 		std::shared_ptr<Graphics::RenderPass> m_Deferred_Mesh_Pass;
 		std::shared_ptr<Graphics::RenderPass> m_Deferred_Mesh_Albedo_Pass;
 		std::shared_ptr<Graphics::RenderPass> m_Deferred_Mesh_Albedo_Bump_Pass;
@@ -120,7 +140,6 @@ namespace Graphics
 
 		std::shared_ptr<IBL> m_IBL;
 		std::shared_ptr<Light> m_Light;
-		std::shared_ptr<RenderQueue> m_RenderQueue;
 		std::shared_ptr<Deferred> m_Deferred;
 		std::shared_ptr<Sky> m_Sky;
 		std::shared_ptr<PostProcess> m_PostProcess_Pass;
