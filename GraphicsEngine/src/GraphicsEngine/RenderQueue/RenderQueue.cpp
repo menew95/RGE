@@ -7,7 +7,6 @@
 
 namespace Graphics
 {
-
 	RenderQueue::RenderQueue()
 	{
 

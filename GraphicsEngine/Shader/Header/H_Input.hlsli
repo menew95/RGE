@@ -2,6 +2,10 @@
 
 #define H_INPUT
 
+#if !defined(BONECNT)
+	#define BONECNT 4
+#endif
+
 struct VSInput
 {
 #if defined(_SCREEN)
@@ -16,8 +20,8 @@ struct VSInput
 	float3	tangent			: TANGENT;
 //#endif
 //#if defined(_SKIN) && defined(BONECNT)
-    uint	bone[4]   : BONE;
-    float	weight[4] : WEIGHT;
+    uint	bone[BONECNT]   : BONE;
+    float	weight[BONECNT] : WEIGHT;
 //#endif //_SKIN && BONECNT
 #endif
 };

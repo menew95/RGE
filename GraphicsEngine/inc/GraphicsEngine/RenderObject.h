@@ -98,11 +98,6 @@ namespace Graphics
 			return m_MeshBuffer;
 		}
 
-		/*inline const MaterialBuffer* GetMaterialBuffer() const
-		{
-			return m_MaterialBuffer;
-		}*/
-
 		inline size_t GetMaterialBuffersCount() const
 		{
 			return m_MaterialBuffers.size();
@@ -112,21 +107,6 @@ namespace Graphics
 		{
 			return m_MaterialBuffers.data();
 		}
-
-		/*inline const std::vector<Graphics::Resource*>& GetResources() const
-		{
-			return m_Resources;
-		}*/
-
-		/*inline const std::vector<Graphics::Buffer*>& GetConstBuffers() const
-		{
-			return m_ConstBuffers;
-		}*/
-
-		/*inline const std::vector<UpdateResourceData>& GetUpdateResourceData() const
-		{
-			return m_UpdateResources;
-		}*/
 
 		inline const std::vector<UpdateResourceData>& GetUpdateResourceDataPerObject() const
 		{
@@ -186,10 +166,6 @@ namespace Graphics
 
 		std::vector<MaterialBuffer*> m_MaterialBuffers;
 
-		//std::vector<Graphics::Resource*> m_Resources;
-
-		//std::vector<UpdateResourceData> m_UpdateResources;
-
 		std::vector<UpdateResourceData> m_UpdateResourcePerObjects;
 
 		bool m_UseViewport = false;
@@ -202,18 +178,72 @@ namespace Graphics
 	**/
 	struct RenderData
 	{
-		Buffer* _vertex = nullptr;
-		Buffer* _index = nullptr;
+		RenderData()
+			: _renderObject(nullptr)
+			, _materialIdx(-1)
+		{
 
-		MeshBuffer* _meshBuffer = nullptr;
+		}
 
+		RenderData(RenderObject* renderObject, uint32 materialIdx)
+			: _renderObject(renderObject)
+			, _materialIdx(materialIdx)
+		{
+
+		}
+
+		RenderObject* _renderObject = nullptr;
+
+		uint32 _materialIdx = -1;
+	};
+
+
+	 /**
+		 @brief RenderData RenderObject에서 머티리얼 인덱스와 서브매쉬 인덱스의 정보를 담고있는 객체
+	 **/
+	struct RenderData
+	{
+		RenderData()
+			: _renderObject(nullptr)
+			, _materialIdx(-1)
+			, _subMeshIdx(-1)
+		{
+
+		}
+
+		RenderData(RenderObject* renderObject, int32 materialIdx)
+			: _renderObject(renderObject)
+			, _materialIdx(materialIdx)
+			, _subMeshIdx(materialIdx)
+		{
+
+		}
+
+		RenderData(RenderObject* renderObject, int32 materialIdx, int32 subMeshIdx)
+			: _renderObject(renderObject)
+			, _materialIdx(materialIdx)
+			, _subMeshIdx(subMeshIdx)
+		{
+
+		}
+
+		RenderObject* _renderObject = nullptr;
+
+		int32 _materialIdx = -1;
+		int32 _subMeshIdx = -1;
+	};
+
+	/**
+		 @brief MaterialInstanceData 렌더링 할때 도무지 기존것을 최대한 건들이기가 힘들어서 추가한 객체
+		 머티리얼 별로 인스턴스 데이터를 모아주고 렌더링 하기 위해 추가했다.
+		 먼저 머티리얼 버퍼에 있는 데이터를 업데이트 한다음 바인드 하고
+		 렌더 객체를 돌며 매쉬버퍼, perObject를 바인드하고 드로우 하기 위해 추가함
+	 **/
+	struct MaterialInstanceData
+	{
 		MaterialBuffer* _materialBuffer = nullptr;
 
-		std::vector<UpdateResourceData> _updateResourcePerObjects;
-
-		bool _useViewport = false;
-
-		std::vector<Math::Viewport> _viewports;
+		std::vector<RenderData> _materialRenderDatas;
 	};
 }
 

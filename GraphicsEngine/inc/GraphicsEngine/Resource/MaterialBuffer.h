@@ -48,6 +48,7 @@ namespace Graphics
 			Resource* _resource = nullptr;
 			uint32 _slot = 0;
 		};
+
 		std::vector<ResourceBind> m_ResourceBindList;
 	};
 }

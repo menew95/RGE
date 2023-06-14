@@ -22,13 +22,19 @@ namespace Graphics
 	{
 	public:
 		RenderPass(RenderPassDesc desc);
+		
 		RenderPass(const tstring& passName, PipelineState* pipelineState, PipelineLayout* pipelineLayout, RenderTarget* renderTarget);
+		
 		RenderPass(PipelineState* pipelineState, PipelineLayout* pipelineLayout, RenderTarget* renderTarget);
+		
 		RenderPass(const tstring& passName, PipelineState* pipelineState, PipelineLayout* pipelineLayout, RenderTarget* renderTarget, std::vector<AttachmentClear> attachmentClears);
+		
 		RenderPass(PipelineState* pipelineState, PipelineLayout* pipelineLayout, RenderTarget* renderTarget, std::vector<AttachmentClear> attachmentClears);
+		
 		virtual ~RenderPass();
 
 		void RegistRenderObject(class RenderObject* renderObject);
+
 		void ClearRenderObject();
 
 		inline const tstring& GetPassName() const 
@@ -54,9 +60,10 @@ namespace Graphics
 		void UpdatePerFrame(CommandBuffer* commandBuffer, void* src, uint32 size);
 
 		void BeginExcute(CommandBuffer* commandBuffer, PerFrame* perFrameData = nullptr);
+
 		void Excute(CommandBuffer* commandBuffer);
 
-		void ExcuteMaterial(CommandBuffer* commnadBuffer);
+		void ExcuteMaterialInstance(CommandBuffer* commnadBuffer, std::vector<MaterialInstanceData>& materialInstanceData);
 
 		void EndExcute(CommandBuffer* commandBuffer);
 
@@ -71,27 +78,38 @@ namespace Graphics
 		inline void AddResourceClear(ResourceClear clear) { m_ResourceClears.push_back(clear); }
 
 		inline void SetResourceClear(std::vector<ResourceClear>& clears) { m_ResourceClears = clears; }
+
 		inline std::vector<ResourceClear> GetResourceClear() { return m_ResourceClears; }
 
 		inline void SetAttachmentClears(std::vector<AttachmentClear> clears) { m_AttachmentClears = clears; }
+
 		inline std::vector<AttachmentClear> GetAttachmentClears() { return m_AttachmentClears; }
 
 	protected:
+
+		void RenderMesh(CommandBuffer* commnadBuffer, RenderObject* renderObject);
+
 		void UpdateResourcePerMaterial(CommandBuffer* commandBuffer, RenderObject* renderObject);
+
 		void UpdateResourcePerObject(CommandBuffer* commandBuffer, RenderObject* renderObject);
 
 		void UpdateBuffer(CommandBuffer* commandBuffer, Buffer* buffer, void* src, uint32 size);
 
-
 		tstring m_PassName;
 
 		PipelineState* m_PipelineState = nullptr;
+
 		PipelineLayout* m_PipelineLayout = nullptr;
+
+		PipelineLayout* m_PipelineLayout = nullptr;
+
 		RenderTarget* m_RenderTarget = nullptr;
 
 		std::vector<Resource*> m_Resources;
 
 		std::vector<RenderObject*> m_RenderObjects;
+
+		std::vector<RenderData*> m_RenderDatas;
 
 		std::vector<AttachmentClear> m_AttachmentClears;
 
@@ -100,5 +118,6 @@ namespace Graphics
 		bool m_IsClearObjects = true;
 
 		std::vector<ResourceClear> m_ResourceClears;
+
 	};
 }

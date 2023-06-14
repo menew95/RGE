@@ -132,9 +132,19 @@ namespace Graphics
 		}
 	}
 
-	void RenderPass::ExcuteMaterial(CommandBuffer* commandBuffer)
+	void RenderPass::ExcuteMaterialInstance(CommandBuffer* commnadBuffer, std::vector<MaterialInstanceData>& materialInstanceData)
 	{
+		for (size_t _instanceIdx = 0; _instanceIdx < materialInstanceData.size(); _instanceIdx++)
+		{
+			auto& _materialInstance = materialInstanceData[_instanceIdx];
 
+			_materialInstance._materialBuffer->BindResource(commnadBuffer);
+
+			for (size_t _dataIdx = 0; _dataIdx < _materialInstance._materialRenderDatas.size(); _dataIdx)
+			{
+
+			}
+		}
 	}
 
 	void RenderPass::EndExcute(CommandBuffer* commandBuffer)
@@ -152,6 +162,13 @@ namespace Graphics
 #if defined(_DEBUG) || defined(DEBUG)
 		commandBuffer->EndEvent();
 #endif
+	}
+
+	void RenderPass::RenderMesh(CommandBuffer* commandBuffer, RenderObject* renderObject)
+	{
+		commandBuffer->SetVertexBuffer(*renderObject->GetMeshBuffer()->GetBuffer());
+
+		UpdateResourcePerObject(commandBuffer, renderObject);
 	}
 
 	void RenderPass::UpdateResourcePerMaterial(CommandBuffer* commandBuffer, RenderObject* renderObject)
