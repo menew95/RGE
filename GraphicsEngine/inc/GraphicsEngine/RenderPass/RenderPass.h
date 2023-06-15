@@ -87,9 +87,7 @@ namespace Graphics
 
 	protected:
 
-		void RenderMesh(CommandBuffer* commnadBuffer, RenderObject* renderObject);
-
-		void UpdateResourcePerMaterial(CommandBuffer* commandBuffer, RenderObject* renderObject);
+		//void UpdateResourcePerMaterial(CommandBuffer* commandBuffer, RenderObject* renderObject);
 
 		void UpdateResourcePerObject(CommandBuffer* commandBuffer, RenderObject* renderObject);
 
@@ -98,8 +96,6 @@ namespace Graphics
 		tstring m_PassName;
 
 		PipelineState* m_PipelineState = nullptr;
-
-		PipelineLayout* m_PipelineLayout = nullptr;
 
 		PipelineLayout* m_PipelineLayout = nullptr;
 

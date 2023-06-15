@@ -173,31 +173,6 @@ namespace Graphics
 		std::vector<Math::Viewport> m_Viewports;
 	};
 
-	/**
-		@brief RenderPass에서 Excute할 정보들을 담고있는 객체
-	**/
-	struct RenderData
-	{
-		RenderData()
-			: _renderObject(nullptr)
-			, _materialIdx(-1)
-		{
-
-		}
-
-		RenderData(RenderObject* renderObject, uint32 materialIdx)
-			: _renderObject(renderObject)
-			, _materialIdx(materialIdx)
-		{
-
-		}
-
-		RenderObject* _renderObject = nullptr;
-
-		uint32 _materialIdx = -1;
-	};
-
-
 	 /**
 		 @brief RenderData RenderObject에서 머티리얼 인덱스와 서브매쉬 인덱스의 정보를 담고있는 객체
 	 **/
@@ -234,6 +209,16 @@ namespace Graphics
 	};
 
 	/**
+		@brief MeshInstanceData 매쉬 하드웨어 인스턴싱을 하기위한 구조체
+	**/
+	struct MeshInstanceData
+	{
+		MeshBuffer* _meshBuffer = nullptr;
+
+		std::vector<RenderData> _renderObjects;
+	};
+
+	/**
 		 @brief MaterialInstanceData 렌더링 할때 도무지 기존것을 최대한 건들이기가 힘들어서 추가한 객체
 		 머티리얼 별로 인스턴스 데이터를 모아주고 렌더링 하기 위해 추가했다.
 		 먼저 머티리얼 버퍼에 있는 데이터를 업데이트 한다음 바인드 하고
@@ -243,7 +228,14 @@ namespace Graphics
 	{
 		MaterialBuffer* _materialBuffer = nullptr;
 
-		std::vector<RenderData> _materialRenderDatas;
+		std::vector<MeshInstanceData> _meshInstanceData;
+	};
+
+	struct InstanceData
+	{
+		MaterialInstanceData _materialInstanceData;
+
+		MeshInstanceData _meshInstnaceData;
 	};
 }
 

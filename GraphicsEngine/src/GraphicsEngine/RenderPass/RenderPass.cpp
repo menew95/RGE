@@ -140,8 +140,10 @@ namespace Graphics
 
 			_materialInstance._materialBuffer->BindResource(commnadBuffer);
 
-			for (size_t _dataIdx = 0; _dataIdx < _materialInstance._materialRenderDatas.size(); _dataIdx)
+			for (size_t _dataIdx = 0; _dataIdx < _materialInstance._meshInstanceData.size(); _dataIdx)
 			{
+
+
 
 			}
 		}
@@ -164,48 +166,41 @@ namespace Graphics
 #endif
 	}
 
-	void RenderPass::RenderMesh(CommandBuffer* commandBuffer, RenderObject* renderObject)
-	{
-		commandBuffer->SetVertexBuffer(*renderObject->GetMeshBuffer()->GetBuffer());
+	//void RenderPass::UpdateResourcePerMaterial(CommandBuffer* commandBuffer, RenderObject* renderObject)
+	//{
+	//	//auto& _sources = renderObject->m_MaterialBuffer->GetUpdateResourceData();
+	//	//
+	//	//renderObject->m_MaterialBuffer->BindResource(commandBuffer);
 
-		UpdateResourcePerObject(commandBuffer, renderObject);
-	}
+	//	//for (size_t i = 0; i < _sources.size(); i++)
+	//	//{
+	//	//	assert(m_PipelineLayout != nullptr);
 
-	void RenderPass::UpdateResourcePerMaterial(CommandBuffer* commandBuffer, RenderObject* renderObject)
-	{
-		//auto& _sources = renderObject->m_MaterialBuffer->GetUpdateResourceData();
-		//
-		//renderObject->m_MaterialBuffer->BindResource(commandBuffer);
+	//	//	switch (_sources[i]._resourceType)
+	//	//	{
+	//	//		case ResourceType::Buffer:
+	//	//		{
+	//	//			auto _buffer = m_PipelineLayout->GetBuffer(_sources[i]._index);
 
-		//for (size_t i = 0; i < _sources.size(); i++)
-		//{
-		//	assert(m_PipelineLayout != nullptr);
-
-		//	switch (_sources[i]._resourceType)
-		//	{
-		//		case ResourceType::Buffer:
-		//		{
-		//			auto _buffer = m_PipelineLayout->GetBuffer(_sources[i]._index);
-
-		//			UpdateBuffer(commandBuffer, _buffer, _sources[i]._dataSrc, _sources[i]._datasize);
-		//			break;
-		//		}
-		//		case ResourceType::Sampler:
-		//		case ResourceType::Texture:
-		//		{
-		//			//commandBuffer->SetResource(reinterpret_cast<Resource*>(_sources[i]._dataSrc), BindFlags::)
-		//			//m_PipelineLayout->SetResource(_sources[i]._index, );
-		//			break;
-		//		}
-		//		case ResourceType::Undefined:
-		//		default:
-		//		{
-		//			assert(false);
-		//			break;
-		//		}
-		//	}
-		//}
-	}
+	//	//			UpdateBuffer(commandBuffer, _buffer, _sources[i]._dataSrc, _sources[i]._datasize);
+	//	//			break;
+	//	//		}
+	//	//		case ResourceType::Sampler:
+	//	//		case ResourceType::Texture:
+	//	//		{
+	//	//			//commandBuffer->SetResource(reinterpret_cast<Resource*>(_sources[i]._dataSrc), BindFlags::)
+	//	//			//m_PipelineLayout->SetResource(_sources[i]._index, );
+	//	//			break;
+	//	//		}
+	//	//		case ResourceType::Undefined:
+	//	//		default:
+	//	//		{
+	//	//			assert(false);
+	//	//			break;
+	//	//		}
+	//	//	}
+	//	//}
+	//}
 
 	void RenderPass::UpdateResourcePerObject(CommandBuffer* commandBuffer, RenderObject* renderObject)
 	{

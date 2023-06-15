@@ -16,7 +16,7 @@ namespace Graphics
 
 	MaterialBuffer::~MaterialBuffer()
 	{
-		//m_RenderSystem->Release(*m_PipelineLayout);
+
 	}
 
 	void MaterialBuffer::SetBufferData(void* src, Resource* resource)
@@ -33,6 +33,9 @@ namespace Graphics
 
 		_resourceData._index = static_cast<uint32>(m_ResourceBindList.size()) - 1u;
 		m_UpdateResources.emplace_back(_resourceData);
+
+		// Todo : 일단 여기서 사용하자 아직 여러개의 머티리얼을 가정할 단계가 아니니 PBR 머티리얼 일경우에만으로 치자
+		memcpy(&m_PBRMaterialData, src, 12);
 	}
 
 	void MaterialBuffer::SetResource(Resource* resource, ResourceType type, uint32 bindSlot, uint32 size)

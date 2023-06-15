@@ -20,7 +20,7 @@ Output main(VSInput input)
 
 #if defined(_USE_GS)
 
-#if !defined(_SKIN) && !defined(BONECNT)
+#if !defined(_SKIN)// && !defined(BONECNT)
     _output.pos = mul(float4(input.posL, 1.0f), world);
 
 #else // !defined(_SKIN) && !defined(BONECNT)
@@ -41,7 +41,7 @@ Output main(VSInput input)
 
 #else //defined(_USE_GS)
 
-#if !defined(_SKIN) && !defined(BONECNT)
+#if !defined(_SKIN)// && !defined(BONECNT)
     _output.pos = mul(float4(input.posL, 1.0f), world);
     _output.pos = mul(_output.pos, _lightTransform);
 

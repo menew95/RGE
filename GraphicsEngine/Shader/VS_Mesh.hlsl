@@ -1,36 +1,37 @@
+
+#define BONECNT 4
+
 #include "Header\H_ConstBuffer.hlsli"
 #include "Header\H_Input.hlsli"
 
-#define INSTANCING
-#define _SKIN
-
 #if defined(INSTANCING)
 
+/*
+ * struct InstanceData
+ * {
+ *     matrix world offset 0
+ *     matrix worldInv offset 4
+ * 
+ *     Material _material offset 8
+ * 
+ *     skinning
+ *     matrix bonetrancform[BONE_MAX_CNT] offset 11
+ * };
+ */
 
-//struct InstanceData
-//{
-//    matrix world;
-//    matrix worldInv;
-//
-//    skinning
-//    matrix bonetrancform[BONE_MAX_CNT]
-// 
-//    Material _material
-//};
-
-Buffer<float4> g_instancingBuffer : register(t0);
+Buffer<float4> g_instancingBuffer : register(t3);
 
 inline void GetInstanceData(out matrix world, out matrix worldInv, in uint offset)
 {
-    world._11_12_13_14 = g_instancingBuffer[offset + 2];
-    world._21_22_23_24 = g_instancingBuffer[offset + 3];
-    world._31_32_33_34 = g_instancingBuffer[offset + 4];
-    world._41_42_43_44 = g_instancingBuffer[offset + 5];
+    world._11_12_13_14 = g_instancingBuffer[offset];
+    world._21_22_23_24 = g_instancingBuffer[offset + 1];
+    world._31_32_33_34 = g_instancingBuffer[offset + 2];
+    world._41_42_43_44 = g_instancingBuffer[offset + 3];
 
-    worldInv._11_12_13_14 = g_instancingBuffer[offset + 6];
-    worldInv._21_22_23_24 = g_instancingBuffer[offset + 7];
-    worldInv._31_32_33_34 = g_instancingBuffer[offset + 8];
-    worldInv._41_42_43_44 = g_instancingBuffer[offset + 9];
+    worldInv._11_12_13_14 = g_instancingBuffer[offset + 4];
+    worldInv._21_22_23_24 = g_instancingBuffer[offset + 5];
+    worldInv._31_32_33_34 = g_instancingBuffer[offset + 6];
+    worldInv._41_42_43_44 = g_instancingBuffer[offset + 7];
 }
 
 inline void GetInstanceBoneData(out matrix boneTransform, in uint boneOffset)
@@ -39,6 +40,13 @@ inline void GetInstanceBoneData(out matrix boneTransform, in uint boneOffset)
     boneTransform._21_22_23_24 = g_instancingBuffer[boneOffset + 1];
     boneTransform._31_32_33_34 = g_instancingBuffer[boneOffset + 2];
     boneTransform._41_42_43_44 = g_instancingBuffer[boneOffset + 3];
+}
+
+inline void GetInstanceMaterialData(out float4 albedo, out float4 emissive, out float4 pbr, in uint offset)
+{
+    albedo = g_instancingBuffer[offset];
+    emissive = g_instancingBuffer[offset + 1];
+    pbr = g_instancingBuffer[offset + 2];
 }
 
 VSOutput main(VSInput input, uint instanceID : SV_InstanceID)
@@ -50,10 +58,10 @@ VSOutput main(VSInput input, uint instanceID : SV_InstanceID)
     _output.normal = float4(1.0f, 1.0f, 1.0f, 1.0f);
 #else
 
-#if !defined(_SKIN) && !defined(BONECNT)
+#if !defined(_SKIN)// && !defined(BONECNT)
 
-    //bufferStride = 13;
-    uint _offset = instanceID * 13u;
+    uint _instanceStride = 11u;
+    uint _offset = instanceID * _instanceStride;
 
     matrix _world, _worldInv;
 
@@ -69,9 +77,12 @@ VSOutput main(VSInput input, uint instanceID : SV_InstanceID)
     _output.tangent = normalize(mul(input.tangent, (float3x3)_world));
 #endif //_NORMAL_MAP
 
+    GetInstanceMaterialData(_output.albedoColor, _output.emissiveColor, _output.pbr, _offset + 8);
+
 #else // !defined(_SKIN) && !defined(BONECNT)
 
-    uint _offset = instanceID * 525;
+    uint _instanceStride = 523u; // 11 + 4 * BONE_MAX_CNT;
+    uint _offset = instanceID * _instanceStride;
 
     float3 _posL = float3(0.0f, 0.0f, 0.0f);
     float3 _normalL = float3(0.0f, 0.0f, 0.0f);
@@ -87,7 +98,7 @@ VSOutput main(VSInput input, uint instanceID : SV_InstanceID)
     {
         if (input.bone[i] >= 0)
         {
-            int _boneTransformStartOffset = _offset + 10;
+            int _boneTransformStartOffset = _offset + 11;
             int _boneTransformOffset = _boneTransformStartOffset + input.bone[i] * 4;
 
             matrix _boneTransform;
@@ -113,6 +124,8 @@ VSOutput main(VSInput input, uint instanceID : SV_InstanceID)
     _output.tangent = normalize(mul(_tangentL, (float3x3)world));
 #endif //_NORMAL_MAP
 
+    GetInstanceMaterialData(_output.albedoColor, _output.emissiveColor, _output.pbr, _offset + 8);
+
 #endif // !defined(_SKIN) && !defined(BONECNT)
 
     _output.color = input.color;
@@ -125,6 +138,7 @@ VSOutput main(VSInput input, uint instanceID : SV_InstanceID)
 }
 
 #else
+
 VSOutput main(VSInput input)
 {
     VSOutput _output;
@@ -134,7 +148,7 @@ VSOutput main(VSInput input)
     _output.normal = float4(1.0f, 1.0f, 1.0f, 1.0f);
 #else
 
-#if !defined(_SKIN) && !defined(BONECNT)
+#if !defined(_SKIN)// && !defined(BONECNT)
     _output.posW = mul(float4(input.posL, 1.0f), world);
     _output.posV = mul(_output.posW, camera._view);
     _output.posH = mul(_output.posV, camera._proj);

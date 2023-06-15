@@ -29,6 +29,10 @@ namespace Graphics
 
 		void SetBufferData(void* src, Resource* resource);
 
+		inline void SetUseInstnacing(bool value) { m_bUseInstancing = value; }
+
+		void* GetInstanceData() { return &m_PBRMaterialData; }
+
 	private:
 
 		struct Standard
@@ -39,7 +43,8 @@ namespace Graphics
 			float _metallic = 0.0f;
 			Math::Vector2 _tile = Math::Vector2::One;
 		};
-//		Resource* m_StandardBuffer = nullptr;
+
+		Standard m_PBRMaterialData;
 
 		std::vector<UpdateResourceData> m_UpdateResources;
 
@@ -48,6 +53,8 @@ namespace Graphics
 			Resource* _resource = nullptr;
 			uint32 _slot = 0;
 		};
+
+		bool m_bUseInstancing = true;
 
 		std::vector<ResourceBind> m_ResourceBindList;
 	};
