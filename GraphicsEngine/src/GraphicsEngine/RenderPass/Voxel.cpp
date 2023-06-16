@@ -1,4 +1,4 @@
-#include "GraphicsEnginePCH.h"
+﻿#include "GraphicsEnginePCH.h"
 
 #include "GraphicsEngine/Resource/ResourceManager.h"
 
@@ -264,7 +264,8 @@ namespace Graphics
 		_textureDesc._miscFlags = MiscFlags::GenerateMips;
 		_textureDesc._mipLevels = 1;
 		_textureDesc._bindFlags = BindFlags::UnorderedAccess | BindFlags::ShaderResource | BindFlags::RenderTarget;
-		_textureDesc._format = Format::R16G16B16A16_FLOAT;
+		//_textureDesc._format = Format::R16G16B16A16_FLOAT;
+		_textureDesc._format = Format::BC3_UNORM;
 
 		m_VoxelTexture = m_ResourceManager->CreateTexture(TEXT("VoxelTexture"), _textureDesc);
 		//m_VoxelBoundTexture = m_ResourceManager->CreateTexture(TEXT("VoxelBoundTexture"), _textureDesc);

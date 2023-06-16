@@ -1,4 +1,4 @@
-#include "GraphicsPCH.h"
+﻿#include "GraphicsPCH.h"
 #include "GraphicsModule/Core/DX11/DX11ResourceView.h"
 #include "GraphicsModule/Core/DX11/DX11Texture.h"
 #include "GraphicsModule/Core/DX11/DX11Utilitys.h"
@@ -152,7 +152,10 @@ namespace Graphics
 				ComPtr<ID3D11ShaderResourceView> _srv;
 				texture.CreateSubresourceSRV(
 					_device.Get(),
+					texture.GetNativeTexture()._resource.Get(),
 					_srv.GetAddressOf(),
+					texture.GetType(),
+					texture.GetDXFormat(),
 					subresource.baseMipLevel,
 					subresource.numMipLevels,
 					subresource.baseArrayLayer,
@@ -181,9 +184,11 @@ namespace Graphics
 				ComPtr<ID3D11UnorderedAccessView> _uav;
 				texture.CreateSubresourceUAV(
 					_device.Get(),
+					texture.GetNativeTexture()._resource.Get(),
 					_uav.GetAddressOf(),
+					texture.GetType(),
+					texture.GetDXFormat(),
 					subresource.baseMipLevel,
-					subresource.numMipLevels,
 					subresource.baseArrayLayer,
 					subresource.numArrayLayers);
 

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "GraphicsModule/Core/Texture.h"
 #include "GraphicsModule/Core/Common/ComPtr.h"
@@ -65,18 +65,36 @@ namespace Graphics
 				const ImageDesc& imageDesc
 			);
 
+			/**
+			   @brief create subresource for access cpu
+			**/
 			void CreateSubresourceCopyWithCPUAccess(
-				ID3D11Device* device,
-				ID3D11DeviceContext* context,
-				DX11NativeTexture& textureOutput,
-				UINT                    cpuAccessFlags,
-				const TextureRegion& region
+				ID3D11Device*			device,
+				ID3D11DeviceContext*	context,
+				DX11NativeTexture&		textureOutput,
+				uint32					cpuAccessFlags,
+				const TextureRegion&	region
+			);
+
+			/**
+			   @brief create subresource for access cpu (uint format)
+			**/
+			void CreateSubresourceCopyWithUIntFormat(
+				ID3D11Device*				device,
+				DX11NativeTexture&			textureOutput,
+				ID3D11ShaderResourceView**	srvOutput,
+				ID3D11UnorderedAccessView**	uavOutput,
+				const TextureRegion&		region,
+				const TextureType			subresourceType
 			);
 
 			void CreateShaderResourceView(ID3D11Device* device, uint32 baseMipLevel, uint32 numMipLevels, uint32 baseArrayLayer, uint32 numArrayLayers);
-			void CreateSubresourceSRV(ID3D11Device* device, ID3D11ShaderResourceView** srv, uint32 baseMipLevel, uint32 numMipLevels, uint32 baseArrayLayer, uint32 numArrayLayers);
-			void CreateUnorderedAccessView(ID3D11Device* device, uint32 baseMipLevel, uint32 numMipLevels, uint32 baseArrayLayer, uint32 numArrayLayers);
-			void CreateSubresourceUAV(ID3D11Device* device, ID3D11UnorderedAccessView** uav, uint32 baseMipLevel, uint32 numMipLevels, uint32 baseArrayLayer, uint32 numArrayLayers);
+			
+			void CreateSubresourceSRV(ID3D11Device* device, ID3D11Resource* resource, ID3D11ShaderResourceView** srv, const TextureType type, const DXGI_FORMAT format, uint32 baseMipLevel, uint32 numMipLevels, uint32 baseArrayLayer, uint32 numArrayLayers);
+			
+			void CreateUnorderedAccessView(ID3D11Device* device, uint32 baseMipLevel, uint32 baseArrayLayer, uint32 numArrayLayers);
+			
+			void CreateSubresourceUAV(ID3D11Device* device, ID3D11Resource* resource, ID3D11UnorderedAccessView** uav, const TextureType type, const DXGI_FORMAT format, uint32 baseMipLevel, uint32 baseArrayLayer, uint32 numArrayLayers);
 			
 			void CreateTextureFromFile(ID3D11Device* device, const ImageDesc& srcDesc);
 

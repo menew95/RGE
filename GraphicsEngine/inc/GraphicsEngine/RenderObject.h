@@ -1,7 +1,7 @@
-/**
+ï»¿/**
 
     @file      RenderObject.h
-    @brief     ·»´õ Á¤º¸ °ü·Ã °´Ã¼µé
+    @brief     ë Œë” ì •ë³´ ê´€ë ¨ ê°ì²´ë“¤
     @author    LWT
     @date      13.05.2023
 
@@ -28,7 +28,7 @@ namespace Graphics
 	};
 
 	/**
-		@brief ¸®¼Ò½ºµéÀ» ¾÷µ¥ÀÌÆ® ÇÒ Á¤º¸¸¦ ´ãÀº °´Ã¼
+		@brief ë¦¬ì†ŒìŠ¤ë“¤ì„ ì—…ë°ì´íŠ¸ í•  ì •ë³´ë¥¼ ë‹´ì€ ê°ì²´
 	**/
 	struct UpdateResourceData
 	{
@@ -86,7 +86,7 @@ namespace Graphics
 	};
 
 	/**
-		@brief Render component´ç ÇÏ³ªÀÇ ·»´õ ¿ÀºêÁ§Æ®¸¦ °¡Áö¸ç °ÔÀÓ ¿£Áø°ú ·»´õ·¯¸¦ ¿¬°áÇØÁÙ Áß°£ °³Ã¼
+		@brief Render componentë‹¹ í•˜ë‚˜ì˜ ë Œë” ì˜¤ë¸Œì íŠ¸ë¥¼ ê°€ì§€ë©° ê²Œì„ ì—”ì§„ê³¼ ë Œë”ëŸ¬ë¥¼ ì—°ê²°í•´ì¤„ ì¤‘ê°„ ê°œì²´
 	**/
 	class GRAPHICSENGINE_DLL_DECLSPEC RenderObject
 	{
@@ -135,18 +135,18 @@ namespace Graphics
 			return m_Viewports;
 		}
 
-		// È°¼ºÈ­µÇ¾îÀÖ´ÂÁö Ã¼Å©
+		// í™œì„±í™”ë˜ì–´ìˆëŠ”ì§€ ì²´í¬
 		bool m_bIsEnable = false;
 		bool m_IsCulling = false;
 
-		// Á¤ÀûÀÎ ¿ÀºêÁ§Æ®ÀÎ°¡
+		// ì •ì ì¸ ì˜¤ë¸Œì íŠ¸ì¸ê°€
 		bool m_bIsStatic = false;
 
-		// ±×¸²ÀÚ¸¦ ±×¸®´Â ¿ÀºêÁ§Æ®ÀÎ°¡
+		// ê·¸ë¦¼ìë¥¼ ê·¸ë¦¬ëŠ” ì˜¤ë¸Œì íŠ¸ì¸ê°€
 		bool m_bIsCastShadow = false;
 
 
-		// ÄÃ¸µÀ» ÇÏ±âÀ§ÇØ
+		// ì»¬ë§ì„ í•˜ê¸°ìœ„í•´
 		struct TransformMatrix
 		{
 			Math::Matrix _world;
@@ -154,7 +154,7 @@ namespace Graphics
 		};
 		TransformMatrix m_TransformMatrix;
 
-		// ½ºÅ°´× ¿ÀºêÁ§Æ®ÀÎ°¡
+		// ìŠ¤í‚¤ë‹ ì˜¤ë¸Œì íŠ¸ì¸ê°€
 		bool m_bIsSkinned = false;
 		void* m_pSkinnedData = nullptr;
 
@@ -174,7 +174,7 @@ namespace Graphics
 	};
 
 	 /**
-		 @brief RenderData RenderObject¿¡¼­ ¸ÓÆ¼¸®¾ó ÀÎµ¦½º¿Í ¼­ºê¸Å½¬ ÀÎµ¦½ºÀÇ Á¤º¸¸¦ ´ã°íÀÖ´Â °´Ã¼
+		 @brief RenderData RenderObjectì—ì„œ ë¨¸í‹°ë¦¬ì–¼ ì¸ë±ìŠ¤ì™€ ì„œë¸Œë§¤ì‰¬ ì¸ë±ìŠ¤ì˜ ì •ë³´ë¥¼ ë‹´ê³ ìˆëŠ” ê°ì²´
 	 **/
 	struct RenderData
 	{
@@ -202,14 +202,14 @@ namespace Graphics
 
 		}
 
-		RenderObject* _renderObject = nullptr;
+		RenderObject* _renderObject = nullptr; 
 
 		int32 _materialIdx = -1;
 		int32 _subMeshIdx = -1;
 	};
 
 	/**
-		@brief MeshInstanceData ¸Å½¬ ÇÏµå¿ş¾î ÀÎ½ºÅÏ½ÌÀ» ÇÏ±âÀ§ÇÑ ±¸Á¶Ã¼
+		@brief MeshInstanceData ë§¤ì‰¬ í•˜ë“œì›¨ì–´ ì¸ìŠ¤í„´ì‹±ì„ í•˜ê¸°ìœ„í•œ êµ¬ì¡°ì²´
 	**/
 	struct MeshInstanceData
 	{
@@ -219,10 +219,10 @@ namespace Graphics
 	};
 
 	/**
-		 @brief MaterialInstanceData ·»´õ¸µ ÇÒ¶§ µµ¹«Áö ±âÁ¸°ÍÀ» ÃÖ´ëÇÑ °ÇµéÀÌ±â°¡ Èûµé¾î¼­ Ãß°¡ÇÑ °´Ã¼
-		 ¸ÓÆ¼¸®¾ó º°·Î ÀÎ½ºÅÏ½º µ¥ÀÌÅÍ¸¦ ¸ğ¾ÆÁÖ°í ·»´õ¸µ ÇÏ±â À§ÇØ Ãß°¡Çß´Ù.
-		 ¸ÕÀú ¸ÓÆ¼¸®¾ó ¹öÆÛ¿¡ ÀÖ´Â µ¥ÀÌÅÍ¸¦ ¾÷µ¥ÀÌÆ® ÇÑ´ÙÀ½ ¹ÙÀÎµå ÇÏ°í
-		 ·»´õ °´Ã¼¸¦ µ¹¸ç ¸Å½¬¹öÆÛ, perObject¸¦ ¹ÙÀÎµåÇÏ°í µå·Î¿ì ÇÏ±â À§ÇØ Ãß°¡ÇÔ
+		 @brief MaterialInstanceData ë Œë”ë§ í• ë•Œ ë„ë¬´ì§€ ê¸°ì¡´ê²ƒì„ ìµœëŒ€í•œ ê±´ë“¤ì´ê¸°ê°€ í˜ë“¤ì–´ì„œ ì¶”ê°€í•œ ê°ì²´
+		 ë¨¸í‹°ë¦¬ì–¼ ë³„ë¡œ ì¸ìŠ¤í„´ìŠ¤ ë°ì´í„°ë¥¼ ëª¨ì•„ì£¼ê³  ë Œë”ë§ í•˜ê¸° ìœ„í•´ ì¶”ê°€í–ˆë‹¤.
+		 ë¨¼ì € ë¨¸í‹°ë¦¬ì–¼ ë²„í¼ì— ìˆëŠ” ë°ì´í„°ë¥¼ ì—…ë°ì´íŠ¸ í•œë‹¤ìŒ ë°”ì¸ë“œ í•˜ê³ 
+		 ë Œë” ê°ì²´ë¥¼ ëŒë©° ë§¤ì‰¬ë²„í¼, perObjectë¥¼ ë°”ì¸ë“œí•˜ê³  ë“œë¡œìš° í•˜ê¸° ìœ„í•´ ì¶”ê°€í•¨
 	 **/
 	struct MaterialInstanceData
 	{

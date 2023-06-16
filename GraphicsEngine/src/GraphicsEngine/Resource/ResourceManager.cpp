@@ -1,4 +1,4 @@
-#include "GraphicsEnginePCH.h"
+﻿#include "GraphicsEnginePCH.h"
 #include "GraphicsEngine/Resource/ResourceManager.h"
 
 #include "GraphicsEngine/Resource/MeshBuffer.h"
@@ -384,7 +384,7 @@ namespace Graphics
 			return _find->second;
 		}
 
-		assert(false);
+		//assert(false);
 		return nullptr;
 	}
 

@@ -1,4 +1,4 @@
-#include "GraphicsPCH.h"
+﻿#include "GraphicsPCH.h"
 
 #include "GraphicsModule/Core/DX11/DX11RenderSystem.h"
 
@@ -221,7 +221,7 @@ namespace Graphics
 				}
 				if ((desc._bindFlags & BindFlags::UnorderedAccess) != 0)
 				{
-					_texture->CreateUnorderedAccessView(m_Device.Get(), 0, desc._mipLevels, 0, desc._arrayLayers);
+					_texture->CreateUnorderedAccessView(m_Device.Get(), 0, 0, desc._arrayLayers);
 				}
 			}
 			else

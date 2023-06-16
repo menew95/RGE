@@ -1,8 +1,8 @@
-/**
+ï»¿/**
 
     @file      RenderQueue.h
 	@brief     Render Queue
-	@details   ·»´õ ¿ÀºêÁ§Æ®µéÀÇ ½º¸¶Æ® Æ÷ÀÎÅÍµéÀ» °ü¸® ¹× ·»´õ Å¥¿¡ µî·Ï ÇÏ´Â Å¬·¡½º
+	@details   ë Œë” ì˜¤ë¸Œì íŠ¸ë“¤ì˜ ìŠ¤ë§ˆíŠ¸ í¬ì¸í„°ë“¤ì„ ê´€ë¦¬ ë° ë Œë” íì— ë“±ë¡ í•˜ëŠ” í´ë˜ìŠ¤
     @author    LWT
     @date      7.06.2023
 
@@ -28,37 +28,38 @@ namespace Graphics
 		~RenderQueue();
 
 		/**
-		    @brief  ·»´õ ¿ÀºêÁ§Æ®¸¦ »ı¼ºÈÄ ÄÁÅ×ÀÌ³Ê¿¡ ³Ö°í Æ÷ÀÎÅÍ¸¦ ¹İÈ¯
-		    @retval  - »ı¼ºµÈ »õ·Î¿î ·»´õ ¿ÀºêÁ§Æ®
+		    @brief  ë Œë” ì˜¤ë¸Œì íŠ¸ë¥¼ ìƒì„±í›„ ì»¨í…Œì´ë„ˆì— ë„£ê³  í¬ì¸í„°ë¥¼ ë°˜í™˜
+		    @retval  - ìƒì„±ëœ ìƒˆë¡œìš´ ë Œë” ì˜¤ë¸Œì íŠ¸
 		**/
 		RenderObject* CreateRenderObject();
 
 		/**
-		    @brief  ·»´õ ¿ÀºêÁ§Æ® »èÁ¦
-		    @param  renderObject - »èÁ¦ÇÒ ·»´õ ¿ÀºêÁ§Æ®ÀÇ Raw Æ÷ÀÎÅÍ
-		    @retval              - »èÁ¦ ¼º°ø ¿©ºÎ
+		    @brief  ë Œë” ì˜¤ë¸Œì íŠ¸ ì‚­ì œ
+		    @param  renderObject - ì‚­ì œí•  ë Œë” ì˜¤ë¸Œì íŠ¸ì˜ Raw í¬ì¸í„°
+		    @retval              - ì‚­ì œ ì„±ê³µ ì—¬ë¶€
 		**/
 		bool RemoveRenderObject(RenderObject* renderObject);
 
 		/**
-			@brief Deferred Pass¿¡ ·»´õ¸µÇÒ °´Ã¼ µî·Ï
+			@brief Deferred Passì— ë Œë”ë§í•  ê°ì²´ ë“±ë¡
 			@param deferred -
 		**/
 		void RegistDeferredPass(Deferred* deferred);
 
 		/**
-		 @brief Shadow Pass¿¡ ·»´õ¸µÇÒ °´Ã¼ µî·Ï
+		 @brief Shadow Passì— ë Œë”ë§í•  ê°ì²´ ë“±ë¡
 		 @param light - 
 		**/
 		void RegistShadowPass(Light* light);
 
 		/**
-		    @brief Voxel Pass¿¡ ·»´õ¸µÇÒ °´Ã¼ µî·Ï
+		    @brief Voxel Passì— ë Œë”ë§í•  ê°ì²´ ë“±ë¡
 		    @param voxel - 
 		**/
 		void RegistVoxelPass(Voxel* voxel);
 
 	private:
+
 		std::vector<std::shared_ptr<RenderObject>> m_RenderObjectContainer;
 	};
 }

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "Struct/VertexAttribute.h"
 //#include <LLGL/PipelineStateFlags.h>
@@ -41,6 +41,8 @@ namespace Graphics
 		//TODO: remove and use DXTypes namespace directly
 		DXGI_FORMAT                 ToDXGIFormatDSV(const DXGI_FORMAT format);
 		DXGI_FORMAT                 ToDXGIFormatSRV(const DXGI_FORMAT format);
+		DXGI_FORMAT                 ToDXGIFormatUAV(const DXGI_FORMAT format);
+		DXGI_FORMAT					ToDXGIFormatUINT(const DXGI_FORMAT format);
 
 		void Convert(D3D11_DEPTH_STENCIL_DESC& dst, const DepthDesc& srcDepth, const StencilDesc& srcStencil);
 
