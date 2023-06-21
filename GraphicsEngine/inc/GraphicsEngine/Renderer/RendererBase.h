@@ -1,4 +1,4 @@
-/**
+﻿/**
 
     @file      RendererBase.h
     @brief     render interface
@@ -17,10 +17,10 @@ namespace Graphics
     class RendererBase
     {
     public:
-        virtual void BindRenderPass() abstract;
-
-        virtual void BindFrameBuffer() abstract;
-
-        virtual void BindResource() abstract;
+        //virtual void BindRenderPass() abstract;
+        //
+        //virtual void BindFrameBuffer() abstract;
+        //
+        //virtual void BindResource() abstract;
     };
 }

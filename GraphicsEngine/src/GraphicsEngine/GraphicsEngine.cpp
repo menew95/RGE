@@ -1,4 +1,4 @@
-#include "GraphicsEnginePCH.h"
+ï»¿#include "GraphicsEnginePCH.h"
 
 #include "GraphicsModule/Module.h"
 
@@ -16,6 +16,8 @@
 #include "GraphicsEngine/Json/JsonTable.h"
 
 #include "GraphicsEngine/RenderQueue/RenderQueue.h"
+
+#include "GraphicsEngine/Renderer/RenderManager.h"
 
 #include "GraphicsEngine/RenderPass/IBL.h"
 #include "GraphicsEngine/RenderPass/Light.h"
@@ -37,6 +39,8 @@ namespace Graphics
 
 		m_RenderQueue = new RenderQueue();
 
+		m_RenderManager = new RenderManager(m_RenderSystem, m_ResourceManager);
+
 		LoadGraphicsTable();
 
 		Initialize(desc);
@@ -49,6 +53,8 @@ namespace Graphics
 
 		m_RenderSystem->Release(*m_SwapChain);
 		m_RenderSystem->Release(*m_CommandBuffer);
+
+		delete m_RenderManager;
 
 		delete m_ResourceManager;
 
@@ -185,7 +191,7 @@ namespace Graphics
 
 	void GraphicsEngine::CreateIBL()
 	{
-		// ³ªÁß¿£ ÅØ½ºÃ³(·ÎµåÇÑ ½ºÄ«ÀÌ ¹Ú½º È¤Àº µ¿ÀûÀ¸·Î Ä¸Ã³µÈ Å¥ºê¸Ê)¸¦ º¯¼ö·Î ¹Þ¾Æ »ý¼º
+		// ë‚˜ì¤‘ì—” í…ìŠ¤ì²˜(ë¡œë“œí•œ ìŠ¤ì¹´ì´ ë°•ìŠ¤ í˜¹ì€ ë™ì ìœ¼ë¡œ ìº¡ì²˜ëœ íë¸Œë§µ)ë¥¼ ë³€ìˆ˜ë¡œ ë°›ì•„ ìƒì„±
 		m_IBL->CreateIBLResource();
 	}
 

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "Common.h"
 
@@ -17,6 +17,7 @@ namespace Graphics
 	class LightBuffer;
 
 	class ResourceManager;
+	class RenderManager;
 
 	class IBL;
 	class Light;
@@ -73,14 +74,14 @@ namespace Graphics
 		//void RegistRenderShadow(uint32 type, RenderObject& renderObject);
 
 		  /**
-			  @brief  ·»´õ Å¥¿¡ ·»´õ ¿ÀºêÁ§Æ® µî·ÏÈÄ Æ÷ÀÎÅÍ ¹İÈ¯
-			  @retval  - ·»´õ ¿ÀºêÁ§Æ®ÀÇ ¿ø½Ã Æ÷ÀÎÅÍ
+			  @brief  ë Œë” íì— ë Œë” ì˜¤ë¸Œì íŠ¸ ë“±ë¡í›„ í¬ì¸í„° ë°˜í™˜
+			  @retval  - ë Œë” ì˜¤ë¸Œì íŠ¸ì˜ ì›ì‹œ í¬ì¸í„°
 		  **/
 		RenderObject* CreateRenderObject();
 
 		  /**
-			  @brief ·»´õ Å¥¿¡ µî·ÏµÈ ·»´õ ¿ÀºêÁ§Æ®¸¦ »èÁ¦
-			  @param renderObject - µî·ÏµÇ¾îÀÖ´Â ·»´õ¿ÀºêÁ§Æ®ÀÇ ¿ø½Ã Æ÷ÀÎÅÍ
+			  @brief ë Œë” íì— ë“±ë¡ëœ ë Œë” ì˜¤ë¸Œì íŠ¸ë¥¼ ì‚­ì œ
+			  @param renderObject - ë“±ë¡ë˜ì–´ìˆëŠ” ë Œë”ì˜¤ë¸Œì íŠ¸ì˜ ì›ì‹œ í¬ì¸í„°
 		  **/
 		void RemoveRenderObject(RenderObject* renderObject);
 
@@ -109,6 +110,8 @@ namespace Graphics
 		Graphics::CommandBuffer* m_CommandBuffer;
 
 		ResourceManager* m_ResourceManager;
+
+		RenderManager* m_RenderManager;
 
 		CameraBuffer* m_MainCameraBuffer;
 

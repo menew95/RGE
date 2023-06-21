@@ -62,11 +62,15 @@ namespace Graphics
 
 		BufferDesc _desc;
 
-		_desc._size = m_BufferSize;
+		_desc._size = size;
+		_desc._stride = 16;
+		_desc._format = Format::R32G32B32A32_FLOAT;
 		_desc._bindFlags = BindFlags::ShaderResource;
 		_desc._miscFlags = MiscFlags::DynamicUsage;
 
 		m_RenderSystem->CreateBuffer(GetUUID(), _desc);
+
+		m_BufferSize = size;
 	}
 
 }

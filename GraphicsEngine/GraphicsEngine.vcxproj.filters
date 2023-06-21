@@ -96,7 +96,7 @@
     <ClInclude Include="inc\GraphicsEngine\RenderPass\Voxel.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="inc\GraphicsEngine\RenderManager\RendererBase.h">
+    <ClInclude Include="inc\GraphicsEngine\Renderer\RendererBase.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="inc\GraphicsEngine\Resource\InstanceBuffer.h">
@@ -105,7 +105,10 @@
     <ClInclude Include="inc\GraphicsEngine\Resource\ByteBuffer.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="inc\GraphicsEngine\RenderManager\InstanceRenderer.h">
+    <ClInclude Include="inc\GraphicsEngine\Renderer\InstanceRenderer.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\GraphicsEngine\Renderer\RenderManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -183,6 +186,12 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\GraphicsEngine\InstanceRender.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GraphicsEngine\Renderer\InstanceRenderer.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GraphicsEngine\Renderer\RenderManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
