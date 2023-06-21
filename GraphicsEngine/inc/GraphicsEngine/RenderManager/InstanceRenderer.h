@@ -28,6 +28,8 @@ namespace Graphics
 
     private:
 
+        void UpdateInstanceBuffer();
+
     };
 
 }

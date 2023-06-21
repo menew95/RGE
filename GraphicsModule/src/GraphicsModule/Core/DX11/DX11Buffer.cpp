@@ -1,4 +1,4 @@
-#include "GraphicsPCH.h"
+ï»¿#include "GraphicsPCH.h"
 #include "GraphicsModule/Core/DX11/DX11Buffer.h"
 #include "GraphicsModule/Core/DX11/Direct3D11.h"
 #include "GraphicsModule/Core/DX11/DX11ResourceFlags.h"
@@ -63,7 +63,7 @@ namespace Graphics
 
 		void DX11Buffer::ReadSubresource(ID3D11DeviceContext* context, void* data, uint32 dataSize, uint32 offset)
 		{
-			// Todo :: ¸®¼Ò½º¸¦ ÀÐ¾î ¿À´Â ºÎºÐ ÇÊ¿ä
+			// Todo :: ë¦¬ì†ŒìŠ¤ë¥¼ ì½ì–´ ì˜¤ëŠ” ë¶€ë¶„ í•„ìš”
 			D3D11_MAPPED_SUBRESOURCE _subResouce;
 		
 			assert(false);
@@ -90,6 +90,31 @@ namespace Graphics
 		void DX11Buffer::Unmap(ID3D11DeviceContext* context)
 		{
 			context->Unmap(GetBuffer(), 0);
+		}
+
+		void DX11Buffer::Resize(ID3D11Device* device, ID3D11DeviceContext* context, uint32 size)
+		{
+			void* _initData = nullptr;
+
+			if (GetDXUsage() == D3D11_USAGE_DYNAMIC)
+			{
+				_initData = new char[size];
+
+				D3D11_MAPPED_SUBRESOURCE _mappedSubresource;
+				ZeroMemory(&_mappedSubresource, sizeof(D3D11_MAPPED_SUBRESOURCE));
+
+				context->Map(GetBuffer(), 0, D3D11_MAP_WRITE_DISCARD, 0, &_mappedSubresource);
+
+				memcpy(reinterpret_cast<char*>(_initData), _mappedSubresource.pData, m_Size);
+
+				context->Unmap(GetBuffer(), 0);
+			}
+
+			CreateBuffer(device, m_BufferDesc, _initData);
+
+			m_Size = size;
+
+			delete[] _initData;
 		}
 
 		void DX11Buffer::SetName(const char* name)

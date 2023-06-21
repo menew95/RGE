@@ -1,4 +1,4 @@
-/**
+﻿/**
 
     @file      ByteBuffer.h
     @brief     ByteBuffer
@@ -25,6 +25,8 @@ namespace Graphics
         void ResizeBuffer(uint32 size);
 
         inline  byte* GetByteBuffer() const { return m_ByteBuffer; }
+
+        inline uint32 GetSize() const { return m_BufferSize; }
 
     protected:
         

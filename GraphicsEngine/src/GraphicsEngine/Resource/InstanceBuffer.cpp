@@ -1,14 +1,19 @@
-#include "GraphicsEnginePCH.h"
+﻿#include "GraphicsEnginePCH.h"
 #include "GraphicsEngine/Resource/InstanceBuffer.h"
+#include "GraphicsModule/Core/RenderSystem.h"
+#include "GraphicsModule/Core/CommandBuffer.h"
 
 namespace Graphics
 {
 
-	InstanceBuffer::InstanceBuffer(Graphics::RenderSystem* renderSystem, uuid uuid)
-		: ByteBuffer(5000, uuid)
+	InstanceBuffer::InstanceBuffer(Graphics::RenderSystem* renderSystem, uuid uuid, uint32 size)
+		: ByteBuffer(size, uuid)
 		, m_InstanceBuffer(nullptr)
+		, m_BufferSize(0)
 	{
+		m_RenderSystem = renderSystem;
 
+		ResizeBuffer(size);
 	}
 
 	InstanceBuffer::~InstanceBuffer()
@@ -39,6 +44,29 @@ namespace Graphics
 		memcpy(_instance + sizeof(Matrix) * 2 + sizeof(float) * 12, skin, sizeof(Matrix) * 128);
 
 		UpdateBuffer(_instance, _skinSize, offsetID * _skinSize);
+	}
+
+	void InstanceBuffer::UpdateInstanceBuffer(CommandBuffer* commandBuffer)
+	{
+		commandBuffer->UpdateBuffer(*m_InstanceBuffer, 0, GetByteBuffer(), GetSize());
+	}
+
+	void InstanceBuffer::BindBuffer(CommandBuffer* commandBuffer, uint32 slot, uint32 stageFlags)
+	{
+		commandBuffer->SetResource(*m_InstanceBuffer, slot, BindFlags::ShaderResource, stageFlags);
+	}
+
+	void InstanceBuffer::ResizeBuffer(uint32 size)
+	{
+		if (m_InstanceBuffer != nullptr) m_RenderSystem->Release(*m_InstanceBuffer);
+
+		BufferDesc _desc;
+
+		_desc._size = m_BufferSize;
+		_desc._bindFlags = BindFlags::ShaderResource;
+		_desc._miscFlags = MiscFlags::DynamicUsage;
+
+		m_RenderSystem->CreateBuffer(GetUUID(), _desc);
 	}
 
 }

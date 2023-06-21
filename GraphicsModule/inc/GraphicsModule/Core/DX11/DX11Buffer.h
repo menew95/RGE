@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "GraphicsModule/Core/Buffer.h"
 #include "GraphicsModule/Core/Common/ComPtr.h"
@@ -25,7 +25,8 @@ namespace Graphics
 			void* Map(ID3D11DeviceContext* context, const CPUAccess access, uint32 offset, uint32 size);
 			void Unmap(ID3D11DeviceContext* context);
 
-			
+			void Resize(ID3D11Device* device, ID3D11DeviceContext* context, uint32 size);
+
 			inline ID3D11Buffer* GetBuffer() const { return m_Buffer.Get(); }
 			inline ID3D11Buffer* const* GetBufferRef() const { return m_Buffer.GetAddressOf(); }
 

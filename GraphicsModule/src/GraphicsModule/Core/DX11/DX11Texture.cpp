@@ -13,6 +13,7 @@ namespace Graphics
 		DX11Texture::DX11Texture(const TextureDesc& desc)
 			: Texture{ desc._textureType, desc._bindFlags }
 			, m_TextureDesc(desc)
+			, m_Format(DXGI_FORMAT_UNKNOWN)
 		{
 		}
 
