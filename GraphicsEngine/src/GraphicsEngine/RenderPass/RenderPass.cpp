@@ -1,4 +1,4 @@
-#include "GraphicsEnginePCH.h"
+﻿#include "GraphicsEnginePCH.h"
 #include "GraphicsEngine/RenderObject.h"
 #include "GraphicsEngine/RenderPass/RenderPass.h"
 #include "GraphicsEngine/Resource/MeshBuffer.h"
@@ -140,7 +140,7 @@ namespace Graphics
 
 			_materialInstance._materialBuffer->BindResource(commnadBuffer);
 
-			for (size_t _dataIdx = 0; _dataIdx < _materialInstance._meshInstanceData.size(); _dataIdx)
+			for (size_t _dataIdx = 0; _dataIdx < _materialInstance._meshInstanceDatas.size(); _dataIdx)
 			{
 
 

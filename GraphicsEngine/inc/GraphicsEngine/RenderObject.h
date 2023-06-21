@@ -215,6 +215,10 @@ namespace Graphics
 	{
 		MeshBuffer* _meshBuffer = nullptr;
 
+		bool _bIsSkin = false;
+
+		uint32 _subMeshIdx = -1;
+
 		std::vector<RenderData> _renderObjects;
 	};
 
@@ -228,7 +232,7 @@ namespace Graphics
 	{
 		MaterialBuffer* _materialBuffer = nullptr;
 
-		std::vector<MeshInstanceData> _meshInstanceData;
+		std::vector<MeshInstanceData> _meshInstanceDatas;
 	};
 
 	struct InstanceData
