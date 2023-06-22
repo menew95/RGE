@@ -19,6 +19,7 @@ namespace Graphics
     class ResourceManager;
     class CommandBuffer;
     class InstanceBuffer;
+    class RenderPass;
 
     class InstanceRenderer final : public RendererBase
     {
@@ -33,12 +34,18 @@ namespace Graphics
         **/
         void RegistInstanceQueue(const RenderData* renderData);
 
+        void BindRenderPass(RenderPass* renderPass);
+
+        void BeginExcute();
+
         void Excute();
+
+        void EndExcute();
 
     private:
 
         /**
-            @brief 인스턴스 버퍼등 필요한 리소스들을 초기화
+            @brief 인스턴스 버퍼 등 필요한 리소스들을 초기화
         **/
         void Initialize();
 
@@ -53,6 +60,22 @@ namespace Graphics
         ResourceManager* m_ResourceManager;
 
         CommandBuffer* m_CommandBuffer;
+
+		std::shared_ptr<Graphics::RenderPass> m_Deferred_Mesh_Pass;
+
+		std::shared_ptr<Graphics::RenderPass> m_Deferred_Mesh_Albedo_Pass;
+
+		std::shared_ptr<Graphics::RenderPass> m_Deferred_Mesh_Albedo_Bump_Pass;
+
+		std::shared_ptr<Graphics::RenderPass> m_Deferred_Mesh_Albedo_Bump_MRA_Pass;
+
+		std::shared_ptr<Graphics::RenderPass> m_Deferred_Mesh_Skinned_Pass;
+
+		std::shared_ptr<Graphics::RenderPass> m_Deferred_Mesh_Skinned_Albedo_Pass;
+
+		std::shared_ptr<Graphics::RenderPass> m_Deferred_Mesh_Skinned_Albedo_Bump_Pass;
+
+		std::shared_ptr<Graphics::RenderPass> m_Deferred_Mesh_Skinned_Albedo_Bump_MRA_Pass;
 
         std::shared_ptr<InstanceBuffer> m_InstanceBuffer;
 

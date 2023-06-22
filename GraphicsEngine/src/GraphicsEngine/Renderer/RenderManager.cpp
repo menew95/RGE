@@ -4,9 +4,10 @@
 
 namespace Graphics
 {
-	RenderManager::RenderManager(RenderSystem* renderSystem, ResourceManager* resourceManager)
+	RenderManager::RenderManager(RenderSystem* renderSystem, ResourceManager* resourceManager, CommandBuffer* commandBuffer)
 		: m_RenderSystem(renderSystem)
 		, m_ResourceManager(resourceManager)
+		, m_CommandBuffer(commandBuffer)
 	{
 		InitRenderer();
 	}
@@ -18,7 +19,7 @@ namespace Graphics
 
 	void RenderManager::InitRenderer()
 	{
-		m_InstanceRenderer = std::make_shared<InstanceRenderer>(m_RenderSystem, m_ResourceManager);
+		m_InstanceRenderer = std::make_shared<InstanceRenderer>(m_RenderSystem, m_ResourceManager, m_CommandBuffer);
 	}
 
 }

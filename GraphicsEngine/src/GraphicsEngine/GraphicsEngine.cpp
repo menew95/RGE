@@ -37,13 +37,14 @@ namespace Graphics
 
 		m_ResourceManager = new ResourceManager(m_RenderSystem);
 
-		m_RenderQueue = new RenderQueue();
-
-		m_RenderManager = new RenderManager(m_RenderSystem, m_ResourceManager);
 
 		LoadGraphicsTable();
 
 		Initialize(desc);
+
+		m_RenderQueue = new RenderQueue();
+
+		m_RenderManager = new RenderManager(m_RenderSystem, m_ResourceManager, m_CommandBuffer);
 	}
 
 	GraphicsEngine::~GraphicsEngine()
@@ -56,9 +57,9 @@ namespace Graphics
 
 		delete m_RenderManager;
 
-		delete m_ResourceManager;
-
 		delete m_RenderQueue;
+
+		delete m_ResourceManager;
 
 		FreeDllAndReleaseRenderSystem();
 	}

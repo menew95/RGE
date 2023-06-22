@@ -14,11 +14,12 @@ namespace Graphics
 {
     class RenderSystem;
     class ResourceManager;
+    class CommandBuffer;
 
     class RenderManager
     {
     public:
-        RenderManager(RenderSystem* renderSystem, ResourceManager* resourceManager);
+        RenderManager(RenderSystem* renderSystem, ResourceManager* resourceManager, CommandBuffer* commandBuffer);
 
         ~RenderManager();
         
@@ -29,6 +30,8 @@ namespace Graphics
         RenderSystem* m_RenderSystem;
 
         ResourceManager* m_ResourceManager;
+
+        CommandBuffer* m_CommandBuffer;
 
         std::shared_ptr<RendererBase> m_InstanceRenderer;
 

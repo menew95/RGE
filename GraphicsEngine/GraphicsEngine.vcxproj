@@ -283,7 +283,6 @@ xcopy /E /S /Y /R "$(ProjectDir)Shader\*" "$(OutputPath)..\Client\Asset\Shader\*
     </FxCompile>
     <ClCompile Include="src\GraphicsEngine\Culling\Frustum.cpp" />
     <ClCompile Include="src\GraphicsEngine\Culling\Occlusion.cpp" />
-    <ClCompile Include="src\GraphicsEngine\InstanceRender.cpp" />
     <ClCompile Include="src\GraphicsEngine\Json\JsonTable.cpp" />
     <ClCompile Include="src\GraphicsEngine\Renderer\InstanceRenderer.cpp" />
     <ClCompile Include="src\GraphicsEngine\Renderer\RenderManager.cpp" />

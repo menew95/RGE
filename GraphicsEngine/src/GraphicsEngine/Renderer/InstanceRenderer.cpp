@@ -92,6 +92,8 @@ namespace Graphics
 		uint32 _size = sizeof(Matrix) * 2 + sizeof(Matrix) * 128 + sizeof(Vector4) * 3;
 
 		m_InstanceBuffer = std::make_shared<InstanceBuffer>(m_RenderSystem, TEXT("Instance Buffer"), _size * 7 * 16);
+
+
 	}
 
 }

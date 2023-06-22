@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "Common.h"
 
@@ -52,6 +52,8 @@ namespace Graphics
 		/* ----- Input Assembly ------ */
 
 		virtual void SetVertexBuffer(Buffer& buffer) abstract;
+
+		virtual void SetVertexBuffer(Buffer** buffer) abstract;
 
 		virtual void SetIndexBuffer(Buffer& buffer) abstract;
 

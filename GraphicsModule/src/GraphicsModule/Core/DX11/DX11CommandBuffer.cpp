@@ -1,4 +1,4 @@
-#include "GraphicsPCH.h"
+ï»¿#include "GraphicsPCH.h"
 
 #include "GraphicsModule/Core/DX11/DX11CommandBuffer.h"
 #include "GraphicsModule/Core/DX11/DX11PipelineState.h"
@@ -149,6 +149,17 @@ namespace Graphics
 			m_Context->IASetVertexBuffers(0, 1, _buffers, _strides, _offsets);
 		}
 
+		void DX11CommandBuffer::SetVertexBuffer(Buffer** buffers)
+		{
+			auto* _buffer = reinterpret_cast<DX11Buffer**>(buffers);
+
+			ID3D11Buffer* _buffers[] = { _buffer[0]->GetBuffer(), _buffer[1]->GetBuffer() };
+			uint32 _strides[] = { _buffer[0]->GetStride(), _buffer[1]->GetStride() };
+			uint32 _offsets[] = { 0, 0 };
+
+			m_Context->IASetVertexBuffers(0, 2, _buffers, _strides, _offsets);
+		}
+
 		void DX11CommandBuffer::SetIndexBuffer(Buffer& buffer)
 		{
 			auto& _buffer = reinterpret_cast<DX11Buffer&>(buffer);
@@ -182,7 +193,7 @@ namespace Graphics
 				}
 				case ResourceType::ResourceView:
 				{
-					// »ç½Ç 1°³¸é µüÈ÷ ¾µÀÏÀÌ ¾ø±äÇÔ
+					// ì‚¬ì‹¤ 1ê°œë©´ ë”±íˆ ì“¸ì¼ì´ ì—†ê¸´í•¨
 					assert(false);
 					auto& _rv = reinterpret_cast<ResourceView&>(resource);
 					SetResourceView(_rv, slot, 1, bindFlags, stageFlags);

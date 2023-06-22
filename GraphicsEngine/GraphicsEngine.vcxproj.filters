@@ -185,9 +185,6 @@
     <ClCompile Include="src\GraphicsEngine\Resource\InstanceBuffer.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="src\GraphicsEngine\InstanceRender.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="src\GraphicsEngine\Renderer\InstanceRenderer.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>

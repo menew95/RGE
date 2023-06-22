@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "GraphicsModule/Core/CommandBuffer.h"
 #include "GraphicsModule/Core/Common/ComPtr.h"
@@ -59,6 +59,8 @@ namespace Graphics
 
 			void SetVertexBuffer(Buffer& buffer) override;
 
+			void SetVertexBuffer(Buffer** buffer) override;
+
 			void SetIndexBuffer(Buffer& buffer) override;
 
 			/* ----- Resources ----- */
@@ -117,7 +119,7 @@ namespace Graphics
 			void SetTexture(Texture& texture, uint32 slot, uint32 bindFlags, uint32 stageFlags);
 			void SetSampler(Sampler& sampler, uint32 slot, uint32 stageFlags);
 
-			// Todo : ÀÛ¾÷ ÇÊ¿ä
+			// Todo : ìž‘ì—… í•„ìš”
 			void SetBuffers(Buffer** buffer, uint32 slot, uint32 count, uint32 bindFlags, uint32 stageFlags);
 			void SetTextures(Texture** texture, uint32 slot, uint32 count, uint32 bindFlags, uint32 stageFlags);
 			void SetSamplers(Sampler** sampler, uint32 slot, uint32 count, uint32 stageFlags);

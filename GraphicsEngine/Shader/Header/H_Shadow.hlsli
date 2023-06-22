@@ -20,27 +20,35 @@ static const float3 sampleOffsetDirections[20] =
 
 float CalcSpotShadowFactor(int spotIndex, float4 lightspacepos, Texture2DArray spotShadowMap, SamplerComparisonState shadowSampler)
 {
-	float3 projCoords = lightspacepos.xyz / lightspacepos.w;
-	projCoords.x = projCoords.x * 0.5 + 0.5f;
-	projCoords.y = -projCoords.y * 0.5 + 0.5f;
-	if (projCoords.z > 1.0)
-		return 0.0f;
+	float3 projCoords = float3(0.0f, 0.0f, 0.0f);
 
-	float currentDepth = projCoords.z;
-	float bias = 0.01f;
 	float shadow = 0.0;
 
-	float3 samplePos = projCoords;
-	samplePos.z = spotIndex;
-	[unroll]
-	for (int x = -1; x <= 1; ++x)
+	projCoords = lightspacepos.xyz / lightspacepos.w;
+	projCoords.x = projCoords.x * 0.5 + 0.5f;
+	projCoords.y = -projCoords.y * 0.5 + 0.5f;
+
+	if (projCoords.z < 1.0)
 	{
-		for (int y = -1; y <= 1; ++y)
+		float currentDepth = projCoords.z;
+		float bias = 0.01f;
+
+		float3 samplePos = projCoords;
+		samplePos.z = spotIndex;
+
+		[unroll]
+		for (int x = -1; x <= 1; ++x)
 		{
-			shadow += spotShadowMap.SampleCmpLevelZero(shadowSampler, samplePos, currentDepth, int2(x, y));
+			[unroll]
+			for (int y = -1; y <= 1; ++y)
+			{
+				shadow += spotShadowMap.SampleCmpLevelZero(shadowSampler, samplePos, currentDepth, int2(x, y));
+			}
 		}
+
+		shadow /= 9.0f;
 	}
-	shadow /= 9.0f;
+
 	return shadow;
 }
 
@@ -91,64 +99,74 @@ float CalcDepthInShadow(const in float3 fragPos, float far_plane, float near_pla
 
 float CalcPointShadowFactor(int pointIndex, float4 lightspacepos, float3 posToLight, float far_plane, TextureCubeArray pointShadowMap, SamplerComparisonState shadowSampler)
 {
-	float3 projCoords = lightspacepos.xyz / lightspacepos.w;
-	if (projCoords.z > 1.0)
-		return 0.0f; 
+	float3 projCoords = float3(0.0f, 0.0f, 0.0f);
 
-	//float currentDepth = CalcDepthInShadow(posToLight, far_plane, 0.1f);
-	float currentDepth = projCoords.z;
-	float bias = 0.01f;
 	float shadow = 0.0;
 
-	float width, height, element;
-	pointShadowMap.GetDimensions(width, height, element);
-	float textureSize = 1.0f / width;
-	posToLight = normalize(posToLight);
+	projCoords = lightspacepos.xyz / lightspacepos.w;
 
-	float4 samplePos = float4(posToLight, 0.0f);
-	samplePos.a = pointIndex;
-
-	int samples = 20;
-	//float viewDistance = length(viewPos - worldPos);
-	//float diskRadius = 1.0f / 512.f;
-	//float diskRadius = (1.0 + (viewDistance / far_plane)) / 25.0;
-	//float offset = 0.1;
-
-	[unroll]
-	for (int i = 0; i < samples; ++i)
+	if (projCoords.z < 1.0)
 	{
-		float4 _samplePos = samplePos + float4(sampleOffsetDirections[i] * textureSize, 0.0f);
+		//float currentDepth = CalcDepthInShadow(posToLight, far_plane, 0.1f);
+		float currentDepth = projCoords.z;
+		float bias = 0.01f;
 
-		shadow += pointShadowMap.SampleCmpLevelZero(shadowSampler, _samplePos, currentDepth);
+		float width, height, element;
+		pointShadowMap.GetDimensions(width, height, element);
+		float textureSize = 1.0f / width;
+		posToLight = normalize(posToLight);
+
+		float4 samplePos = float4(posToLight, 0.0f);
+		samplePos.a = pointIndex;
+
+		int samples = 20;
+		//float viewDistance = length(viewPos - worldPos);
+		//float diskRadius = 1.0f / 512.f;
+		//float diskRadius = (1.0 + (viewDistance / far_plane)) / 25.0;
+		//float offset = 0.1;
+
+		[unroll]
+		for (int i = 0; i < samples; ++i)
+		{
+			float4 _samplePos = samplePos + float4(sampleOffsetDirections[i] * textureSize, 0.0f);
+
+			shadow += pointShadowMap.SampleCmpLevelZero(shadowSampler, _samplePos, currentDepth);
+		}
+		shadow /= float(samples);
 	}
-	shadow /= float(samples);
 
 	return shadow;
 }
 
-float CalcCascadeShadowFactor(int cascadeIndex, float4 lightspacepos, Texture2DArray cascadeShadowMap, SamplerComparisonState cascadeShadowSampler)
+float CalcCascadeShadowFactor(in int cascadeIndex, in float4 lightspacepos, in Texture2DArray cascadeShadowMap, in SamplerComparisonState cascadeShadowSampler)
 {
-	float3 projCoords = lightspacepos.xyz / lightspacepos.w;
+	float shadow = 0.0f;
+
+	float3 projCoords = float3(0.0f, 0.0f, 0.0f);
+
+	projCoords = lightspacepos.xyz / lightspacepos.w;
 	projCoords.x = projCoords.x * 0.5 + 0.5f;
 	projCoords.y = -projCoords.y * 0.5 + 0.5f;
-	if (projCoords.z > 1.0)
-		return 0.0f;
 
-	float currentDepth = projCoords.z;
-	float bias = 0.01f;
-	float shadow = 0.0;
-
-	float3 samplePos = projCoords;
-	samplePos.z = cascadeIndex;
-	[unroll]
-	for (int x = -1; x <= 1; ++x)
+	if (projCoords.z < 1.0)
 	{
-		for (int y = -1; y <= 1; ++y)
+		float currentDepth = projCoords.z;
+		float bias = 0.01f;
+
+		float3 samplePos = projCoords;
+		samplePos.z = cascadeIndex;
+		[unroll]
+		for (int x = -1; x <= 1; ++x)
 		{
-			shadow += cascadeShadowMap.SampleCmpLevelZero(cascadeShadowSampler, samplePos, currentDepth /*- bias*/, int2(x, y));
+			[unroll]
+			for (int y = -1; y <= 1; ++y)
+			{
+				shadow += cascadeShadowMap.SampleCmpLevelZero(cascadeShadowSampler, samplePos, currentDepth /*- bias*/, int2(x, y));
+			}
 		}
+		shadow /= 9.0f;
 	}
-	shadow /= 9.0f;
+
 	return shadow;
 }
 

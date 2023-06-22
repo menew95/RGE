@@ -1,4 +1,4 @@
-#include "GraphicsPCH.h"
+Ôªø#include "GraphicsPCH.h"
 #include "GraphicsModule/Core/DX11/DX11Shader.h"
 #include "GraphicsModule/Core/DX11/DX11Utilitys.h"
 
@@ -46,7 +46,7 @@ namespace Graphics
 			flags = D3DCOMPILE_ENABLE_STRICTNESS | D3DCOMPILE_PACK_MATRIX_ROW_MAJOR;
 
 #if defined(_DEBUG) || defined(DEBUG)
-			flags |= D3DCOMPILE_DEBUG; // Ω¶¿Ã¥ı µπˆ±Î«“ ∂ß « ø‰
+			flags |= D3DCOMPILE_DEBUG; // ÏâêÏù¥Îçî ÎîîÎ≤ÑÍπÖÌï† Îïå ÌïÑÏöî
 
 			flags |= D3DCOMPILE_SKIP_OPTIMIZATION;
 #endif
@@ -224,7 +224,7 @@ namespace Graphics
 				D3D11_INPUT_ELEMENT_DESC inputDesc;
 				inputDesc.SemanticName = paramDesc.SemanticName;
 				inputDesc.SemanticIndex = paramDesc.SemanticIndex;
-				inputDesc.InputSlot = 0;
+
 				if (idx == 0)
 				{
 					inputDesc.AlignedByteOffset = 0;
@@ -233,8 +233,21 @@ namespace Graphics
 				{
 					inputDesc.AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
 				}
-				inputDesc.InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
-				inputDesc.InstanceDataStepRate = 0;
+
+				std::string semanticName = paramDesc.SemanticName;
+
+				if (semanticName.find("INSTANCE_") == 0)
+				{
+					inputDesc.InputSlotClass = D3D11_INPUT_PER_INSTANCE_DATA;
+					inputDesc.InputSlot = 1;
+					inputDesc.InstanceDataStepRate = 1;
+				}
+				else
+				{
+					inputDesc.InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+					inputDesc.InputSlot = 0;
+					inputDesc.InstanceDataStepRate = 0;
+				}
 
 				if (paramDesc.Mask == 1)
 				{

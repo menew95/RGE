@@ -55,4 +55,17 @@ struct PSOut
 	float4 Emissive	: SV_TARGET4;
 };
 
+#if defined(HARDWARE)
+struct VSInstanceInput
+{
+	float4x4	_world		: INSTANCE_WORLD;
+	float4x4	_worldInv	: INSTANCE_WORLDINV;
+
+	// material property
+	float4		_albedo		: INSTANCE_ALBEDO;
+	float4		_emissive	: INSTANCE_EMISSIVE;
+	float4		_pbr		: INSTANCE_PBR;
+};
+#endif
+
 #endif // H_INPUT

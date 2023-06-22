@@ -69,6 +69,8 @@ namespace Graphics
 
         Buffer* m_InstanceBuffer;
 
+        Buffer* m_SkinInstanceBuffer;
+
         uint32 m_BufferSize;
     };
 }
