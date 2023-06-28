@@ -60,6 +60,17 @@ namespace Graphics
 		}
 	}
 
+	void InstanceRenderer::ClearInstanceQueue()
+	{
+		for (auto& _iter : m_InstanceQueue)
+		{
+			for (auto& _meshInstance : _iter.second._meshInstanceDatas)
+			{
+				_meshInstance._renderObjects.clear();
+			}
+		}
+	}
+
 	void InstanceRenderer::BindRenderPass(RenderPass* renderPass)
 	{
 		renderPass->Bind(m_CommandBuffer);
@@ -80,36 +91,9 @@ namespace Graphics
 
 				do 
 				{
-					_meshCount += UpdateInstanceBuffer(_meshInstance, _meshCount);
+					uint32 _drawNum = UpdateInstanceBuffer(_meshInstance, _meshCount);
 
-					RenderPass* _renderPass = nullptr;
-
-					switch (_iter.second._materialBuffer->GetTextureBindFlags())
-					{
-						case (uint32)TextureBindFlag::NONE:
-						{
-							_renderPass = m_Deferred_Mesh_Pass.get();
-							break;
-						}
-						case (uint32)TextureBindFlag::ALBEDO:
-						{
-							_renderPass = m_Deferred_Mesh_Albedo_Pass.get();
-							break;
-						}
-						case (uint32)TextureBindFlag::ALBEDO_NORMAL:
-						{
-							_renderPass = m_Deferred_Mesh_Albedo_Bump_Pass.get();
-							break;
-						}
-						case (uint32)TextureBindFlag::ALBEDO_NORMAL_MRA:
-						{
-							_renderPass = m_Deferred_Mesh_Albedo_Bump_MRA_Pass.get();
-							break;
-						}
-						default:
-							assert(false);
-							break;
-					}
+					RenderPass* _renderPass = GetRenderPass(_iter.second._materialBuffer, _meshInstance._bIsSkin);
 
 					BindRenderPass(_renderPass);
 
@@ -123,7 +107,9 @@ namespace Graphics
 
 					m_CommandBuffer->SetIndexBuffer(*_subMeshBuffer.GetBuffer());
 
-					m_CommandBuffer->DrawIndexedInstanced(_subMeshBuffer.GetIndexCount(), _meshInstance._renderObjects.size(), 0);
+					m_CommandBuffer->DrawIndexedInstanced(_subMeshBuffer.GetIndexCount(), _drawNum, 0);
+
+					_meshCount += _drawNum;
 				} 
 				while (_meshInstance._renderObjects.size() > _meshCount);
 			}
@@ -181,6 +167,66 @@ namespace Graphics
 		m_InstanceBuffer->UpdateInstanceBuffer(m_CommandBuffer);
 
 		return _cnt;
+	}
+
+	Graphics::RenderPass* InstanceRenderer::GetRenderPass(MaterialBuffer* materialBuffer, bool skin)
+	{
+		if (!skin)
+		{
+			switch (materialBuffer->GetTextureBindFlags())
+			{
+				case (uint32)TextureBindFlag::NONE:
+				{
+					return m_Deferred_Mesh_Pass.get();
+				}
+				case (uint32)TextureBindFlag::ALBEDO:
+				{
+					return m_Deferred_Mesh_Albedo_Pass.get();
+				}
+				case (uint32)TextureBindFlag::ALBEDO_NORMAL:
+				{
+					return m_Deferred_Mesh_Albedo_Bump_Pass.get();
+				}
+				case (uint32)TextureBindFlag::ALBEDO_NORMAL_MRA:
+				{
+					return m_Deferred_Mesh_Albedo_Bump_MRA_Pass.get();
+				}
+				default:
+				{
+					assert(false);
+					break;
+				}
+			}
+		}
+		else
+		{
+			switch (materialBuffer->GetTextureBindFlags())
+			{
+				case (uint32)TextureBindFlag::NONE:
+				{
+					return m_Deferred_Mesh_Skinned_Pass.get();
+				}
+				case (uint32)TextureBindFlag::ALBEDO:
+				{
+					return m_Deferred_Mesh_Skinned_Albedo_Pass.get();
+				}
+				case (uint32)TextureBindFlag::ALBEDO_NORMAL:
+				{
+					return m_Deferred_Mesh_Skinned_Albedo_Bump_Pass.get();
+				}
+				case (uint32)TextureBindFlag::ALBEDO_NORMAL_MRA:
+				{
+					return m_Deferred_Mesh_Skinned_Albedo_Bump_MRA_Pass.get();
+				}
+				default:
+				{
+					assert(false);
+					break;
+				}
+			}
+		}
+
+		return nullptr;
 	}
 
 }

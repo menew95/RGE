@@ -45,7 +45,8 @@ namespace Graphics
 		void* GetInstanceData() { return &m_PBRMaterialData; }
 
 		inline void SetTextureBindFlags(uint32 flags) { m_TextureBindFlag = flags; }
-		inline uint32 GetTextureBindFlags() { return m_TextureBindFlag; }
+
+		inline uint32 GetTextureBindFlags() const { return m_TextureBindFlag; }
 
 	private:
 
