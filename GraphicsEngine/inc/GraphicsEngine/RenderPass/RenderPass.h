@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "Common.h"
 
@@ -15,7 +15,7 @@ namespace Graphics
 	class RenderTarget;
 	class Resource;
 	class CommandBuffer;
-
+	class RenderQueue;
 	struct PerFrame;
 
 	class GRAPHICSENGINE_DLL_DECLSPEC RenderPass
@@ -42,19 +42,19 @@ namespace Graphics
 			return m_PassName;
 		}
 
-		inline const PipelineState* GetPipelineState() const
+		inline const PipelineState& GetPipelineState() const
 		{
-			return m_PipelineState;
+			return *m_PipelineState;
 		}
 
-		inline const PipelineLayout* GetPipelineLayout() const
+		inline const PipelineLayout& GetPipelineLayout() const
 		{
-			return m_PipelineLayout;
+			return *m_PipelineLayout;
 		}
 
-		inline const RenderTarget* GetRenderTarget() const
+		inline const RenderTarget& GetRenderTarget() const
 		{
-			return m_RenderTarget;
+			return *m_RenderTarget;
 		}
 
 		void UpdatePerFrame(CommandBuffer* commandBuffer, void* src, uint32 size);
@@ -63,9 +63,15 @@ namespace Graphics
 
 		void Excute(CommandBuffer* commandBuffer);
 
-		void ExcuteMaterialInstance(CommandBuffer* commnadBuffer, std::vector<MaterialInstanceData>& materialInstanceData);
-
 		void EndExcute(CommandBuffer* commandBuffer);
+
+		/**
+			@brief 설정된 렌더링 파이프 라인을 바인드 
+			@param commandBuffer - 컨택스트
+		**/
+		void Bind(CommandBuffer* commandBuffer);
+
+		void Excute(CommandBuffer* commandBuffer, const RenderQueue& renderQueue);
 
 		inline void SetPassName(const tstring& name) { m_PassName = name; }
 

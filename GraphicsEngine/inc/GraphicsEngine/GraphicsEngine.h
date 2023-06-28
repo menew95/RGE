@@ -22,7 +22,7 @@ namespace Graphics
 	class IBL;
 	class Light;
 	class Deferred;
-	class RenderQueue;
+	class RenderQueueManager;
 	class Sky;
 	class PostProcess;
 	class Voxel;
@@ -115,7 +115,7 @@ namespace Graphics
 
 		CameraBuffer* m_MainCameraBuffer;
 
-		RenderQueue* m_RenderQueue;
+		RenderQueueManager* m_RenderQueue;
 
 		std::shared_ptr<Graphics::RenderPass> m_Deferred_Mesh_Pass;
 		std::shared_ptr<Graphics::RenderPass> m_Deferred_Mesh_Albedo_Pass;

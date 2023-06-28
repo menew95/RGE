@@ -239,6 +239,7 @@ xcopy /E /S /Y /R "$(ProjectDir)Shader\*" "$(OutputPath)..\Client\Asset\Shader\*
     <ClInclude Include="inc\GraphicsEngine\RenderPass\Sky.h" />
     <ClInclude Include="inc\GraphicsEngine\RenderPass\Voxel.h" />
     <ClInclude Include="inc\GraphicsEngine\RenderQueue\RenderQueue.h" />
+    <ClInclude Include="inc\GraphicsEngine\RenderQueue\RenderQueueManager.h" />
     <ClInclude Include="inc\GraphicsEngine\Resource\ByteBuffer.h" />
     <ClInclude Include="inc\GraphicsEngine\Resource\CameraBuffer.h" />
     <ClInclude Include="inc\GraphicsEngine\Resource\ConstantBuffer.h" />
@@ -294,6 +295,7 @@ xcopy /E /S /Y /R "$(ProjectDir)Shader\*" "$(OutputPath)..\Client\Asset\Shader\*
     <ClCompile Include="src\GraphicsEngine\RenderPass\Sky.cpp" />
     <ClCompile Include="src\GraphicsEngine\RenderPass\Voxel.cpp" />
     <ClCompile Include="src\GraphicsEngine\RenderQueue\RenderQueue.cpp" />
+    <ClCompile Include="src\GraphicsEngine\RenderQueue\RenderQueueManager.cpp" />
     <ClCompile Include="src\GraphicsEngine\Resource\ByteBuffer.cpp" />
     <ClCompile Include="src\GraphicsEngine\Resource\CameraBuffer.cpp" />
     <ClCompile Include="src\GraphicsEngine\Resource\InstanceBuffer.cpp" />

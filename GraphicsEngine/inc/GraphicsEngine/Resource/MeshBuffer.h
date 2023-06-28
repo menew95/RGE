@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "GraphicsEngine/Resource/ResourceBuffer.h"
 
@@ -13,6 +13,16 @@ namespace Graphics
 		~SubMeshBuffer() = default;
 
 		void Release(RenderSystem* renderSystem);
+
+		inline uint32 GetIndexCount() const
+		{
+			return m_IndexCount;
+		}
+
+		inline Graphics::Buffer* GetBuffer() const
+		{ 
+			return m_IndexBuffer; 
+		}
 
 		uint32 m_IndexCount;
 		Graphics::Buffer* m_IndexBuffer;

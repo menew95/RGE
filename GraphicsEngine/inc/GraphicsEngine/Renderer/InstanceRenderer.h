@@ -13,6 +13,9 @@
 
 #include "GraphicsEngine/RenderObject.h"
 
+#define STATIC_INSTANCE_NUM 5230
+#define SKIN_INSTANCE_NUM 110
+
 namespace Graphics
 {
     class RenderSystem;
@@ -33,13 +36,20 @@ namespace Graphics
             @param renderData - 렌더 오브젝트의 어느 서브 매쉬와 머티리얼을 사용해야지 담고있는 중간 컨테이너
         **/
         void RegistInstanceQueue(const RenderData* renderData);
-
-        void BindRenderPass(RenderPass* renderPass);
-
+        
+        /**
+            @brief 
+        **/
         void BeginExcute();
 
+        /**
+            @brief 등록한 인스턴스 데이터를 순회하며 명령 실행
+        **/
         void Excute();
 
+        /**
+            @brief 
+        **/
         void EndExcute();
 
     private:
@@ -50,10 +60,18 @@ namespace Graphics
         void Initialize();
 
         /**
-            @brief 모아둔 매쉬 인스턴스 정보로 인스턴스 버퍼를 업데이트 해줌
-            @param meshInstanceData - 매쉬 인스턴스 데이터
+            @brief 렌더 패스를 파이프라인에 바인드
+            @param renderPass - 바인드할 렌더 패스
         **/
-        void UpdateInstanceBuffer(MeshInstanceData& meshInstanceData);
+		void BindRenderPass(RenderPass* renderPass);
+
+        /**
+            @brief 모아둔 매쉬 인스턴스 정보로 인스턴스 버퍼를 업데이트 해줌
+			@param meshInstanceData - 매쉬 인스턴스 데이터
+			@param  startNum        - 인스턴스 데이터를 가지고올 시작 인덱스
+			@retval                 - 인스턴스 갯수
+        **/
+        uint32 UpdateInstanceBuffer(MeshInstanceData& meshInstanceData, uint32 startNum);
 
         RenderSystem* m_RenderSystem;
 
@@ -80,7 +98,6 @@ namespace Graphics
         std::shared_ptr<InstanceBuffer> m_InstanceBuffer;
 
         std::unordered_map<uuid, MaterialInstanceData> m_InstanceQueue;
-
     };
 
 }

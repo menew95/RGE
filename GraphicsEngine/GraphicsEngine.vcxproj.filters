@@ -84,7 +84,7 @@
     <ClInclude Include="inc\GraphicsEngine\Culling\Occlusion.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="inc\GraphicsEngine\RenderQueue\RenderQueue.h">
+    <ClInclude Include="inc\GraphicsEngine\RenderQueue\RenderQueueManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="inc\GraphicsEngine\RenderPass\DebugDeferred.h">
@@ -109,6 +109,9 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="inc\GraphicsEngine\Renderer\RenderManager.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\GraphicsEngine\RenderQueue\RenderQueue.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -167,7 +170,7 @@
     <ClCompile Include="src\GraphicsEngine\Culling\Occlusion.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="src\GraphicsEngine\RenderQueue\RenderQueue.cpp">
+    <ClCompile Include="src\GraphicsEngine\RenderQueue\RenderQueueManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\GraphicsEngine\RenderPass\DebugDeferred.cpp">
@@ -189,6 +192,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\GraphicsEngine\Renderer\RenderManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GraphicsEngine\RenderQueue\RenderQueue.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

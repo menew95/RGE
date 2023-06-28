@@ -1,4 +1,4 @@
-#include "GraphicsEnginePCH.h"
+ï»¿#include "GraphicsEnginePCH.h"
 #include "GraphicsEngine/Resource/MaterialBuffer.h"
 
 #include "GraphicsEngine/RenderObject.h"
@@ -10,6 +10,7 @@ namespace Graphics
 	
 	MaterialBuffer::MaterialBuffer(Graphics::RenderSystem* renderSystem, uuid uuid)
 		: ResourceBuffer(renderSystem, BufferType::Material, uuid)
+		, m_TextureBindFlag((uint32)TextureBindFlag::NONE)
 	{
 
 	}
@@ -34,7 +35,7 @@ namespace Graphics
 		_resourceData._index = static_cast<uint32>(m_ResourceBindList.size()) - 1u;
 		m_UpdateResources.emplace_back(_resourceData);
 
-		// Todo : ÀÏ´Ü ¿©±â¼­ »ç¿ëÇÏÀÚ ¾ÆÁ÷ ¿©·¯°³ÀÇ ¸ÓÆ¼¸®¾óÀ» °¡Á¤ÇÒ ´Ü°è°¡ ¾Æ´Ï´Ï PBR ¸ÓÆ¼¸®¾ó ÀÏ°æ¿ì¿¡¸¸À¸·Î Ä¡ÀÚ
+		// Todo : ì¼ë‹¨ ì—¬ê¸°ì„œ ì‚¬ìš©í•˜ì ì•„ì§ ì—¬ëŸ¬ê°œì˜ ë¨¸í‹°ë¦¬ì–¼ì„ ê°€ì •í•  ë‹¨ê³„ê°€ ì•„ë‹ˆë‹ˆ PBR ë¨¸í‹°ë¦¬ì–¼ ì¼ê²½ìš°ì—ë§Œìœ¼ë¡œ ì¹˜ì
 		memcpy(&m_PBRMaterialData, src, 12);
 	}
 

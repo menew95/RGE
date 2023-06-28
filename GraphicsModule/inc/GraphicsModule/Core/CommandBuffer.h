@@ -92,10 +92,13 @@ namespace Graphics
 		/* ----- Drawing ----- */
 
 		virtual void Draw(uint32 numVertices, uint32 firstVertex) abstract;
+
 		virtual void DrawIndexed(uint32 numIndices, uint32 firstIndex, uint32 offset = 0) abstract;
+
 		virtual void DrawInstanced(uint32 numVertices, uint32 firstVertex, uint32 numInstances, uint32 firstInstance = 0) abstract;
-		virtual void DrawIndexedInstanced(uint32 numVertices, uint32 firstVertex, uint32 numInstances, uint32 vertexOffset, uint32 firstInstance = 0) abstract;
-	
+
+		virtual void DrawIndexedInstanced(uint32 numIndices, uint32 numInstances, uint32 firstIndex, int32 vertexOffset = 0) abstract;
+
 		/* ----- Compute ----- */
 
 		virtual void Dispatch(uint32 numWorkGroupsX, uint32 numWorkGroupsY, uint32 numWorkGroupsZ) abstract;

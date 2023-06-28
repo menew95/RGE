@@ -4,7 +4,7 @@
 
 #include "GraphicsEngine/GraphicsEngine.h"
 
-#include "GraphicsEngine/RenderQueue/RenderQueue.h"
+#include "GraphicsEngine/RenderQueue/RenderQueueManager.h"
 
 #include "GraphicsEngine/Resource/ResourceManager.h"
 #include "GraphicsEngine/Resource/MeshBuffer.h"
@@ -15,7 +15,7 @@
 
 #include "GraphicsEngine/Json/JsonTable.h"
 
-#include "GraphicsEngine/RenderQueue/RenderQueue.h"
+#include "GraphicsEngine/RenderQueue/RenderQueueManager.h"
 
 #include "GraphicsEngine/Renderer/RenderManager.h"
 
@@ -42,7 +42,7 @@ namespace Graphics
 
 		Initialize(desc);
 
-		m_RenderQueue = new RenderQueue();
+		m_RenderQueue = new RenderQueueManager();
 
 		m_RenderManager = new RenderManager(m_RenderSystem, m_ResourceManager, m_CommandBuffer);
 	}

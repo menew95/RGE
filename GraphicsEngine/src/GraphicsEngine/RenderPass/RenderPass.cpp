@@ -132,23 +132,6 @@ namespace Graphics
 		}
 	}
 
-	void RenderPass::ExcuteMaterialInstance(CommandBuffer* commnadBuffer, std::vector<MaterialInstanceData>& materialInstanceData)
-	{
-		for (size_t _instanceIdx = 0; _instanceIdx < materialInstanceData.size(); _instanceIdx++)
-		{
-			auto& _materialInstance = materialInstanceData[_instanceIdx];
-
-			_materialInstance._materialBuffer->BindResource(commnadBuffer);
-
-			for (size_t _dataIdx = 0; _dataIdx < _materialInstance._meshInstanceDatas.size(); _dataIdx)
-			{
-
-
-
-			}
-		}
-	}
-
 	void RenderPass::EndExcute(CommandBuffer* commandBuffer)
 	{
 		commandBuffer->EndRenderPass();
@@ -166,41 +149,10 @@ namespace Graphics
 #endif
 	}
 
-	//void RenderPass::UpdateResourcePerMaterial(CommandBuffer* commandBuffer, RenderObject* renderObject)
-	//{
-	//	//auto& _sources = renderObject->m_MaterialBuffer->GetUpdateResourceData();
-	//	//
-	//	//renderObject->m_MaterialBuffer->BindResource(commandBuffer);
-
-	//	//for (size_t i = 0; i < _sources.size(); i++)
-	//	//{
-	//	//	assert(m_PipelineLayout != nullptr);
-
-	//	//	switch (_sources[i]._resourceType)
-	//	//	{
-	//	//		case ResourceType::Buffer:
-	//	//		{
-	//	//			auto _buffer = m_PipelineLayout->GetBuffer(_sources[i]._index);
-
-	//	//			UpdateBuffer(commandBuffer, _buffer, _sources[i]._dataSrc, _sources[i]._datasize);
-	//	//			break;
-	//	//		}
-	//	//		case ResourceType::Sampler:
-	//	//		case ResourceType::Texture:
-	//	//		{
-	//	//			//commandBuffer->SetResource(reinterpret_cast<Resource*>(_sources[i]._dataSrc), BindFlags::)
-	//	//			//m_PipelineLayout->SetResource(_sources[i]._index, );
-	//	//			break;
-	//	//		}
-	//	//		case ResourceType::Undefined:
-	//	//		default:
-	//	//		{
-	//	//			assert(false);
-	//	//			break;
-	//	//		}
-	//	//	}
-	//	//}
-	//}
+	void RenderPass::Bind(CommandBuffer* commandBuffer)
+	{
+		BeginExcute(commandBuffer);
+	}
 
 	void RenderPass::UpdateResourcePerObject(CommandBuffer* commandBuffer, RenderObject* renderObject)
 	{

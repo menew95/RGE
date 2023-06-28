@@ -1,65 +1,67 @@
 ﻿/**
 
     @file      RenderQueue.h
-	@brief     Render Queue
-	@details   렌더 오브젝트들의 스마트 포인터들을 관리 및 렌더 큐에 등록 하는 클래스
+    @brief     렌더링 할 데이터를 모아둔 큐
     @author    LWT
-    @date      7.06.2023
+    @date      23.06.2023
 
 **/
 #pragma once
-
-#pragma once
-
-#include "Common.h"
 
 #include "GraphicsEngine/RenderObject.h"
 
 namespace Graphics
 {
-	class Deferred;
-	class Light;
-	class Voxel;
+    class RenderQueue
+    {
+    public:
+        RenderQueue() = default;
 
-	class RenderQueue
+        RenderQueue(const RenderQueue& other) = default;
+
+        RenderQueue(const RenderQueue&& other)
+            : m_RenderDataQueue(std::move(other.m_RenderDataQueue))
+        {}
+
+        ~RenderQueue() = default;
+
+        inline void Push(RenderData& renderData)
+        {
+            m_RenderDataQueue.push(std::move(renderData)); 
+        }
+
+        inline auto Pop() 
+        { 
+            auto& _ret = m_RenderDataQueue.front();
+
+            m_RenderDataQueue.pop();
+
+            return _ret;
+        }
+
+        inline std::queue<RenderData>& GetRenderQueue()
+        {
+            return m_RenderDataQueue; 
+        }
+
+        RenderQueue& operator=(const RenderQueue& other);
+
+        RenderQueue& operator=(RenderQueue&& other);
+
+    private:
+        std::queue<RenderData> m_RenderDataQueue;
+
+    };
+
+	RenderQueue& RenderQueue::operator=(const RenderQueue& other)
 	{
-	public:
-		RenderQueue();
-		~RenderQueue();
+		this->m_RenderDataQueue = other.m_RenderDataQueue;
+		return *this;
+	}
 
-		/**
-		    @brief  렌더 오브젝트를 생성후 컨테이너에 넣고 포인터를 반환
-		    @retval  - 생성된 새로운 렌더 오브젝트
-		**/
-		RenderObject* CreateRenderObject();
-
-		/**
-		    @brief  렌더 오브젝트 삭제
-		    @param  renderObject - 삭제할 렌더 오브젝트의 Raw 포인터
-		    @retval              - 삭제 성공 여부
-		**/
-		bool RemoveRenderObject(RenderObject* renderObject);
-
-		/**
-			@brief Deferred Pass에 렌더링할 객체 등록
-			@param deferred -
-		**/
-		void RegistDeferredPass(Deferred* deferred);
-
-		/**
-		 @brief Shadow Pass에 렌더링할 객체 등록
-		 @param light - 
-		**/
-		void RegistShadowPass(Light* light);
-
-		/**
-		    @brief Voxel Pass에 렌더링할 객체 등록
-		    @param voxel - 
-		**/
-		void RegistVoxelPass(Voxel* voxel);
-
-	private:
-
-		std::vector<std::shared_ptr<RenderObject>> m_RenderObjectContainer;
-	};
+    RenderQueue& RenderQueue::operator=(RenderQueue&& other)
+    {
+        this->m_RenderDataQueue = std::move(other.m_RenderDataQueue);
+        return *this;
+    }
 }

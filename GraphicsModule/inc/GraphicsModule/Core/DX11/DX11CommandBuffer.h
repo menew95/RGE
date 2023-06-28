@@ -103,9 +103,12 @@ namespace Graphics
 			/* ----- Drawing ----- */
 
 			void Draw(uint32 numVertices, uint32 firstVertex) override;
+
 			void DrawIndexed(uint32 numIndices, uint32 firstIndex, uint32 offset = 0) override;
+
 			void DrawInstanced(uint32 numVertices, uint32 firstVertex, uint32 numInstances, uint32 firstInstance = 0) override;
-			void DrawIndexedInstanced(uint32 numVertices, uint32 firstVertex, uint32 numInstances, uint32 vertexOffset, uint32 firstInstance = 0) override;
+
+			void DrawIndexedInstanced(uint32 numIndices, uint32 numInstances, uint32 firstIndex, int32 vertexOffset = 0) override;
 
 			/* ----- Compute ----- */
 

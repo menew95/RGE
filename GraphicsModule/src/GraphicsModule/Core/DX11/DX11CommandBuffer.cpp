@@ -415,9 +415,9 @@ namespace Graphics
 			m_Context->DrawInstanced(numVertices, firstVertex, numInstances, firstInstance);
 		}
 
-		void DX11CommandBuffer::DrawIndexedInstanced(uint32 numVertices, uint32 firstVertex, uint32 numInstances, uint32 vertexOffset, uint32 firstInstance)
+		void DX11CommandBuffer::DrawIndexedInstanced(uint32 numIndices, uint32 numInstances, uint32 firstIndex, int32 vertexOffset /*= 0*/)
 		{
-			m_Context->DrawIndexedInstanced(numVertices, firstVertex, numInstances, vertexOffset, firstInstance);
+			m_Context->DrawIndexedInstanced(numIndices, numInstances, firstIndex, vertexOffset, 0);
 		}
 
 		void DX11CommandBuffer::Dispatch(uint32 numWorkGroupsX, uint32 numWorkGroupsY, uint32 numWorkGroupsZ)

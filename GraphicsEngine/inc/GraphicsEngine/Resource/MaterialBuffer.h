@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "GraphicsEngine/Resource/ResourceBuffer.h"
 
@@ -9,6 +9,17 @@
 namespace Graphics
 {
 	class CommandBuffer;
+
+	enum class TextureBindFlag
+	{
+		NONE = 0,
+		ALBEDO = 1 << 0,
+		NORMAL = 1 << 1,
+		MRA = 1 << 2,
+
+		ALBEDO_NORMAL = ALBEDO | NORMAL,
+		ALBEDO_NORMAL_MRA = ALBEDO_NORMAL | MRA
+	};
 
 	class GRAPHICSENGINE_DLL_DECLSPEC MaterialBuffer : public ResourceBuffer
 	{
@@ -33,7 +44,14 @@ namespace Graphics
 
 		void* GetInstanceData() { return &m_PBRMaterialData; }
 
+		inline void SetTextureBindFlags(uint32 flags) { m_TextureBindFlag = flags; }
+		inline uint32 GetTextureBindFlags() { return m_TextureBindFlag; }
+
 	private:
+
+		bool m_bUseInstancing = true;
+
+		uint32 m_TextureBindFlag;
 
 		struct Standard
 		{
@@ -53,8 +71,6 @@ namespace Graphics
 			Resource* _resource = nullptr;
 			uint32 _slot = 0;
 		};
-
-		bool m_bUseInstancing = true;
 
 		std::vector<ResourceBind> m_ResourceBindList;
 	};
