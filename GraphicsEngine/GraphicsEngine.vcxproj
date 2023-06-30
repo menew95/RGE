@@ -226,6 +226,7 @@ xcopy /E /S /Y /R "$(ProjectDir)Shader\*" "$(OutputPath)..\Client\Asset\Shader\*
     <ClInclude Include="inc\GraphicsEngine\GraphicsEngine.h" />
     <ClInclude Include="inc\GraphicsEngine\GraphicsEngineFlags.h" />
     <ClInclude Include="inc\GraphicsEngine\Renderer\InstanceRenderer.h" />
+    <ClInclude Include="inc\GraphicsEngine\Renderer\Renderer.h" />
     <ClInclude Include="inc\GraphicsEngine\Renderer\RendererBase.h" />
     <ClInclude Include="inc\GraphicsEngine\Renderer\RenderManager.h" />
     <ClInclude Include="inc\GraphicsEngine\RenderPass\DebugDeferred.h" />
@@ -286,6 +287,7 @@ xcopy /E /S /Y /R "$(ProjectDir)Shader\*" "$(OutputPath)..\Client\Asset\Shader\*
     <ClCompile Include="src\GraphicsEngine\Culling\Occlusion.cpp" />
     <ClCompile Include="src\GraphicsEngine\Json\JsonTable.cpp" />
     <ClCompile Include="src\GraphicsEngine\Renderer\InstanceRenderer.cpp" />
+    <ClCompile Include="src\GraphicsEngine\Renderer\Renderer.cpp" />
     <ClCompile Include="src\GraphicsEngine\Renderer\RenderManager.cpp" />
     <ClCompile Include="src\GraphicsEngine\RenderPass\DebugDeferred.cpp" />
     <ClCompile Include="src\GraphicsEngine\RenderPass\Deferred.cpp" />

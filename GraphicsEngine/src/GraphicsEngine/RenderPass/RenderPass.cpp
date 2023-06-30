@@ -132,6 +132,34 @@ namespace Graphics
 		}
 	}
 
+	void RenderPass::Excute(CommandBuffer* commandBuffer, std::vector<RenderData>& renderDatas)
+	{
+		for (size_t _index = 0; _index < renderDatas.size(); _index++)
+		{
+			auto _vertexBuffer = renderDatas[_index]._renderObject->GetMeshBuffer()->GetBuffer();
+
+			commandBuffer->SetVertexBuffer(*_vertexBuffer);
+
+			UpdateResourcePerObject(commandBuffer, renderDatas[_index]._renderObject);
+
+			if (renderDatas[_index]._renderObject->IsHasViewport())
+			{
+				commandBuffer->SetViewports(static_cast<uint32>(renderDatas[_index]._renderObject->GetViewports().size()), renderDatas[_index]._renderObject->GetViewports().data());
+			}
+
+			auto _subMeshBuffer = renderDatas[_index]._renderObject->GetMeshBuffer()->GetSubMesh(renderDatas[_index]._subMeshIdx);
+
+			if (renderDatas[_index]._renderObject->m_MaterialBuffers[renderDatas[_index]._materialIdx] != nullptr)
+			{
+				renderDatas[_index]._renderObject->m_MaterialBuffers[renderDatas[_index]._materialIdx]->BindResource(commandBuffer);
+			}
+
+			commandBuffer->SetIndexBuffer(*_subMeshBuffer.m_IndexBuffer);
+
+			commandBuffer->DrawIndexed(_subMeshBuffer.m_IndexCount, 0, 0);
+		}
+	}
+
 	void RenderPass::EndExcute(CommandBuffer* commandBuffer)
 	{
 		commandBuffer->EndRenderPass();

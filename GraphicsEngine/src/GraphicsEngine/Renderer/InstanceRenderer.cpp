@@ -103,7 +103,9 @@ namespace Graphics
 
 					auto& _subMeshBuffer = _meshInstance._meshBuffer->GetSubMesh(_meshInstance._subMeshIdx);
 
-					m_CommandBuffer->SetVertexBuffer(*_vertexBuffer);
+					Buffer* _instance[2] = { _vertexBuffer , m_InstanceBuffer->GetInstanceBuffer() };
+
+					m_CommandBuffer->SetVertexBuffer(_instance);
 
 					m_CommandBuffer->SetIndexBuffer(*_subMeshBuffer.GetBuffer());
 

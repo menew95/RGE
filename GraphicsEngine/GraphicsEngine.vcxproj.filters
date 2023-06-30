@@ -114,6 +114,9 @@
     <ClInclude Include="inc\GraphicsEngine\RenderQueue\RenderQueue.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="inc\GraphicsEngine\Renderer\Renderer.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\GraphicsEngine_dllmain.cpp">
@@ -195,6 +198,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\GraphicsEngine\RenderQueue\RenderQueue.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GraphicsEngine\Renderer\Renderer.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

@@ -37,7 +37,6 @@ namespace Graphics
 
 		m_ResourceManager = new ResourceManager(m_RenderSystem);
 
-
 		LoadGraphicsTable();
 
 		Initialize(desc);

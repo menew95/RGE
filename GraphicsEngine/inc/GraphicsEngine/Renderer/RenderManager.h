@@ -23,6 +23,8 @@ namespace Graphics
 
         ~RenderManager();
         
+        void Excute(CommandBuffer* commandBuffer);
+
     private:
 
         void InitRenderer();

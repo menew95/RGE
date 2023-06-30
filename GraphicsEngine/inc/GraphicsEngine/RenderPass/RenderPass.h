@@ -17,6 +17,7 @@ namespace Graphics
 	class CommandBuffer;
 	class RenderQueue;
 	struct PerFrame;
+	struct RenderData;
 
 	class GRAPHICSENGINE_DLL_DECLSPEC RenderPass
 	{
@@ -62,6 +63,8 @@ namespace Graphics
 		void BeginExcute(CommandBuffer* commandBuffer, PerFrame* perFrameData = nullptr);
 
 		void Excute(CommandBuffer* commandBuffer);
+
+		void Excute(CommandBuffer* commandBuffer, std::vector<RenderData>& renderDatas);
 
 		void EndExcute(CommandBuffer* commandBuffer);
 

@@ -49,6 +49,7 @@ namespace Graphics
         RenderQueue& operator=(RenderQueue&& other);
 
     private:
+
         std::queue<RenderData> m_RenderDataQueue;
 
     };

@@ -17,6 +17,11 @@ namespace Graphics
 
 	}
 
+	void RenderManager::Excute(CommandBuffer* commandBuffer)
+	{
+
+	}
+
 	void RenderManager::InitRenderer()
 	{
 		m_InstanceRenderer = std::make_shared<InstanceRenderer>(m_RenderSystem, m_ResourceManager, m_CommandBuffer);

@@ -9,8 +9,15 @@
 **/
 #pragma once
 
+#include "Common.h"
+
 namespace Graphics
 {
+	class RenderSystem;
+	class ResourceManager;
+	class CommandBuffer;
+	class RenderPass;
+
     struct MaterialInstance;
     struct MeshInstance;
 

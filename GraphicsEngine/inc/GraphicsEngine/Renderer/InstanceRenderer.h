@@ -18,11 +18,7 @@
 
 namespace Graphics
 {
-    class RenderSystem;
-    class ResourceManager;
-    class CommandBuffer;
     class InstanceBuffer;
-    class RenderPass;
 
     class InstanceRenderer final : public RendererBase
     {
@@ -41,6 +37,12 @@ namespace Graphics
             @brief 등록된 인스턴스 큐를 비움
         **/
         void ClearInstanceQueue();
+
+        /**
+            @brief 렌더 패스를 파이프라인에 바인드
+            @param renderPass - 바인드할 렌더 패스
+        **/
+        void BindRenderPass(RenderPass* renderPass);
 
         /**
             @brief
@@ -63,12 +65,6 @@ namespace Graphics
             @brief 인스턴스 버퍼 등 필요한 리소스들을 초기화
         **/
         void Initialize();
-
-        /**
-            @brief 렌더 패스를 파이프라인에 바인드
-            @param renderPass - 바인드할 렌더 패스
-        **/
-        void BindRenderPass(RenderPass* renderPass);
 
         /**
             @brief 모아둔 매쉬 인스턴스 정보로 인스턴스 버퍼를 업데이트 해줌

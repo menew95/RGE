@@ -1,9 +1,9 @@
-#pragma once
+ï»¿#pragma once
 
 #include "GraphicsEngine/RenderObject.h"
 
 /*
-	¸Å½¬¸¦ º¹¼¿È­ ½ÃÅ´
+	ë§¤ì‰¬ë¥¼ ë³µì…€í™” ì‹œí‚´
 */
 
 namespace Graphics
@@ -117,7 +117,7 @@ namespace Graphics
 
 
 		std::vector<Texture*> m_AnisotropicVoxelTextures;
-		// Anisotropic Voxel TextureÀÇ °¢ ¹ÓÀ» ´ã°í ÀÖ´Â UAV Resources;
+		// Anisotropic Voxel Textureì˜ ê° ë°‰ì„ ë‹´ê³  ìˆëŠ” UAV Resources;
 		std::vector<ResourceView*> m_MipResourceViews;
 
 		RenderPass* m_VoxelizetionPass = nullptr;
@@ -169,7 +169,7 @@ namespace Graphics
 
 #pragma endregion
 
-		uint32 VOXEL_RESOLUTION = 256;
+		uint32 VOXEL_RESOLUTION = 128;
 
 		VoxelInfoCB m_Voxel_Info;
 	};

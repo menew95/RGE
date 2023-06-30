@@ -567,6 +567,14 @@ namespace Graphics
 
 			}
 
+			/*ScratchImage _compressImage;
+			DirectX::Compress(device
+				, *image.GetImages()
+				, DXGI_FORMAT_BC1_TYPELESS
+				, TEX_COMPRESS_DEFAULT
+				, 0.0
+				, _compressImage);*/
+
 			D3D11_TEXTURE2D_DESC textureDesc;
 			m_NativeTexture._tex2D->GetDesc(&textureDesc);
 
