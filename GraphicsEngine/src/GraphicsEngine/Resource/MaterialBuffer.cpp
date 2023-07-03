@@ -11,6 +11,7 @@ namespace Graphics
 	MaterialBuffer::MaterialBuffer(Graphics::RenderSystem* renderSystem, uuid uuid)
 		: ResourceBuffer(renderSystem, BufferType::Material, uuid)
 		, m_TextureBindFlag((uint32)TextureBindFlag::NONE)
+		, m_RenderPass(nullptr)
 	{
 
 	}

@@ -9,8 +9,8 @@
 #pragma once
 
 #define SINGTON(Class) public:\
-Class* Get();
-#define SINGTON_IMPL(Class, ...)  std::shared_ptr<Class> g_Instance = nullptr; \
+static Class* Get();
+#define SINGTON_IMPL(Class, ...) static std::shared_ptr<Class> g_Instance = nullptr; \
 Class* Class::Get() \
 {\
     if (g_Instance == nullptr)\

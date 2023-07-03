@@ -15,6 +15,8 @@ namespace Graphics
     class RenderSystem;
     class ResourceManager;
     class CommandBuffer;
+    class Renderer;
+    class InstanceRenderer;
 
     class RenderManager
     {
@@ -22,7 +24,7 @@ namespace Graphics
         RenderManager(RenderSystem* renderSystem, ResourceManager* resourceManager, CommandBuffer* commandBuffer);
 
         ~RenderManager();
-        
+
         void Excute(CommandBuffer* commandBuffer);
 
     private:
@@ -35,9 +37,9 @@ namespace Graphics
 
         CommandBuffer* m_CommandBuffer;
 
-        RendererBase* m_DefualtRenderer;
+        std::shared_ptr<Renderer> m_DefualtRenderer;
 
-        std::shared_ptr<RendererBase> m_InstanceRenderer;
+        std::shared_ptr<InstanceRenderer> m_InstanceRenderer;
 
     };
 }

@@ -114,7 +114,7 @@ namespace Graphics
 
 		std::vector<RenderObject*> m_RenderObjects;
 
-		std::vector<RenderData*> m_RenderDatas;
+		std::vector<RenderData> m_RenderDatas;
 
 		std::vector<AttachmentClear> m_AttachmentClears;
 

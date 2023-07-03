@@ -20,11 +20,12 @@ namespace Graphics
 	class Deferred;
 	class Light;
 	class Voxel;
+	class RenderQueue;
 
 	class RenderQueueManager
 	{
-	public:
 		SINGTON(RenderQueueManager)
+	public:
 
 		RenderQueueManager();
 		~RenderQueueManager();
@@ -59,6 +60,12 @@ namespace Graphics
 		    @param voxel - 
 		**/
 		void RegistVoxelPass(Voxel* voxel);
+
+		/**
+			@brief 들어온 RenderQueue를 채워줌 
+			@param renderQueue - 큐를 생성할 텐더큐 레퍼런스
+		**/
+		void CreateRenderQueue(RenderQueue& renderQueue);
 
 	private:
 

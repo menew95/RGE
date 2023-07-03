@@ -39,14 +39,27 @@ namespace Graphics
             return _ret;
         }
 
+        inline auto Empty()
+        {
+            return m_RenderDataQueue.empty();
+        }
+
         inline std::queue<RenderData>& GetRenderQueue()
         {
             return m_RenderDataQueue; 
         }
 
-        RenderQueue& operator=(const RenderQueue& other);
+        inline RenderQueue& operator=(const RenderQueue& other)
+		{
+			this->m_RenderDataQueue = other.m_RenderDataQueue;
+			return *this;
+		}
 
-        RenderQueue& operator=(RenderQueue&& other);
+        inline RenderQueue& operator=(RenderQueue&& other)
+		{
+			this->m_RenderDataQueue = std::move(other.m_RenderDataQueue);
+			return *this;
+		}
 
     private:
 
@@ -54,15 +67,15 @@ namespace Graphics
 
     };
 
-	RenderQueue& RenderQueue::operator=(const RenderQueue& other)
+	/*RenderQueue& operator=(const RenderQueue& other)
 	{
 		this->m_RenderDataQueue = other.m_RenderDataQueue;
 		return *this;
 	}
 
-    RenderQueue& RenderQueue::operator=(RenderQueue&& other)
+    RenderQueue& operator=(RenderQueue&& other)
     {
         this->m_RenderDataQueue = std::move(other.m_RenderDataQueue);
         return *this;
-    }
+    }*/
 }

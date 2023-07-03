@@ -108,6 +108,14 @@ namespace Graphics
 			return m_MaterialBuffers.data();
 		}
 
+		inline auto GetMaterialBuffer(uint32 idx) 
+		{
+			if (m_MaterialBuffers.size() <= idx)
+				assert(false);
+
+			return m_MaterialBuffers[idx];
+		}
+
 		inline const std::vector<UpdateResourceData>& GetUpdateResourceDataPerObject() const
 		{
 			return m_UpdateResourcePerObjects;

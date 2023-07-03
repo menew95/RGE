@@ -40,13 +40,19 @@ namespace Graphics
 
 		void SetBufferData(void* src, Resource* resource);
 
-		inline void SetUseInstnacing(bool value) { m_bUseInstancing = value; }
+		inline void SetUseInstancing(bool value) { m_bUseInstancing = value; }
+
+		inline bool GetUseInstancing() const { return m_bUseInstancing; }
 
 		void* GetInstanceData() { return &m_PBRMaterialData; }
 
 		inline void SetTextureBindFlags(uint32 flags) { m_TextureBindFlag = flags; }
 
 		inline uint32 GetTextureBindFlags() const { return m_TextureBindFlag; }
+
+		inline void SetPass(RenderPass* pass) { m_RenderPass = pass; }
+
+		inline RenderPass* GetPass() { return m_RenderPass; }
 
 	private:
 
@@ -74,5 +80,7 @@ namespace Graphics
 		};
 
 		std::vector<ResourceBind> m_ResourceBindList;
+
+		RenderPass* m_RenderPass;
 	};
 }

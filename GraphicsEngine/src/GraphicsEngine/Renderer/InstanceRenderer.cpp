@@ -5,6 +5,7 @@
 #include "GraphicsEngine/Resource/InstanceBuffer.h"
 #include "GraphicsEngine/Resource/MeshBuffer.h"
 #include "GraphicsEngine/Resource/MaterialBuffer.h"
+#include "GraphicsEngine/RenderQueue/RenderQueue.h"
 
 
 #include "GraphicsModule/Core/CommandBuffer.h"
@@ -57,6 +58,22 @@ namespace Graphics
 			_meshInstanceData._renderObjects.emplace_back(*renderData);
 
 			m_InstanceQueue[_uuid]._meshInstanceDatas.emplace_back(std::move(_meshInstanceData));
+		}
+	}
+
+
+	void InstanceRenderer::RegistInstanceQueue(RenderQueue& renderQueue)
+	{
+		while (renderQueue.Empty())
+		{
+			auto _renderData = renderQueue.Pop();
+
+			if (_renderData._renderObject->GetMaterialBuffer(_renderData._materialIdx)->GetUseInstancing())
+			{
+				continue;
+			}
+
+			RegistInstanceQueue(&_renderData);
 		}
 	}
 
