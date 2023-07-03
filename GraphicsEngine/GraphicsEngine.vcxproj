@@ -251,6 +251,7 @@ xcopy /E /S /Y /R "$(ProjectDir)Shader\*" "$(OutputPath)..\Client\Asset\Shader\*
     <ClInclude Include="inc\GraphicsEngine\Resource\MeshBuffer.h" />
     <ClInclude Include="inc\GraphicsEngine\Resource\ResourceBuffer.h" />
     <ClInclude Include="inc\GraphicsEngine\Resource\ResourceManager.h" />
+    <ClInclude Include="inc\GraphicsEngine\Util\Singleton.h" />
     <ClInclude Include="src\GraphicsEnginePCH.h" />
     <ClInclude Include="src\GraphicsEngine\Json\JsonMacros.h" />
     <ClInclude Include="src\GraphicsEngine\Json\JsonTable.h" />

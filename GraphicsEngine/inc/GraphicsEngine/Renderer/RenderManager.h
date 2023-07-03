@@ -35,6 +35,8 @@ namespace Graphics
 
         CommandBuffer* m_CommandBuffer;
 
+        RendererBase* m_DefualtRenderer;
+
         std::shared_ptr<RendererBase> m_InstanceRenderer;
 
     };

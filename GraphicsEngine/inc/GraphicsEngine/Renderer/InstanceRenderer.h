@@ -74,6 +74,12 @@ namespace Graphics
         **/
         uint32 UpdateInstanceBuffer(MeshInstanceData& meshInstanceData, uint32 startNum);
 
+        /**
+            @brief  머티리얼 버퍼의 종류에 따라 초기화해둔 렌더패스를 사용
+            @param  materialBuffer - 머티리얼 버퍼 포인터
+            @param  skin           - 스키닝 여부
+            @retval                - 사용할 랜더 패스
+        **/
         RenderPass* GetRenderPass(MaterialBuffer* materialBuffer, bool skin);
 
         RenderSystem* m_RenderSystem;

@@ -27,7 +27,7 @@ namespace Graphics
         void BindRenderPass(CommandBuffer* commandBuffer, RenderPass* renderPass);
 
         /**
-            @brief
+            @brief 파이프 라인을 그리기전 처리
         **/
         void BeginExcute(CommandBuffer* commandBuffer);
 

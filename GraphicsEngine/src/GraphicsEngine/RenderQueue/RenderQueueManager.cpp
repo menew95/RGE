@@ -5,8 +5,11 @@
 #include "GraphicsEngine/RenderPass/Light.h"
 #include "GraphicsEngine/RenderPass/Sky.h"
 
+
 namespace Graphics
 {
+	SINGTON_IMPL(Graphics::RenderQueueManager)
+
 	RenderQueueManager::RenderQueueManager()
 	{
 

@@ -24,6 +24,8 @@ namespace Graphics
 	class RenderQueueManager
 	{
 	public:
+		SINGTON(RenderQueueManager)
+
 		RenderQueueManager();
 		~RenderQueueManager();
 

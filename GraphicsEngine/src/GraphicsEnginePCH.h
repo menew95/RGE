@@ -9,4 +9,6 @@
 
 #include "GraphicsModule/Core/RenderSystem.h"
 
+#include "GraphicsEngine/Util/Singleton.h"
+
 #endif //PCH_H

@@ -173,6 +173,7 @@ namespace Graphics
 
 	Graphics::RenderPass* InstanceRenderer::GetRenderPass(MaterialBuffer* materialBuffer, bool skin)
 	{
+		// todo : 퍼티리얼 버퍼가 렌더 패스에 대한 포인터를 가지고 있게 하는게 맞을꺼같은데 일단은 지금은 이렇게 해둠
 		if (!skin)
 		{
 			switch (materialBuffer->GetTextureBindFlags())

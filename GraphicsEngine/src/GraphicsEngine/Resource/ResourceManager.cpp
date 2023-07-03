@@ -15,7 +15,6 @@ namespace Graphics
 	ResourceManager::ResourceManager(Graphics::RenderSystem* renderSystem)
 		: m_RenderSystem(renderSystem)
 	{
-
 	}
 
 	ResourceManager::~ResourceManager()

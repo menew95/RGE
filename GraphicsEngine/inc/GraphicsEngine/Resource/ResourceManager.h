@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "Common.h"
 
@@ -17,6 +17,7 @@ namespace Graphics
 	class ResourceManager
 	{
 	public:
+		ResourceManager();
 		ResourceManager(Graphics::RenderSystem* renderSystem);
 		~ResourceManager();
 

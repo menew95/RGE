@@ -249,7 +249,7 @@ namespace Graphics
 				_bindFlags |= D3D11_BIND_SHADER_RESOURCE;
 
 			if (uavOutput != nullptr)
-				_bindFlags != D3D11_BIND_UNORDERED_ACCESS;
+				_bindFlags |= D3D11_BIND_UNORDERED_ACCESS;
 
 			D3D11_RESOURCE_DIMENSION _dimension = D3D11_RESOURCE_DIMENSION_UNKNOWN;
 			DXGI_FORMAT _format = DXGI_FORMAT_UNKNOWN;

@@ -23,14 +23,23 @@ namespace Graphics
 		renderPass->Bind(commandBuffer);
 	}
 
+	void Renderer::BeginExcute(CommandBuffer* commandBuffer)
+	{
+
+	}
+
 	void Renderer::Excute(CommandBuffer* commandBuffer, RenderPass* renderPass, std::vector<RenderData>& renderDatas)
 	{
-		//BindRenderPass(commandBuffer, renderPass);
-
 		renderPass->BeginExcute(commandBuffer);
 
 		renderPass->Excute(commandBuffer, renderDatas);
 
 		renderPass->EndExcute(commandBuffer);
 	}
+
+	void Renderer::EndExcute(CommandBuffer* commandBuffer)
+	{
+
+	}
+
 }
