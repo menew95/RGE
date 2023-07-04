@@ -6,6 +6,8 @@
 
 #include "GraphicsEngine/RenderObject.h"
 
+#include "GraphicsEngine/RenderQueue/RenderQueue.h"
+
 #include "GraphicsEngine/Export.h"
 
 namespace Graphics
@@ -94,10 +96,13 @@ namespace Graphics
 
 		inline std::vector<AttachmentClear> GetAttachmentClears() { return m_AttachmentClears; }
 
+		inline void AddRenderData(const RenderData& data) { m_RenderDatas.emplace_back(data); }
+
+		inline auto& GetRenderDatas() { return m_RenderDatas; }
+
+		inline void ClearRenderDatas() { m_RenderDatas.clear(); }
+
 	protected:
-
-		//void UpdateResourcePerMaterial(CommandBuffer* commandBuffer, RenderObject* renderObject);
-
 		void UpdateResourcePerObject(CommandBuffer* commandBuffer, RenderObject* renderObject);
 
 		void UpdateBuffer(CommandBuffer* commandBuffer, Buffer* buffer, void* src, uint32 size);

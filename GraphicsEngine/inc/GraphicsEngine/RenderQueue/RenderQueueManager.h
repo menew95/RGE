@@ -62,13 +62,14 @@ namespace Graphics
 		void RegistVoxelPass(Voxel* voxel);
 
 		/**
-			@brief 들어온 RenderQueue를 채워줌 
+			@brief 들어온 RenderQueue를 이번 프레임에 렌더링 되어야할 큐를 채워줌 
 			@param renderQueue - 큐를 생성할 텐더큐 레퍼런스
 		**/
 		void CreateRenderQueue(RenderQueue& renderQueue);
 
-	private:
 
+
+	private:
 		std::vector<std::shared_ptr<RenderObject>> m_RenderObjectContainer;
 	};
 }

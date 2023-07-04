@@ -25,11 +25,11 @@ namespace Graphics
 
 	}
 
-	void InstanceRenderer::RegistInstanceQueue(const RenderData* renderData)
+	void InstanceRenderer::RegistInstanceQueue(const RenderData& renderData)
 	{
-		if (renderData->_materialIdx != -1 && renderData->_renderObject->m_MaterialBuffers.size() < renderData->_materialIdx)
+		if (renderData._materialIdx != -1 && renderData._renderObject->m_MaterialBuffers.size() < renderData._materialIdx)
 		{
-			MaterialBuffer* _matBuffer = renderData->_renderObject->m_MaterialBuffers[renderData->_materialIdx];
+			MaterialBuffer* _matBuffer = renderData._renderObject->m_MaterialBuffers[renderData._materialIdx];
 
 			auto& _uuid = _matBuffer->GetUUID();
 
@@ -38,10 +38,10 @@ namespace Graphics
 				auto& _materialInstance = m_InstanceQueue[_uuid];
 
 				if (_materialInstance._meshInstanceDatas[i]._meshBuffer->GetUUID()
-					== renderData->_renderObject->m_MeshBuffer->GetUUID()
-					&& _materialInstance._meshInstanceDatas[i]._subMeshIdx == renderData->_subMeshIdx)
+					== renderData._renderObject->m_MeshBuffer->GetUUID()
+					&& _materialInstance._meshInstanceDatas[i]._subMeshIdx == renderData._subMeshIdx)
 				{
-					_materialInstance._meshInstanceDatas[i]._renderObjects.emplace_back(*renderData);
+					_materialInstance._meshInstanceDatas[i]._renderObjects.emplace_back(renderData);
 
 					return;
 				}
@@ -49,13 +49,13 @@ namespace Graphics
 
 			MeshInstanceData _meshInstanceData;
 
-			_meshInstanceData._meshBuffer = renderData->_renderObject->m_MeshBuffer;
+			_meshInstanceData._meshBuffer = renderData._renderObject->m_MeshBuffer;
 
-			_meshInstanceData._bIsSkin = renderData->_renderObject->m_bIsSkinned;
+			_meshInstanceData._bIsSkin = renderData._renderObject->m_bIsSkinned;
 
-			_meshInstanceData._subMeshIdx = renderData->_subMeshIdx;
+			_meshInstanceData._subMeshIdx = renderData._subMeshIdx;
 
-			_meshInstanceData._renderObjects.emplace_back(*renderData);
+			_meshInstanceData._renderObjects.emplace_back(renderData);
 
 			m_InstanceQueue[_uuid]._meshInstanceDatas.emplace_back(std::move(_meshInstanceData));
 		}
@@ -64,7 +64,7 @@ namespace Graphics
 
 	void InstanceRenderer::RegistInstanceQueue(RenderQueue& renderQueue)
 	{
-		while (renderQueue.Empty())
+		/*while (renderQueue.Empty())
 		{
 			auto _renderData = renderQueue.Pop();
 
@@ -73,8 +73,8 @@ namespace Graphics
 				continue;
 			}
 
-			RegistInstanceQueue(&_renderData);
-		}
+			RegistInstanceQueue(_renderData);
+		}*/
 	}
 
 	void InstanceRenderer::ClearInstanceQueue()

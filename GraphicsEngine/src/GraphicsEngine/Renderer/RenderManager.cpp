@@ -2,6 +2,10 @@
 #include "GraphicsEngine/Renderer/RenderManager.h"
 #include "GraphicsEngine/Renderer/Renderer.h"
 #include "GraphicsEngine/Renderer/InstanceRenderer.h"
+#include "GraphicsEngine/Resource/MaterialBuffer.h"
+#include "GraphicsEngine/Resource/MeshBuffer.h"
+#include "GraphicsEngine/RenderPass/RenderPass.h"
+
 #include "GraphicsEngine/RenderQueue/RenderQueueManager.h"
 #include "GraphicsEngine/RenderQueue/RenderQueue.h"
 
@@ -21,13 +25,43 @@ namespace Graphics
 
 	}
 
-	void RenderManager::Excute(CommandBuffer* commandBuffer)
+	void RenderManager::Begin()
 	{
 		RenderQueue _queue;
 
 		RenderQueueManager::Get()->CreateRenderQueue(_queue);
 
-		m_InstanceRenderer->RegistInstanceQueue(_queue);
+		//while (_queue.Empty())
+		//{
+		//	RenderData _renderData;// = _queue.Pop();
+
+		//	MaterialBuffer* _matBuf = _renderData._renderObject->GetMaterialBuffer(_renderData._materialIdx);
+
+		//	if (_matBuf->GetUseInstancing())
+		//	{
+		//		m_InstanceRenderer->RegistInstanceQueue(_renderData);
+		//	}
+		//	else
+		//	{
+		//		_matBuf->GetPass()->AddRenderData(_renderData);
+		//	}
+		//}
+	}
+
+	void RenderManager::Excute(CommandBuffer* commandBuffer)
+	{
+		{
+			m_InstanceRenderer->BeginExcute();
+
+			m_InstanceRenderer->Excute();
+
+			m_InstanceRenderer->EndExcute();
+		}
+	}
+
+	void RenderManager::End()
+	{
+
 	}
 
 	void RenderManager::InitRenderer()

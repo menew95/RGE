@@ -19,63 +19,35 @@ namespace Graphics
 
         RenderQueue(const RenderQueue& other) = default;
 
-        RenderQueue(const RenderQueue&& other)
-            : m_RenderDataQueue(std::move(other.m_RenderDataQueue))
+        RenderQueue(const RenderQueue&& other) noexcept
+            : m_RenderDataQueue(other.m_RenderDataQueue)
         {}
 
         ~RenderQueue() = default;
 
-        inline void Push(RenderData& renderData)
+        void Push(RenderPass* pass, RenderData& renderData);
+
+        inline std::queue<RenderData>& GetRenderQueue(RenderPass* pass)
         {
-            m_RenderDataQueue.push(std::move(renderData)); 
+            assert(m_RenderDataQueue.contains(pass));
+
+            return m_RenderDataQueue[pass]; 
         }
 
-        inline auto Pop() 
-        { 
-            auto& _ret = m_RenderDataQueue.front();
-
-            m_RenderDataQueue.pop();
-
-            return _ret;
-        }
-
-        inline auto Empty()
-        {
-            return m_RenderDataQueue.empty();
-        }
-
-        inline std::queue<RenderData>& GetRenderQueue()
-        {
-            return m_RenderDataQueue; 
-        }
-
-        inline RenderQueue& operator=(const RenderQueue& other)
+        inline RenderQueue& operator=(const RenderQueue& other) noexcept
 		{
 			this->m_RenderDataQueue = other.m_RenderDataQueue;
 			return *this;
 		}
 
-        inline RenderQueue& operator=(RenderQueue&& other)
+        inline RenderQueue& operator=(RenderQueue&& other) noexcept
 		{
 			this->m_RenderDataQueue = std::move(other.m_RenderDataQueue);
 			return *this;
 		}
 
     private:
-
-        std::queue<RenderData> m_RenderDataQueue;
+        std::unordered_map<RenderPass*, std::queue<RenderData>> m_RenderDataQueue;
 
     };
-
-	/*RenderQueue& operator=(const RenderQueue& other)
-	{
-		this->m_RenderDataQueue = other.m_RenderDataQueue;
-		return *this;
-	}
-
-    RenderQueue& operator=(RenderQueue&& other)
-    {
-        this->m_RenderDataQueue = std::move(other.m_RenderDataQueue);
-        return *this;
-    }*/
 }

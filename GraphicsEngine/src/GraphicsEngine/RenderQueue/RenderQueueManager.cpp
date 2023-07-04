@@ -267,13 +267,9 @@ namespace Graphics
 
 			for (size_t i = 0; i < _renderObject->GetMaterialBuffersCount(); i++)
 			{
-				RenderData _renderData;
-				_renderData._renderObject = _renderObject.get();
-				_renderData._subMeshIdx = static_cast<uint32>(i);
-				_renderData._materialIdx = static_cast<uint32>(i);
+				RenderData _renderData(_renderObject.get(), static_cast<uint32>(i));
 
-
-				renderQueue.Push(_renderData);
+				//renderQueue.Push(_renderData);
 			}
 		}
 	}

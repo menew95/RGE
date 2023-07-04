@@ -1,7 +1,7 @@
 ﻿/**
 
     @file      RenderManager.h
-    @brief     여러 렌더러를 관리하는 매니저
+	@brief     여러 렌더러를 관리하는 매니저
     @author    LWT
     @date      21.06.2023
 
@@ -25,11 +25,25 @@ namespace Graphics
 
         ~RenderManager();
 
+        /**
+            @brief 렌더링 하기전에 필요한 작업들을 실행 
+        **/
+        void Begin();
+
+        /**
+            @brief 등록된 렌더 큐들을 실행
+            @param commandBuffer - 
+        **/
         void Excute(CommandBuffer* commandBuffer);
 
-    private:
+        /**
+            @brief 렌더링이 끝난후 작업들을 실행
+        **/
+        void End();
 
+    private:
         void InitRenderer();
+
 
         RenderSystem* m_RenderSystem;
 

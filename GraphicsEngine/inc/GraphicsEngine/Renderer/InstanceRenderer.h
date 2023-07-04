@@ -33,7 +33,7 @@ namespace Graphics
             @brief 인스턴스 큐에 렌더 데이터를 등록 혹은 추가
             @param renderData - 렌더 오브젝트의 어느 서브 매쉬와 머티리얼을 사용해야지 담고있는 중간 컨테이너
         **/
-        void RegistInstanceQueue(const RenderData* renderData);
+        void RegistInstanceQueue(const RenderData& renderData);
 
         /**
             @brief 인스턴스 큐에 렌더 큐를 등록
