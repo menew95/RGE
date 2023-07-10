@@ -1,7 +1,7 @@
 ﻿/**
 
     @file      RenderManager.h
-	@brief     여러 렌더러를 관리하는 매니저
+	@brief     여러 렌더러를 소유 및 렌더 패스를 실행 하는 렌더 매니저
     @author    LWT
     @date      21.06.2023
 
@@ -32,7 +32,7 @@ namespace Graphics
 
         /**
             @brief 등록된 렌더 큐들을 실행
-            @param commandBuffer - 
+            @param commandBuffer - 컨테스트
         **/
         void Excute(CommandBuffer* commandBuffer);
 
@@ -42,8 +42,8 @@ namespace Graphics
         void End();
 
     private:
-        void InitRenderer();
 
+        void InitRenderer();
 
         RenderSystem* m_RenderSystem;
 
@@ -55,5 +55,6 @@ namespace Graphics
 
         std::shared_ptr<InstanceRenderer> m_InstanceRenderer;
 
+        std::vector<RenderPass*> m_RenderPassList;
     };
 }

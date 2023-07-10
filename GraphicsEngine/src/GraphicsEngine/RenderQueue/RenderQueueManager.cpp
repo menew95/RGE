@@ -119,43 +119,12 @@ namespace Graphics
 			if (!_renderObject->m_bIsSkinned)
 			{
 				// static mesh
-				Graphics::UpdateResourceData _perObjectResource
-				{
-					_perObjectResource._updateTime = Graphics::eUpdateTime::PerObject,
-					_perObjectResource._index = 1,
-					_perObjectResource._resourceType = Graphics::ResourceType::Buffer,
-					_perObjectResource._dataSrc = &_renderObject->m_TransformMatrix,
-					_perObjectResource._datasize = sizeof(Math::Matrix) * 2
-				};
-
-				_renderObject->m_UpdateResourcePerObjects.emplace_back(_perObjectResource);
 
 				light->RegistStaticRenderObject(_renderObject.get());
 			}
 			else
 			{
 				// skinned mesh
-				Graphics::UpdateResourceData _perObjectResource
-				{
-					_perObjectResource._updateTime = Graphics::eUpdateTime::PerObject,
-					_perObjectResource._index = 1,
-					_perObjectResource._resourceType = Graphics::ResourceType::Buffer,
-					_perObjectResource._dataSrc = &_renderObject->m_TransformMatrix,
-					_perObjectResource._datasize = sizeof(Math::Matrix) * 2
-				};
-
-				_renderObject->m_UpdateResourcePerObjects.emplace_back(_perObjectResource);
-
-				Graphics::UpdateResourceData _perSkinnedObjectResource
-				{
-					_perSkinnedObjectResource._updateTime = Graphics::eUpdateTime::PerObject,
-					_perSkinnedObjectResource._index = 2,
-					_perSkinnedObjectResource._resourceType = Graphics::ResourceType::Buffer,
-					_perSkinnedObjectResource._dataSrc = _renderObject->m_pSkinnedData,
-					_perSkinnedObjectResource._datasize = sizeof(Math::Matrix) * 128
-				};
-
-				_renderObject->m_UpdateResourcePerObjects.emplace_back(_perSkinnedObjectResource);
 
 				light->RegistSkinnedRenderObject(_renderObject.get());
 			}
@@ -171,47 +140,6 @@ namespace Graphics
 
 			_renderObject->m_UpdateResourcePerObjects.clear();
 
-			if (!_renderObject->m_bIsSkinned)
-			{
-				// static mesh
-				Graphics::UpdateResourceData _perObjectResource
-				{
-					_perObjectResource._updateTime = Graphics::eUpdateTime::PerObject,
-					_perObjectResource._index = 1,
-					_perObjectResource._resourceType = Graphics::ResourceType::Buffer,
-					_perObjectResource._dataSrc = &_renderObject->m_TransformMatrix,
-					_perObjectResource._datasize = sizeof(Math::Matrix) * 2
-				};
-
-				_renderObject->m_UpdateResourcePerObjects.emplace_back(_perObjectResource);
-
-			}
-			else
-			{
-				// skinned mesh
-				Graphics::UpdateResourceData _perObjectResource
-				{
-					_perObjectResource._updateTime = Graphics::eUpdateTime::PerObject,
-					_perObjectResource._index = 1,
-					_perObjectResource._resourceType = Graphics::ResourceType::Buffer,
-					_perObjectResource._dataSrc = &_renderObject->m_TransformMatrix,
-					_perObjectResource._datasize = sizeof(Math::Matrix) * 2
-				};
-
-				_renderObject->m_UpdateResourcePerObjects.emplace_back(_perObjectResource);
-
-				Graphics::UpdateResourceData _perSkinnedObjectResource
-				{
-					_perSkinnedObjectResource._updateTime = Graphics::eUpdateTime::PerObject,
-					_perSkinnedObjectResource._index = 2,
-					_perSkinnedObjectResource._resourceType = Graphics::ResourceType::Buffer,
-					_perSkinnedObjectResource._dataSrc = _renderObject->m_pSkinnedData,
-					_perSkinnedObjectResource._datasize = sizeof(Math::Matrix) * 128
-				};
-
-				_renderObject->m_UpdateResourcePerObjects.emplace_back(_perSkinnedObjectResource);
-
-			}
 		}
 	}
 
@@ -221,55 +149,32 @@ namespace Graphics
 		{
 			if (!_renderObject->m_bIsEnable) continue;
 
-			_renderObject->m_UpdateResourcePerObjects.clear();
-
-			uint32 _idx = 0;
-
-			if (!_renderObject->m_bIsSkinned)
+			// push shadow draw
+			if (_renderObject->m_bIsCastShadow)
 			{
-				// static mesh
-				Graphics::UpdateResourceData _perObjectResource
+				// Todo : 인스턴싱을 어케 처리하지
+
+				if (!_renderObject->m_bIsSkinned)
 				{
-					_perObjectResource._updateTime = Graphics::eUpdateTime::PerObject,
-					_perObjectResource._index = 1,
-					_perObjectResource._resourceType = Graphics::ResourceType::Buffer,
-					_perObjectResource._dataSrc = &_renderObject->m_TransformMatrix,
-					_perObjectResource._datasize = sizeof(Math::Matrix) * 2
-				};
+					// static mesh
 
-				_renderObject->m_UpdateResourcePerObjects.emplace_back(_perObjectResource);
-			}
-			else
-			{
-				// skinned mesh
-				Graphics::UpdateResourceData _perObjectResource
+					//light->RegistStaticRenderObject(_renderObject.get());
+				}
+				else
 				{
-					_perObjectResource._updateTime = Graphics::eUpdateTime::PerObject,
-					_perObjectResource._index = 1,
-					_perObjectResource._resourceType = Graphics::ResourceType::Buffer,
-					_perObjectResource._dataSrc = &_renderObject->m_TransformMatrix,
-					_perObjectResource._datasize = sizeof(Math::Matrix) * 2
-				};
+					// skinned mesh
 
-				_renderObject->m_UpdateResourcePerObjects.emplace_back(_perObjectResource);
-
-				Graphics::UpdateResourceData _perSkinnedObjectResource
-				{
-					_perSkinnedObjectResource._updateTime = Graphics::eUpdateTime::PerObject,
-					_perSkinnedObjectResource._index = 2,
-					_perSkinnedObjectResource._resourceType = Graphics::ResourceType::Buffer,
-					_perSkinnedObjectResource._dataSrc = _renderObject->m_pSkinnedData,
-					_perSkinnedObjectResource._datasize = sizeof(Math::Matrix) * 128
-				};
-
-				_renderObject->m_UpdateResourcePerObjects.emplace_back(_perSkinnedObjectResource);
+					//light->RegistSkinnedRenderObject(_renderObject.get());
+				}
 			}
 
+			// push mesh draw
 			for (size_t i = 0; i < _renderObject->GetMaterialBuffersCount(); i++)
 			{
 				RenderData _renderData(_renderObject.get(), static_cast<uint32>(i));
 
-				//renderQueue.Push(_renderData);
+				if(_renderObject->GetMaterialBuffer(i) != nullptr)
+					 renderQueue.Push(_renderObject->GetMaterialBuffer(i), _renderData);
 			}
 		}
 	}

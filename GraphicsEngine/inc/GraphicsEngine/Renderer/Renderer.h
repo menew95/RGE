@@ -32,7 +32,10 @@ namespace Graphics
         void BeginExcute(CommandBuffer* commandBuffer);
 
         /**
-            @brief 렌더 데이터를 순회하며 명령 실행
+			@brief 렌더 데이터를 순회하며 명령 실행
+			@param commandBuffer - 컨텍스트
+			@param renderPass    - 사용될 렌더 패스
+			@param renderDatas   - 렌더 데이터 리스트
         **/
         void Excute(CommandBuffer* commandBuffer, RenderPass* renderPass, std::vector<RenderData>& renderDatas);
 
@@ -40,6 +43,7 @@ namespace Graphics
             @brief 파이프라인을 그린후 처리
         **/
         void EndExcute(CommandBuffer* commandBuffer);
+
 
     protected:
 

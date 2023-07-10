@@ -213,7 +213,12 @@ namespace Graphics
 		RenderObject* _renderObject = nullptr; 
 
 		int32 _materialIdx = -1;
+		MaterialBuffer* _materialBuffer = nullptr;
+
+		MeshBuffer* _meshBuffer = nullptr;
 		int32 _subMeshIdx = -1;
+
+
 	};
 
 	/**

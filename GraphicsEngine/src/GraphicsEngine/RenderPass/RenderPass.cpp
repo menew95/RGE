@@ -160,6 +160,31 @@ namespace Graphics
 		}
 	}
 
+	void RenderPass::Excute(CommandBuffer* commandBuffer, RenderData& renderData)
+	{
+		auto _vertexBuffer = renderData._renderObject->GetMeshBuffer()->GetBuffer();
+
+		commandBuffer->SetVertexBuffer(*_vertexBuffer);
+
+		UpdateResourcePerObject(commandBuffer, renderData._renderObject);
+
+		if (renderData._renderObject->IsHasViewport())
+		{
+			commandBuffer->SetViewports(static_cast<uint32>(renderData._renderObject->GetViewports().size()), renderData._renderObject->GetViewports().data());
+		}
+
+		auto _subMeshBuffer = renderData._renderObject->GetMeshBuffer()->GetSubMesh(renderData._subMeshIdx);
+
+		if (renderData._renderObject->m_MaterialBuffers[renderData._materialIdx] != nullptr)
+		{
+			renderData._renderObject->m_MaterialBuffers[renderData._materialIdx]->BindResource(commandBuffer);
+		}
+
+		commandBuffer->SetIndexBuffer(*_subMeshBuffer.m_IndexBuffer);
+
+		commandBuffer->DrawIndexed(_subMeshBuffer.m_IndexCount, 0, 0);
+	}
+
 	void RenderPass::EndExcute(CommandBuffer* commandBuffer)
 	{
 		commandBuffer->EndRenderPass();

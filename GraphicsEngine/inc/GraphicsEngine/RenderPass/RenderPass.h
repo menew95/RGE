@@ -68,6 +68,8 @@ namespace Graphics
 
 		void Excute(CommandBuffer* commandBuffer, std::vector<RenderData>& renderDatas);
 
+		void Excute(CommandBuffer* commandBuffer, RenderData& renderData);
+
 		void EndExcute(CommandBuffer* commandBuffer);
 
 		/**

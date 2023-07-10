@@ -1,13 +1,14 @@
-#include "GraphicsEnginePCH.h"
+﻿#include "GraphicsEnginePCH.h"
 
 #include "GraphicsEngine/Culling/Frustum.h"
 
 namespace Graphics
 {
 
-	Frustum::Frustum()
+	Frustum::Frustum(Math::Matrix& proj, Math::Matrix& camWorld)
+		: m_Frustum(proj)
 	{
-
+		m_Frustum.Transform(m_Frustum, camWorld);
 	}
 
 	Frustum::~Frustum()
@@ -15,17 +16,17 @@ namespace Graphics
 
 	}
 
-	void Frustum::FrustumUpdate(float posx, float posy, float posz, float forwardx, float forwardy, float forwardz, float upx, float upy, float upz, float fovY, float aspectRatio, float nearZ, float farZ)
+	bool Frustum::IsIntersects(Math::Matrix& world, Math::Vector3& boundMin, Math::Vector3& boundMax)
 	{
+		auto _center = (boundMin + boundMax) * 0.5f;
+		auto _extents = boundMax - _center;
 
+		BoundingOrientedBox _boundingOrientedBox;
+		_boundingOrientedBox.Center = _center;
+		_boundingOrientedBox.Extents = _extents;
+
+		_boundingOrientedBox.Transform(_boundingOrientedBox, world);
+
+		return m_Frustum.Intersects(_boundingOrientedBox);
 	}
-
-	bool Frustum::IsCulling(Math::Vector3* points, Math::Vector3& pos)
-	{
-
-
-
-		return false;
-	}
-
 }

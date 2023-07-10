@@ -64,17 +64,19 @@ namespace Graphics
 
 	void InstanceRenderer::RegistInstanceQueue(RenderQueue& renderQueue)
 	{
-		/*while (renderQueue.Empty())
+		for (auto& _pair : renderQueue.GetRenderQueues())
 		{
-			auto _renderData = renderQueue.Pop();
+			if (!_pair.first->GetUseInstancing()) continue;
 
-			if (_renderData._renderObject->GetMaterialBuffer(_renderData._materialIdx)->GetUseInstancing())
+			while (_pair.second.empty())
 			{
-				continue;
-			}
+				auto& _renderData = _pair.second.front();
 
-			RegistInstanceQueue(_renderData);
-		}*/
+				_pair.second.pop();
+
+				RegistInstanceQueue(_renderData);
+			}
+		}
 	}
 
 	void InstanceRenderer::ClearInstanceQueue()
@@ -110,7 +112,8 @@ namespace Graphics
 				{
 					uint32 _drawNum = UpdateInstanceBuffer(_meshInstance, _meshCount);
 
-					RenderPass* _renderPass = GetRenderPass(_iter.second._materialBuffer, _meshInstance._bIsSkin);
+					//RenderPass* _renderPass = GetRenderPass(_iter.second._materialBuffer, _meshInstance._bIsSkin);
+					RenderPass* _renderPass = _iter.second._materialBuffer->GetPass();
 
 					BindRenderPass(_renderPass);
 

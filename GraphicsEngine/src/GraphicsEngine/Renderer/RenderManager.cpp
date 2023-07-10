@@ -2,6 +2,7 @@
 #include "GraphicsEngine/Renderer/RenderManager.h"
 #include "GraphicsEngine/Renderer/Renderer.h"
 #include "GraphicsEngine/Renderer/InstanceRenderer.h"
+#include "GraphicsEngine/Resource/ResourceManager.h"
 #include "GraphicsEngine/Resource/MaterialBuffer.h"
 #include "GraphicsEngine/Resource/MeshBuffer.h"
 #include "GraphicsEngine/RenderPass/RenderPass.h"
@@ -31,21 +32,7 @@ namespace Graphics
 
 		RenderQueueManager::Get()->CreateRenderQueue(_queue);
 
-		//while (_queue.Empty())
-		//{
-		//	RenderData _renderData;// = _queue.Pop();
 
-		//	MaterialBuffer* _matBuf = _renderData._renderObject->GetMaterialBuffer(_renderData._materialIdx);
-
-		//	if (_matBuf->GetUseInstancing())
-		//	{
-		//		m_InstanceRenderer->RegistInstanceQueue(_renderData);
-		//	}
-		//	else
-		//	{
-		//		_matBuf->GetPass()->AddRenderData(_renderData);
-		//	}
-		//}
 	}
 
 	void RenderManager::Excute(CommandBuffer* commandBuffer)
@@ -57,6 +44,16 @@ namespace Graphics
 
 			m_InstanceRenderer->EndExcute();
 		}
+
+		{
+			m_DefualtRenderer->BeginExcute(commandBuffer);
+
+			m_DefualtRenderer->Excute(commandBuffer);
+
+			m_DefualtRenderer->EndExcute(commandBuffer);
+		}
+
+
 	}
 
 	void RenderManager::End()
@@ -69,6 +66,8 @@ namespace Graphics
 		m_DefualtRenderer = std::make_shared<Renderer>(m_RenderSystem, m_ResourceManager);
 
 		m_InstanceRenderer = std::make_shared<InstanceRenderer>(m_RenderSystem, m_ResourceManager, m_CommandBuffer);
+	
+		m_RenderPassList.push_back(m_ResourceManager->GetRenderPass(TEXT("")).get());
 	}
 
 }

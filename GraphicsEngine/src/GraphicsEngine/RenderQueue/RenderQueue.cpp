@@ -3,7 +3,7 @@
 
 namespace Graphics
 {
-	void RenderQueue::Push(RenderPass* pass, RenderData& renderData)
+	void RenderQueue::Push(MaterialBuffer* pass, RenderData& renderData)
 	{
 		if (m_RenderDataQueue.contains(pass))
 		{

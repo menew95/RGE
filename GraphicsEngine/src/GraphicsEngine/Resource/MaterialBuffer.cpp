@@ -50,7 +50,6 @@ namespace Graphics
 		
 		m_UpdateResources.push_back(_resourceData);
 
-
 		ResourceBind _resource;
 		_resource._resource = resource;
 		_resource._slot = bindSlot;

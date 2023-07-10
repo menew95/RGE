@@ -410,6 +410,8 @@ namespace Graphics
 
 		m_Sky->ExcutePass();
 
+
+
 		{
 			m_Deferred_Light_Pass->RegistRenderObject(&_deferredMergeRenderObject);
 

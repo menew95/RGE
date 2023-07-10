@@ -25,7 +25,14 @@ namespace Graphics
 
         ~RenderQueue() = default;
 
-        void Push(RenderPass* pass, RenderData& renderData);
+        void Push(MaterialBuffer* pass, RenderData& renderData);
+
+		inline std::unordered_map<MaterialBuffer*, std::queue<RenderData>>& GetRenderQueues()
+		{
+			assert(m_RenderDataQueue.contains(pass));
+
+			return m_RenderDataQueue[pass];
+		}
 
         inline std::queue<RenderData>& GetRenderQueue(RenderPass* pass)
         {
@@ -47,7 +54,7 @@ namespace Graphics
 		}
 
     private:
-        std::unordered_map<RenderPass*, std::queue<RenderData>> m_RenderDataQueue;
+        std::unordered_map<MaterialBuffer*, std::queue<RenderData>> m_RenderDataQueue;
 
     };
 }
