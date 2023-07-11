@@ -1,6 +1,8 @@
-#pragma once
+﻿#pragma once
 
 #include "GraphicsEngine/Resource/ResourceBuffer.h"
+
+#include "GraphicsEngine/Culling/Frustum.h"
 
 #include "Math/Math.h"
 
@@ -35,6 +37,8 @@ namespace Graphics
 		inline Math::Matrix GetProj() { return m_Proj; }
 
 		void GetCascadedInfo();
+
+		class Frustum GetFrustum();
 	public:
 		Math::Vector3 m_CameraPosition = { 0, 0, 0 };
 		Math::Vector3 m_Right = { 1, 0, 0 };

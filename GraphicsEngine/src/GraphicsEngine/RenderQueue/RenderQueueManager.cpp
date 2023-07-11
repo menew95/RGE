@@ -6,6 +6,11 @@
 #include "GraphicsEngine/RenderPass/Light.h"
 #include "GraphicsEngine/RenderPass/Sky.h"
 
+#include "GraphicsEngine/Culling/Frustum.h"
+
+#include "GraphicsEngine/Resource/CameraBuffer.h"
+#include "GraphicsEngine/Resource/MaterialBuffer.h"
+#include "GraphicsEngine/Resource/MeshBuffer.h"
 
 namespace Graphics
 {
@@ -145,6 +150,8 @@ namespace Graphics
 
 	void RenderQueueManager::CreateRenderQueue(RenderQueue& renderQueue)
 	{
+		Frustum _frustum();
+
 		for (auto& _renderObject : m_RenderObjectContainer)
 		{
 			if (!_renderObject->m_bIsEnable) continue;
@@ -178,4 +185,63 @@ namespace Graphics
 			}
 		}
 	}
+
+	void RenderQueueManager::UpdateRenderQueue(CameraBuffer* camBuffer)
+	{
+		Frustum _frustum = camBuffer->GetFrustum();
+
+		for (auto& _renderObject : m_RenderObjectContainer)
+		{
+			if (!_renderObject->m_bIsEnable) continue;
+
+			if(!_frustum.IsIntersects(
+				_renderObject->m_TransformMatrix._world,
+				_renderObject->GetMeshBuffer()->GetBoundingBoxMin(),
+				_renderObject->GetMeshBuffer()->GetBoundingBoxMax()))
+				continue;
+
+			// push shadow draw
+			if (_renderObject->m_bIsCastShadow)
+			{
+				// Todo : 인스턴싱을 어케 처리하지
+
+				if (!_renderObject->m_bIsSkinned)
+				{
+					// static mesh
+
+					//light->RegistStaticRenderObject(_renderObject.get());
+				}
+				else
+				{
+					// skinned mesh
+
+					//light->RegistSkinnedRenderObject(_renderObject.get());
+				}
+			}
+
+			// push mesh draw
+			for (size_t i = 0; i < _renderObject->GetMaterialBuffersCount(); i++)
+			{
+				RenderData _renderData(_renderObject.get(), static_cast<uint32>(i));
+
+				MaterialBuffer* _matBuf = _renderObject->GetMaterialBuffer(i);
+				if (_matBuf != nullptr)
+				{
+					switch (_matBuf->GetRenderMode())
+					{
+						case RenderMode::Opaque:
+						{
+							break;
+						}
+						case RenderMode::Transparent:
+						{
+							break;
+						}
+					}
+				}
+
+			}
+		}
+	}
+
 }

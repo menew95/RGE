@@ -1,4 +1,4 @@
-#include "GraphicsEnginePCH.h"
+Ôªø#include "GraphicsEnginePCH.h"
 #include "GraphicsEngine/Resource/CameraBuffer.h"
 #include "GraphicsEngine/Resource/ConstantBuffer.h"
 
@@ -78,7 +78,7 @@ namespace Graphics
 		m_cascadeEnd[1] = 10.0f,
 		m_cascadeEnd[2] = 20.0f,
 		m_cascadeEnd[3] = 40.f;
-		//Todo ≥ π´ ≈©¥Ÿ
+		//Todo ÎÑàÎ¨¥ ÌÅ¨Îã§
 		m_cascadeEnd[4] = 100.f;
 		
 		cascadedLight._cascadeEndClipSpace[0].x = m_cascadeEnd[1];
@@ -157,6 +157,11 @@ namespace Graphics
 			);
 		}
 
+	}
+
+	Graphics::Frustum CameraBuffer::GetFrustum()
+	{
+		return Frustum(m_Proj, m_World);
 	}
 
 }

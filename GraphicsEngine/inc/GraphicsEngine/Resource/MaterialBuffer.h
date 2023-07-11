@@ -21,6 +21,12 @@ namespace Graphics
 		ALBEDO_NORMAL_MRA = ALBEDO_NORMAL | MRA
 	};
 
+	enum class RenderMode
+	{
+		Opaque = 0,
+		Transparent = 1
+	};
+
 	class GRAPHICSENGINE_DLL_DECLSPEC MaterialBuffer : public ResourceBuffer
 	{
 	public:
@@ -40,6 +46,10 @@ namespace Graphics
 
 		void SetBufferData(void* src, Resource* resource);
 
+		inline void SetRenderMode(RenderMode mode) { m_RenderMode = mode; }
+
+		inline RenderMode GetRenderMode() { return m_RenderMode; }
+
 		inline void SetUseInstancing(bool value) { m_bUseInstancing = value; }
 
 		inline bool GetUseInstancing() const { return m_bUseInstancing; }
@@ -55,6 +65,8 @@ namespace Graphics
 		inline RenderPass* GetPass() { return m_RenderPass; }
 
 	private:
+
+		RenderMode m_RenderMode;
 
 		bool m_bUseInstancing = true;
 

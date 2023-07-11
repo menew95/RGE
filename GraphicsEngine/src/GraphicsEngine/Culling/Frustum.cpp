@@ -5,7 +5,7 @@
 namespace Graphics
 {
 
-	Frustum::Frustum(Math::Matrix& proj, Math::Matrix& camWorld)
+	Frustum::Frustum(Math::Matrix proj, Math::Matrix camWorld)
 		: m_Frustum(proj)
 	{
 		m_Frustum.Transform(m_Frustum, camWorld);
@@ -16,7 +16,7 @@ namespace Graphics
 
 	}
 
-	bool Frustum::IsIntersects(Math::Matrix& world, Math::Vector3& boundMin, Math::Vector3& boundMax)
+	bool Frustum::IsIntersects(Math::Matrix world, Math::Vector3 boundMin, Math::Vector3 boundMax)
 	{
 		auto _center = (boundMin + boundMax) * 0.5f;
 		auto _extents = boundMax - _center;

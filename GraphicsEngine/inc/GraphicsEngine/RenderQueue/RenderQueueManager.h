@@ -67,9 +67,19 @@ namespace Graphics
 		**/
 		void CreateRenderQueue(RenderQueue& renderQueue);
 
-
+		/**
+		    @brief 렌더 큐 상태를 업데이트 해줌
+		    @param camBuffer - 렌더큐를 업데이트 할 카메라 버퍼
+		**/
+		void UpdateRenderQueue(CameraBuffer* camBuffer);
 
 	private:
 		std::vector<std::shared_ptr<RenderObject>> m_RenderObjectContainer;
+
+		RenderQueue m_OpaqueMeshRenderQueue;
+
+		RenderQueue m_TransparentMeshRenderQueue;
+
+		RenderQueue 
 	};
 }
